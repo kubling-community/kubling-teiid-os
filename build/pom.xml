@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.kubling</groupId>
+        <artifactId>kubling-teiid</artifactId>
+        <version>24.2.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>kubling</artifactId>
+    <name>Build</name>
+    <description>Kubling Build</description>
+
+    <packaging>pom</packaging>
+
+    <properties>
+        <dir.teiid>kubling-${project.version}</dir.teiid>
+    </properties>
+
+    <build>
+        <outputDirectory>target/kits</outputDirectory>
+
+        <resources>
+            <resource>
+                <directory>kits</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.sh</include>
+                    <include>**/*.bat</include>
+                    <include>**/*.html</include>
+                    <include>**/*.cli</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>kits</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/*.xml</exclude>
+                    <exclude>**/*.properties</exclude>
+                    <exclude>**/*.sh</exclude>
+                    <exclude>**/*.bat</exclude>
+                    <exclude>**/*.html</exclude>
+                    <exclude>**/*.cli</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>assembly/src.xml</descriptor>
+                        <descriptor>assembly/client-jar.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-assemblies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kubling</groupId>
+            <artifactId>kubling-client</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.kubling</groupId>
+            <artifactId>kubling-common-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.kubling</groupId>
+            <artifactId>kubling-hibernate-dialect</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>

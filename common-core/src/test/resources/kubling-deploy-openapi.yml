@@ -1,0 +1,171 @@
+properties:
+  spec:
+    properties:
+      deploymentSpec:
+        properties:
+          name:
+            type: string
+          organizationalGroupName:
+            type: string
+          containerImage:
+            type: string
+          privateRegistry:
+            type: boolean
+          privateRegistryCredentials:
+            type: string
+          cpu:
+            type: number
+          gpu:
+            type: number
+          memory:
+            type: integer
+          replicas:
+            type: integer
+          ephemeralStorage:
+            type: integer
+          ports:
+            additionalProperties:
+              type: integer
+            type: object
+          environmentVars:
+            additionalProperties:
+              type: string
+            type: object
+          storageVolumes:
+            additionalProperties:
+              type: string
+            type: object
+          configurations:
+            additionalProperties:
+              type: string
+            type: object
+          environmentSecrets:
+            additionalProperties:
+              type: string
+            type: object
+          commands:
+            items:
+              type: string
+            type: array
+          arguments:
+            items:
+              type: string
+            type: array
+        type: object
+      additionalProperties:
+        additionalProperties:
+          type: object
+        type: object
+      ownerType:
+        enum:
+          - USER
+          - ORGANIZATIONAL_GROUP
+        type: string
+      userSpec:
+        properties:
+          id:
+            type: integer
+          email:
+            type: string
+          namespace:
+            type: string
+        type: object
+      organizationalGroupSpec:
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          namespace:
+            type: string
+        type: object
+      name:
+        type: string
+      compressedAdmissionDecisionsObject:
+        type: string
+      cleanupResourceInfo:
+        properties:
+          cleanupMessage:
+            properties:
+              destination:
+                type: string
+              objectMessage:
+                type: string
+            type: object
+          cleanupImage:
+            type: string
+          customData:
+            additionalProperties:
+              properties:
+                data:
+                  type: string
+                injectAsEnvVar:
+                  type: boolean
+                isVaultedSecret:
+                  type: boolean
+                isVaultedPlatformSecret:
+                  type: boolean
+              type: object
+            type: object
+          useSameNodeAsResource:
+            type: boolean
+        type: object
+    type: object
+  additionalProperties:
+    additionalProperties:
+      type: object
+    type: object
+  status:
+    properties:
+      state:
+        enum:
+          - READY
+          - ERROR
+          - ERROR_ROOT_CONTAINER
+          - ERROR_EPHEMERAL_STORAGE
+          - PROGRESS
+          - UNKNOWN
+        type: string
+      conditions:
+        description: List of status conditions
+        items:
+          properties:
+            status:
+              description: "The status of the condition, either True, False\
+                        \ or Unknown."
+              type: string
+            reason:
+              description: The reason for the condition's last transition
+                (a single word in CamelCase).
+              type: string
+            message:
+              type: string
+            type:
+              description: "The unique identifier of a condition, used to\
+                        \ distinguish between other conditions in the resource."
+              type: string
+            lastTransitionTime:
+              description: "Last time the condition of a type changed from\
+                        \ one status to another. The required format is 'yyyy-MM-ddTHH:mm:ssZ',\
+                        \ in the UTC time zone"
+              type: string
+            additionalProperties:
+              additionalProperties:
+                type: object
+              type: object
+          type: object
+        type: array
+      observedGeneration:
+        type: integer
+      pastResourceVersion:
+        type: string
+      additionalProperties:
+        additionalProperties:
+          type: object
+        type: object
+      message:
+        type: string
+    type: object
+  stopped:
+    type: boolean
+type: object

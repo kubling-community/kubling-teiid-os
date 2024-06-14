@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.kubling</groupId>
+        <artifactId>kubling-teiid</artifactId>
+        <version>24.2.0</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.kubling</groupId>
+    <artifactId>kubling-hibernate-dialect</artifactId>
+    <name>Hibernate Dialect</name>
+    <description>Kubling Hibernate Dialect</description>
+
+    <scm>
+        <connection>scm:git:git://github.com/kubling-community/kubling-teiid-os.git</connection>
+        <developerConnection>scm:git:ssh://github.com:kubling-community/kubling-teiid-os.git</developerConnection>
+        <url>https://github.com/kubling-community/kubling-teiid-os/tree/master</url>
+    </scm>
+
+    <url>https://kubling.com</url>
+    <developers>
+        <developer>
+            <name>Ignacio Soubelet</name>
+            <id>nsoubelet</id>
+            <organization>Kubling</organization>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <basepom.check.skip-duplicate-finder>true</basepom.check.skip-duplicate-finder>
+        <basepom.check.skip-spotbugs>true</basepom.check.skip-spotbugs>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>
