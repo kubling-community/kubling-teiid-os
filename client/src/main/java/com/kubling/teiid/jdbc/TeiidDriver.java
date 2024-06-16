@@ -52,7 +52,7 @@ import java.util.logging.Logger;
 public class TeiidDriver implements Driver {
 
     static Logger logger = Logger.getLogger("org.teiid.jdbc");
-    static final String DRIVER_NAME = "Teiid JDBC Driver";
+    static final String DRIVER_NAME = "Kubling DBVirt JDBC Driver";
 
     private static TeiidDriver INSTANCE = new TeiidDriver();
 

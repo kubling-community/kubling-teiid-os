@@ -31,6 +31,6 @@ public interface LocalProfile extends ConnectionProfile {
     Object DQP_WORK_CONTEXT = "dqpWorkContext";
     Object SSL_SESSION = "sslSession";
 
-    public ServerConnection createServerConnection(Properties info) throws TeiidException;
+    ServerConnection createServerConnection(Properties info) throws TeiidException;
 
 }

@@ -55,8 +55,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     public static final int DEFAULT_ISOLATION = Connection.TRANSACTION_READ_COMMITTED;
 
     // constant value giving product name
-    private final static String SERVER_NAME = "Teiid Server";
-    private final static String EMBEDDED_NAME = "Teiid Embedded";
+    private final static String SERVER_NAME = "Kubling DBVirt Server";
+    private final static String EMBEDDED_NAME = "Kubling DBVirt Embedded";
 
     // Unique request ID generator
     private long requestIDGenerator;

@@ -31,7 +31,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * The Teiid JDBC DataSource implementation class of {@link javax.sql.DataSource} and
+ * The Teiid-based Kubling DBVirt JDBC DataSource implementation class of {@link javax.sql.DataSource} and
  * {@link XADataSource}.
  * <p>
  * The {@link javax.sql.DataSource} interface follows the JavaBean design pattern,

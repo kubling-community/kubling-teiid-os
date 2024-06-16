@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 
 /**
- * The Teiid JDBC DataSource implementation class of {@link javax.sql.DataSource} and
+ * The Teiid-based Kubling DBVirt JDBC DataSource implementation class of {@link javax.sql.DataSource} and
  * {@link javax.sql.XADataSource}.
  * <p>
  * The {@link javax.sql.DataSource} interface follows the JavaBean design pattern,
