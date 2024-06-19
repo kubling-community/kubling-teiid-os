@@ -244,4 +244,14 @@ public class ClobImpl extends BaseLob implements Clob {
         return new ClobImpl(chars);
     }
 
+    @Override
+    public String toString() {
+        try {
+            return new String(getAsciiStream().readAllBytes());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

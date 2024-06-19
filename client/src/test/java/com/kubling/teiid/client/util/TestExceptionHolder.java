@@ -122,13 +122,11 @@ public class TestExceptionHolder {
     @Test public void testSQLExceptionChain() throws Exception {
         ClassLoader cl = new URLClassLoader(new URL[] {UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
         Exception obj = (Exception)ReflectionHelper.create("test.UnknownException", null, cl);
-        SQLException se = new SQLException("something bad happened");
-        se.initCause(obj);
+        SQLException se = new SQLException("something bad happened", obj);
 
         SQLException next = se;
         for (int i = 0; i < 10; i++) {
-            SQLException se1 = new SQLException("something else bad happened");
-            se1.initCause(obj);
+            SQLException se1 = new SQLException("something else bad happened", obj);
             next.setNextException(se1);
             next = se1;
         }

@@ -86,7 +86,7 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
         }
         InputStream in = getBinaryStream();
         try {
-            long skipped = 0;
+            long skipped;
             while (pos > 0) {
                 skipped = in.skip(pos);
                 pos -= skipped;
@@ -206,6 +206,17 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
             return b.length();
         } catch (SQLException e) {
             return -1;
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new String(getBinaryStream().readAllBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

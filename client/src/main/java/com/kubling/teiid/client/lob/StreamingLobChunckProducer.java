@@ -68,8 +68,7 @@ public class StreamingLobChunckProducer implements LobChunkProducer {
                     dqp.requestNextLobChunk(streamRequestId, requestId, streamable.getReferenceStreamId());
             return result.get();
         } catch (Exception e) {
-            IOException ex = new IOException(JDBCPlugin.Util.getString("StreamImpl.Unable_to_read_data_from_stream", e.getMessage())); //$NON-NLS-1$
-            ex.initCause(e);
+            IOException ex = new IOException(JDBCPlugin.Util.getString("StreamImpl.Unable_to_read_data_from_stream", e.getMessage()), e); //$NON-NLS-1$
             throw ex;
         }
     }

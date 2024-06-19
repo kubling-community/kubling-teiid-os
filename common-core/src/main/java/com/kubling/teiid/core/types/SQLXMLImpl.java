@@ -142,9 +142,17 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
         try {
             return ObjectConverterUtil.convertToString(getCharacterStream());
         } catch (IOException e) {
-            SQLException ex = new SQLException(e.getMessage());
-            ex.initCause(e);
+            SQLException ex = new SQLException(e.getMessage(), e);
             throw ex;
+        }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return getString();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
