@@ -78,8 +78,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
                 return r;
             }
         } catch (IOException e) {
-            SQLException ex = new SQLException(e.getMessage());
-            ex.initCause(e);
+            SQLException ex = new SQLException(e.getMessage(), e);
             throw ex;
         }
         Charset cs = getCharset();
@@ -93,8 +92,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
         try {
             return this.getStreamFactory().getInputStream();
         } catch (IOException e) {
-            SQLException ex = new SQLException(e.getMessage());
-            ex.initCause(e);
+            SQLException ex = new SQLException(e.getMessage(), e);
             throw ex;
         }
     }
