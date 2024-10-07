@@ -56,9 +56,9 @@ public class BatchSerializer {
 
     private BatchSerializer() {} // Uninstantiable
 
-    private static ColumnSerializer defaultSerializer = new ColumnSerializer();
+    private static final ColumnSerializer defaultSerializer = new ColumnSerializer();
 
-    private static final Map<String, ColumnSerializer[]> serializers = new HashMap<String, ColumnSerializer[]>(128);
+    private static final Map<String, ColumnSerializer[]> serializers = new HashMap<>(128);
     static {
         serializers.put(DataTypeManager.DefaultDataTypes.BIG_DECIMAL,
                 new ColumnSerializer[] {new BigDecimalColumnSerializer()});
@@ -111,7 +111,7 @@ public class BatchSerializer {
                 new ColumnSerializer[] {new BinaryColumnSerializer(), new BinaryColumnSerializer1()});
     }
 
-    private static ColumnSerializer arrayColumnSerializer = new ColumnSerializer() {
+    private static final ColumnSerializer arrayColumnSerializer = new ColumnSerializer() {
 
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
@@ -145,7 +145,7 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            Object[] values = null;
+            Object[] values;
             try {
                 values = (Object[]) ((Array)obj).getArray();
             } catch (SQLException e) {
@@ -263,7 +263,7 @@ public class BatchSerializer {
             writeObject(out, obj, code, cache, version<VERSION_GEOMETRY?this.defaultVersion:version);
         }
 
-        protected void writeObject(
+        private void writeObject(
                 ObjectOutput out, Object obj, int code, Map<Object, Integer> cache, byte effectiveVersion)
                 throws IOException {
 
@@ -358,8 +358,7 @@ public class BatchSerializer {
                 return val;
             }
             if (b == REPEATED_STRING) {
-                Integer val = in.readInt();
-                return cache.get(val);
+                return cache.get(in.readInt());
             }
             String val = (String) in.readObject();
             if (val.length() > MAX_INLINE_STRING_LENGTH) {
@@ -398,8 +397,7 @@ public class BatchSerializer {
 
         @Override
         public void readColumn(ObjectInput in, int col,
-                List<List<Object>> batch, byte[] isNull, List<Object> cache, byte version) throws
-                ClassNotFoundException {
+                List<List<Object>> batch, byte[] isNull, List<Object> cache, byte version) {
         }
     }
 
@@ -513,7 +511,7 @@ public class BatchSerializer {
      * @since 4.2
      */
     static void writeIsNullData(ObjectOutput out, int col, List<? extends List<?>> batch) throws IOException {
-        int numBytes = batch.size() / 8, row = 0, currentByte = 0;
+        int numBytes = batch.size() / 8, row = 0, currentByte;
         for (int byteNum = 0; byteNum < numBytes; byteNum++, row+=8) {
             currentByte  = (batch.get(row).get(col) == null) ? 0x80 : 0;
             if (batch.get(row+1).get(col) == null) {
@@ -580,12 +578,12 @@ public class BatchSerializer {
      * @return
      * @since 4.2
      */
-    static final boolean isNullObject(byte[] isNull, int row) {
+    static boolean isNullObject(byte[] isNull, int row) {
         //              byte number           mask     bits to shift mask
         return (isNull [ row / 8 ]         & (0x01 << (7 - (row % 8))))   != 0;
     }
 
-    private static final boolean isNullObject(int row, byte b) {
+    private static boolean isNullObject(int row, byte b) {
         return (b         & (0x01 << (7 - (row % 8))))   != 0;
     }
 
@@ -602,8 +600,8 @@ public class BatchSerializer {
                 byte version) throws IOException {
             writeIsNullData(out, col, batch);
             Object obj;
-            for (int i = 0; i < batch.size(); i++) {
-                obj = batch.get(i).get(col);
+            for (List<?> objects : batch) {
+                obj = objects.get(col);
                 if (obj != null) {
                     writeObject(out, obj, cache, version);
                 }
@@ -643,12 +641,12 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeInt(((Integer)obj).intValue());
+            out.writeInt((Integer) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version)
                 throws IOException {
-            return Integer.valueOf(in.readInt());
+            return in.readInt();
         }
     }
 
@@ -656,12 +654,12 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeLong(((Long)obj).longValue());
+            out.writeLong((Long) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version)
                 throws IOException {
-            return Long.valueOf(in.readLong());
+            return in.readLong();
         }
     }
 
@@ -669,11 +667,11 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeFloat(((Float)obj).floatValue());
+            out.writeFloat((Float) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version) throws IOException {
-            return Float.valueOf(in.readFloat());
+            return in.readFloat();
         }
     }
 
@@ -681,11 +679,11 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeDouble(((Double)obj).doubleValue());
+            out.writeDouble((Double) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version) throws IOException {
-            return Double.valueOf(in.readDouble());
+            return in.readDouble();
         }
     }
 
@@ -693,11 +691,11 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeShort(((Short)obj).shortValue());
+            out.writeShort((Short) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version) throws IOException {
-            return Short.valueOf(in.readShort());
+            return in.readShort();
         }
     }
 
@@ -716,10 +714,10 @@ public class BatchSerializer {
             int currentByte = 0;
             int mask = 0x80;
             Object obj;
-            for (int row = 0; row < batch.size(); row++) {
+            for (List<?> objects : batch) {
                 // Write the isNull value
-                obj = batch.get(row).get(col);
-                if (obj == null ) {
+                obj = objects.get(col);
+                if (obj == null) {
                     currentByte |= mask;
                 }
                 mask >>= 1; // Shift the mask to the next bit
@@ -731,7 +729,7 @@ public class BatchSerializer {
                 }
                 if (obj != null) {
                     // Write the boolean value if it's not null
-                    if (((Boolean)obj).booleanValue()) {
+                    if ((Boolean) obj) {
                         currentByte |= mask;
                     }
                     mask >>= 1;
@@ -755,7 +753,7 @@ public class BatchSerializer {
                 List<List<Object>> batch, byte[] isNull, List<Object> cache, byte version) throws IOException {
             int currentByte = 0, mask = 0; // Initialize the mask so that it is reset in the loop
             boolean isNullVal;
-            for (int row = 0; row < batch.size(); row++) {
+            for (List<Object> objects : batch) {
                 if (mask == 0) {
                     // If we used up the byte, read the next one, and reset the mask
                     currentByte = in.read();
@@ -768,7 +766,7 @@ public class BatchSerializer {
                         currentByte = in.read();
                         mask = 0x80;
                     }
-                    batch.get(row).set(col, ((currentByte & mask) == 0) ? Boolean.FALSE : Boolean.TRUE);
+                    objects.set(col, ((currentByte & mask) == 0) ? Boolean.FALSE : Boolean.TRUE);
                     mask >>= 1;
                 }
             }
@@ -779,11 +777,11 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeByte(((Byte)obj).byteValue());
+            out.writeByte((Byte) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version) throws IOException {
-            return Byte.valueOf(in.readByte());
+            return in.readByte();
         }
     }
 
@@ -791,11 +789,11 @@ public class BatchSerializer {
         @Override
         protected void writeObject(ObjectOutput out, Object obj, Map<Object, Integer> cache, byte version)
                 throws IOException {
-            out.writeChar(((Character)obj).charValue());
+            out.writeChar((Character) obj);
         }
         @Override
         protected Object readObject(ObjectInput in, List<Object> cache, byte version) throws IOException {
-            return Character.valueOf(in.readChar());
+            return in.readChar();
         }
     }
 
@@ -862,7 +860,7 @@ public class BatchSerializer {
         }
     }
 
-    static int DATE_NORMALIZER = 0;
+    static int DATE_NORMALIZER;
     public final static long MIN_DATE_32;
     public final static long MAX_DATE_32;
     public final static long MIN_TIME_32;
@@ -870,7 +868,7 @@ public class BatchSerializer {
 
     static {
         Calendar c = Calendar.getInstance();
-        c.setTimeZone(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
+        c.setTimeZone(TimeZone.getTimeZone("GMT"));
         c.set(1900, 0, 1, 0, 0, 0);
         c.set(Calendar.MILLISECOND, 0);
         MIN_DATE_32 = c.getTimeInMillis();
@@ -952,13 +950,13 @@ public class BatchSerializer {
         if (batch == null) {
             out.writeInt(-1);
         } else {
-            if (version > 0 && batch.size() > 0) {
+            if (version > 0 && !batch.isEmpty()) {
                 out.writeInt(-batch.size() -1);
                 out.writeByte(version);
             } else {
                 out.writeInt(batch.size());
             }
-            if (batch.size() > 0) {
+            if (!batch.isEmpty()) {
                 int columns = types.length;
                 out.writeInt(columns);
                 Map<Object, Integer> cache = null;
@@ -971,18 +969,18 @@ public class BatchSerializer {
                     try {
                         serializer.writeColumn(out, i, batch, cache, version);
                     } catch (ClassCastException e) {
-                        Object obj = null;
+                        Object obj;
                         String objectClass = null;
-                        objectSearch: for (int row = 0; row < batch.size(); row++) {
-                            obj = batch.get(row).get(i);
+                        for (List<?> objects : batch) {
+                            obj = objects.get(i);
                             if (obj != null) {
                                 objectClass = obj.getClass().getName();
-                                break objectSearch;
+                                break;
                             }
                         }
                          throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20001, e,
                                  JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20001, types[i],
-                                         Integer.valueOf(i), objectClass));
+                                         i, objectClass));
                     }
                 }
             }
@@ -1006,7 +1004,7 @@ public class BatchSerializer {
             throw e;
         }
         if (rows == 0) {
-            return new ArrayList<List<Object>>(0);
+            return new ArrayList<>(0);
         }
         if (rows == -1) {
             return null;
@@ -1017,7 +1015,7 @@ public class BatchSerializer {
             version = in.readByte();
         }
         int columns = in.readInt();
-        List<List<Object>> batch = new ResizingArrayList<List<Object>>(rows);
+        List<List<Object>> batch = new ResizingArrayList<>(rows);
         int numBytes = rows/8;
         int extraRows = rows % 8;
         for (int currentRow = 0; currentRow < rows; currentRow++) {
@@ -1028,7 +1026,7 @@ public class BatchSerializer {
         for (int col = 0; col < columns; col++) {
             ColumnSerializer serializer = getSerializer(types[col], version);
             if (cache == null && serializer.usesCache(version)) {
-                cache = new ArrayList<Object>();
+                cache = new ArrayList<>();
             }
             serializer.readColumn(in, col, batch, isNullBuffer, cache, version);
         }

@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class ResultsFuture<T> implements Future<T> {
 
-    public static final ResultsFuture<Void> NULL_FUTURE = new ResultsFuture<Void>();
+    public static final ResultsFuture<Void> NULL_FUTURE = new ResultsFuture<>();
 
     static {
         NULL_FUTURE.getResultsReceiver().receiveResults(null);
@@ -46,12 +46,12 @@ public class ResultsFuture<T> implements Future<T> {
         void onCompletion(ResultsFuture<T> future);
     }
 
-    private LinkedList<CompletionListener<T>> listeners = new LinkedList<CompletionListener<T>>();
+    private LinkedList<CompletionListener<T>> listeners = new LinkedList<>();
 
     private T result;
     private Throwable exception;
     private boolean done;
-    private ResultsReceiver<T> resultsReceiver = new ResultsReceiver<T> () {
+    private final ResultsReceiver<T> resultsReceiver = new ResultsReceiver<>() {
         public void exceptionOccurred(Throwable e) {
             synchronized (ResultsFuture.this) {
                 if (done) {
@@ -63,6 +63,7 @@ public class ResultsFuture<T> implements Future<T> {
             }
             done();
         }
+
         public void receiveResults(T results) {
             synchronized (ResultsFuture.this) {
                 if (done) {

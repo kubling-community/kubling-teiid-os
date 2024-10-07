@@ -28,10 +28,10 @@ import java.io.ObjectOutput;
  */
 public class Annotation implements Externalizable {
 
-    public static final String MATERIALIZED_VIEW = "Materialized View"; //$NON-NLS-1$
-    public static final String CACHED_PROCEDURE = "Cached Procedure"; //$NON-NLS-1$
-    public static final String HINTS = "Hints"; //$NON-NLS-1$
-    public static final String RELATIONAL_PLANNER = "Relational Planner"; //$NON-NLS-1$
+    public static final String MATERIALIZED_VIEW = "Materialized View"; 
+    public static final String CACHED_PROCEDURE = "Cached Procedure"; 
+    public static final String HINTS = "Hints"; 
+    public static final String RELATIONAL_PLANNER = "Relational Planner"; 
 
     public enum Priority {
         LOW,
@@ -72,7 +72,7 @@ public class Annotation implements Externalizable {
     }
 
     public String toString() {
-        return getPriority() + " [" + getCategory() +"] "+ getAnnotation() + " - " + getResolution();  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        return getPriority() + " [" + getCategory() +"] "+ getAnnotation() + " - " + getResolution();  //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Override

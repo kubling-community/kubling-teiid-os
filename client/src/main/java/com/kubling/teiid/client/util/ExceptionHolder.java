@@ -77,10 +77,8 @@ public class ExceptionHolder implements Externalizable {
                             ((SQLException)this.exception).setNextException((SQLException) next.exception);
                         }
                     }
-                } catch (EOFException e) {
-
-                } catch (OptionalDataException e) {
-
+                } catch (EOFException | OptionalDataException e) {
+                    // Nothing to do here
                 }
             } else if (!classNames.isEmpty() && classNames.get(0).equals(SourceWarning.class.getName())) {
                 try {

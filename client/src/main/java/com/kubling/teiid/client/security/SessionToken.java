@@ -31,13 +31,12 @@ import java.util.Arrays;
 /**
  * This class is an immutable identifier for a unique session that also
  * maintains the name of the principal for that session.
- *
  * Since this class can be used to authenticate a user, it must be secure in
- * transit if sent to the client.  Also it should only be sent to the client
+ * transit if sent to the client. Also, it should only be sent to the client
  * who creates the session.
  */
 public class SessionToken implements Externalizable {
-    public final static long serialVersionUID = -2853708320435636107L;
+    private final static long serialVersionUID = -2853708320435636107L;
 
     private static final SecureRandom random = new SecureRandom();
 
@@ -100,7 +99,7 @@ public class SessionToken implements Externalizable {
     /**
      * Get the principal name for this session's user.
      *
-     * @return the user name
+     * @return the username
      */
     public String getUsername() {
         return this.userName;

@@ -18,10 +18,10 @@
 
 package com.kubling.teiid.client.lob;
 
+import com.kubling.teiid.core.CorePlugin;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.kubling.teiid.core.CorePlugin;
 
 
 

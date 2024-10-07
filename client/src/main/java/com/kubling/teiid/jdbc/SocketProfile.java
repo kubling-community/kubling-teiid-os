@@ -56,20 +56,20 @@ final class SocketProfile implements ConnectionProfile {
             }
 
             if (loginTimeoutSeconds > 0) {
-                OioOjbectChannelFactory.TIMEOUTS.set(System.currentTimeMillis() + loginTimeoutSeconds * 1000);
+                OioOjbectChannelFactory.TIMEOUTS.set(System.currentTimeMillis() +
+                        Integer.valueOf(loginTimeoutSeconds * 1000).longValue());
             }
-            serverConn = SocketServerConnectionFactory.getInstance().getConnection(info);
+            serverConn = SocketServerConnectionFactory.getInstance(info).getConnection(info);
         } catch (TeiidException e) {
             throw TeiidSQLException.create(e);
         } finally {
             if (loginTimeoutSeconds > 0) {
-                OioOjbectChannelFactory.TIMEOUTS.set(null);
+                OioOjbectChannelFactory.TIMEOUTS.remove();
             }
         }
 
         // construct a MMConnection object.
-        ConnectionImpl connection = new ConnectionImpl(serverConn, info, url);
-        return connection;
+        return new ConnectionImpl(serverConn, info, url);
     }
 
 }

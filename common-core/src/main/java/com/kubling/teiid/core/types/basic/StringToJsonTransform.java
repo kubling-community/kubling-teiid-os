@@ -18,15 +18,11 @@
 
 package com.kubling.teiid.core.types.basic;
 
+import com.kubling.teiid.core.CorePlugin;
+import com.kubling.teiid.core.types.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import com.kubling.teiid.core.CorePlugin;
-import com.kubling.teiid.core.types.ClobImpl;
-import com.kubling.teiid.core.types.ClobType;
-import com.kubling.teiid.core.types.DataTypeManager;
-import com.kubling.teiid.core.types.Transform;
-import com.kubling.teiid.core.types.TransformationException;
 
 
 public class StringToJsonTransform extends Transform {
@@ -45,8 +41,8 @@ public class StringToJsonTransform extends Transform {
         String json = (String)value;
         if (METHOD == null) {
             try {
-                Class<?> clazz = Class.forName("org.teiid.query.function.JSONFunctionMethods"); //$NON-NLS-1$
-                METHOD = clazz.getMethod("jsonParse", ClobType.class, boolean.class); //$NON-NLS-1$
+                Class<?> clazz = Class.forName("org.teiid.query.function.JSONFunctionMethods");
+                METHOD = clazz.getMethod("jsonParse", ClobType.class, boolean.class);
             } catch (Exception e) {
                 throw new TransformationException(e, CorePlugin.Util.gs(CorePlugin.Event.TEIID10084));
             }
@@ -55,9 +51,7 @@ public class StringToJsonTransform extends Transform {
             return METHOD.invoke(null, new ClobType(new ClobImpl(json)), false);
         } catch (InvocationTargetException e) {
             throw new TransformationException(e.getTargetException());
-        } catch (IllegalAccessException e) {
-            throw new TransformationException(e);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new TransformationException(e);
         }
     }
@@ -76,11 +70,6 @@ public class StringToJsonTransform extends Transform {
      */
     public Class<?> getTargetType() {
         return DataTypeManager.DefaultDataClasses.JSON;
-    }
-
-    @Override
-    public boolean isExplicit() {
-        return false;
     }
 
 }

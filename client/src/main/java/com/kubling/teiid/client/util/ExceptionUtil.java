@@ -47,15 +47,15 @@ public class ExceptionUtil {
         boolean canThrowXATransactionException = false;
         boolean canThrowComponentException = false;
         Class<?>[] exceptionClasses = method.getExceptionTypes();
-        for (int i = 0; i < exceptionClasses.length; i++) {
-            if (exceptionClasses[i].isAssignableFrom(exception.getClass())) {
+        for (Class<?> exceptionClass : exceptionClasses) {
+            if (exceptionClass.isAssignableFrom(exception.getClass())) {
                 return exception;
             }
             if (!canThrowComponentException) {
-                canThrowComponentException = TeiidComponentException.class.isAssignableFrom(exceptionClasses[i]);
+                canThrowComponentException = TeiidComponentException.class.isAssignableFrom(exceptionClass);
             }
             if (!canThrowXATransactionException) {
-                canThrowXATransactionException = XATransactionException.class.isAssignableFrom(exceptionClasses[i]);
+                canThrowXATransactionException = XATransactionException.class.isAssignableFrom(exceptionClass);
             }
         }
         if (canThrowComponentException) {
@@ -76,7 +76,7 @@ public class ExceptionUtil {
      * @return
      */
     public static Throwable sanitize(Throwable t, boolean perserveStack) {
-        String code = null;
+        String code;
         if (t instanceof TeiidException) {
             code = ((TeiidException)t).getCode();
         } else if (t instanceof TeiidRuntimeException) {
@@ -100,7 +100,7 @@ public class ExceptionUtil {
                 result = (Throwable) ctor.newInstance(code);
                 break;
             } catch (Exception e) {
-
+                // Nothing to do here
             }
             clazz = clazz.getSuperclass();
         }

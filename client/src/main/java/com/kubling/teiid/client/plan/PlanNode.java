@@ -90,7 +90,7 @@ public class PlanNode implements Externalizable {
 
     }
 
-    private LinkedHashMap<String, Property> properties = new LinkedHashMap<String, Property>();
+    private LinkedHashMap<String, Property> properties = new LinkedHashMap<>();
     private PlanNode parent;
     private String name;
 
@@ -115,7 +115,7 @@ public class PlanNode implements Externalizable {
     }
 
     public List<Property> getProperties() {
-        return new ArrayList<Property>(properties.values());
+        return new ArrayList<>(properties.values());
     }
 
     public void addProperty(String pname, PlanNode value) {
@@ -215,7 +215,7 @@ public class PlanNode implements Externalizable {
         XMLInputFactory inputFactory = XMLType.getXmlInputFactory();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(planString));
 
-        while (reader.hasNext()&& (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
             String element = reader.getLocalName();
             if (element.equals("node")) {
                 Properties props = getAttributes(reader);
@@ -234,7 +234,7 @@ public class PlanNode implements Externalizable {
            String property = reader.getLocalName();
            if (property.equals("property")) {
                Properties props = getAttributes(reader);
-               ArrayList<String> values = new ArrayList<String>();
+               ArrayList<String> values = new ArrayList<>();
                while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
                    String valueNode = reader.getLocalName();
                    if (values != null && valueNode.equals("value")) {
@@ -245,7 +245,6 @@ public class PlanNode implements Externalizable {
                        Properties nodeProps = getAttributes(reader);
                        PlanNode childNode = new PlanNode(nodeProps.getProperty("name"));
                        node.addProperty(props.getProperty("name"), buildNode(reader, childNode));
-                       continue;
                    }
                    else {
                        throw new XMLStreamException(
@@ -280,9 +279,7 @@ public class PlanNode implements Externalizable {
     }
 
     protected void visitNode(PlanNode node, int nodeLevel, boolean yaml, StringBuilder text) {
-        for(int i=0; i<nodeLevel; i++) {
-            text.append("  ");
-        }
+        text.append("  ".repeat(Math.max(0, nodeLevel)));
         text.append(node.getName());
         if (yaml) {
             text.append(":\n");
@@ -294,9 +291,7 @@ public class PlanNode implements Externalizable {
         int propTabs = nodeLevel + 1;
         for (Property property : node.getProperties()) {
             // Print leading spaces for prop name
-            for(int t=0; t<propTabs; t++) {
-                text.append("  ");
-            }
+            text.append("  ".repeat(Math.max(0, propTabs)));
             printProperty(nodeLevel, property, yaml, text);
         }
     }
@@ -313,9 +308,7 @@ public class PlanNode implements Externalizable {
         } else if (p.getValues().size() > 1){
             text.append(":\n");
             for (int i = 0; i < p.getValues().size(); i++) {
-                for(int t=0; t<nodeLevel+2; t++) {
-                    text.append("  ");
-                }
+                text.append("  ".repeat(Math.max(0, nodeLevel + 2)));
                 if (yaml) {
                     text.append("- ");
                 } else {

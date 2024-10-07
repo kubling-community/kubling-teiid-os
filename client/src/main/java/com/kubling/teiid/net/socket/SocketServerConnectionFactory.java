@@ -22,6 +22,7 @@ import com.kubling.teiid.core.util.FilesystemHelper;
 import com.kubling.teiid.core.util.PropertiesUtils;
 import com.kubling.teiid.jdbc.JDBCPlugin;
 import com.kubling.teiid.net.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.vfs2.FileSystemException;
@@ -36,8 +37,7 @@ import java.util.logging.Logger;
 
 
 /**
- * Responsible for creating socket based connections
- *
+ * Responsible for creating socket based connections.
  * The comm approach is object based and layered.  Connections manage failover and identity.
  * ServerInstances represent the service layer to a particular cluster member.  ObjectChannels
  * abstract the underlying IO.
@@ -45,35 +45,40 @@ import java.util.logging.Logger;
  */
 public class SocketServerConnectionFactory implements ServerConnectionFactory, SocketServerInstanceFactory {
 
-    private static Logger log = Logger.getLogger("org.teiid.net.sockets");
+    private static final Logger log = Logger.getLogger("org.teiid.net.sockets");
 
-    static final String PROPERTIES_FILENAME = "org.teiid.client.properties.file";
+    static final String PROPERTIES_FILENAME = "connectionPropsFilePath";
+    static final String BACK_COMPAT_PROPERTIES_FILENAME = "org.teiid.client.properties.file";
 
     private static SocketServerConnectionFactory INSTANCE;
 
     private ObjectChannelFactory channelFactory;
 
-    private DefaultHostnameResolver resolver = new DefaultHostnameResolver();
+    private final DefaultHostnameResolver resolver = new DefaultHostnameResolver();
 
     //config properties
     private long synchronousTtl = 240000L;
 
-    public static synchronized SocketServerConnectionFactory getInstance() {
+    public static synchronized SocketServerConnectionFactory getInstance(Properties props) {
 
         if (INSTANCE == null) {
             INSTANCE = new SocketServerConnectionFactory();
-            Properties props = PropertiesUtils.getDefaultProperties();
-            InputStream is = getConnectionClientSettings(props.getProperty(PROPERTIES_FILENAME));
+            InputStream is = getConnectionClientSettings(
+                    ObjectUtils.firstNonNull(
+                            props.getProperty(PROPERTIES_FILENAME),
+                            props.getProperty(BACK_COMPAT_PROPERTIES_FILENAME),
+                            StringUtils.EMPTY));
             if (is != null) {
                 Properties newProps = new Properties();
                 try {
                     newProps.load(is);
                 } catch (IOException e) {
-
+                    // nothing to do here
                 } finally {
                     try {
                         is.close();
                     } catch (IOException e) {
+                        // nothing to do here
                     }
                 }
                 newProps.putAll(props);

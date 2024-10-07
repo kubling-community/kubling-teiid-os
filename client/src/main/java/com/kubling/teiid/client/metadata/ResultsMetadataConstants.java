@@ -28,57 +28,57 @@ package com.kubling.teiid.client.metadata;
 public interface ResultsMetadataConstants {
 
     // constant indicating the position of catalog or Virtual database name.
-    Integer VIRTUAL_DATABASE_NAME = Integer.valueOf(0);
+    Integer VIRTUAL_DATABASE_NAME = 0;
     // constant indicating the position of schema or Virtual database version.
-    Integer VIRTUAL_DATABASE_VERSION = Integer.valueOf(1);
+    Integer VIRTUAL_DATABASE_VERSION = 1;
     // constant indicating the position of table or group name.
-    Integer GROUP_NAME = Integer.valueOf(2);
+    Integer GROUP_NAME = 2;
     // constant indicating the position of column or element name.
-    Integer ELEMENT_NAME = Integer.valueOf(3);
+    Integer ELEMENT_NAME = 3;
     // constant indicating the position of column lable used for display purposes.
-    Integer ELEMENT_LABEL = Integer.valueOf(4);
+    Integer ELEMENT_LABEL = 4;
     // constant indicating the position of datatype of the column.
-    Integer DATA_TYPE = Integer.valueOf(6);
+    Integer DATA_TYPE = 6;
     // constant indicating the position of precision of the column.
-    Integer PRECISION = Integer.valueOf(7);
+    Integer PRECISION = 7;
     // constant indiacting the position of radix of a column.
-    Integer RADIX = Integer.valueOf(8);
+    Integer RADIX = 8;
     // constant indicating scale of the column.
-    Integer SCALE = Integer.valueOf(9);
+    Integer SCALE = 9;
     // constant indiacting the position of auto-incrementable property of a column.
-    Integer AUTO_INCREMENTING = Integer.valueOf(10);
+    Integer AUTO_INCREMENTING = 10;
     // constant indiacting the position of columns case sensitivity.
-    Integer CASE_SENSITIVE = Integer.valueOf(11);
+    Integer CASE_SENSITIVE = 11;
     // constant indicating the position of nullable property of a column.
-    Integer NULLABLE = Integer.valueOf(12);
+    Integer NULLABLE = 12;
     // constant indicating the position of searchable property of a column.
-    Integer SEARCHABLE = Integer.valueOf(13);
+    Integer SEARCHABLE = 13;
     // constant indicating the position of signed property of a column.
-    Integer SIGNED = Integer.valueOf(14);
+    Integer SIGNED = 14;
     // constant indicating the position of updatable property of a column.
-    Integer WRITABLE = Integer.valueOf(15);
+    Integer WRITABLE = 15;
     // constant indicating if a column is a currency value
-    Integer CURRENCY = Integer.valueOf(16);
+    Integer CURRENCY = 16;
     // constant indicating the display size for a column
-    Integer DISPLAY_SIZE = Integer.valueOf(17);
+    Integer DISPLAY_SIZE = 17;
 
     /**
      * These types are associated with a DataType or an Element needing the indication of null types.
      */
     final class NULL_TYPES {
-        public static final Integer NOT_NULL = Integer.valueOf(1);
-        public static final Integer NULLABLE = Integer.valueOf(2);
-        public static final Integer UNKNOWN = Integer.valueOf(3);
+        public static final Integer NOT_NULL = 1;
+        public static final Integer NULLABLE = 2;
+        public static final Integer UNKNOWN = 3;
     }
 
     /**
      * These types are associated with the Element having valid search types.
      */
     final class SEARCH_TYPES {
-        public static final Integer SEARCHABLE = Integer.valueOf(1);
-        public static final Integer ALLEXCEPTLIKE = Integer.valueOf(2);
-        public static final Integer LIKE_ONLY = Integer.valueOf(3);
-        public static final Integer UNSEARCHABLE = Integer.valueOf(4);
+        public static final Integer SEARCHABLE = 1;
+        public static final Integer ALLEXCEPTLIKE = 2;
+        public static final Integer LIKE_ONLY = 3;
+        public static final Integer UNSEARCHABLE = 4;
     }
 
 }

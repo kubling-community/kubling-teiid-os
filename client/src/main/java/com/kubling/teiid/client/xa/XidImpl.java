@@ -91,15 +91,13 @@ public class XidImpl implements Xid, Externalizable {
      */
     public String toString() {
         if (toString == null) {
-            StringBuffer sb = new StringBuffer();
-
-            sb.append("Teiid-Xid global:"); //$NON-NLS-1$
-            sb.append(getByteArrayString(globalTransactionId));
-            sb.append(" branch:"); //$NON-NLS-1$
-            sb.append(getByteArrayString(branchQualifier));
-            sb.append(" format:"); //$NON-NLS-1$
-            sb.append(getFormatId());
-            toString = sb.toString();
+            String sb = "Teiid-Xid global:" +
+                    getByteArrayString(globalTransactionId) +
+                    " branch:" +
+                    getByteArrayString(branchQualifier) +
+                    " format:" +
+                    getFormatId();
+            toString = sb;
         }
         return toString;
     }
