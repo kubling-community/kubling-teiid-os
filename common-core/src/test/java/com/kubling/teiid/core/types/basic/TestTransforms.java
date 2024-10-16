@@ -32,10 +32,13 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTransforms {
+
+    private static final Logger logger = Logger.getLogger(TestTransforms.class.getName());
 
     private static void helpTestTransform(Object value, Object expectedValue) throws TransformationException {
         Transform transform = DataTypeManager.getTransform(value.getClass(), expectedValue.getClass());
@@ -43,15 +46,16 @@ public class TestTransforms {
         assertEquals(expectedValue, result);
     }
 
-    private static void validateTransform(String src, Object value, String target, Object expectedValue) 
+    private static void validateTransform(String src, Object value, String target, Object expectedValue)
             throws TransformationException {
         try {
             Transform transform = DataTypeManager.getTransform(DataTypeManager.getDataTypeClass(src), expectedValue.getClass());
             Object result = transform.transform(value, expectedValue.getClass());
+            logger.fine(String.format("Value: %s | Source: %s | Target: %s", result, DataTypeManager.getDataTypeName(value.getClass()), target));
             assertTrue(expectedValue.getClass().isAssignableFrom(result.getClass()));
-            assertFalse(isException(DataTypeManager.getDataTypeName(value.getClass()), target,value));
+            assertFalse(isException(DataTypeManager.getDataTypeName(value.getClass()), target, value));
         } catch (TransformationException e) {
-            if (!isException(DataTypeManager.getDataTypeName(value.getClass()), target,value)) {
+            if (!isException(DataTypeManager.getDataTypeName(value.getClass()), target, value)) {
                 throw e;
             }
         }
@@ -69,11 +73,13 @@ public class TestTransforms {
         }
     }
 
-    @Test public void testBigDecimalToBigInteger_Defect16875() throws TransformationException {
+    @Test
+    public void testBigDecimalToBigInteger_Defect16875() throws TransformationException {
         helpTestTransform(new BigDecimal("0.5867"), new BigInteger("0"));
     }
 
-    @Test public void testString2Boolean() throws TransformationException {
+    @Test
+    public void testString2Boolean() throws TransformationException {
         helpTestTransform(new String("1"), Boolean.TRUE);
         helpTestTransform(new String("0"), Boolean.FALSE);
         helpTestTransform(new String("true"), Boolean.TRUE);
@@ -81,84 +87,92 @@ public class TestTransforms {
         helpTestTransform(new String("foo"), Boolean.TRUE);
     }
 
-    @Test public void testByte2Boolean() throws TransformationException {
-        helpTestTransform(Byte.valueOf((byte)1), Boolean.TRUE);
-        helpTestTransform(Byte.valueOf((byte)0), Boolean.FALSE);
-        helpTestTransform(Byte.valueOf((byte)12), Boolean.TRUE);
+    @Test
+    public void testByte2Boolean() throws TransformationException {
+        helpTestTransform((byte) 1, Boolean.TRUE);
+        helpTestTransform((byte) 0, Boolean.FALSE);
+        helpTestTransform((byte) 12, Boolean.TRUE);
     }
 
-    @Test public void testShort2Boolean() throws TransformationException {
-        helpTestTransform(Short.valueOf((short)1), Boolean.TRUE);
-        helpTestTransform(Short.valueOf((short)0), Boolean.FALSE);
-        helpTestTransform(Short.valueOf((short)12), Boolean.TRUE);
+    @Test
+    public void testShort2Boolean() throws TransformationException {
+        helpTestTransform((short) 1, Boolean.TRUE);
+        helpTestTransform((short) 0, Boolean.FALSE);
+        helpTestTransform((short) 12, Boolean.TRUE);
     }
 
-    @Test public void testInteger2Boolean() throws TransformationException {
-        helpTestTransform(Integer.valueOf(1), Boolean.TRUE);
-        helpTestTransform(Integer.valueOf(0), Boolean.FALSE);
-        helpTestTransform(Integer.valueOf(12), Boolean.TRUE);
+    @Test
+    public void testInteger2Boolean() throws TransformationException {
+        helpTestTransform(1, Boolean.TRUE);
+        helpTestTransform(0, Boolean.FALSE);
+        helpTestTransform(12, Boolean.TRUE);
     }
 
-    @Test public void testLong2Boolean() throws TransformationException {
-        helpTestTransform(Long.valueOf(1), Boolean.TRUE);
-        helpTestTransform(Long.valueOf(0), Boolean.FALSE);
-        helpTestTransform(Long.valueOf(12), Boolean.TRUE);
+    @Test
+    public void testLong2Boolean() throws TransformationException {
+        helpTestTransform(1L, Boolean.TRUE);
+        helpTestTransform(0L, Boolean.FALSE);
+        helpTestTransform(12L, Boolean.TRUE);
     }
 
-    @Test public void testBigInteger2Boolean() throws TransformationException {
+    @Test
+    public void testBigInteger2Boolean() throws TransformationException {
         helpTestTransform(new BigInteger("1"), Boolean.TRUE);
         helpTestTransform(new BigInteger("0"), Boolean.FALSE);
         helpTestTransform(new BigInteger("12"), Boolean.TRUE);
     }
 
-    @Test public void testBigDecimal2Boolean() throws TransformationException {
+    @Test
+    public void testBigDecimal2Boolean() throws TransformationException {
         helpTestTransform(new BigDecimal("1"), Boolean.TRUE);
         helpTestTransform(new BigDecimal("0"), Boolean.FALSE);
         helpTestTransform(new BigDecimal("0.00"), Boolean.FALSE);
     }
 
     static Object[][] testData = {
-        /*string-0*/  {"1", "0", "123"}, //$NON-NLS-3$
-        /*char-1*/    {Character.valueOf('1'), Character.valueOf('0'), Character.valueOf('1')},
-        /*boolean-2*/ {Boolean.TRUE, Boolean.FALSE, Boolean.FALSE},
-        /*byte-3*/    {Byte.valueOf((byte)1), Byte.valueOf((byte)0), Byte.valueOf((byte)123)},
-        /*short-4*/   {Short.valueOf((short)1), Short.valueOf((short)0), Short.valueOf((short)123)},
-        /*integer-5*/ {Integer.valueOf(1), Integer.valueOf(0), Integer.valueOf(123)},
-        /*long-6*/    {Long.valueOf(1), Long.valueOf(0), Long.valueOf(123)},
-        /*biginteger-7*/ {new BigInteger("1"), new BigInteger("0"), new BigInteger("123")}, //$NON-NLS-3$
-        /*float-8*/   {Float.valueOf(1.0f), Float.valueOf(0.0f), Float.valueOf(123.0f)},
-        /*double-9*/  {Double.valueOf(1.0d), Double.valueOf(0.0d), Double.valueOf(123.0d)},
-        /*bigdecimal-10*/{new BigDecimal("1"), new BigDecimal("0"), new BigDecimal("123")}, //$NON-NLS-3$
-        /*date-11*/    {new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis())},
-        /*time-12*/    {new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis())},
-        /*timestamp-13*/{new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis())},
-        /*object-14*/  {null, null, null},
-        /*blob-15*/    {null, null, null},
-        /*clob-16*/    {new ClobType(ClobImpl.createClob("ClobData".toCharArray())), new ClobType(ClobImpl.createClob("0".toCharArray())), new ClobType(ClobImpl.createClob("123".toCharArray()))}, //$NON-NLS-3$
-        /*xml-17*/     {new XMLType(new SQLXMLImpl("<foo>bar</foo>")), new XMLType(new SQLXMLImpl("<foo>bar</foo>")), new XMLType(new SQLXMLImpl("<foo>bar</foo>"))}, //$NON-NLS-3$
-     };
+            /*string-0*/  {"1", "0", "123"},
+            /*char-1*/    {'1', '0', '1'},
+            /*boolean-2*/ {Boolean.TRUE, Boolean.FALSE, Boolean.FALSE},
+            /*byte-3*/    {(byte) 1, (byte) 0, (byte) 123},
+            /*short-4*/   {(short) 1, (short) 0, (short) 123},
+            /*integer-5*/ {1, 0, 123},
+            /*long-6*/    {1L, 0L, 123L},
+            /*biginteger-7*/ {new BigInteger("1"), new BigInteger("0"), new BigInteger("123")},
+            /*float-8*/   {1.0f, 0.0f, 123.0f},
+            /*double-9*/  {1.0d, 0.0d, 123.0d},
+            /*bigdecimal-10*/{new BigDecimal("1"), new BigDecimal("0"), new BigDecimal("123")},
+            /*date-11*/    {new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis())},
+            /*time-12*/    {new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis()), new Time(System.currentTimeMillis())},
+            /*timestamp-13*/{new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis())},
+            /*object-14*/  {null, null, null},
+            /*blob-15*/    {null, null, null},
+            /*clob-16*/    {new ClobType(ClobImpl.createClob("ClobData".toCharArray())), new ClobType(ClobImpl.createClob("0".toCharArray())), new ClobType(ClobImpl.createClob("123".toCharArray()))},
+            /*xml-17*/     {new XMLType(new SQLXMLImpl("<foo>bar</foo>")), new XMLType(new SQLXMLImpl("<foo>bar</foo>")), new XMLType(new SQLXMLImpl("<foo>bar</foo>"))},
+    };
 
-    private String[] dataTypes = TestDataTypeManager.dataTypes;
-    private char[][] conversions = TestDataTypeManager.conversions;
+    private final String[] dataTypes = TestDataTypeManager.dataTypes;
+    private final char[][] conversions = TestDataTypeManager.conversions;
+
     private static boolean isException(String src, String tgt, Object source) {
         return (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.XML))
-            || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.TIME))
-            || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.TIMESTAMP))
-            || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.DATE))
-            || (src.equals(DefaultDataTypes.CLOB) && tgt.equals(DefaultDataTypes.XML));
+                || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.TIME))
+//                || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.TIMESTAMP))
+                || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.DATE))
+                || (src.equals(DefaultDataTypes.CLOB) && tgt.equals(DefaultDataTypes.XML));
     }
 
-    @Test public void testAllConversions() throws TransformationException {
+    @Test
+    public void testAllConversions() throws TransformationException {
         for (int src = 0; src < dataTypes.length; src++) {
-            for (int tgt =0; tgt < dataTypes.length; tgt++) {
+            for (int tgt = 0; tgt < dataTypes.length; tgt++) {
                 char c = conversions[src][tgt];
 
                 if (c == 'I' || c == 'C') {
                     Object[] srcdata = testData[src];
                     Object[] tgtdata = testData[tgt];
-                    for (int i=0; i<tgtdata.length; i++) {
+                    for (int i = 0; i < tgtdata.length; i++) {
                         if (tgtdata[i] != null && srcdata[i] != null) {
-                            validateTransform(dataTypes[src], srcdata[i], dataTypes[tgt],tgtdata[i]);
+                            validateTransform(dataTypes[src], srcdata[i], dataTypes[tgt], tgtdata[i]);
                         }
                     }
                 }
@@ -166,17 +180,18 @@ public class TestTransforms {
         }
     }
 
-    @Test public void testAllConversionsAsObject() throws TransformationException {
+    @Test
+    public void testAllConversionsAsObject() throws TransformationException {
         for (int src = 0; src < dataTypes.length; src++) {
-            for (int tgt =0; tgt < dataTypes.length; tgt++) {
+            for (int tgt = 0; tgt < dataTypes.length; tgt++) {
                 char c = conversions[src][tgt];
 
                 if (c == 'I' || c == 'C') {
                     Object[] srcdata = testData[src];
                     Object[] tgtdata = testData[tgt];
-                    for (int i=0; i<tgtdata.length; i++) {
+                    for (int i = 0; i < tgtdata.length; i++) {
                         if (tgtdata[i] != null && srcdata[i] != null) {
-                            validateTransform(DefaultDataTypes.OBJECT, srcdata[i], dataTypes[tgt],tgtdata[i]);
+                            validateTransform(DefaultDataTypes.OBJECT, srcdata[i], dataTypes[tgt], tgtdata[i]);
                         }
                     }
                 }
@@ -184,7 +199,8 @@ public class TestTransforms {
         }
     }
 
-    @Test public void testObjectToAnyTransformFailure() {
+    @Test
+    public void testObjectToAnyTransformFailure() {
         Transform transform = DataTypeManager.getTransform(DefaultDataClasses.OBJECT, DefaultDataClasses.TIME);
         try {
             transform.transform("1", DefaultDataClasses.TIME);
@@ -195,11 +211,12 @@ public class TestTransforms {
         }
     }
 
-    @Test public void testSQLXMLToStringTransform() throws Exception {
-        StringBuffer xml = new StringBuffer();
-        int iters = DataTypeManager.MAX_STRING_LENGTH/10;
+    @Test
+    public void testSQLXMLToStringTransform() throws Exception {
+        StringBuilder xml = new StringBuilder();
+        int iters = DataTypeManager.MAX_STRING_LENGTH / 10;
         for (int i = 0; i < iters; i++) {
-            if (i < iters/2) {
+            if (i < iters / 2) {
                 xml.append("<opentag>1");
             } else {
                 xml.append("</opentag>");
@@ -207,26 +224,30 @@ public class TestTransforms {
         }
 
         String expected = "";
-        expected += xml.substring(0, DataTypeManager.MAX_STRING_LENGTH - expected.length());
+        expected += xml.substring(0, DataTypeManager.MAX_STRING_LENGTH);
 
         helpTestTransform(new StringToSQLXMLTransform().transformDirect(xml.toString()), expected);
     }
 
-    @Test public void testStringToTimestampOutOfRange() throws Exception {
+    @Test
+    public void testStringToTimestampOutOfRange() {
         helpTransformException("2005-13-01 11:13:01", DefaultDataClasses.TIMESTAMP, null);
     }
 
-    @Test public void testStringToTimeTimestampWithWS() throws Exception {
+    @Test
+    public void testStringToTimeTimestampWithWS() throws Exception {
         helpTestTransform(" 2005-12-01 11:13:01 ",
                 TimestampUtil.createTimestamp(105, 11, 1, 11, 13, 1, 0));
     }
 
-    @Test public void testStringToTimestampFails() throws Exception {
+    @Test
+    public void testStringToTimestampFails() {
         helpTransformException("2005-12-01 11:88:60", Timestamp.class,
                 "TEIID10060 The string representation '2005-12-01 11:88:60' of a Timestamp value is not valid.");
     }
 
-    @Test public void testStringToTimestampDSTTransition() throws Exception {
+    @Test
+    public void testStringToTimestampDSTTransition() throws Exception {
         //use a DST time zone
         TimestampWithTimezone.resetCalendar(TimeZone.getTimeZone("America/New_York"));
         try {
@@ -237,20 +258,24 @@ public class TestTransforms {
         }
     }
 
-    @Test public void testStringToLongWithWS() throws Exception {
-        helpTestTransform(" 1 ", Long.valueOf(1));
+    @Test
+    public void testStringToLongWithWS() throws Exception {
+        helpTestTransform(" 1 ", 1L);
     }
 
-    @Test public void testEngineeringNotationFloatToBigInteger() throws Exception {
+    @Test
+    public void testEngineeringNotationFloatToBigInteger() throws Exception {
         helpTestTransform(Float.MIN_VALUE, new BigDecimal(Float.MIN_VALUE).toBigInteger());
     }
 
-    @Test public void testRangeCheck() throws Exception {
+    @Test
+    public void testRangeCheck() {
         helpTransformException(300, DefaultDataClasses.BYTE, "TEIID10058 The Integer value '300' is outside the of range for Byte");
     }
 
-    @Test public void testRangeCheck1() throws Exception {
-        Double value = Double.valueOf("1E11");//$NON-NLS-1$
+    @Test
+    public void testRangeCheck1() {
+        Double value = Double.valueOf("1E11");
         helpTransformException(value, DefaultDataClasses.INTEGER,
                 CorePlugin.Util.gs(CorePlugin.Event.TEIID10058, value,
                         Double.class.getSimpleName(), Integer.class.getSimpleName()));

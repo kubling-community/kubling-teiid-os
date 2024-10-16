@@ -1,12 +1,12 @@
 /*-------------------------------------------------------------------------
-*
-* Copyright (c) 2008, PostgreSQL Global Development Group
-*
-* IDENTIFICATION
-*   $PostgreSQL: pgjdbc/org/postgresql/gss/GSSCallbackHandler.java,v 1.2 2008/11/29 07:43:47 jurka Exp $
-*
-*-------------------------------------------------------------------------
-*/
+ *
+ * Copyright (c) 2008, PostgreSQL Global Development Group
+ *
+ * IDENTIFICATION
+ *   $PostgreSQL: pgjdbc/org/postgresql/gss/GSSCallbackHandler.java,v 1.2 2008/11/29 07:43:47 jurka Exp $
+ *
+ *-------------------------------------------------------------------------
+ */
 
 /*
  * Copyright Red Hat, Inc. and/or its affiliates
@@ -31,47 +31,48 @@ import com.kubling.teiid.jdbc.JDBCPlugin;
 
 import javax.security.auth.callback.*;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class GSSCallbackHandler implements CallbackHandler {
+
+    private static final Logger logger = Logger.getLogger(GSSCallbackHandler.class.getName());
 
     private final String user;
     private final String password;
 
-    public GSSCallbackHandler(String user, String password)
-    {
+    public GSSCallbackHandler(String user, String password) {
         this.user = user;
         this.password = password;
     }
 
-    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException
-    {
-        for (int i=0; i<callbacks.length; i++) {
-            if (callbacks[i] instanceof TextOutputCallback) {
-                TextOutputCallback toc = (TextOutputCallback)callbacks[i];
+    public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+        for (Callback callback : callbacks) {
+            if (callback instanceof TextOutputCallback) {
+                TextOutputCallback toc = (TextOutputCallback) callback;
                 switch (toc.getMessageType()) {
                     case TextOutputCallback.INFORMATION:
-                        System.out.println("INFO: " + toc.getMessage());//$NON-NLS-1$
+                        logger.info(toc.getMessage());
                         break;
                     case TextOutputCallback.ERROR:
-                        System.out.println("ERROR: " + toc.getMessage()); //$NON-NLS-1$
+                        logger.severe(toc.getMessage());
                         break;
                     case TextOutputCallback.WARNING:
-                        System.out.println("WARNING: " + toc.getMessage());//$NON-NLS-1$
+                        logger.warning(toc.getMessage());
                         break;
                     default:
-                        throw new IOException("Unsupported message type: " + toc.getMessageType()); //$NON-NLS-1$
+                        throw new IOException("Unsupported message type: " + toc.getMessageType());
                 }
-            } else if (callbacks[i] instanceof NameCallback) {
-                NameCallback nc = (NameCallback)callbacks[i];
+            } else if (callback instanceof NameCallback) {
+                NameCallback nc = (NameCallback) callback;
                 nc.setName(user);
-            } else if (callbacks[i] instanceof PasswordCallback) {
-                PasswordCallback pc = (PasswordCallback)callbacks[i];
+            } else if (callback instanceof PasswordCallback) {
+                PasswordCallback pc = (PasswordCallback) callback;
                 if (password == null) {
-                    throw new IOException(JDBCPlugin.Util.getString("no_krb_ticket")); //$NON-NLS-1$
+                    throw new IOException(JDBCPlugin.Util.getString("no_krb_ticket"));
                 }
                 pc.setPassword(password.toCharArray());
             } else {
-                throw new UnsupportedCallbackException(callbacks[i], "Unrecognized Callback"); //$NON-NLS-1$
+                throw new UnsupportedCallbackException(callback, "Unrecognized Callback");
             }
         }
     }

@@ -18,6 +18,11 @@
 
 package com.kubling.teiid.core.crypto;
 
+import com.kubling.teiid.core.CorePlugin;
+import com.kubling.teiid.core.TeiidRuntimeException;
+
+import javax.crypto.KeyAgreement;
+import javax.crypto.spec.DHParameterSpec;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -26,24 +31,18 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Properties;
 
-import javax.crypto.KeyAgreement;
-import javax.crypto.spec.DHParameterSpec;
-
-import com.kubling.teiid.core.CorePlugin;
-import com.kubling.teiid.core.TeiidRuntimeException;
-
 
 /**
  * Helper class that supports anonymous ephemeral Diffie-Hellman
- *
+ * <p>
  * Parameters are stored in the dh.properties file
  */
 public class DhKeyGenerator {
 
-    private static String ALGORITHM = "DiffieHellman";
-    private static String DIGEST = "SHA-256";
-    private static DHParameterSpec DH_SPEC;
-    private static DHParameterSpec DH_SPEC_2048;
+    private static final String ALGORITHM = "DiffieHellman";
+    private static final String DIGEST = "SHA-256";
+    private static final DHParameterSpec DH_SPEC;
+    private static final DHParameterSpec DH_SPEC_2048;
 
     static {
         DH_SPEC = loadKeySpecification("dh.properties");
@@ -57,7 +56,7 @@ public class DhKeyGenerator {
             is = DhKeyGenerator.class.getResourceAsStream(propsFile);
             props.load(is);
         } catch (IOException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10000, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10000, e);
         } finally {
             try {
                 if (is != null) {
@@ -68,18 +67,12 @@ public class DhKeyGenerator {
         }
         BigInteger p = new BigInteger(props.getProperty("p"));
         BigInteger g = new BigInteger(props.getProperty("g"));
-        DHParameterSpec result = new DHParameterSpec(p, g, Integer.parseInt(props
+        return new DHParameterSpec(p, g, Integer.parseInt(props
                 .getProperty("l")));
-        return result;
     }
 
     private PrivateKey privateKey;
     private PrivateKey privateKeyLarge;
-
-    /*
-     * TODO: add support for configurable key sizes
-     */
-    private int keySize = SymmetricCryptor.DEFAULT_KEY_BITS;
 
     public byte[] createPublicKey(boolean large) throws CryptoException {
         try {
@@ -101,9 +94,9 @@ public class DhKeyGenerator {
 
             return publicKey.getEncoded();
         } catch (NoSuchAlgorithmException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10001, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10001, e);
         } catch (InvalidAlgorithmParameterException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10002, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10002, e);
         }
     }
 
@@ -114,7 +107,7 @@ public class DhKeyGenerator {
             boolean large,
             boolean cbc) throws CryptoException {
 
-        PrivateKey privKey = large?privateKeyLarge:privateKey;
+        PrivateKey privKey = large ? privateKeyLarge : privateKey;
         if (privKey == null) {
             throw new IllegalStateException(
                     "KeyGenerator did not successfully generate public key");
@@ -132,12 +125,16 @@ public class DhKeyGenerator {
             //we expect a 1024-bit DH key, but vms handle leading zeros differently
             if (secret.length < 128) {
                 byte[] temp = new byte[128];
-                System.arraycopy(secret, 0, temp, 128-secret.length, secret.length);
+                System.arraycopy(secret, 0, temp, 128 - secret.length, secret.length);
                 secret = temp;
             }
             //convert to expected bit length for AES
             MessageDigest sha = MessageDigest.getInstance(DIGEST);
             byte[] hash = sha.digest(secret);
+            /*
+             * TODO: add support for configurable key sizes
+             */
+            int keySize = SymmetricCryptor.DEFAULT_KEY_BITS;
             byte[] symKey = new byte[keySize / 8];
             System.arraycopy(hash, 0, symKey, 0, symKey.length);
             SymmetricCryptor sc = SymmetricCryptor.getSymmectricCryptor(symKey, cbc);
@@ -145,11 +142,11 @@ public class DhKeyGenerator {
             sc.setClassLoader(classLoader);
             return sc;
         } catch (NoSuchAlgorithmException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10003, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10003, e);
         } catch (InvalidKeySpecException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10004, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10004, e);
         } catch (InvalidKeyException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10005, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10005, e);
         }
     }
 
@@ -166,7 +163,7 @@ public class DhKeyGenerator {
         DHParameterSpec dhSpec = params.getParameterSpec(DHParameterSpec.class);
         System.out.println("l=" + dhSpec.getL());
         System.out.println("g=" + dhSpec.getG());
-        System.out.println("p=" +dhSpec.getP());
+        System.out.println("p=" + dhSpec.getP());
     }
 
 }

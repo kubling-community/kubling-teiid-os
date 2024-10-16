@@ -61,7 +61,7 @@ public class SymmetricCryptor extends BasicCryptor {
 
     public static SecretKey generateKey() throws CryptoException {
         try {
-            synchronized(SymmetricCryptor.class) {
+            synchronized (SymmetricCryptor.class) {
                 if (keyGen == null) {
                     keyGen = KeyGenerator.getInstance(DEFAULT_SYM_KEY_ALGORITHM);
                 }
@@ -69,7 +69,7 @@ public class SymmetricCryptor extends BasicCryptor {
                 return keyGen.generateKey();
             }
         } catch (GeneralSecurityException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10021, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10021, e);
         }
     }
 
@@ -82,7 +82,7 @@ public class SymmetricCryptor extends BasicCryptor {
      * @throws IOException
      */
     public static SymmetricCryptor getSymmectricCryptor(URL keyResource) throws CryptoException, IOException {
-        
+
         ArgCheck.isNotNull(keyResource);
         InputStream stream = keyResource.openStream();
         try {
@@ -91,7 +91,7 @@ public class SymmetricCryptor extends BasicCryptor {
             Key key = store.getKey(DEFAULT_ALIAS, DEFAULT_STORE_PASSWORD.toCharArray());
             return new SymmetricCryptor(key, true);
         } catch (GeneralSecurityException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10022, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10022, e);
         } finally {
             stream.close();
         }
@@ -110,9 +110,9 @@ public class SymmetricCryptor extends BasicCryptor {
     }
 
     public static SymmetricCryptor getSymmectricCryptor(
-            byte[] key, 
-            String algorithm, 
-            String cipherAlgorithm, 
+            byte[] key,
+            String algorithm,
+            String cipherAlgorithm,
             IvParameterSpec iv) throws CryptoException {
         Key secretKey = new SecretKeySpec(key, algorithm);
         return new SymmetricCryptor(secretKey, cipherAlgorithm, iv);
@@ -128,20 +128,20 @@ public class SymmetricCryptor extends BasicCryptor {
         FileOutputStream fos = new FileOutputStream(file);
         try {
             KeyStore store = KeyStore.getInstance("JCEKS");
-            store.load(null,null);
-            store.setKeyEntry(DEFAULT_ALIAS, key, DEFAULT_STORE_PASSWORD.toCharArray(),null);
+            store.load(null, null);
+            store.setKeyEntry(DEFAULT_ALIAS, key, DEFAULT_STORE_PASSWORD.toCharArray(), null);
             store.store(fos, DEFAULT_STORE_PASSWORD.toCharArray());
         } catch (GeneralSecurityException e) {
-              throw new CryptoException(CorePlugin.Event.TEIID10023, e);
+            throw new CryptoException(CorePlugin.Event.TEIID10023, e);
         } finally {
             fos.close();
         }
     }
 
     SymmetricCryptor(Key key, boolean cbc) throws CryptoException {
-        super(key, key, cbc?CBC_SYM_ALGORITHM:ECB_SYM_ALGORITHM,
+        super(key, key, cbc ? CBC_SYM_ALGORITHM : ECB_SYM_ALGORITHM,
                 cbc ? new IvParameterSpec(
-                        new byte[] {0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf}) : null);
+                        new byte[]{0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf}) : null);
     }
 
     SymmetricCryptor(Key key, String cipherAlgorithm, IvParameterSpec iv) throws CryptoException {

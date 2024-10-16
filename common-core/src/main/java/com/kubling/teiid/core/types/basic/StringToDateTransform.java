@@ -19,56 +19,34 @@
 package com.kubling.teiid.core.types.basic;
 
 import com.kubling.teiid.core.CorePlugin;
-import com.kubling.teiid.core.types.Transform;
 import com.kubling.teiid.core.types.TransformationException;
 
 import java.sql.Date;
-import java.util.regex.Pattern;
 
 
-public class StringToDateTransform extends Transform {
-
-    private static boolean validate = true;
-    private static Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-
-    static {
-        try {
-            Date.valueOf("2000-01-01");
-        } catch (Exception e) {
-            validate = false;
-        }
-    }
+public class StringToDateTransform extends BaseDatetimeTransform {
 
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        value = ((String) value).trim();
-        Date result;
         try {
-            result = Date.valueOf( (String) value );
-        } catch(Exception e) {
-              if (!validate && pattern.matcher((String)value).matches()) {
-                  throw new TransformationException(CorePlugin.Event.TEIID10060,
-                          CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
-              }
-              throw new TransformationException(CorePlugin.Event.TEIID10061, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10061, value));
+            return normalizeToDate(((String) value).trim());
+        } catch (Exception e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10060,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
         }
-        if (!result.toString().equals(value)) {
-              throw new TransformationException(CorePlugin.Event.TEIID10060,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
-        }
-        return result;
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -77,6 +55,7 @@ public class StringToDateTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

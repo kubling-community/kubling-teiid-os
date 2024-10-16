@@ -19,74 +19,34 @@
 package com.kubling.teiid.core.types.basic;
 
 import com.kubling.teiid.core.CorePlugin;
-import com.kubling.teiid.core.types.Transform;
 import com.kubling.teiid.core.types.TransformationException;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import java.util.regex.Pattern;
 
 
-public class StringToTimestampTransform extends Transform {
-
-    private static boolean validate = true;
-    private static Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?");
-
-    static {
-        try {
-            Timestamp.valueOf("2000-01-01 00:00:00");
-        } catch (Exception e) {
-            validate = false;
-        }
-    }
+public class StringToTimestampTransform extends BaseDatetimeTransform {
 
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        String val = ((String) value).trim();
-        Timestamp result = null;
         try {
-            result = Timestamp.valueOf( val );
-        } catch(Exception e) {
-            if (!validate && pattern.matcher(val).matches()) {
-                throw new TransformationException(CorePlugin.Event.TEIID10060,
-                        CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
-            }
-              throw new TransformationException(CorePlugin.Event.TEIID10059, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10059, value));
-        }
-        //validate everything except for fractional seconds
-        String substring = result.toString().substring(0, 19);
-        if (!val.startsWith(substring)) {
-            TimeZone tz = TimeZone.getDefault();
-            if (tz.useDaylightTime()) {
-                //check for a transition with a more costly SimpleDateFormat using a non-DST timezone
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                sdf.setLenient(false);
-                sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-                try {
-                    sdf.parse(val.substring(0, 19));
-                    return result;
-                } catch (ParseException e) {
-                    //let the exception happen
-                }
-            }
+            return normalizeToTimestamp(((String) value).trim());
+        } catch (Exception e) {
             throw new TransformationException(CorePlugin.Event.TEIID10060,
                     CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
         }
-        return result;
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -95,6 +55,7 @@ public class StringToTimestampTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

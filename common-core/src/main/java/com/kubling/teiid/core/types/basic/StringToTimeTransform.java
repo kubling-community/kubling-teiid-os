@@ -20,56 +20,32 @@ package com.kubling.teiid.core.types.basic;
 
 import com.kubling.teiid.core.CorePlugin;
 import com.kubling.teiid.core.types.DataTypeManager;
-import com.kubling.teiid.core.types.Transform;
 import com.kubling.teiid.core.types.TransformationException;
 
-import java.sql.Time;
-import java.util.regex.Pattern;
 
-
-public class StringToTimeTransform extends Transform {
-
-    private static boolean validate = true;
-    private static Pattern pattern = Pattern.compile("\\d{2}:\\d{2}:\\d{2}");
-
-    static {
-        try {
-            Time.valueOf("26:10:10");
-        } catch (Exception e) {
-            validate = false;
-        }
-    }
+public class StringToTimeTransform extends BaseDatetimeTransform {
 
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        value = ((String) value).trim();
-        Time result = null;
         try {
-            result = Time.valueOf((String)value);
-        } catch(Exception e) {
-            if (!validate && pattern.matcher((String)value).matches()) {
-                throw new TransformationException(CorePlugin.Event.TEIID10060,
-                        CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
-            }
-              throw new TransformationException(CorePlugin.Event.TEIID10068, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10068, value));
+            return normalizeToTime(((String) value).trim());
+        } catch (Exception e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10060,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
         }
-        if (validate && !result.toString().equals(value)) {
-              throw new TransformationException(CorePlugin.Event.TEIID10060,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
-        }
-        return result;
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -78,6 +54,7 @@ public class StringToTimeTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {
