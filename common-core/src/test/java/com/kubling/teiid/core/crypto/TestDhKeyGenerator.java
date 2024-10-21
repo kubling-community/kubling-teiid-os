@@ -20,7 +20,7 @@ package com.kubling.teiid.core.crypto;
 
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,18 +37,18 @@ public class TestDhKeyGenerator {
         SymmetricCryptor serverCryptor = keyGenServer.getSymmetricCryptor(clientKey, false, TestDhKeyGenerator.class.getClassLoader(), true, true);
         SymmetricCryptor clientCryptor = keyGenClient.getSymmetricCryptor(serverKey, false, TestDhKeyGenerator.class.getClassLoader(), true, true);
 
-        String cleartext = "cleartext!"; //$NON-NLS-1$
+        String cleartext = "cleartext!";
 
-        byte[] ciphertext = serverCryptor.encrypt(cleartext.getBytes(Charset.forName("UTF-8")));
+        byte[] ciphertext = serverCryptor.encrypt(cleartext.getBytes(StandardCharsets.UTF_8));
         byte[] cleartext2 = clientCryptor.decrypt(ciphertext);
 
-        assertArrayEquals(cleartext.getBytes(Charset.forName("UTF-8")), cleartext2);
+        assertArrayEquals(cleartext.getBytes(StandardCharsets.UTF_8), cleartext2);
 
         Object sealed = serverCryptor.sealObject(cleartext);
         Object unsealed = clientCryptor.unsealObject(sealed);
 
         assertEquals(cleartext, unsealed);
-        assertTrue(!sealed.equals(unsealed));
+        assertNotEquals(sealed, unsealed);
     }
 
 }

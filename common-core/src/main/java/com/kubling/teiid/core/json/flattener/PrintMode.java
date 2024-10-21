@@ -17,18 +17,19 @@ package com.kubling.teiid.core.json.flattener;
 
 /**
  * {@link PrintMode} lists all acceptable JSON print mode of the {@link JsonFlattener}.
+ *
  * @author Wei-Ming Wu
  */
 public enum PrintMode {
 
-  /**
-   * Prints output as minified JSON.
-   */
-  MINIMAL,
+    /**
+     * Prints output as minified JSON.
+     */
+    MINIMAL,
 
-  /**
-   * Prints output in different lines with necessary indentations.
-   */
-  PRETTY;
+    /**
+     * Prints output in different lines with necessary indentations.
+     */
+    PRETTY
 
 }

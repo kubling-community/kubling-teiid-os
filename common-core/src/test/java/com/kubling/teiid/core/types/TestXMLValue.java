@@ -18,11 +18,10 @@
 
 package com.kubling.teiid.core.types;
 
-import org.junit.jupiter.api.Test;
 import com.kubling.teiid.core.util.UnitTestUtil;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
@@ -31,8 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("nls")
 public class TestXMLValue {
 
-    @Test public void testXMLValue() throws Exception {
-        String testString = "<foo>this is an xml value test</foo>"; //$NON-NLS-1$
+    @Test
+    public void testXMLValue() throws Exception {
+        String testString = "<foo>this is an xml value test</foo>";
         SQLXMLImpl xml = new SQLXMLImpl(testString);
 
         XMLType xv = new XMLType(xml);
@@ -40,8 +40,9 @@ public class TestXMLValue {
     }
 
 
-    @Test public void testXMLValuePersistence() throws Exception {
-        String testString = "<foo>this is an xml value test</foo>"; //$NON-NLS-1$
+    @Test
+    public void testXMLValuePersistence() throws Exception {
+        String testString = "<foo>this is an xml value test</foo>";
         SQLXMLImpl xml = new SQLXMLImpl(testString);
 
         XMLType xv = new XMLType(xml);
@@ -57,8 +58,9 @@ public class TestXMLValue {
         assertNull(read.getReference());
     }
 
-    @Test public void testReferencePersistence() throws Exception {
-        String testString = "<foo>this is an xml value test</foo>"; //$NON-NLS-1$
+    @Test
+    public void testReferencePersistence() throws Exception {
+        String testString = "<foo>this is an xml value test</foo>";
         SQLXMLImpl xml = new SQLXMLImpl(testString);
 
         XMLType xv = new XMLType(xml);
@@ -71,8 +73,9 @@ public class TestXMLValue {
     }
 
 
-    @Test public void testLength() throws Exception {
-        String testString = "<foo>this is an xml value test</foo>"; //$NON-NLS-1$
+    @Test
+    public void testLength() throws Exception {
+        String testString = "<foo>this is an xml value test</foo>";
         SQLXMLImpl xml = new SQLXMLImpl(testString);
 
         XMLType xv = new XMLType(xml);
@@ -80,7 +83,7 @@ public class TestXMLValue {
 
         xml = new SQLXMLImpl(new InputStreamFactory() {
             @Override
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 return new ByteArrayInputStream("<bar/>".getBytes(Streamable.CHARSET));
             }
         });
@@ -90,7 +93,7 @@ public class TestXMLValue {
             xv.length();
             fail();
         } catch (SQLException e) {
-
+            // Ignored
         }
     }
 }

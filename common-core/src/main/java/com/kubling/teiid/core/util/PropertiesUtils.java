@@ -32,7 +32,6 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 
-
 /**
  * Static utility methods for common tasks having to do with
  * java.util.Properties.
@@ -59,7 +58,7 @@ public final class PropertiesUtils {
      * all properties in the default(s) and placing them directly into the
      * new Properties object.
      */
-    public static Properties clone( Properties props ) {
+    public static Properties clone(Properties props) {
         return clone(props, null, false);
     }
 
@@ -68,10 +67,10 @@ public final class PropertiesUtils {
      * all properties in the default(s) and placing them directly into the
      * new Properties object.
      */
-    public static Properties clone( Properties props, Properties defaults, boolean deepClone ) {
-        Properties result = null;
-        if ( defaults != null ) {
-            if ( deepClone ) {
+    public static Properties clone(Properties props, Properties defaults, boolean deepClone) {
+        Properties result;
+        if (defaults != null) {
+            if (deepClone) {
                 defaults = clone(defaults);
             }
             result = new Properties(defaults);
@@ -116,107 +115,106 @@ public final class PropertiesUtils {
      * these new properties will overwrite any pre-existing ones of the same
      * name.
      *
-     *
      * @param addToThis This Properties object is modified; the properties
-     * of the other parameter are added to this.  The added property values
-     * will replace any current property values of the same names.
+     *                  of the other parameter are added to this.  The added property values
+     *                  will replace any current property values of the same names.
      * @param withThese The properties (including defaults) of this
-     * object are added to the "addToThis" parameter.
+     *                  object are added to the "addToThis" parameter.
      */
     public static void putAll(Properties addToThis,
                               Properties withThese) {
-        if ( withThese != null && addToThis != null ) {
+        if (withThese != null && addToThis != null) {
             Enumeration<?> enumeration = withThese.propertyNames();
-            while ( enumeration.hasMoreElements() ) {
+            while (enumeration.hasMoreElements()) {
                 String propName = (String) enumeration.nextElement();
                 Object propValue = withThese.get(propName);
-                if ( propValue == null ) {
+                if (propValue == null) {
                     //defaults can only be retrieved as strings
                     propValue = withThese.getProperty(propName);
                 }
-                if ( propValue != null ) {
+                if (propValue != null) {
                     addToThis.put(propName, propValue);
                 }
             }
         }
     }
 
-    public static int getIntProperty(Properties props, String propName, int defaultValue) 
+    public static int getIntProperty(Properties props, String propName, int defaultValue)
             throws InvalidPropertyException {
-        
+
         String stringVal = props.getProperty(propName);
-        if(stringVal == null) {
+        if (stringVal == null) {
             return defaultValue;
         }
         stringVal = stringVal.trim();
-        if (stringVal.length() == 0) {
+        if (stringVal.isEmpty()) {
             return defaultValue;
         }
         try {
             return Integer.parseInt(stringVal);
-        } catch(NumberFormatException e) {
-              throw new InvalidPropertyException(CorePlugin.Event.TEIID10037, propName, stringVal, Integer.class, e);
+        } catch (NumberFormatException e) {
+            throw new InvalidPropertyException(CorePlugin.Event.TEIID10037, propName, stringVal, Integer.class, e);
         }
     }
 
     public static long getLongProperty(Properties props, String propName, long defaultValue) {
         String stringVal = props.getProperty(propName);
-        if(stringVal == null) {
+        if (stringVal == null) {
             return defaultValue;
         }
         stringVal = stringVal.trim();
-        if (stringVal.length() == 0) {
+        if (stringVal.isEmpty()) {
             return defaultValue;
         }
         try {
             return Long.parseLong(stringVal);
-        } catch(NumberFormatException e) {
-              throw new InvalidPropertyException( CorePlugin.Event.TEIID10038, propName, stringVal, Long.class, e);
+        } catch (NumberFormatException e) {
+            throw new InvalidPropertyException(CorePlugin.Event.TEIID10038, propName, stringVal, Long.class, e);
         }
     }
 
     public static float getFloatProperty(Properties props, String propName, float defaultValue) {
         String stringVal = props.getProperty(propName);
-        if(stringVal == null) {
+        if (stringVal == null) {
             return defaultValue;
         }
         stringVal = stringVal.trim();
-        if (stringVal.length() == 0) {
+        if (stringVal.isEmpty()) {
             return defaultValue;
         }
         try {
             return Float.parseFloat(stringVal);
-        } catch(NumberFormatException e) {
-              throw new InvalidPropertyException(CorePlugin.Event.TEIID10039, propName, stringVal, Float.class, e);
+        } catch (NumberFormatException e) {
+            throw new InvalidPropertyException(CorePlugin.Event.TEIID10039, propName, stringVal, Float.class, e);
         }
     }
 
     public static double getDoubleProperty(Properties props, String propName, double defaultValue) {
         String stringVal = props.getProperty(propName);
-        if(stringVal == null) {
+        if (stringVal == null) {
             return defaultValue;
         }
         stringVal = stringVal.trim();
-        if (stringVal.length() == 0) {
+        if (stringVal.isEmpty()) {
             return defaultValue;
         }
         try {
             return Double.parseDouble(stringVal);
-        } catch(NumberFormatException e) {
-              throw new InvalidPropertyException(CorePlugin.Event.TEIID10040, propName, stringVal, Double.class, e);
+        } catch (NumberFormatException e) {
+            throw new InvalidPropertyException(CorePlugin.Event.TEIID10040, propName, stringVal, Double.class, e);
         }
     }
 
     public static boolean getBooleanProperty(Properties props, String propName, boolean defaultValue) {
         String stringVal = props.getProperty(propName);
-        if(stringVal == null) {
+        if (stringVal == null) {
             return defaultValue;
         }
         stringVal = stringVal.trim();
-        if (stringVal.length() == 0) {
+        if (stringVal.isEmpty()) {
             return defaultValue;
         }
-        return Boolean.valueOf(stringVal);
+        return Boolean.parseBoolean(stringVal);
     }
 
     public static Properties load(String fileName) throws IOException {
@@ -235,15 +233,18 @@ public final class PropertiesUtils {
 
     /**
      * Convert a nibble to a hex character
-     * @param   nibble  the nibble to convert.
+     *
+     * @param nibble the nibble to convert.
      */
     public static char toHex(int nibble) {
-    return hexDigit[(nibble & 0xF)];
+        return hexDigit[(nibble & 0xF)];
     }
 
-    /** A table of hex digits */
+    /**
+     * A table of hex digits
+     */
     private static final char[] hexDigit = {
-    '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
     };
 
     public static String toHex(byte[] bytes) {
@@ -257,6 +258,7 @@ public final class PropertiesUtils {
 
     /**
      * Return the bytes for a given hex string, or throw an {@link IllegalArgumentException}
+     *
      * @param hex
      * @return
      */
@@ -281,18 +283,18 @@ public final class PropertiesUtils {
             }
             if (i % 2 == 0) {
                 //high nibble
-                result[i/2] |= (charValue << 4);
+                result[i / 2] |= (byte) (charValue << 4);
             } else {
-                result[i/2] |= charValue;
+                result[i / 2] |= (byte) charValue;
             }
         }
         return result;
     }
 
     public static void toHex(StringBuilder sb, InputStream is) throws IOException {
-        int i = 0;
+        int i;
         while ((i = is.read()) != -1) {
-            byte b = (byte)i;
+            byte b = (byte) i;
             sb.append(toHex(b >>> 4));
             sb.append(toHex(b));
         }
@@ -305,11 +307,10 @@ public final class PropertiesUtils {
     public static void setBeanProperties(Object bean, Properties props, String prefix, boolean includeEnv) {
         Map<String, String> map = caseInsensitiveProps(props);
         final Method[] methods = bean.getClass().getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            final Method method = methods[i];
+        for (final Method method : methods) {
             final String methodName = method.getName();
             // If setter ...
-            if (! methodName.startsWith("set") || method.getParameterCount() != 1 ) {
+            if (!methodName.startsWith("set") || method.getParameterCount() != 1) {
                 continue;
             }
             // Get the property name
@@ -317,7 +318,7 @@ public final class PropertiesUtils {
             if (prefix != null) {
                 propertyName = prefix + "." + propertyName;
             }
-            String propertyValue = null;
+            String propertyValue;
             if (includeEnv) {
                 propertyValue = getValue(propertyName, map, System.getenv());
             } else {
@@ -331,11 +332,10 @@ public final class PropertiesUtils {
 
     public static void setBeanProperty(Object bean, String name, Object value) {
         final Method[] methods = bean.getClass().getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            final Method method = methods[i];
+        for (final Method method : methods) {
             final String methodName = method.getName();
             // If setter ...
-            if (! methodName.startsWith("set") || method.getParameterCount() != 1 || !StringUtil.endsWithIgnoreCase(methodName, name)) {
+            if (!methodName.startsWith("set") || method.getParameterCount() != 1 || !StringUtil.endsWithIgnoreCase(methodName, name)) {
                 continue;
             }
             // Get the property name
@@ -345,16 +345,16 @@ public final class PropertiesUtils {
     }
 
     private static Class<?> setProperty(Object bean, Object value,
-            final Method method, final String propertyName) {
+                                        final Method method, final String propertyName) {
         final Class<?> argType = method.getParameterTypes()[0];
         try {
-            Object[] params = new Object[] {value};
+            Object[] params = new Object[]{value};
             if (value != null && !argType.isAssignableFrom(value.getClass())) {
-                params = new Object[] {StringUtil.valueOf(value.toString(), argType)};
+                params = new Object[]{StringUtil.valueOf(value.toString(), argType)};
             }
             method.invoke(bean, params);
         } catch (Throwable e) {
-              throw new InvalidPropertyException(CorePlugin.Event.TEIID10044, propertyName, value, argType, e);
+            throw new InvalidPropertyException(CorePlugin.Event.TEIID10044, propertyName, value, argType, e);
         }
         return argType;
     }
@@ -362,7 +362,7 @@ public final class PropertiesUtils {
     private static Map<String, String> caseInsensitiveProps(final Properties props) {
         TreeMap<String, String> newProps = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         final Enumeration<?> itr = props.propertyNames();
-        while ( itr.hasMoreElements() ) {
+        while (itr.hasMoreElements()) {
             final String name = (String) itr.nextElement();
             String propValue = props.getProperty(name);
             newProps.put(name, propValue);
@@ -372,6 +372,7 @@ public final class PropertiesUtils {
 
     /**
      * Search for the property first in the environment, then in the system properties
+     *
      * @param key
      * @param defaultValue
      * @return
@@ -382,6 +383,7 @@ public final class PropertiesUtils {
 
     /**
      * Search for the property first in the environment, then in the system properties
+     *
      * @param key
      * @param defaultValue
      * @param clazz
@@ -391,9 +393,9 @@ public final class PropertiesUtils {
         Map sysProps = System.getProperties();
         Map<String, String> env = System.getenv();
         String stringVal = getValue(key, sysProps, env);
-        if(stringVal != null) {
+        if (stringVal != null) {
             stringVal = stringVal.trim();
-            if (stringVal.length() != 0) {
+            if (!stringVal.isEmpty()) {
                 return StringUtil.valueOf(stringVal, clazz);
             }
         }
@@ -401,9 +403,9 @@ public final class PropertiesUtils {
     }
 
     static String getValue(String key, Map sysProps,
-            Map<String, String> env) {
+                           Map<String, String> env) {
         Object val = sysProps.get(key);
-        String stringVal = null;
+        String stringVal;
         if (val instanceof String) {
             stringVal = val.toString();
         } else {

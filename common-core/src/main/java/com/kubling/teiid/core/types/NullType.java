@@ -21,5 +21,6 @@ package com.kubling.teiid.core.types;
 public final class NullType {
 
     // can't construct
-    NullType() {}
+    NullType() {
+    }
 }

@@ -28,18 +28,20 @@ public class BinaryToBlobTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        BinaryType contents = (BinaryType)value;
+        BinaryType contents = (BinaryType) value;
         return contents.toBlob();
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -48,6 +50,7 @@ public class BinaryToBlobTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

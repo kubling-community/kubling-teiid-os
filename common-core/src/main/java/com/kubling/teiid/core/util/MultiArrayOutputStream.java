@@ -31,7 +31,7 @@ public class MultiArrayOutputStream extends OutputStream {
     private byte bufferIndex;
     private int index;
     private int count;
-    private byte[][] bufs = new byte[15][];
+    private final byte[][] bufs = new byte[15][];
 
     public MultiArrayOutputStream(int initialSize) {
         bufs[0] = new byte[initialSize];
@@ -51,10 +51,10 @@ public class MultiArrayOutputStream extends OutputStream {
         byte[] buf = bufs[bufferIndex];
         if (newIndex > buf.length) {
             buf = bufs[++bufferIndex] = new byte[buf.length << 1];
-            buf[0] = (byte)b;
+            buf[0] = (byte) b;
             index = 1;
         } else {
-            buf[index] = (byte)b;
+            buf[index] = (byte) b;
             index = newIndex;
         }
         count++;
@@ -87,7 +87,7 @@ public class MultiArrayOutputStream extends OutputStream {
     public void writeTo(DataOutput out) throws IOException {
         for (byte i = 0; i <= bufferIndex; i++) {
             byte[] b = bufs[i];
-            out.write(b, 0, bufferIndex == i?index:b.length);
+            out.write(b, 0, bufferIndex == i ? index : b.length);
         }
     }
 

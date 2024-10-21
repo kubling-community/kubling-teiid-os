@@ -23,8 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class NamedThreadFactory implements ThreadFactory {
 
-    private AtomicInteger threadNumber = new AtomicInteger();
-    private String threadBaseName;
+    private final AtomicInteger threadNumber = new AtomicInteger();
+    private final String threadBaseName;
 
     public NamedThreadFactory(String name) {
         this.threadBaseName = (name != null ? name : "Worker_");

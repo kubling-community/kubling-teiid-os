@@ -23,9 +23,9 @@ import java.util.*;
 
 /**
  * Provides a minimally concurrent (concurrent read/exclusive write) {@link LinkedHashMap} for use in read mostly situations.
- *
+ * <p>
  * Does not support modification through entry/value collections.
- *
+ * <p>
  * TODO: this may not be entirely thread safe as after the clone operations there's a chance that the referenced
  * array is replaced by rehashing.
  *
@@ -54,7 +54,7 @@ public class CopyOnWriteLinkedHashMap<K, V> implements Map<K, V>, Serializable {
 
     @Override
     public void clear() {
-        map = new LinkedHashMap<K, V>();
+        map = new LinkedHashMap<>();
     }
 
     @Override

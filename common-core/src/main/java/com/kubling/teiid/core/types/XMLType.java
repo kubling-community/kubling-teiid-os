@@ -35,7 +35,7 @@ import java.sql.SQLXML;
 
 /**
  * This class represents the SQLXML object along with the Streamable interface.
- *
+ * <p>
  * NOTE that this representation of XML does not become unreadable after
  * read operations.
  */
@@ -46,14 +46,10 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
     }
 
     private static final long serialVersionUID = -7922647237095135723L;
-    static final boolean SUPPORT_DTD = 
+    static final boolean SUPPORT_DTD =
             PropertiesUtils.getHierarchicalProperty("org.teiid.supportDTD", false, Boolean.class);
 
-    private static ThreadLocal<XMLInputFactory> threadLocalFactory = new ThreadLocal<XMLInputFactory>() {
-        protected XMLInputFactory initialValue() {
-            return createXMLInputFactory();
-        }
-    };
+    private static final ThreadLocal<XMLInputFactory> threadLocalFactory = ThreadLocal.withInitial(XMLType::createXMLInputFactory);
 
     private static XMLInputFactory createXMLInputFactory()
             throws FactoryConfigurationError {
@@ -69,7 +65,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
         return factory;
     }
 
-    private static XMLInputFactory factory = createXMLInputFactory();
+    private static final XMLInputFactory factory = createXMLInputFactory();
     private static Boolean factoriesTreadSafe;
 
     private transient Type type = Type.UNKNOWN;
@@ -89,7 +85,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
         return threadLocalFactory.get();
     }
 
-    public XMLType(){
+    public XMLType() {
 
     }
 
@@ -156,14 +152,14 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
     @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        readExternal(in, (byte)0);
+        readExternal(in, (byte) 0);
     }
 
     public void readExternal(ObjectInput in, byte version) throws IOException,
-        ClassNotFoundException {
+            ClassNotFoundException {
         super.readExternal(in);
         try {
-            this.encoding = (String)in.readObject();
+            this.encoding = (String) in.readObject();
         } catch (OptionalDataException e) {
             this.encoding = ENCODING;
         }
@@ -171,20 +167,16 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
             if (version > 0) {
                 this.type = ExternalizeUtil.readEnum(in, Type.class, Type.UNKNOWN);
             } else {
-                this.type = (Type)in.readObject();
+                this.type = (Type) in.readObject();
             }
-        } catch (OptionalDataException e) {
-            this.type = Type.UNKNOWN;
-        } catch(IOException e) {
-            this.type = Type.UNKNOWN;
-        } catch(ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             this.type = Type.UNKNOWN;
         }
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        writeExternal(out, (byte)0);
+        writeExternal(out, (byte) 0);
     }
 
     public void writeExternal(ObjectOutput out, byte version) throws IOException {
@@ -202,19 +194,20 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
 
     /**
      * Returns the encoding or null if it cannot be determined
+     *
      * @param xml
      */
     public static String getEncoding(SQLXML xml) {
         try {
             if (xml instanceof XMLType) {
-                XMLType type = (XMLType)xml;
+                XMLType type = (XMLType) xml;
                 if (type.encoding != null) {
                     return type.encoding;
                 }
                 xml = type.reference;
             }
             if (xml instanceof SQLXMLImpl) {
-                Charset cs = ((SQLXMLImpl)xml).getCharset();
+                Charset cs = ((SQLXMLImpl) xml).getCharset();
                 if (cs != null) {
                     return cs.name();
                 }
@@ -236,6 +229,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
             try {
                 is.close();
             } catch (IOException e) {
+                // Ignored
             }
         }
     }
@@ -243,7 +237,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
     @Override
     long computeLength() throws SQLException {
         if (this.reference instanceof SQLXMLImpl) {
-            SQLXMLImpl impl = (SQLXMLImpl)this.reference;
+            SQLXMLImpl impl = (SQLXMLImpl) this.reference;
             return impl.length();
         }
         return BaseLob.length(getBinaryStream());
@@ -251,7 +245,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
 
     @Override
     protected void readReference(ObjectInput in) throws IOException {
-        byte[] bytes = new byte[(int)getLength()];
+        byte[] bytes = new byte[(int) getLength()];
         in.readFully(bytes);
         this.reference = new SQLXMLImpl(bytes);
     }
@@ -259,7 +253,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
     @Override
     protected void writeReference(final DataOutput out) throws IOException {
         try {
-            BlobType.writeBinary(out, getBinaryStream(), (int)length);
+            BlobType.writeBinary(out, getBinaryStream(), (int) length);
         } catch (SQLException e) {
             throw new IOException();
         }

@@ -32,15 +32,16 @@ public class TransformationException extends TeiidProcessingException {
     /**
      * No-Arg Constructor
      */
-    public TransformationException(  ) {
-        super( );
+    public TransformationException() {
+        super();
     }
+
     /**
      * Construct an instance with the message specified.
      *
      * @param message A message describing the exception
      */
-    public TransformationException( String message ) {
+    public TransformationException(String message) {
         super(message);
     }
 
@@ -52,14 +53,16 @@ public class TransformationException extends TeiidProcessingException {
      * Construct an instance from a message and an exception to chain to this one.
      *
      * @param message A message describing the exception
-     * @param e An exception to nest within this one
+     * @param e       An exception to nest within this one
      */
-    public TransformationException( Throwable e, String message ) {
-        super( e, message );
+    public TransformationException(Throwable e, String message) {
+        super(e, message);
     }
+
     public TransformationException(BundleUtil.Event event, String message) {
         super(event, message);
     }
+
     public TransformationException(BundleUtil.Event event, Throwable t, String message) {
         super(event, t, message);
     }

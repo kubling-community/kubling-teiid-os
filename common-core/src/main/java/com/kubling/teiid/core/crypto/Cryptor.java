@@ -26,20 +26,22 @@ public interface Cryptor {
 
     /**
      * Encrypt the cleartext in byte array format.
+     *
      * @param cleartext The text to be encrypted, in byte form
      * @return The encrypted ciphertext, in byte form
      */
-    byte[] encrypt( byte[] cleartext ) throws CryptoException;
+    byte[] encrypt(byte[] cleartext) throws CryptoException;
 
     Object sealObject(Object object) throws CryptoException;
 
     /**
      * Decrypt the ciphertext in byte array format to yield the original
      * cleartext.
+     *
      * @param ciphertext The text to be encrypted, in byte form
      * @return The decrypted cleartext, in byte form
      */
-    byte[] decrypt( byte[] ciphertext ) throws CryptoException;
+    byte[] decrypt(byte[] ciphertext) throws CryptoException;
 
     Object unsealObject(Object object) throws CryptoException;
 

@@ -22,7 +22,8 @@ import java.io.File;
 
 public final class FileUtils {
 
-    private FileUtils() {}
+    private FileUtils() {
+    }
 
     public static String getBaseFileNameWithoutExtension(String path) {
         return StringUtil.getFirstToken(StringUtil.getLastToken(path, "/"), ".");
@@ -30,16 +31,15 @@ public final class FileUtils {
 
     public static void removeDirectoryAndChildren(File directory) {
         removeChildrenRecursively(directory);
-        if(!directory.delete()) {
+        if (!directory.delete()) {
             directory.deleteOnExit();
         }
     }
 
     public static void removeChildrenRecursively(File directory) {
         File[] files = directory.listFiles();
-        if(files != null) {
-            for(int i=0; i < files.length; i++) {
-                File file = files[i];
+        if (files != null) {
+            for (File file : files) {
                 if (file.isDirectory()) {
                     removeDirectoryAndChildren(file);
                 } else {
@@ -51,7 +51,7 @@ public final class FileUtils {
 
     public static void remove(File file) {
         if (file.exists()) {
-            if(!file.delete()) {
+            if (!file.delete()) {
                 file.deleteOnExit();
             }
         }

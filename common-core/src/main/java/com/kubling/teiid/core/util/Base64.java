@@ -21,16 +21,14 @@ package com.kubling.teiid.core.util;
 /**
  * <p>Encodes and decodes to and from Base64 notation.
  */
-public class Base64
-{
+public class Base64 {
     /**
      * Encodes a byte array into Base64 notation.
      *
      * @param source The data to convert
      * @since 1.4
      */
-    public static String encodeBytes(byte[] source)
-    {
+    public static String encodeBytes(byte[] source) {
         return java.util.Base64.getEncoder().encodeToString(source);
     }
 
@@ -41,8 +39,7 @@ public class Base64
      * @return the decoded data
      * @since 1.4
      */
-    public static byte[] decode(CharSequence s)
-    {
+    public static byte[] decode(CharSequence s) {
         return java.util.Base64.getDecoder().decode(s.toString());
     }
 

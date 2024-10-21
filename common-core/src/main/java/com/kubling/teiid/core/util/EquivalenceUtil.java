@@ -35,6 +35,7 @@ public class EquivalenceUtil {
     /**
      * Tests whether two object references refer to equal objects. The object
      * references can both be null, in which case they are also considered equal.
+     *
      * @param obj1 object reference
      * @param obj2 object reference
      * @return true if both references are null, OR if neither is null and both
@@ -54,6 +55,7 @@ public class EquivalenceUtil {
      * Tests whether two arrays are equivalent. This method ignores the array
      * types, but checks the number of references in each array, and the
      * equivalence of those references (in ascending index order).
+     *
      * @param array1 an object array
      * @param array2 an object array
      */
@@ -64,6 +66,7 @@ public class EquivalenceUtil {
     /**
      * Tests whether two objects references are equivalent but not the same object.
      * If both references are the same, this method will return false;
+     *
      * @param obj1 object reference
      * @param obj2 object reference
      * @return true if the two references are unequal, and the objects they
@@ -82,6 +85,7 @@ public class EquivalenceUtil {
      * in the two arrays (i.e. corresponding objects cannot be the same but must
      * be equivalent) in ascending index order. This method also considers a
      * null array and a 0-length array equivalent, and ignores the array type.
+     *
      * @param array1 an object array
      * @param array2 an object array
      * @return true if the arrays are equivalent, but not the same.
@@ -94,7 +98,7 @@ public class EquivalenceUtil {
         } else if (array2 == null) {
             return array1.length == 0;
         } else if (array1.length != array2.length) {
-             return false;
+            return false;
         } else {
             for (int i = 0; i < array1.length; i++) {
                 if (!areStrictlyEquivalent(array1[i], array2[i])) {

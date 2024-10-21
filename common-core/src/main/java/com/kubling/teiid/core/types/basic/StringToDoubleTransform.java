@@ -27,22 +27,24 @@ public class StringToDoubleTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         try {
-            return Double.valueOf((String)value);
-        } catch(NumberFormatException e) {
-              throw new TransformationException(CorePlugin.Event.TEIID10078,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10078, value));
+            return Double.valueOf((String) value);
+        } catch (NumberFormatException e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10078,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10078, value));
         }
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class getSourceType() {
@@ -51,6 +53,7 @@ public class StringToDoubleTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class getTargetType() {

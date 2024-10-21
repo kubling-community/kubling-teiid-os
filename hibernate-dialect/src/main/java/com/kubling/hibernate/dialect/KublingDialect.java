@@ -255,9 +255,9 @@ public class KublingDialect extends Dialect {
             case CHAR:
                 return "char";
             case NCHAR:
-                return columnType( CHAR );
+                return columnType(CHAR);
             case NVARCHAR:
-                return columnType( VARCHAR );
+                return columnType(VARCHAR);
             case LONG32VARCHAR:
             case LONG32NVARCHAR:
             case VARCHAR:
@@ -294,8 +294,9 @@ public class KublingDialect extends Dialect {
             case NUMERIC:
                 return "bigdecimal";
         }
-        return super.columnType( sqlTypeCode );
+        return super.columnType(sqlTypeCode);
     }
+
     public boolean dropConstraints() {
         return false;
     }
@@ -313,7 +314,7 @@ public class KublingDialect extends Dialect {
     }
 
     public String getCurrentTimestampSQLFunctionName() {
-        return "now"; //$NON-NLS-1$
+        return "now";
     }
 
     public boolean isCurrentTimestampSelectStringCallable() {
@@ -346,9 +347,9 @@ public class KublingDialect extends Dialect {
 
     public String toBooleanValueString(boolean arg0) {
         if (arg0) {
-            return "{b'true'}"; //$NON-NLS-1$
+            return "{b'true'}";
         }
-        return "{b'false'}"; //$NON-NLS-1$
+        return "{b'false'}";
     }
 
     @Override
@@ -382,28 +383,28 @@ public class KublingDialect extends Dialect {
     }
 
     public String getForUpdateNowaitString() {
-        return ""; //$NON-NLS-1$
+        return "";
     }
 
     public String getForUpdateNowaitString(String aliases) {
-        return "";         //$NON-NLS-1$
+        return "";
     }
 
     public String getForUpdateString() {
-        return ""; //$NON-NLS-1$
+        return "";
     }
 
     public String getForUpdateString(LockMode lockMode) {
-        return ""; //$NON-NLS-1$
+        return "";
     }
 
     public String getForUpdateString(String aliases) {
-        return ""; //$NON-NLS-1$
+        return "";
     }
 
     @Override
     public String getSelectGUIDString() {
-        return "select uuid()"; //$NON-NLS-1$
+        return "select uuid()";
     }
 
     @Override
@@ -426,7 +427,7 @@ public class KublingDialect extends Dialect {
 
             @Override
             public String getSequenceNextValString(String sequenceName) throws MappingException {
-                return "select " + getSelectSequenceNextValString( sequenceName );
+                return "select " + getSelectSequenceNextValString(sequenceName);
             }
         };
     }
@@ -434,7 +435,7 @@ public class KublingDialect extends Dialect {
     @Override
     public String getTemporaryTableCreateCommand() {
         final TemporaryTableKind kind = getSupportedTemporaryTableKind();
-        switch ( kind ) {
+        switch (kind) {
             case PERSISTENT:
                 return "create temporary table";
             case LOCAL:
@@ -442,7 +443,7 @@ public class KublingDialect extends Dialect {
             case GLOBAL:
                 return "create global temporary table";
         }
-        throw new UnsupportedOperationException( "Unsupported kind: " + kind );
+        throw new UnsupportedOperationException("Unsupported kind: " + kind);
     }
 
     @Override

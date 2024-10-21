@@ -30,24 +30,22 @@ public class BlobToBinaryTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        BlobType source = (BlobType)value;
+        BlobType source = (BlobType) value;
 
         try {
             byte[] bytes = ObjectConverterUtil
                     .convertToByteArray(source.getBinaryStream(), DataTypeManager.MAX_VARBINARY_BYTES, true);
             return new BinaryType(bytes);
-        } catch (SQLException e) {
-              throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
-        } catch(IOException e) {
-              throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
+        } catch (SQLException | IOException e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10080, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
         }
     }
 

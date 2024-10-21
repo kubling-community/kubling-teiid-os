@@ -39,7 +39,7 @@ import java.util.Properties;
  * and set using setter methods, and where the getter and setter methods follow the JavaBean
  * naming convention (e.g., <code>get</code><i>PropertyName</i><code>() : </code><i>PropertyType</i>
  * and <code>set</code><i>PropertyName</i><code>(</code><i>PropertyType</i><code>) : void</code>).
- *
+ * <p>
  * The {@link XADataSource} interface is almost identical to the {@link javax.sql.DataSource}
  * interface, but rather than returning {@link Connection} instances, there are methods that
  * return {@link XAConnection} instances that can be used with distributed transactions.
@@ -115,13 +115,19 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      */
     private String applicationName;
 
-    /** Support partial results mode or not.*/
+    /**
+     * Support partial results mode or not.
+     */
     private String partialResultsMode;
 
-    /** Default fetch size, &lt;= 0 indicates not set. */
+    /**
+     * Default fetch size, &lt;= 0 indicates not set.
+     */
     private int fetchSize = BaseDataSource.DEFAULT_FETCH_SIZE;
 
-    /** Whether to use result set cache if it available **/
+    /**
+     * Whether to use result set cache if it available
+     **/
     private String resultSetCacheMode;
 
     /**
@@ -190,33 +196,33 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     protected Properties buildProperties(final String userName, final String password) {
         Properties props = new Properties();
-        props.setProperty(BaseDataSource.VDB_NAME,this.getDatabaseName());
+        props.setProperty(BaseDataSource.VDB_NAME, this.getDatabaseName());
 
-        if ( this.getDatabaseVersion() != null && this.getDatabaseVersion().trim().length() != 0  ) {
-            props.setProperty(BaseDataSource.VDB_VERSION,this.getDatabaseVersion());
+        if (this.getDatabaseVersion() != null && this.getDatabaseVersion().trim().length() != 0) {
+            props.setProperty(BaseDataSource.VDB_VERSION, this.getDatabaseVersion());
         }
 
-        if ( userName != null && userName.trim().length() != 0) {
+        if (userName != null && userName.trim().length() != 0) {
             props.setProperty(BaseDataSource.USER_NAME, userName);
-        } else if ( this.getUser() != null && this.getUser().trim().length() != 0) {
+        } else if (this.getUser() != null && this.getUser().trim().length() != 0) {
             props.setProperty(BaseDataSource.USER_NAME, this.getUser());
         }
 
-        if ( password != null && password.trim().length() != 0) {
+        if (password != null && password.trim().length() != 0) {
             props.setProperty(BaseDataSource.PASSWORD, password);
-        } else if ( this.getPassword() != null && this.getPassword().trim().length() != 0) {
+        } else if (this.getPassword() != null && this.getPassword().trim().length() != 0) {
             props.setProperty(BaseDataSource.PASSWORD, this.getPassword());
         }
 
-        if ( this.getApplicationName() != null && this.getApplicationName().trim().length() != 0 ) {
-            props.setProperty(BaseDataSource.APP_NAME,this.getApplicationName());
+        if (this.getApplicationName() != null && this.getApplicationName().trim().length() != 0) {
+            props.setProperty(BaseDataSource.APP_NAME, this.getApplicationName());
         }
 
         if (this.getPartialResultsMode() != null && this.getPartialResultsMode().trim().length() != 0) {
             props.setProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE, this.getPartialResultsMode());
         }
 
-        if(this.getFetchSize() > 0) {
+        if (this.getFetchSize() > 0) {
             props.setProperty(ExecutionProperties.PROP_FETCH_SIZE, String.valueOf(this.getFetchSize()));
         }
 
@@ -236,7 +242,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
             props.setProperty(ExecutionProperties.NOEXEC, String.valueOf(this.isNoExec()));
         }
 
-        if ( this.getAutoCommitTxn() != null && this.getAutoCommitTxn().trim().length() != 0   ) {
+        if (this.getAutoCommitTxn() != null && this.getAutoCommitTxn().trim().length() != 0) {
             props.setProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP, this.getAutoCommitTxn());
         }
 
@@ -255,35 +261,35 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
         return props;
     }
 
-    protected void validateProperties( final String userName, final String password) throws SQLException {
+    protected void validateProperties(final String userName, final String password) throws SQLException {
         String reason = reasonWhyInvalidApplicationName(this.applicationName);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
         reason = reasonWhyInvalidDatabaseName(this.databaseName);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
         reason = reasonWhyInvalidDatabaseVersion(this.databaseVersion);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
         reason = reasonWhyInvalidDataSourceName(this.dataSourceName);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
         reason = reasonWhyInvalidDescription(this.description);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
         final String pwd = password != null ? password : getPassword();
         reason = reasonWhyInvalidPassword(pwd);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
@@ -299,12 +305,12 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
         final String user = userName != null ? userName : getUser();
         reason = reasonWhyInvalidUser(user);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
         reason = reasonWhyInvalidTransactionAutoWrap(this.transactionAutoWrap);
-        if ( reason != null ) {
+        if (reason != null) {
             throw new SQLException(reason);
         }
 
@@ -321,19 +327,20 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Attempt to establish a database connection.
+     *
      * @return a Connection to the database
      * @throws SQLException if a database-access error occurs
      * @see javax.sql.DataSource#getConnection()
      */
     public Connection getConnection() throws SQLException {
-        return getConnection(null,null);
+        return getConnection(null, null);
     }
 
     /**
      * @see XADataSource#getXAConnection()
      */
     public XAConnection getXAConnection() throws SQLException {
-        return getXAConnection(null,null);
+        return getXAConnection(null, null);
     }
 
     public PooledConnection getPooledConnection() throws SQLException {
@@ -358,7 +365,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     }
 
     @Override
-    public PrintWriter getLogWriter() throws SQLException{
+    public PrintWriter getLogWriter() throws SQLException {
         return this.logWriter;
     }
 
@@ -368,12 +375,12 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     }
 
     @Override
-    public void setLogWriter( final PrintWriter writer) throws SQLException{
+    public void setLogWriter(final PrintWriter writer) throws SQLException {
         this.logWriter = writer;
     }
 
     @Override
-    public void setLoginTimeout( final int timeOut) throws SQLException {
+    public void setLoginTimeout(final int timeOut) throws SQLException {
         this.loginTimeout = timeOut;
     }
 
@@ -381,14 +388,16 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Returns the name of the application.  Supplying this property may allow an administrator of a
      * Teiid Server to better identify individual connections and usage patterns.
      * This property is <i>optional</i>.
+     *
      * @return String the application name; may be null or zero-length
      */
     public String getApplicationName() {
-        return applicationName!=null?applicationName:DEFAULT_APP_NAME;
+        return applicationName != null ? applicationName : DEFAULT_APP_NAME;
     }
 
     /**
      * Returns the name of the virtual database on a particular Teiid Server.
+     *
      * @return String
      */
     public String getDatabaseName() {
@@ -397,6 +406,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Returns the databaseVersion.
+     *
      * @return String
      */
     public String getDatabaseVersion() {
@@ -407,6 +417,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Returns the logical name for the underlying <code>XADataSource</code> or
      * <code>ConnectionPoolDataSource</code>;
      * used only when pooling connections or distributed transactions are implemented.
+     *
      * @return the logical name for the underlying data source; may be null
      */
     public String getDataSourceName() {
@@ -415,6 +426,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Returns the description of this data source.
+     *
      * @return the description; may be null
      */
     public String getDescription() {
@@ -423,6 +435,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Returns the user.
+     *
      * @return the name of the user for this data source
      */
     public String getUser() {
@@ -431,6 +444,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Returns the password.
+     *
      * @return the password for this data source.
      */
     public String getPassword() {
@@ -441,6 +455,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Sets the name of the application.  Supplying this property may allow an administrator of a
      * Teiid Server to better identify individual connections and usage patterns.
      * This property is <i>optional</i>.
+     *
      * @param applicationName The applicationName to set
      */
     public void setApplicationName(final String applicationName) {
@@ -449,6 +464,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Sets the name of the virtual database on a particular Teiid Server.
+     *
      * @param databaseName The name of the virtual database
      */
     public void setDatabaseName(final String databaseName) {
@@ -457,6 +473,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Sets the databaseVersion.
+     *
      * @param databaseVersion The version of the virtual database
      */
     public void setDatabaseVersion(final String databaseVersion) {
@@ -467,6 +484,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Sets the logical name for the underlying <code>XADataSource</code> or
      * <code>ConnectionPoolDataSource</code>;
      * used only when pooling connections or distributed transactions are implemented.
+     *
      * @param dataSourceName The dataSourceName for this data source; may be null
      */
     public void setDataSourceName(final String dataSourceName) {
@@ -475,6 +493,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Sets the user.
+     *
      * @param user The user to set
      */
     public void setUser(final String user) {
@@ -483,6 +502,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Sets the password.
+     *
      * @param password The password for this data source
      */
     public void setPassword(final String password) {
@@ -491,6 +511,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Sets the description of this data source.
+     *
      * @param description The description for this data source; may be null
      */
     public void setDescription(final String description) {
@@ -544,6 +565,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Teiid will execute all client requests within the contexts of transactions.
      * This method determines the semantics of creating such transactions when the client does not
      * explicitly do so.
+     *
      * @return the current setting, or null if the property has not been set and the default mode will
      * be used.
      */
@@ -571,6 +593,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * This is the default mode.
      * The {@link #TXN_WRAP_AUTO} constant value is provided for convenience.</li>
      * </ul>
+     *
      * @param transactionAutoWrap The transactionAutoWrap to set
      */
     public void setAutoCommitTxn(String transactionAutoWrap) {
@@ -593,25 +616,26 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     /**
      * Return the reason why the supplied application name may be invalid, or null
      * if it is considered valid.
+     *
      * @param applicationName a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setApplicationName(String)
      */
-    public static String reasonWhyInvalidApplicationName( final String applicationName ) {
+    public static String reasonWhyInvalidApplicationName(final String applicationName) {
         return null;        // anything is valid
     }
-
 
 
     /**
      * Return the reason why the supplied virtual database name may be invalid, or null
      * if it is considered valid.
+     *
      * @param databaseName a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setDatabaseName(String)
      */
-    public static String reasonWhyInvalidDatabaseName( final String databaseName ) {
-        if ( databaseName == null || databaseName.trim().length() == 0 ) {
+    public static String reasonWhyInvalidDatabaseName(final String databaseName) {
+        if (databaseName == null || databaseName.trim().length() == 0) {
             return JDBCPlugin.Util.getString("MMDataSource.Virtual_database_name_must_be_specified");
         }
         return null;
@@ -620,11 +644,12 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     /**
      * Return the reason why the supplied user name may be invalid, or null
      * if it is considered valid.
+     *
      * @param userName a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setUser(String)
      */
-    public static String reasonWhyInvalidUser( final String userName ) {
+    public static String reasonWhyInvalidUser(final String userName) {
         return null;
     }
 
@@ -638,78 +663,83 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setAutoCommitTxn(String)
      */
-    public static String reasonWhyInvalidTransactionAutoWrap( final String autoWrap ) {
-        if ( autoWrap == null || autoWrap.trim().length() == 0 ) {
+    public static String reasonWhyInvalidTransactionAutoWrap(final String autoWrap) {
+        if (autoWrap == null || autoWrap.trim().length() == 0) {
             return null;    // no longer require an app server name, 'cause will look on classpath
         }
         final String trimmedAutoWrap = autoWrap.trim();
-        if( TXN_WRAP_ON.equals(trimmedAutoWrap) ) {
+        if (TXN_WRAP_ON.equals(trimmedAutoWrap)) {
             return null;
         }
-        if( TXN_WRAP_OFF.equals(trimmedAutoWrap) ) {
+        if (TXN_WRAP_OFF.equals(trimmedAutoWrap)) {
             return null;
         }
-        if( TXN_WRAP_AUTO.equals(trimmedAutoWrap) ) {
+        if (TXN_WRAP_AUTO.equals(trimmedAutoWrap)) {
             return null;
         }
 
-        Object[] params = new Object[] {
-            TXN_WRAP_ON, TXN_WRAP_OFF, TXN_WRAP_AUTO };
+        Object[] params = new Object[]{
+                TXN_WRAP_ON, TXN_WRAP_OFF, TXN_WRAP_AUTO};
         return JDBCPlugin.Util.getString("MMDataSource.Invalid_trans_auto_wrap_mode", params);
     }
 
     /**
      * Return the reason why the supplied virtual database version may be invalid, or null
      * if it is considered valid.
+     *
      * @param databaseVersion a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setDatabaseVersion(String)
      */
-    public static String reasonWhyInvalidDatabaseVersion( final String databaseVersion ) {
+    public static String reasonWhyInvalidDatabaseVersion(final String databaseVersion) {
         return null;        // anything is valid (let server validate)
     }
 
     /**
      * Return the reason why the supplied data source name may be invalid, or null
      * if it is considered valid.
+     *
      * @param dataSourceName a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setDataSourceName(String)
      */
-    public static String reasonWhyInvalidDataSourceName( final String dataSourceName) {
+    public static String reasonWhyInvalidDataSourceName(final String dataSourceName) {
         return null;        // anything is valid
     }
 
     /**
      * Return the reason why the supplied password may be invalid, or null
      * if it is considered valid.
+     *
      * @param pwd a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setPassword(String)
      */
-    public static String reasonWhyInvalidPassword( final String pwd ) {
+    public static String reasonWhyInvalidPassword(final String pwd) {
         return null;
     }
 
     /**
      * Return the reason why the supplied description may be invalid, or null
      * if it is considered valid.
+     *
      * @param description a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setDescription(String)
      */
-    public static String reasonWhyInvalidDescription( final String description ) {
+    public static String reasonWhyInvalidDescription(final String description) {
         return null;        // anything is valid
     }
 
     /**
      * The reason why partialResultsMode is invalid.
+     *
      * @param partialMode boolean flag
      * @return String reason
      */
-    public static String reasonWhyInvalidPartialResultsMode( final String partialMode) {
-        if ( partialMode != null ) {
-            if (partialMode.equalsIgnoreCase("true") || partialMode.equalsIgnoreCase("false")) { //$NON-NLS-2$
+    public static String reasonWhyInvalidPartialResultsMode(final String partialMode) {
+        if (partialMode != null) {
+            if (partialMode.equalsIgnoreCase("true") || partialMode.equalsIgnoreCase("false")) {
                 return null;
             }
             return JDBCPlugin.Util.getString("MMDataSource.The_partial_mode_must_be_boolean._47");
@@ -719,11 +749,12 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * The reason why fetchSize is invalid.
+     *
      * @param fetchSize Number of rows per batch
      * @return the reason why the property is invalid, or null if it is considered valid
      */
-    public static String reasonWhyInvalidFetchSize( final int fetchSize) {
-        if ( fetchSize <= 0 ) {
+    public static String reasonWhyInvalidFetchSize(final int fetchSize) {
+        if (fetchSize <= 0) {
             return JDBCPlugin.Util.getString("MMDataSource.The_fetch_size_must_be_greater_than_zero");
         }
         return null;

@@ -23,8 +23,8 @@ import com.kubling.teiid.core.types.TransformationException;
 
 public class NumberToLongTransform extends NumberToNumberTransform {
 
-    private boolean isNarrowing;
-    private boolean isLossy;
+    private final boolean isNarrowing;
+    private final boolean isLossy;
 
     public NumberToLongTransform(Class<?> sourceType, boolean isNarrowing, boolean isLossy) {
         super(Long.MIN_VALUE, Long.MAX_VALUE, sourceType);
@@ -35,20 +35,22 @@ public class NumberToLongTransform extends NumberToNumberTransform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         if (isNarrowing) {
             checkValueRange(value);
         }
-        return Long.valueOf(((Number)value).longValue());
+        return ((Number) value).longValue();
     }
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

@@ -35,7 +35,7 @@ public final class ApplicationInfo implements Serializable {
 
     private static final ApplicationInfo INSTANCE = new ApplicationInfo();
 
-    private Properties props = new Properties();
+    private final Properties props = new Properties();
 
     private ApplicationInfo() {
         InputStream is = this.getClass().getResourceAsStream("application.properties");
@@ -46,7 +46,7 @@ public final class ApplicationInfo implements Serializable {
                 is.close();
             }
         } catch (IOException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10045, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10045, e);
         }
     }
 
@@ -62,7 +62,7 @@ public final class ApplicationInfo implements Serializable {
     public int getMinorReleaseVersion() {
         int majorIndex = getReleaseNumber().indexOf('.');
         String version =
-                getReleaseNumber().substring(majorIndex+1, getReleaseNumber().indexOf('.', majorIndex+1));
+                getReleaseNumber().substring(majorIndex + 1, getReleaseNumber().indexOf('.', majorIndex + 1));
         return Integer.parseInt(version);
     }
 
@@ -84,6 +84,7 @@ public final class ApplicationInfo implements Serializable {
 
     /**
      * Get the application information instance for this VM.
+     *
      * @return the singleton instance for this VM; never null
      */
     public static ApplicationInfo getInstance() {

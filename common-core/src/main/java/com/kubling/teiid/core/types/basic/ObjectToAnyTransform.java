@@ -31,7 +31,7 @@ public class ObjectToAnyTransform extends Transform {
 
     public static final ObjectToAnyTransform INSTANCE = new ObjectToAnyTransform(Object.class);
 
-    private Class targetClass;
+    private final Class targetClass;
 
     public ObjectToAnyTransform(Class targetClass) {
         this.targetClass = targetClass;
@@ -39,6 +39,7 @@ public class ObjectToAnyTransform extends Transform {
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class getSourceType() {
@@ -55,7 +56,7 @@ public class ObjectToAnyTransform extends Transform {
         if (value == null) {
             return null;
         }
-        if(targetType.isAssignableFrom(value.getClass())) {
+        if (targetType.isAssignableFrom(value.getClass())) {
             return value;
         }
 
@@ -69,17 +70,17 @@ public class ObjectToAnyTransform extends Transform {
                 } catch (TransformationException e) {
                     throw new TransformationException(
                             CorePlugin.Event.TEIID10076, e, CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, getSourceType(),
-                                    targetClass, value));
+                            targetClass, value));
                 }
             }
             if (targetType.isArray()) {
                 if (value instanceof Array) {
                     try {
                         //TODO: need to use the base type information for non-ArrayImpl values
-                        Object array = ((Array)value).getArray();
+                        Object array = ((Array) value).getArray();
                         if (targetType.isAssignableFrom(array.getClass())) {
                             if (!(value instanceof ArrayImpl)) {
-                                return new ArrayImpl((Object[])array);
+                                return new ArrayImpl((Object[]) array);
                             }
                             return value;
                         }
@@ -91,7 +92,7 @@ public class ObjectToAnyTransform extends Transform {
                 if (value.getClass().isArray()) {
                     if (value.getClass().getComponentType().isPrimitive()
                             && targetType.getComponentType().isAssignableFrom(
-                                    convertPrimitiveToObject(value.getClass().getComponentType()))) {
+                            convertPrimitiveToObject(value.getClass().getComponentType()))) {
                         Object[] result = (Object[]) java.lang.reflect.Array
                                 .newInstance(targetType.getComponentType(), java.lang.reflect.Array.getLength(value));
                         for (int i = 0; i < result.length; i++) {
@@ -125,17 +126,17 @@ public class ObjectToAnyTransform extends Transform {
         }
 
         if (transform == null || !valid) {
-            Object[] params = new Object[] { getSourceType(), targetType, value};
-              throw new TransformationException(CorePlugin.Event.TEIID10076,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
+            Object[] params = new Object[]{getSourceType(), targetType, value};
+            throw new TransformationException(CorePlugin.Event.TEIID10076,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
         }
 
         try {
             return transform.transform(value, targetType);
         } catch (TransformationException e) {
-            Object[] params = new Object[] { getSourceType(), targetType, value};
-              throw new TransformationException(CorePlugin.Event.TEIID10076, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
+            Object[] params = new Object[]{getSourceType(), targetType, value};
+            throw new TransformationException(CorePlugin.Event.TEIID10076, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
         }
     }
 
@@ -154,20 +155,30 @@ public class ObjectToAnyTransform extends Transform {
 
     /**
      * Convert a primitive class to the corresponding object class
+     *
      * @param clazz
      */
     public static Class<?> convertPrimitiveToObject(Class<?> clazz) {
         if (!clazz.isPrimitive()) {
             return clazz;
         }
-        if      ( clazz == Boolean.TYPE   ) { clazz = Boolean.class; }
-        else if ( clazz == Character.TYPE ) { clazz = Character.class; }
-        else if ( clazz == Byte.TYPE      ) { clazz = Byte.class; }
-        else if ( clazz == Short.TYPE     ) { clazz = Short.class; }
-        else if ( clazz == Integer.TYPE   ) { clazz = Integer.class; }
-        else if ( clazz == Long.TYPE      ) { clazz = Long.class; }
-        else if ( clazz == Float.TYPE     ) { clazz = Float.class; }
-        else if ( clazz == Double.TYPE    ) { clazz = Double.class; }
+        if (clazz == Boolean.TYPE) {
+            clazz = Boolean.class;
+        } else if (clazz == Character.TYPE) {
+            clazz = Character.class;
+        } else if (clazz == Byte.TYPE) {
+            clazz = Byte.class;
+        } else if (clazz == Short.TYPE) {
+            clazz = Short.class;
+        } else if (clazz == Integer.TYPE) {
+            clazz = Integer.class;
+        } else if (clazz == Long.TYPE) {
+            clazz = Long.class;
+        } else if (clazz == Float.TYPE) {
+            clazz = Float.class;
+        } else if (clazz == Double.TYPE) {
+            clazz = Double.class;
+        }
         return clazz;
     }
 }

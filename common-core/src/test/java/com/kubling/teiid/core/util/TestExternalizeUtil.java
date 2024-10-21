@@ -25,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +42,7 @@ public class TestExternalizeUtil {
 
     @Test
     public void testEmptyCollection() throws Exception {
-        ExternalizeUtil.writeCollection(oout, Arrays.asList(new Object[0]));
+        ExternalizeUtil.writeCollection(oout, List.of());
         oout.flush();
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
         ObjectInputStream oin = new ObjectInputStream(bin);

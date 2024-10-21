@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * This class contains static methods that are routinely and commonly used in many test cases, and related to methods to test
  * common functionality or to perform common tests.
- *
+ * <p>
  * <em><b>This class should not be used by plug-in based tests<b><em>
  */
 public class UnitTestUtil {
@@ -52,18 +52,17 @@ public class UnitTestUtil {
                 record.getThrown().printStackTrace(new PrintWriter(new Writer() {
 
                     @Override
-                    public void close() throws IOException {
+                    public void close() {
 
                     }
 
                     @Override
-                    public void flush() throws IOException {
+                    public void flush() {
 
                     }
 
                     @Override
-                    public void write(char[] cbuf, int off, int len)
-                            throws IOException {
+                    public void write(char[] cbuf, int off, int len) {
                         result.append(new String(cbuf, off, len));
                     }
                 }));
@@ -76,7 +75,7 @@ public class UnitTestUtil {
     public static final String PATH_SEPARATOR = "/";
 
     private static final String DEFAULT_TESTDATA_PATH = "src/test/resources";
-//    private static final String DEFAULT_TEMP_DIR = "target/scratch";
+    //    private static final String DEFAULT_TEMP_DIR = "target/scratch";
     private static final String DEFAULT_TEMP_DIR = "scratch";
 
     //============================================================================================================================
@@ -109,20 +108,20 @@ public class UnitTestUtil {
      * Finally, if either <code>obj1</code> and <code>obj2</code> are instances of {@link Comparable}, then the following
      * tests are performed:
      * <li><code>obj1.compareTo(obj2) == correctCompareToResult</code>, or <code>obj1.compareTo(obj2) throws an IllegalArgumentException
-     *       if <code>obj2</code> is null</li>
-     *   <li><code>obj2.compareTo(obj1) == (-1 * correctCompareToResult)</code>, or
-     *       <code>obj2.compareTo(obj1) throws an IllegalArgumentException
-     *       if <code>obj2</code> is null</li></li>
-     *   <li><code>obj1.compareTo(obj1) == 0</code> if <code>obj1 != null</code></li>
-     *   <li><code>obj2.compareTo(obj2) == 0</code> if <code>obj2 != null</code></li>
+     * if <code>obj2</code> is null</li>
+     * <li><code>obj2.compareTo(obj1) == (-1 * correctCompareToResult)</code>, or
+     * <code>obj2.compareTo(obj1) throws an IllegalArgumentException
+     * if <code>obj2</code> is null</li></li>
+     * <li><code>obj1.compareTo(obj1) == 0</code> if <code>obj1 != null</code></li>
+     * <li><code>obj2.compareTo(obj2) == 0</code> if <code>obj2 != null</code></li>
      *
      * @param correctCompareToResult 0 if the two comparable objects should be
-     * equivalent; &lt0 if <code>obj1<code> is to be considered less-than <code>obj2</code>;
-     * >0 if <code>obj2<code> is to be considered less-than <code>obj1</code>.  If <code>obj1</code>
-     * and <code>obj2</code> are not instances of {@link Comparable}, then it only matters that
-     * this parameter is zero or non-zero (whether it's greater or less-than zero is not important).
-     * @param obj1 the reference to the first Object object; may be null, but no tests will be performed
-     * @param obj2 the reference to the second Object object; may be null
+     *                               equivalent; &lt0 if <code>obj1<code> is to be considered less-than <code>obj2</code>;
+     *                               >0 if <code>obj2<code> is to be considered less-than <code>obj1</code>.  If <code>obj1</code>
+     *                               and <code>obj2</code> are not instances of {@link Comparable}, then it only matters that
+     *                               this parameter is zero or non-zero (whether it's greater or less-than zero is not important).
+     * @param obj1                   the reference to the first Object object; may be null, but no tests will be performed
+     * @param obj2                   the reference to the second Object object; may be null
      */
     public static void helpTestEquivalence(final int correctCompareToResult,
                                            final Object obj1,
@@ -163,8 +162,8 @@ public class UnitTestUtil {
 
         // Finally (if both are comparable) then compareTo ...
         if (obj1 instanceof Comparable || obj2 instanceof Comparable) {
-            Comparable comp1 = (Comparable)obj1;
-            Comparable comp2 = (Comparable)obj2;
+            Comparable comp1 = (Comparable) obj1;
+            Comparable comp2 = (Comparable) obj2;
             helpTestCompareTo(correctCompareToResult, comp1, comp2);
 
             // Test that compareTo is reflexive
@@ -183,11 +182,10 @@ public class UnitTestUtil {
      * null; if only one of the references is null, this method checks that the 'compareTo' method throws an
      * IllegalArgumentException. If both are null, this method fails if the 'correctCompareToResult' is not 0.
      *
-     * @param correctCompareToResult
-     *            0 if the two comparable objects should be equivalent; &lt0 if <code>obj1<code> is to be considered less-than <code>obj2</code>;
-     * >0 if <code>obj2<code> is to be considered less-than <code>obj1</code>
-     * @param obj1 the reference to the first Comparable object; may be null
-     * @param obj2 the reference to the second Comparable object; may be null
+     * @param correctCompareToResult 0 if the two comparable objects should be equivalent; &lt0 if <code>obj1<code> is to be considered less-than <code>obj2</code>;
+     *                               >0 if <code>obj2<code> is to be considered less-than <code>obj1</code>
+     * @param obj1                   the reference to the first Comparable object; may be null
+     * @param obj2                   the reference to the second Comparable object; may be null
      */
     protected static void helpTestCompareTo(final int correctCompareToResult,
                                             final Comparable obj1,
@@ -204,35 +202,35 @@ public class UnitTestUtil {
                     if (result1 < 0) {
                         if (!(correctCompareToResult < 0)) {
                             fail("obj1.compareTo(obj2) returned <0 (actual=" + result1
-                                 + ") and did not match the expected result (" + correctCompareToResult + ")"); //$NON-NLS-2$
+                                    + ") and did not match the expected result (" + correctCompareToResult + ")");
                         }
                         if (!(result2 > 0)) {
                             fail("The compareTo call was not commutative: obj1.compareTo(obj2) returned <0 (actual=" + result1
-                                 + ") but obj2.compareTo(obj2) did not return >0 (actual=" + result2 + ") "); //$NON-NLS-2$
+                                    + ") but obj2.compareTo(obj2) did not return >0 (actual=" + result2 + ") ");
                         }
                     } else if (result1 > 0) {
                         if (!(correctCompareToResult > 0)) {
                             fail("obj1.compareTo(obj2) returned >0 (actual=" + result1
-                                 + ") and did not match the expected result (" + correctCompareToResult + ")"); //$NON-NLS-2$
+                                    + ") and did not match the expected result (" + correctCompareToResult + ")");
                         }
                         if (!(result2 < 0)) {
                             fail("The compareTo call was not commutative: obj1.compareTo(obj2) returned >0 (actual=" + result1
-                                 + ") but obj2.compareTo(obj2) did not return <0 (actual=" + result2 + ") "); //$NON-NLS-2$
+                                    + ") but obj2.compareTo(obj2) did not return <0 (actual=" + result2 + ") ");
                         }
                     } else { // result1 == 0
                         if (correctCompareToResult != 0) {
                             fail("obj1.compareTo(obj2) returned 0 but did not match the expected result ("
-                                 + correctCompareToResult + ") and the second compareTo call didn't match the first");
+                                    + correctCompareToResult + ") and the second compareTo call didn't match the first");
                         }
                         fail("The compareTo call was not commutative: obj1.compareTo(obj2) returned 0 while obj2.compareTo(obj2) returned "
-                             + result2);
+                                + result2);
                     }
 
                 }
                 // Otherwise the results are the same so correct 'compareTo' result should be 0
                 else if (correctCompareToResult != 0) {
                     fail("obj1.compareTo(obj2) and obj2.compareTo(obj1) both returned " + result1
-                         + " but did not match the expected result (" + correctCompareToResult + ")"); //$NON-NLS-2$
+                            + " but did not match the expected result (" + correctCompareToResult + ")");
                 }
 
             }
@@ -242,12 +240,13 @@ public class UnitTestUtil {
                 try {
                     result = obj1.compareTo(obj2);
                     fail("The second comparable object was null but no IllegalArgumentException was thrown in "
-                         + obj1.getClass().getName() + ".compareTo(Object)");
+                            + obj1.getClass().getName() + ".compareTo(Object)");
                 } catch (IllegalArgumentException e) {
+                    // Ignored
                 }
                 if (!(correctCompareToResult > 0)) {
-                    fail("obj1.compareTo(null) returned " + result + " but did not match the expected result ("//$NON-NLS-2$
-                         + correctCompareToResult + ")");
+                    fail("obj1.compareTo(null) returned " + result + " but did not match the expected result ("
+                            + correctCompareToResult + ")");
                 }
             }
         }
@@ -257,12 +256,13 @@ public class UnitTestUtil {
             try {
                 result = obj2.compareTo(obj1);
                 fail("The first comparable object was null but no IllegalArgumentException was thrown in "
-                     + obj2.getClass().getName() + ".compareTo(Object)");
+                        + obj2.getClass().getName() + ".compareTo(Object)");
             } catch (IllegalArgumentException e) {
+                // Ignored
             }
             if (!(correctCompareToResult < 0)) {
-                fail("obj2.compareTo(null) returned " + result + " but did not match the expected result (" //$NON-NLS-2$
-                     + correctCompareToResult + ")");
+                fail("obj2.compareTo(null) returned " + result + " but did not match the expected result ("
+                        + correctCompareToResult + ")");
             }
         }
         // Otherwise both are null
@@ -278,18 +278,14 @@ public class UnitTestUtil {
      * Tests properties of the equals method implementation of the <code>obj</code> parameter. The equals method of <code>obj</code>
      * is tested for reflexivity, symmetry, and equality with <code>null</code>.
      *
-     * @param obj
-     *            Object whose equals method is tested
-     * @throws org.opentest4j.AssertionFailedError
-     *             if parameter is <code>null</code>, or if any test doesn't pass
+     * @param obj Object whose equals method is tested
+     * @throws org.opentest4j.AssertionFailedError if parameter is <code>null</code>, or if any test doesn't pass
      */
     protected static void helpTestEquals(final Object obj) {
         assertNotNull(obj);
-        assertTrue(!obj.equals(null),
-                "The equals method of Object " + obj + " (Class " + obj.getClass().getName() +
-                        ") does not return false for null parameter");
-        assertTrue(obj.equals(obj),
-                "The equals method of Object " + obj + " (Class " + obj.getClass().getName() + ") is not reflexive.");
+        assertFalse(obj.equals(null), "The equals method of Object " + obj + " (Class " + obj.getClass().getName() +
+                ") does not return false for null parameter");
+        assertEquals(obj, obj, "The equals method of Object " + obj + " (Class " + obj.getClass().getName() + ") is not reflexive.");
     }
 
     /**
@@ -297,12 +293,9 @@ public class UnitTestUtil {
      * <code>test</code> is tested for transitivity with the equals method of <code>control</code>. Note that <code>control</code>
      * can be either equal or not with <code>test</code>; what is tested is that their equals methods are consistent.
      *
-     * @param test
-     *            Object whose equals method is tested
-     * @param control
-     *            object for testing transitivity of <code>test</code>'s equals method
-     * @throws org.opentest4j.AssertionFailedError
-     *             if either parameter is <code>null</code>, or if any test doesn't pass
+     * @param test    Object whose equals method is tested
+     * @param control object for testing transitivity of <code>test</code>'s equals method
+     * @throws org.opentest4j.AssertionFailedError if either parameter is <code>null</code>, or if any test doesn't pass
      */
     protected static void helpTestEqualsTransitivity(final Object test,
                                                      final Object control) {
@@ -323,13 +316,9 @@ public class UnitTestUtil {
      * {@link Object#equals(Object) equals}method. If the objects are not equal, then it cannot be concluded
      * whether the two hash codes must be equivalent or different.
      *
-     *
-     * @param shouldBeEqual
-     *            true if the two comparable objects should be equivalent; or false otherwise
-     * @param obj1
-     *            the reference to the first Object; may be null
-     * @param obj2
-     *            the reference to the second Object; may be null
+     * @param shouldBeEqual true if the two comparable objects should be equivalent; or false otherwise
+     * @param obj1          the reference to the first Object; may be null
+     * @param obj2          the reference to the second Object; may be null
      */
     protected static void helpTestHashCode(final boolean shouldBeEqual,
                                            final Object obj1,
@@ -341,9 +330,8 @@ public class UnitTestUtil {
             int hash1 = obj1.hashCode();
             int hash2 = obj2.hashCode();
             if (shouldBeEqual) {
-                assertTrue(hash1 == hash2,
-                        "The two objects are supposed to be equal but do not have the same hash code value; obj1.hashCode()="
-                                + hash1 + "; obj2.hashCode()=" + hash2);
+                assertEquals(hash1, hash2, "The two objects are supposed to be equal but do not have the same hash code value; obj1.hashCode()="
+                        + hash1 + "; obj2.hashCode()=" + hash2);
             }
             // If they should not be equal, then it is NOT necessarily true
             // that the hash codes must be different. Therefore, nothing to test.
@@ -353,8 +341,7 @@ public class UnitTestUtil {
     /**
      * This method checks the reflexive nature of 'compareTo'; no check is performed if the input object is null.
      *
-     * @param obj
-     *            the reference to the Comparable object; may be null
+     * @param obj the reference to the Comparable object; may be null
      */
     protected static void helpTestReflexiveCompareTo(final Comparable obj) {
         if (obj != null && obj.compareTo(obj) != 0) {
@@ -374,9 +361,8 @@ public class UnitTestUtil {
     /**
      * Obtain a {@link File}for the file name in the test data directory (given by {@link #getTestDataPath()}).
      *
-     * @param fileName
-     *            A path and name relative to the test data directory; for example, "MyFile.txt" if the file is in the test
-     *            data directory, or "subfolder/MyFile.txt" if the file is in "subfolder".
+     * @param fileName A path and name relative to the test data directory; for example, "MyFile.txt" if the file is in the test
+     *                 data directory, or "subfolder/MyFile.txt" if the file is in "subfolder".
      * @return The File referencing the file with the specified fileName within the test data directory
      */
     public static File getTestDataFile(String fileName) {
@@ -390,11 +376,10 @@ public class UnitTestUtil {
     public static File getTestScratchFile(String fileName) {
         // Create the input stream ...
         String path = UnitTestUtil.getTestScratchPath();
-        File file = new File(path, fileName);
-        return file;
+        return new File(path, fileName);
     }
 
-    public static final String getTestDataPath() {
+    public static String getTestDataPath() {
         return DEFAULT_TESTDATA_PATH;
     }
 
@@ -403,7 +388,7 @@ public class UnitTestUtil {
      *
      * @return File path, never null
      */
-    public static final String getTestScratchPath() {
+    public static String getTestScratchPath() {
         String filePath = DEFAULT_TEMP_DIR;
         File scratch = new File(filePath);
         if (!scratch.exists() && !scratch.mkdirs()) {
@@ -414,14 +399,14 @@ public class UnitTestUtil {
             }
         }
         File scratchDirectory = new File(filePath);
-        if(!scratchDirectory.exists()) {
+        if (!scratchDirectory.exists()) {
             scratchDirectory.mkdir();
         }
         return filePath;
     }
 
     @SuppressWarnings("unchecked")
-    public static final <T extends Serializable> T helpSerialize(T object) throws IOException, ClassNotFoundException {
+    public static <T extends Serializable> T helpSerialize(T object) throws IOException, ClassNotFoundException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(object);
@@ -429,17 +414,17 @@ public class UnitTestUtil {
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-        return (T)ois.readObject();
+        return (T) ois.readObject();
     }
 
     public static void enableTraceLogging(String loggerName) {
         enableLogging(Level.FINEST, loggerName);
     }
 
-    static Map<String, Logger> loggers = new HashMap<String, Logger>();
+    static Map<String, Logger> loggers = new HashMap<>();
 
     public static void enableLogging(Level level, String loggerName) {
-        Logger logger = null;
+        Logger logger;
         synchronized (loggers) {
             logger = loggers.get(loggerName);
             if (logger == null) {

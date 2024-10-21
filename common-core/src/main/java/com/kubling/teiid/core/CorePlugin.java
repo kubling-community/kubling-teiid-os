@@ -29,7 +29,7 @@ public class CorePlugin {
 
     public static final BundleUtil Util =
             new BundleUtil(PLUGIN_ID, PLUGIN_ID + ".i18n",
-                    ResourceBundle.getBundle(PLUGIN_ID + ".i18n")); //$NON-NLS-1$ //$NON-NLS-2$
+                    ResourceBundle.getBundle(PLUGIN_ID + ".i18n"));  
 
     public static enum Event implements BundleUtil.Event {
         TEIID10000,

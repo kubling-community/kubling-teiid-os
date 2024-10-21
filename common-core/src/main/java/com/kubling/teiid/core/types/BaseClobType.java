@@ -128,6 +128,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
 
     /**
      * Utility method to convert to String
+     *
      * @param clob
      * @return string form of the clob passed.
      */
@@ -137,7 +138,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
             StringWriter writer = new StringWriter();
             int c = reader.read();
             while (c != -1) {
-                writer.write((char)c);
+                writer.write((char) c);
                 c = reader.read();
             }
             reader.close();
@@ -164,12 +165,12 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                 try {
                     result = BaseClobType.this.length();
                 } catch (SQLException err) {
-                      throw new TeiidRuntimeException(CorePlugin.Event.TEIID10051, err);
+                    throw new TeiidRuntimeException(CorePlugin.Event.TEIID10051, err);
                 }
-                if (((int)result) != result) {
-                      throw new TeiidRuntimeException(CorePlugin.Event.TEIID10052, CorePlugin.Util.gs(CorePlugin.Event.TEIID10052));
+                if (((int) result) != result) {
+                    throw new TeiidRuntimeException(CorePlugin.Event.TEIID10052, CorePlugin.Util.gs(CorePlugin.Event.TEIID10052));
                 }
-                return (int)result;
+                return (int) result;
             }
 
             public char charAt(int index) {
@@ -192,10 +193,8 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                         beginPosition = index;
                     }
                     return buffer[index - beginPosition];
-                } catch (IOException err) {
+                } catch (IOException | SQLException err) {
                     throw new TeiidRuntimeException(CorePlugin.Event.TEIID10053, err);
-                } catch (SQLException err) {
-                      throw new TeiidRuntimeException(CorePlugin.Event.TEIID10053, err);
                 }
             }
 
@@ -204,7 +203,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                 try {
                     return BaseClobType.this.getSubString(start + 1, end - start);
                 } catch (SQLException err) {
-                      throw new TeiidRuntimeException(CorePlugin.Event.TEIID10054, err);
+                    throw new TeiidRuntimeException(CorePlugin.Event.TEIID10054, err);
                 }
             }
 
@@ -221,7 +220,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
 
     @Override
     protected void readReference(ObjectInput in) throws IOException {
-        char[] chars = new char[(int)length];
+        char[] chars = new char[(int) length];
         for (int i = 0; i < chars.length; i++) {
             chars[i] = in.readChar();
         }
@@ -244,11 +243,11 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
             }
 
             @Override
-            public void flush() throws IOException {
+            public void flush() {
             }
 
             @Override
-            public void close() throws IOException {
+            public void close() {
             }
         };
         Reader r;
@@ -258,9 +257,9 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
             throw new IOException(e);
         }
         try {
-            int chars = ObjectConverterUtil.write(w, r, (int)length, false);
+            int chars = ObjectConverterUtil.write(w, r, (int) length, false);
             if (length != chars) {
-                throw new IOException("Expected length " + length + " but was " + chars + " for " + this.reference); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                throw new IOException("Expected length " + length + " but was " + chars + " for " + this.reference);
             }
         } finally {
             r.close();
@@ -284,9 +283,9 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
             }
             return Long.signum(len1 - len2);
         } catch (SQLException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10056, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10056, e);
         } catch (IOException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10057, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10057, e);
         }
     }
 
@@ -298,7 +297,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
         if (!(obj instanceof BaseClobType)) {
             return false;
         }
-        BaseClobType other = (BaseClobType)obj;
+        BaseClobType other = (BaseClobType) obj;
         if (EquivalenceUtil.areEqual(reference, other.reference)) {
             return true;
         }
@@ -307,9 +306,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                 return false;
             }
             return this.compareTo(other) == 0;
-        } catch (SQLException e) {
-            return false;
-        } catch (TeiidRuntimeException e) {
+        } catch (SQLException | TeiidRuntimeException e) {
             return false;
         }
     }

@@ -113,20 +113,20 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
         boolean sentInit = false;
         long handShakeRetries = 1;
         if (this.soTimeout > 0) {
-            handShakeRetries = Math.max(1, synchTimeout/this.soTimeout);
+            handShakeRetries = Math.max(1, synchTimeout / this.soTimeout);
         }
         for (int i = 0; i < handShakeRetries; i++) {
             try {
                 Object obj = this.socketChannel.read();
 
                 if (!(obj instanceof Handshake)) {
-                     throw new SingleInstanceCommunicationException(
-                             JDBCPlugin.Event.TEIID20009, null, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20009));
+                    throw new SingleInstanceCommunicationException(
+                            JDBCPlugin.Event.TEIID20009, null, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20009));
                 }
-                handshake = (Handshake)obj;
+                handshake = (Handshake) obj;
                 break;
             } catch (ClassNotFoundException e1) {
-                 throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20010, e1, e1.getMessage());
+                throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20010, e1, e1.getMessage());
             } catch (SocketTimeoutException e) {
                 if (!sentInit && !this.info.isSsl()) {
                     //write a dummy initialization value - if the server is actually ssl, this can cause the server side handshake to fail, otherwise it's ignored
@@ -181,7 +181,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
 
             this.socketChannel.write(handshake);
         } catch (CryptoException e) {
-             throw new CommunicationException(JDBCPlugin.Event.TEIID20012, e, e.getMessage());
+            throw new CommunicationException(JDBCPlugin.Event.TEIID20012, e, e.getMessage());
         }
     }
 
@@ -195,7 +195,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
     }
 
     public void send(Message message, ResultsReceiver<Object> listener, Serializable messageKey)
-        throws CommunicationException, InterruptedException {
+            throws CommunicationException, InterruptedException {
         if (listener != null) {
             asynchronousListeners.put(messageKey, listener);
         }
@@ -206,7 +206,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
             writeFuture.get(); //client writes are blocking to ensure proper failure handling
             success = true;
         } catch (ExecutionException e) {
-             throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20013, e, e.getMessage());
+            throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20013, e, e.getMessage());
         } finally {
             if (!success) {
                 asynchronousListeners.remove(messageKey);
@@ -236,7 +236,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
         }
 
         Set<Map.Entry<Serializable, ResultsReceiver<Object>>> entries = this.asynchronousListeners.entrySet();
-        for (Iterator<Map.Entry<Serializable, ResultsReceiver<Object>>> iterator = entries.iterator(); iterator.hasNext();) {
+        for (Iterator<Map.Entry<Serializable, ResultsReceiver<Object>>> iterator = entries.iterator(); iterator.hasNext(); ) {
             Map.Entry<Serializable, ResultsReceiver<Object>> entry = iterator.next();
             iterator.remove();
             entry.getValue().exceptionOccurred(e);
@@ -246,11 +246,11 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
     private void receivedMessage(Object packet) {
         log.log(Level.FINE, "reading packet");
         if (packet instanceof Message) {
-            Message messagePacket = (Message)packet;
+            Message messagePacket = (Message) packet;
             Serializable messageKey = messagePacket.getMessageKey();
             ExceptionHolder holder = null;
             if (messageKey instanceof ExceptionHolder) {
-                holder = (ExceptionHolder)messageKey;
+                holder = (ExceptionHolder) messageKey;
                 messageKey = (Serializable) messagePacket.getContents();
                 if (log.isLoggable(Level.FINE)) {
                     log.log(Level.FINE, "read asynch message:" + messageKey);
@@ -297,7 +297,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
     }
 
     public void read(long timeout, TimeUnit unit, ResultsFuture<?> future) throws TimeoutException, InterruptedException {
-        long timeoutMillis = (int)Math.min(unit.toMillis(timeout), Integer.MAX_VALUE);
+        long timeoutMillis = (int) Math.min(unit.toMillis(timeout), Integer.MAX_VALUE);
         long start = System.currentTimeMillis();
         while (!future.isDone()) {
             boolean reading = false;
@@ -334,7 +334,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
                 timeoutMillis -= now - start;
                 start = now;
                 if (timeoutMillis <= 0) {
-                    throw new TimeoutException("Read timeout after " + timeout + " milliseconds."); //$NON-NLS-2$
+                    throw new TimeoutException("Read timeout after " + timeout + " milliseconds.");
                 }
             }
         }
@@ -344,7 +344,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
     public synchronized <T> T getService(Class<T> iface) {
         Object service = this.serviceMap.get(iface);
         if (service == null) {
-            service = Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {iface}, new RemoteInvocationHandler(iface, false) {
+            service = Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{iface}, new RemoteInvocationHandler(iface, false) {
                 @Override
                 protected SocketServerInstanceImpl getInstance() {
                     return SocketServerInstanceImpl.this;

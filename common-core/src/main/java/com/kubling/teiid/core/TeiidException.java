@@ -21,7 +21,6 @@ package com.kubling.teiid.core;
 import java.sql.SQLException;
 
 
-
 /**
  * Exception which occurs if an error occurs within the server that is not
  * business-related.  For instance, if a service or bean is not available
@@ -62,7 +61,7 @@ public class TeiidException extends Exception {
     private void setCode(BundleUtil.Event code, Throwable t) {
         String codeStr = code.toString();
         if (t instanceof TeiidException) {
-            TeiidException te = (TeiidException)t;
+            TeiidException te = (TeiidException) t;
             if (te.getCode() != null) {
                 codeStr = te.getCode();
             }
@@ -71,7 +70,7 @@ public class TeiidException extends Exception {
     }
 
     public TeiidException(Throwable e) {
-        this(e, e != null? e.getMessage() : null);
+        this(e, e != null ? e.getMessage() : null);
     }
 
     public TeiidException(Throwable e, String message) {
@@ -101,7 +100,7 @@ public class TeiidException extends Exception {
         } else if (e instanceof TeiidRuntimeException) {
             return ((TeiidRuntimeException) e).getCode();
         } else if (e instanceof SQLException) {
-            return ((SQLException)e).getSQLState();
+            return ((SQLException) e).getSQLState();
         }
         return null;
     }
@@ -111,10 +110,10 @@ public class TeiidException extends Exception {
         if (message == null) {
             return code;
         }
-        if (code == null || code.length() == 0 || message.startsWith(code)) {
+        if (code == null || code.isEmpty() || message.startsWith(code)) {
             return message;
         }
-        return code+" "+message;
+        return code + " " + message;
     }
 
 }

@@ -28,16 +28,17 @@ public class TeiidComponentException extends TeiidException {
 
     private static final long serialVersionUID = 5853804556425201591L;
 
-    public TeiidComponentException(  ) {
-        super(  );
+    public TeiidComponentException() {
+        super();
     }
+
     /**
      * Construct an instance with the message specified.
      *
      * @param message A message describing the exception
      */
-    public TeiidComponentException( String message ) {
-        super( message );
+    public TeiidComponentException(String message) {
+        super(message);
     }
 
     /**
@@ -45,8 +46,8 @@ public class TeiidComponentException extends TeiidException {
      *
      * @param e An exception to chain to this exception
      */
-    public TeiidComponentException( Throwable e ) {
-        super( e );
+    public TeiidComponentException(Throwable e) {
+        super(e);
     }
 
     public TeiidComponentException(BundleUtil.Event code, final String message) {
@@ -61,8 +62,8 @@ public class TeiidComponentException extends TeiidException {
         super(code, e);
     }
 
-    public TeiidComponentException( Throwable e, String message ) {
-        super( e, message );
+    public TeiidComponentException(Throwable e, String message) {
+        super(e, message);
     }
 
 }

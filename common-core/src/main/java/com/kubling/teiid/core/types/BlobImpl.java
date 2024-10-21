@@ -45,6 +45,7 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
 
     /**
      * Creates a MMBlob object with the <code>valueID</code>.
+     *
      * @param streamFactory reference to value chunk in data source.
      */
     public BlobImpl(InputStreamFactory streamFactory) {
@@ -56,33 +57,32 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
      * value that this <code>Blob</code> object designates.  The byte
      * array contains up to <code>length</code> consecutive bytes
      * starting at position <code>pos</code>.
-     * @param pos the ordinal position of the first byte in the
-     * <code>BLOB</code> value to be extracted; the first byte is at
-     * position 1
+     *
+     * @param pos    the ordinal position of the first byte in the
+     *               <code>BLOB</code> value to be extracted; the first byte is at
+     *               position 1
      * @param length the number of consecutive bytes to be copied
      * @return a byte array containing up to <code>length</code>
      * consecutive bytes from the <code>BLOB</code> value designated
      * by this <code>Blob</code> object, starting with the
      * byte at position <code>pos</code>
-     * @exception SQLException if there is an error accessing the
-     * <code>BLOB</code>
+     * @throws SQLException if there is an error accessing the
+     *                      <code>BLOB</code>
      */
     public byte[] getBytes(long pos, int length) throws SQLException {
         if (pos < 1) {
-            Object[] params = new Object[] {pos};
-            throw new SQLException(CorePlugin.Util.getString("MMClob_MMBlob.2", params)); //$NON-NLS-1$
-        }
-        else if (length == 0 || pos > length()) {
+            Object[] params = new Object[]{pos};
+            throw new SQLException(CorePlugin.Util.getString("MMClob_MMBlob.2", params));
+        } else if (length == 0 || pos > length()) {
             return new byte[0];
         }
         pos = pos - 1;
 
         if (length < 0) {
-            Object[] params = new Object[] {length};
-            throw new SQLException(CorePlugin.Util.getString("MMClob_MMBlob.3", params)); //$NON-NLS-1$
-        }
-        else if (pos + length > length()) {
-            length = (int)(length() - pos);
+            Object[] params = new Object[]{length};
+            throw new SQLException(CorePlugin.Util.getString("MMClob_MMBlob.3", params));
+        } else if (pos + length > length()) {
+            length = (int) (length() - pos);
         }
         InputStream in = getBinaryStream();
         try {
@@ -98,6 +98,7 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
             try {
                 in.close();
             } catch (IOException e) {
+                // Ignored
             }
         }
     }
@@ -107,24 +108,21 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
      * designated by this <code>Blob</code> object at which
      * <code>pattern</code> begins.  The search begins at position
      * <code>start</code>.
+     *
      * @param pattern the <code>Blob</code> object designating
-     * the <code>BLOB</code> value for which to search
-     * @param start the position in the <code>BLOB</code> value
-     *        at which to begin searching; the first position is 1
+     *                the <code>BLOB</code> value for which to search
+     * @param start   the position in the <code>BLOB</code> value
+     *                at which to begin searching; the first position is 1
      * @return the position at which the pattern begins, else -1
-     * @exception SQLException if there is an error accessing the
-     * <code>BLOB</code>
+     * @throws SQLException if there is an error accessing the
+     *                      <code>BLOB</code>
      */
     public long position(final Blob pattern, long start) throws SQLException {
         if (pattern == null) {
             return -1;
         }
 
-        return LobSearchUtil.position(new StreamProvider() {
-            public InputStream getBinaryStream() throws SQLException {
-                return pattern.getBinaryStream();
-            }
-        }, pattern.length(), this, this.length(), start, 1);
+        return LobSearchUtil.position(pattern::getBinaryStream, pattern.length(), this, this.length(), start, 1);
     }
 
     /**
@@ -133,12 +131,13 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
      * value that this <code>Blob</code> object represents.  The
      * search for <code>pattern</code> begins at position
      * <code>start</code>.
+     *
      * @param pattern the byte array for which to search
-     * @param start the position at which to begin searching; the
-     *        first position is 1
+     * @param start   the position at which to begin searching; the
+     *                first position is 1
      * @return the position at which the pattern appears, else -1
-     * @exception SQLException if there is an error accessing the
-     * <code>BLOB</code>
+     * @throws SQLException if there is an error accessing the
+     *                      <code>BLOB</code>
      */
     public long position(byte[] pattern, long start) throws SQLException {
         if (pattern == null) {
@@ -183,11 +182,12 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
 
     /**
      * For a given blob try to determine the length without fully reading an inputstream
+     *
      * @return the length or -1 if it cannot be determined
      */
     public static long quickLength(Blob b) {
         if (b instanceof BlobType) {
-            BlobType blob = (BlobType)b;
+            BlobType blob = (BlobType) b;
             long length = blob.getLength();
             if (length != -1) {
                 return length;
@@ -195,7 +195,7 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
             return quickLength(blob.getReference());
         }
         if (b instanceof BlobImpl) {
-            BlobImpl blob = (BlobImpl)b;
+            BlobImpl blob = (BlobImpl) b;
             try {
                 return blob.getStreamFactory().getLength();
             } catch (SQLException e) {
@@ -213,9 +213,7 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
     public String toString() {
         try {
             return new String(getBinaryStream().readAllBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
+        } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
     }

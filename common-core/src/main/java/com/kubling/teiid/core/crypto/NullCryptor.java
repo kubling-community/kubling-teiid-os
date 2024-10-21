@@ -21,28 +21,27 @@ package com.kubling.teiid.core.crypto;
 
 public class NullCryptor implements Cryptor {
 
-    public byte[] encrypt(byte[] cleartext) throws CryptoException {
+    public byte[] encrypt(byte[] cleartext) {
         return cleartext;
     }
 
-    public String encrypt(String cleartext) throws CryptoException {
+    public String encrypt(String cleartext) {
         return cleartext;
     }
 
-    public Object sealObject(Object object) throws CryptoException {
+    public Object sealObject(Object object) {
         return object;
     }
 
-    public byte[] decrypt(byte[] ciphertext) throws CryptoException {
+    public byte[] decrypt(byte[] ciphertext) {
         return ciphertext;
     }
 
-    public String decrypt(String ciphertext) throws CryptoException {
+    public String decrypt(String ciphertext) {
         return ciphertext;
     }
 
-    public Object unsealObject(Object object)
-            throws CryptoException {
+    public Object unsealObject(Object object) {
         return object;
     }
 

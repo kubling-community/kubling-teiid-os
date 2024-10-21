@@ -6,7 +6,7 @@
 
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
-    <version>24.2.4</version>
+    <version>24.2.5</version>
     <packaging>pom</packaging>
 
     <description>The only free Virtual DB Engine for Operations.</description>

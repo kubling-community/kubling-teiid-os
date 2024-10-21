@@ -28,10 +28,10 @@ import java.io.ObjectOutput;
  */
 public class Annotation implements Externalizable {
 
-    public static final String MATERIALIZED_VIEW = "Materialized View"; 
-    public static final String CACHED_PROCEDURE = "Cached Procedure"; 
-    public static final String HINTS = "Hints"; 
-    public static final String RELATIONAL_PLANNER = "Relational Planner"; 
+    public static final String MATERIALIZED_VIEW = "Materialized View";
+    public static final String CACHED_PROCEDURE = "Cached Procedure";
+    public static final String HINTS = "Hints";
+    public static final String RELATIONAL_PLANNER = "Relational Planner";
 
     public enum Priority {
         LOW,
@@ -72,15 +72,15 @@ public class Annotation implements Externalizable {
     }
 
     public String toString() {
-        return getPriority() + " [" + getCategory() +"] "+ getAnnotation() + " - " + getResolution();  //$NON-NLS-2$ //$NON-NLS-3$
+        return getPriority() + " [" + getCategory() + "] " + getAnnotation() + " - " + getResolution();
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        annotation = (String)in.readObject();
-        category = (String)in.readObject();
-        resolution = (String)in.readObject();
+        annotation = (String) in.readObject();
+        category = (String) in.readObject();
+        resolution = (String) in.readObject();
         priority = Priority.values()[in.readByte()];
     }
 

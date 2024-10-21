@@ -45,9 +45,10 @@ public class TestObjectDecoderInputStream {
         final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         InputStream is = new InputStream() {
             int count;
+
             @Override
             public int read() throws IOException {
-                if (count++%2==0) {
+                if (count++ % 2 == 0) {
                     throw new SocketTimeoutException();
                 }
                 return bais.read();
@@ -66,14 +67,15 @@ public class TestObjectDecoderInputStream {
         Assertions.assertEquals(obj, result);
     }
 
-    @Test public void testReplaceObject() throws Exception {
+    @Test
+    public void testReplaceObject() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectEncoderOutputStream out = new ObjectEncoderOutputStream(new DataOutputStream(baos), 512);
 
         ClobImpl clob = new ClobImpl(new InputStreamFactory() {
             @Override
             public InputStream getInputStream() throws IOException {
-                return new ReaderInputStream(new StringReader("Clob contents"),  Charset.forName(Streamable.ENCODING)); //$NON-NLS-1$
+                return new ReaderInputStream(new StringReader("Clob contents"), Charset.forName(Streamable.ENCODING));
             }
 
         }, -1);

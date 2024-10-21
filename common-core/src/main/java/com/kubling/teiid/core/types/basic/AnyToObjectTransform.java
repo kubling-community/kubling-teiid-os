@@ -26,7 +26,7 @@ public class AnyToObjectTransform extends Transform {
 
     public static final AnyToObjectTransform INSTANCE = new AnyToObjectTransform(Object.class);
 
-    private Class<?> sourceType;
+    private final Class<?> sourceType;
 
     public AnyToObjectTransform(Class<?> sourceType) {
         this.sourceType = sourceType;
@@ -40,10 +40,11 @@ public class AnyToObjectTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         return value;
@@ -51,6 +52,7 @@ public class AnyToObjectTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

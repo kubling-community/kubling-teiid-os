@@ -23,29 +23,24 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
 import java.io.Writer;
 
 public class StandardXMLTranslator extends XMLTranslator {
 
-    private static ThreadLocal<TransformerFactory> threadLocalTransformerFactory = new ThreadLocal<TransformerFactory>() {
-        protected TransformerFactory initialValue() {
-            return TransformerFactory.newInstance();
-        }
-    };
+    private static final ThreadLocal<TransformerFactory> threadLocalTransformerFactory = ThreadLocal.withInitial(TransformerFactory::newInstance);
 
     public static TransformerFactory getThreadLocalTransformerFactory() {
         return threadLocalTransformerFactory.get();
     }
 
-    private Source source;
+    private final Source source;
 
     public StandardXMLTranslator(Source source) {
         this.source = source;
     }
 
     @Override
-    public void translate(Writer writer) throws TransformerException, IOException {
+    public void translate(Writer writer) throws TransformerException {
         Transformer t = threadLocalTransformerFactory.get().newTransformer();
         t.transform(source, new StreamResult(writer));
     }

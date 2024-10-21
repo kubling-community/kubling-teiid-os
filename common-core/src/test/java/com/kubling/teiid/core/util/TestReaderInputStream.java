@@ -25,6 +25,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,40 +33,41 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SuppressWarnings("nls")
 public class TestReaderInputStream {
 
-    @Test public void testUTF8() throws Exception {
-        FileInputStream fis = new FileInputStream(UnitTestUtil.getTestDataFile("legal_notice.xml")); //$NON-NLS-1$
-        ReaderInputStream ris = new ReaderInputStream(new FileReader(UnitTestUtil.getTestDataFile("legal_notice.xml")), Charset.forName("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+    @Test
+    public void testUTF8() throws Exception {
+        FileInputStream fis = new FileInputStream(UnitTestUtil.getTestDataFile("legal_notice.xml"));
+        ReaderInputStream ris = new ReaderInputStream(new FileReader(UnitTestUtil.getTestDataFile("legal_notice.xml")), StandardCharsets.UTF_8);
 
         int value;
-        while (true) {
+        do {
             value = fis.read();
             assertEquals(value, ris.read());
-            if (value == -1) {
-                break;
-            }
-        }
+        } while (value != -1);
     }
 
-    @Test public void testUTF16() throws Exception {
-        String actual = "!?abc"; //$NON-NLS-1$
-        ReaderInputStream ris = new ReaderInputStream(new StringReader(actual), Charset.forName("UTF-16").newEncoder(), 2); //$NON-NLS-1$
+    @Test
+    public void testUTF16() throws Exception {
+        String actual = "!?abc";
+        ReaderInputStream ris = new ReaderInputStream(new StringReader(actual), StandardCharsets.UTF_16.newEncoder(), 2);
         byte[] result = ObjectConverterUtil.convertToByteArray(ris);
-        String resultString = new String(result, "UTF-16"); //$NON-NLS-1$
+        String resultString = new String(result, StandardCharsets.UTF_16);
         assertEquals(resultString, actual);
     }
 
-    @Test public void testASCII() throws Exception  {
-        String actual = "!?abc"; //$NON-NLS-1$
-        ReaderInputStream ris = new ReaderInputStream(new StringReader(actual), Charset.forName("US-ASCII").newEncoder(), 1); //$NON-NLS-1$
+    @Test
+    public void testASCII() throws Exception {
+        String actual = "!?abc";
+        ReaderInputStream ris = new ReaderInputStream(new StringReader(actual), StandardCharsets.US_ASCII.newEncoder(), 1);
         byte[] result = ObjectConverterUtil.convertToByteArray(ris);
-        String resultString = new String(result, "US-ASCII"); //$NON-NLS-1$
+        String resultString = new String(result, StandardCharsets.US_ASCII);
         assertEquals(resultString, actual);
     }
 
-    @Test public void testASCIIError() throws Exception  {
-        String actual = "!?abc\uffffafs"; //$NON-NLS-1$
-        Charset cs = Charset.forName("ASCII");
-        ReaderInputStream ris = new ReaderInputStream(new StringReader(actual), cs.newEncoder(), 1); //$NON-NLS-1$
+    @Test
+    public void testASCIIError() {
+        String actual = "!?abc\uffffafs";
+        Charset cs = StandardCharsets.US_ASCII;
+        ReaderInputStream ris = new ReaderInputStream(new StringReader(actual), cs.newEncoder(), 1);
         assertThrows(IOException.class, () -> ObjectConverterUtil.convertToByteArray(ris));
     }
 

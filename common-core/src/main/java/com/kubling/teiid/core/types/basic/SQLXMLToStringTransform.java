@@ -38,31 +38,30 @@ public class SQLXMLToStringTransform extends AnyToStringTransform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        XMLType source = (XMLType)value;
+        XMLType source = (XMLType) value;
         Reader reader = null;
         try {
             char[] result = new char[DataTypeManager.MAX_STRING_LENGTH];
             reader = source.getCharacterStream();
             int read = reader.read(result);
             return new String(result, 0, read);
-        } catch (SQLException e) {
-              throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
-        } catch (IOException e) {
-              throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
+        } catch (SQLException | IOException e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10080, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
         } finally {
             try {
                 if (reader != null) {
                     reader.close();
                 }
             } catch (IOException e) {
+                // Ignored
             }
         }
     }

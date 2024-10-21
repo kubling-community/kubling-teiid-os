@@ -23,7 +23,6 @@ import com.kubling.teiid.core.util.ExternalizeUtil;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.OptionalDataException;
 import java.sql.Clob;
 
 /**
@@ -61,9 +60,7 @@ public final class ClobType extends BaseClobType {
         super.readExternal(in);
         try {
             this.type = ExternalizeUtil.readEnum(in, Type.class, Type.TEXT);
-        } catch (OptionalDataException e) {
-            this.type = Type.TEXT;
-        } catch(IOException e) {
+        } catch (IOException e) {
             this.type = Type.TEXT;
         }
     }

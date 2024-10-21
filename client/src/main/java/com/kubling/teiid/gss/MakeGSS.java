@@ -1,12 +1,12 @@
 /*-------------------------------------------------------------------------
-*
-* Copyright (c) 2008, PostgreSQL Global Development Group
-*
-* IDENTIFICATION
-*   $PostgreSQL: pgjdbc/org/postgresql/gss/MakeGSS.java,v 1.2.2.1 2009/08/18 03:37:08 jurka Exp $
-*
-*-------------------------------------------------------------------------
-*/
+ *
+ * Copyright (c) 2008, PostgreSQL Global Development Group
+ *
+ * IDENTIFICATION
+ *   $PostgreSQL: pgjdbc/org/postgresql/gss/MakeGSS.java,v 1.2.2.1 2009/08/18 03:37:08 jurka Exp $
+ *
+ *-------------------------------------------------------------------------
+ */
 
 /*
  * Copyright Red Hat, Inc. and/or its affiliates
@@ -48,7 +48,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-
 public class MakeGSS {
 
     private static Logger logger = Logger.getLogger("org.teiid.jdbc");
@@ -63,21 +62,21 @@ public class MakeGSS {
 
         StringBuilder errors = new StringBuilder();
         String jaasApplicationName = props.getProperty(TeiidURL.CONNECTION.JAAS_NAME);
-        String nl = System.getProperty("line.separator");//$NON-NLS-1$
+        String nl = System.getProperty("line.separator");
         if (jaasApplicationName == null) {
             jaasApplicationName = "Teiid";
         }
 
-        String kerberosPrincipalName =  props.getProperty(TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME);
+        String kerberosPrincipalName = props.getProperty(TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME);
         if (kerberosPrincipalName == null) {
             try {
                 TeiidURL url = new TeiidURL(props.getProperty(TeiidURL.CONNECTION.SERVER_URL));
-                kerberosPrincipalName="TEIID/" +  url.getHostInfo().get(0).getHostName();
+                kerberosPrincipalName = "TEIID/" + url.getHostInfo().get(0).getHostName();
             } catch (Exception e) {
                 // Ignore exception
             }
             if (kerberosPrincipalName == null) {
-                errors.append(JDBCPlugin.Util.getString("client_prop_missing", 
+                errors.append(JDBCPlugin.Util.getString("client_prop_missing",
                         TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME));
                 errors.append(nl);
             }
@@ -91,12 +90,10 @@ public class MakeGSS {
         if (krb5 == null && realm == null && kdc == null) {
             errors.append(JDBCPlugin.Util.getString("no_gss_selection"));
             errors.append(nl);
-        }
-        else if (krb5 != null && (realm != null || kdc != null)) {
+        } else if (krb5 != null && (realm != null || kdc != null)) {
             errors.append(JDBCPlugin.Util.getString("ambigious_gss_selection"));
             errors.append(nl);
-        }
-        else if ((realm != null && kdc == null) || (realm == null && kdc != null)) {
+        } else if ((realm != null && kdc == null) || (realm == null && kdc != null)) {
             // krb5 is null here..
             if (realm == null) {
                 errors.append(JDBCPlugin.Util.getString("system_prop_missing", "java.security.krb5.realm"));
@@ -120,7 +117,7 @@ public class MakeGSS {
             boolean performAuthentication = true;
             GSSCredential gssCredential = null;
             Subject sub = Subject.getSubject(AccessController.getContext());
-            if(sub != null) {
+            if (sub != null) {
                 Set<GSSCredential> gssCreds = sub.getPrivateCredentials(GSSCredential.class);
                 if (gssCreds != null && gssCreds.size() > 0) {
                     gssCredential = gssCreds.iterator().next();
@@ -128,8 +125,7 @@ public class MakeGSS {
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("GSS Authentication using delegated credential");
                     }
-                }
-                else {
+                } else {
                     if (logger.isLoggable(Level.FINE)) {
                         logger.fine("No delegation credential found in the subject");
                     }
@@ -138,7 +134,7 @@ public class MakeGSS {
 
             if (performAuthentication) {
                 if (errors.length() > 0) {
-                     throw new LogonException(JDBCPlugin.Event.TEIID20005, errors.toString());
+                    throw new LogonException(JDBCPlugin.Event.TEIID20005, errors.toString());
                 }
 
                 LoginContext lc = new LoginContext(jaasApplicationName, new GSSCallbackHandler(user, password));
@@ -150,21 +146,21 @@ public class MakeGSS {
             PrivilegedAction action = new GssAction(logon, kerberosPrincipalName, props, user, gssCredential);
             result = Subject.doAs(sub, action);
         } catch (Exception e) {
-             throw new LogonException(JDBCPlugin.Event.TEIID20005, e, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
+            throw new LogonException(JDBCPlugin.Event.TEIID20005, e, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
         }
 
         if (result instanceof LogonException) {
-            throw (LogonException)result;
+            throw (LogonException) result;
         } else if (result instanceof TeiidComponentException) {
-            throw (TeiidComponentException)result;
+            throw (TeiidComponentException) result;
         } else if (result instanceof CommunicationException) {
-            throw (CommunicationException)result;
+            throw (CommunicationException) result;
         } else if (result instanceof Exception) {
-            throw new LogonException(JDBCPlugin.Event.TEIID20005, (Exception)result,
+            throw new LogonException(JDBCPlugin.Event.TEIID20005, (Exception) result,
                     JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
         }
 
-        return (LogonResult)result;
+        return (LogonResult) result;
     }
 
 }
@@ -224,7 +220,7 @@ class GssAction implements PrivilegedAction {
                         logger.fine("Sending Service Token to Server (GSS Authentication Token)");
                     }
                     result = logon.neogitiateGssLogin(this.props, outToken, true);
-                    inToken = (byte[])result.getProperty(ILogon.KRB5TOKEN);
+                    inToken = (byte[]) result.getProperty(ILogon.KRB5TOKEN);
                 }
 
                 if (!secContext.isEstablished()) {
@@ -239,9 +235,9 @@ class GssAction implements PrivilegedAction {
                 }
             }
             return result;
-        }  catch (GSSException gsse) {
+        } catch (GSSException gsse) {
             return TeiidSQLException.create(gsse, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
-        } catch(Exception e) {
+        } catch (Exception e) {
             return e;
         }
     }

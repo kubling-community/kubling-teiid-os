@@ -17,29 +17,30 @@ package com.kubling.teiid.core.json.flattener;
 
 /**
  * {@link FlattenMode} lists all acceptable modes of the {@link JsonFlattener}.
+ *
  * @author Wei-Ming Wu
  */
 public enum FlattenMode {
 
-  /**
-   * Flattens every object.
-   */
-  NORMAL,
+    /**
+     * Flattens every object.
+     */
+    NORMAL,
 
-  /**
-   * Flattens every object except arrays.
-   */
-  KEEP_ARRAYS,
+    /**
+     * Flattens every object except arrays.
+     */
+    KEEP_ARRAYS,
 
-  /**
-   * Conforms to MongoDB dot.notation to update also nested documents.
-   */
-  MONGODB,
+    /**
+     * Conforms to MongoDB dot.notation to update also nested documents.
+     */
+    MONGODB,
 
-  /**
-   * Flattens every object except arrays which contain only primitive types(strings, numbers,
-   * booleans, and null).
-   */
-  KEEP_PRIMITIVE_ARRAYS;
+    /**
+     * Flattens every object except arrays which contain only primitive types(strings, numbers,
+     * booleans, and null).
+     */
+    KEEP_PRIMITIVE_ARRAYS
 
 }

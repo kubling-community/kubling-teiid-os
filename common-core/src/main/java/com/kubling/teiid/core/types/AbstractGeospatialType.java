@@ -28,7 +28,7 @@ import java.sql.Blob;
 
 /**
  * Base type for geography and geometry.
- *
+ * <p>
  * Simply a blob reference with an srid.
  */
 public abstract class AbstractGeospatialType extends BlobType {
@@ -95,7 +95,7 @@ public abstract class AbstractGeospatialType extends BlobType {
     }
 
     public synchronized void copyTo(AbstractGeospatialType geo) {
-        geo.setGeoCache(geoCache==null?null:geoCache.get());
+        geo.setGeoCache(geoCache == null ? null : geoCache.get());
         geo.setSrid(srid);
         geo.setReference(this.reference);
     }

@@ -47,7 +47,9 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     private static Logger logger = Logger.getLogger("org.teiid.jdbc");
 
-    /** CONSTANTS */
+    /**
+     * CONSTANTS
+     */
     private static final String PERCENT = "%";
     // constant value indicating that there is not limit
     private final static int NO_LIMIT = 0;
@@ -62,30 +64,30 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     // constant value giving extra name characters used in Identifiers
     private final static String EXTRA_CHARS = ".@";
     // constant value giving the key words not in SQL-92
-    final static String KEY_WORDS = "OPTION, BIGDECIMAL"+
-    ", BIGDECIMAL, BIGINTEGER, BREAK, BYTE, CRITERIA, ERROR, LIMIT, LONG, LOOP, MAKEDEP, MAKENOTDEP"+
-    ", NOCACHE, STRING, VIRTUAL, WHILE";
+    final static String KEY_WORDS = "OPTION, BIGDECIMAL" +
+            ", BIGDECIMAL, BIGINTEGER, BREAK, BYTE, CRITERIA, ERROR, LIMIT, LONG, LOOP, MAKEDEP, MAKENOTDEP" +
+            ", NOCACHE, STRING, VIRTUAL, WHILE";
     // constant value giving preferred name for a procedure
     private final static String PROCEDURE_TERM = "StoredProcedure";
     // constant value giving the names of numeric functions supported
     final static String NUMERIC_FUNCTIONS =
-        "ABS, ACOS, ASIN, ATAN, ATAN2, BITAND, BITNOT, BITOR, BITXOR, CEILING"
-        + ", COS, COT, DEGREES, EXP, FLOOR, FORMATBIGDECIMAL, FORMATBIGINTEGER"
-        + ", FORMATDOUBLE, FORMATFLOAT, FORMATINTEGER, FORMATLONG, LOG, LOG10"
-        + ", MOD, PARSEBIGDECIMAL, PARSEBIGINTEGER, PARSEDOUBLE, PARSEFLOAT"
-        + ", PARSEINTEGER, PARSELONG, PI, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SQRT, TAN";
+            "ABS, ACOS, ASIN, ATAN, ATAN2, BITAND, BITNOT, BITOR, BITXOR, CEILING"
+                    + ", COS, COT, DEGREES, EXP, FLOOR, FORMATBIGDECIMAL, FORMATBIGINTEGER"
+                    + ", FORMATDOUBLE, FORMATFLOAT, FORMATINTEGER, FORMATLONG, LOG, LOG10"
+                    + ", MOD, PARSEBIGDECIMAL, PARSEBIGINTEGER, PARSEDOUBLE, PARSEFLOAT"
+                    + ", PARSEINTEGER, PARSELONG, PI, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SQRT, TAN";
     // constant value giving the names of string functions supported
     final static String STRING_FUNCTIONS =
-        "ASCII, CHR, CHAR, CONCAT, CONCAT2, INITCAP, INSERT, LCASE, LEFT, LENGTH, LOCATE, LOWER, LPAD, LTRIM, " +
-        "REPEAT, REPLACE, RIGHT, RPAD, RTRIM, SUBSTRING, TRANSLATE, UCASE, UPPER";
+            "ASCII, CHR, CHAR, CONCAT, CONCAT2, INITCAP, INSERT, LCASE, LEFT, LENGTH, LOCATE, LOWER, LPAD, LTRIM, " +
+                    "REPEAT, REPLACE, RIGHT, RPAD, RTRIM, SUBSTRING, TRANSLATE, UCASE, UPPER";
     // constant value giving the names of date/time functions supported
     final static String DATE_FUNCTIONS =
-        "CURDATE, CURTIME, NOW, DAYNAME, DAYOFMONTH, DAYOFWEEK, DAYOFYEAR, FORMATDATE, " +
-        "FORMATTIME, FORMATTIMESTAMP, FROM_UNIXTIME, HOUR, MINUTE, MONTH, MONTHNAME, PARSEDATE, PARSETIME, " +
-        "PARSETIMESTAMP, QUARTER, SECOND, TIMESTAMPADD, TIMESTAMPDIFF, WEEK, YEAR";
+            "CURDATE, CURTIME, NOW, DAYNAME, DAYOFMONTH, DAYOFWEEK, DAYOFYEAR, FORMATDATE, " +
+                    "FORMATTIME, FORMATTIMESTAMP, FROM_UNIXTIME, HOUR, MINUTE, MONTH, MONTHNAME, PARSEDATE, PARSETIME, " +
+                    "PARSETIMESTAMP, QUARTER, SECOND, TIMESTAMPADD, TIMESTAMPDIFF, WEEK, YEAR";
     // constant value giving the names of system functions supported
     final static String SYSTEM_FUNCTIONS =
-        "CAST, COALESCE, CONVERT, DECODESTRING, DECODEINTEGER, IFNULL, NULLIF, NVL, LOOKUP, UUID, UNESCAPE, ARRAY_GET, ARRAY_LENGTH";
+            "CAST, COALESCE, CONVERT, DECODESTRING, DECODEINTEGER, IFNULL, NULLIF, NVL, LOOKUP, UUID, UNESCAPE, ARRAY_GET, ARRAY_LENGTH";
     // constant value giving max length of a catalog name
     private final static int MAX_CATALOG_NAME_LENGTH = 255;
     // constant value giving max length of a procedure name
@@ -101,37 +103,37 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     // constant value giving max value of a columns scale
     //private final static short MAX_SCALE = 256;
 
-    private final static String LIKE_ESCAPE = " LIKE ? ESCAPE '" + ESCAPE_SEARCH_STRING + "' ";//$NON-NLS-2$
+    private final static String LIKE_ESCAPE = " LIKE ? ESCAPE '" + ESCAPE_SEARCH_STRING + "' ";
 
-    final private static class RUNTIME_MODEL{
+    final private static class RUNTIME_MODEL {
         public final static String VIRTUAL_MODEL_NAME = CoreConstants.SYSTEM_MODEL;
     }
 
     private static final String NULLABILITY_MAPPING =
-        new StringBuffer("No Nulls, ").append(DatabaseMetaData.columnNoNulls)
-          .append(     ", Nullable, ").append(DatabaseMetaData.columnNullable)
-          .append(     ", Unknown, ") .append(DatabaseMetaData.columnNullableUnknown)
-          .toString();
+            new StringBuffer("No Nulls, ").append(DatabaseMetaData.columnNoNulls)
+                    .append(", Nullable, ").append(DatabaseMetaData.columnNullable)
+                    .append(", Unknown, ").append(DatabaseMetaData.columnNullableUnknown)
+                    .toString();
 
     private static final String TYPE_NULLABILITY_MAPPING =
             new StringBuffer("No Nulls, ").append(DatabaseMetaData.typeNoNulls)
-              .append(     ", Nullable, ").append(DatabaseMetaData.typeNullable)
-              .append(     ", Unknown, ") .append(DatabaseMetaData.typeNullableUnknown)
-              .toString();
+                    .append(", Nullable, ").append(DatabaseMetaData.typeNullable)
+                    .append(", Unknown, ").append(DatabaseMetaData.typeNullableUnknown)
+                    .toString();
 
     private static final String PROC_COLUMN_NULLABILITY_MAPPING =
-        new StringBuffer("No Nulls, ").append(DatabaseMetaData.procedureNoNulls)
-          .append(     ", Nullable, ").append(DatabaseMetaData.procedureNullable)
-          .append(     ", Unknown, ") .append(DatabaseMetaData.procedureNullableUnknown)
-          .toString();
+            new StringBuffer("No Nulls, ").append(DatabaseMetaData.procedureNoNulls)
+                    .append(", Nullable, ").append(DatabaseMetaData.procedureNullable)
+                    .append(", Unknown, ").append(DatabaseMetaData.procedureNullableUnknown)
+                    .toString();
 
     private static final String PARAM_DIRECTION_MAPPING =
-      new StringBuffer("In,")         .append(DatabaseMetaData.procedureColumnIn)
-      .append(       ", Out,")        .append(DatabaseMetaData.procedureColumnOut)
-      .append(       ", InOut,")      .append(DatabaseMetaData.procedureColumnInOut)
-      .append(       ", ReturnValue,").append(DatabaseMetaData.procedureColumnReturn)
-      .append(       ", ResultSet,")  .append(DatabaseMetaData.procedureColumnResult)
-      .toString();
+            new StringBuffer("In,").append(DatabaseMetaData.procedureColumnIn)
+                    .append(", Out,").append(DatabaseMetaData.procedureColumnOut)
+                    .append(", InOut,").append(DatabaseMetaData.procedureColumnInOut)
+                    .append(", ReturnValue,").append(DatabaseMetaData.procedureColumnReturn)
+                    .append(", ResultSet,").append(DatabaseMetaData.procedureColumnResult)
+                    .toString();
 
 //    private static final String UDT_NAME_MAPPING =
 //      new StringBuffer("JAVA_OBJECT, ").append(Types.JAVA_OBJECT)
@@ -141,203 +143,203 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     // Queries
     private final static String QUERY_REFERENCE_KEYS =
-      new StringBuffer("SELECT PKTABLE_CAT, PKTABLE_SCHEM, PKTABLE_NAME, PKCOLUMN_NAME, FKTABLE_CAT, FKTABLE_SCHEM")
-        .append(", FKTABLE_NAME, FKCOLUMN_NAME, KEY_SEQ, UPDATE_RULE, DELETE_RULE, FK_NAME, PK_NAME, DEFERRABILITY FROM ")
-        .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".ReferenceKeyColumns").toString();
+            new StringBuffer("SELECT PKTABLE_CAT, PKTABLE_SCHEM, PKTABLE_NAME, PKCOLUMN_NAME, FKTABLE_CAT, FKTABLE_SCHEM")
+                    .append(", FKTABLE_NAME, FKCOLUMN_NAME, KEY_SEQ, UPDATE_RULE, DELETE_RULE, FK_NAME, PK_NAME, DEFERRABILITY FROM ")
+                    .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".ReferenceKeyColumns").toString();
 
     private final static String QUERY_CROSS_REFERENCES = new StringBuffer(QUERY_REFERENCE_KEYS)
-        .append(" WHERE UCASE(PKTABLE_CAT)").append(LIKE_ESCAPE).append("AND UCASE(FKTABLE_CAT)").append(LIKE_ESCAPE)//$NON-NLS-2$
-        .append(" AND UCASE(PKTABLE_SCHEM)").append(LIKE_ESCAPE).append("AND UCASE(FKTABLE_SCHEM)").append(LIKE_ESCAPE)//$NON-NLS-2$
-        .append(" AND UCASE(PKTABLE_NAME)").append(LIKE_ESCAPE).append("AND UCASE(FKTABLE_NAME)").append(LIKE_ESCAPE)//$NON-NLS-2$
-        .append("ORDER BY FKTABLE_NAME, KEY_SEQ").toString();
+            .append(" WHERE UCASE(PKTABLE_CAT)").append(LIKE_ESCAPE).append("AND UCASE(FKTABLE_CAT)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(PKTABLE_SCHEM)").append(LIKE_ESCAPE).append("AND UCASE(FKTABLE_SCHEM)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(PKTABLE_NAME)").append(LIKE_ESCAPE).append("AND UCASE(FKTABLE_NAME)").append(LIKE_ESCAPE)
+            .append("ORDER BY FKTABLE_NAME, KEY_SEQ").toString();
 
     private final static String QUERY_EXPORTED_KEYS = new StringBuffer(QUERY_REFERENCE_KEYS)
-        .append(" WHERE UCASE(PKTABLE_CAT)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(PKTABLE_SCHEM)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(PKTABLE_NAME)").append(LIKE_ESCAPE).append("ORDER BY FKTABLE_NAME, KEY_SEQ").toString();//$NON-NLS-2$
+            .append(" WHERE UCASE(PKTABLE_CAT)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(PKTABLE_SCHEM)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(PKTABLE_NAME)").append(LIKE_ESCAPE).append("ORDER BY FKTABLE_NAME, KEY_SEQ").toString();
 
     private final static String QUERY_IMPORTED_KEYS = new StringBuffer(QUERY_REFERENCE_KEYS)
-        .append(" WHERE UCASE(FKTABLE_CAT)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(FKTABLE_SCHEM)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(FKTABLE_NAME)").append(LIKE_ESCAPE).append("ORDER BY PKTABLE_NAME, KEY_SEQ").toString();//$NON-NLS-2$
+            .append(" WHERE UCASE(FKTABLE_CAT)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(FKTABLE_SCHEM)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(FKTABLE_NAME)").append(LIKE_ESCAPE).append("ORDER BY PKTABLE_NAME, KEY_SEQ").toString();
 
     /* Note that we're retrieving length as DATA_TYPE.  Once retrieved when then correct this.
      * This allows us to reuse the ResultSetMetadata.
      */
     private final static String QUERY_COLUMNS_OLD = new StringBuffer("SELECT VDBName AS TABLE_CAT")
-        .append(", SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME, Name AS COLUMN_NAME")
-        .append(", Length AS DATA_TYPE")
-        .append(", DataType AS TYPE_NAME")
-        .append(", e.Precision AS COLUMN_SIZE")
-        .append(", NULL AS BUFFER_LENGTH, Scale AS DECIMAL_DIGITS, Radix AS NUM_PREC_RADIX")
-        .append(", convert(decodeString(NullType, '").append(NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
-        .append(", Description AS REMARKS, DefaultValue AS COLUMN_DEF, NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB")
-        .append(", CharOctetLength AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION")
-        .append(", " + IS_NULLABLE)
-        .append(", NULL AS SCOPE_CATALOG, NULL AS SCOPE_SCHEMA, NULL AS SCOPE_TABLE, NULL AS SOURCE_DATA_TYPE, CASE WHEN e.IsAutoIncremented = 'true' THEN 'YES' ELSE 'NO' END AS IS_AUTOINCREMENT")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
-        .append(".Columns e")
-        .append(" WHERE UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append("AND UCASE(TableName)") .append(LIKE_ESCAPE)
-        .append("AND UCASE(Name)").append(LIKE_ESCAPE)
-        .append("AND UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" ORDER BY TABLE_NAME, ORDINAL_POSITION").toString();
+            .append(", SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME, Name AS COLUMN_NAME")
+            .append(", Length AS DATA_TYPE")
+            .append(", DataType AS TYPE_NAME")
+            .append(", e.Precision AS COLUMN_SIZE")
+            .append(", NULL AS BUFFER_LENGTH, Scale AS DECIMAL_DIGITS, Radix AS NUM_PREC_RADIX")
+            .append(", convert(decodeString(NullType, '").append(NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
+            .append(", Description AS REMARKS, DefaultValue AS COLUMN_DEF, NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB")
+            .append(", CharOctetLength AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION")
+            .append(", " + IS_NULLABLE)
+            .append(", NULL AS SCOPE_CATALOG, NULL AS SCOPE_SCHEMA, NULL AS SCOPE_TABLE, NULL AS SOURCE_DATA_TYPE, CASE WHEN e.IsAutoIncremented = 'true' THEN 'YES' ELSE 'NO' END AS IS_AUTOINCREMENT")
+            .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
+            .append(".Columns e")
+            .append(" WHERE UCASE(SchemaName)").append(LIKE_ESCAPE)
+            .append("AND UCASE(TableName)").append(LIKE_ESCAPE)
+            .append("AND UCASE(Name)").append(LIKE_ESCAPE)
+            .append("AND UCASE(VDBName)").append(LIKE_ESCAPE)
+            .append(" ORDER BY TABLE_NAME, ORDINAL_POSITION").toString();
 
     private final static String QUERY_COLUMNS = new StringBuffer("SELECT VDBName AS TABLE_CAT")
-        .append(", SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME, Name AS COLUMN_NAME")
-        .append(", TypeCode AS DATA_TYPE")
-        .append(", TypeName AS TYPE_NAME")
-        .append(", ColumnSize AS COLUMN_SIZE")
-        .append(", NULL AS BUFFER_LENGTH, Scale AS DECIMAL_DIGITS, Radix AS NUM_PREC_RADIX")
-        .append(", convert(decodeString(NullType, '").append(NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
-        .append(", Description AS REMARKS, DefaultValue AS COLUMN_DEF, NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB")
-        .append(", CharOctetLength AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION")
-        .append(", " + IS_NULLABLE)
-        .append(", NULL AS SCOPE_CATALOG, NULL AS SCOPE_SCHEMA, NULL AS SCOPE_TABLE, NULL AS SOURCE_DATA_TYPE, CASE WHEN e.IsAutoIncremented = 'true' THEN 'YES' ELSE 'NO' END AS IS_AUTOINCREMENT, null AS IS_GENERATEDCOLUMN")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
-        .append(".Columns e")
-        .append(" WHERE UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append("AND UCASE(TableName)") .append(LIKE_ESCAPE)
-        .append("AND UCASE(Name)").append(LIKE_ESCAPE)
-        .append("AND UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" ORDER BY TABLE_NAME, ORDINAL_POSITION").toString();
+            .append(", SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME, Name AS COLUMN_NAME")
+            .append(", TypeCode AS DATA_TYPE")
+            .append(", TypeName AS TYPE_NAME")
+            .append(", ColumnSize AS COLUMN_SIZE")
+            .append(", NULL AS BUFFER_LENGTH, Scale AS DECIMAL_DIGITS, Radix AS NUM_PREC_RADIX")
+            .append(", convert(decodeString(NullType, '").append(NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
+            .append(", Description AS REMARKS, DefaultValue AS COLUMN_DEF, NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB")
+            .append(", CharOctetLength AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION")
+            .append(", " + IS_NULLABLE)
+            .append(", NULL AS SCOPE_CATALOG, NULL AS SCOPE_SCHEMA, NULL AS SCOPE_TABLE, NULL AS SOURCE_DATA_TYPE, CASE WHEN e.IsAutoIncremented = 'true' THEN 'YES' ELSE 'NO' END AS IS_AUTOINCREMENT, null AS IS_GENERATEDCOLUMN")
+            .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
+            .append(".Columns e")
+            .append(" WHERE UCASE(SchemaName)").append(LIKE_ESCAPE)
+            .append("AND UCASE(TableName)").append(LIKE_ESCAPE)
+            .append("AND UCASE(Name)").append(LIKE_ESCAPE)
+            .append("AND UCASE(VDBName)").append(LIKE_ESCAPE)
+            .append(" ORDER BY TABLE_NAME, ORDINAL_POSITION").toString();
 
     private static final String QUERY_INDEX_INFO =
-      new StringBuffer("SELECT VDBName AS TABLE_CAT, SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME")
-        .append(", case when KeyType = 'Index' then TRUE else FALSE end AS NON_UNIQUE, NULL AS INDEX_QUALIFIER, KeyName AS INDEX_NAME")
-        .append(", 3 AS TYPE, convert(Position, short) AS ORDINAL_POSITION, k.Name AS COLUMN_NAME")
-        .append(", NULL AS ASC_OR_DESC, 0 AS CARDINALITY, 1 AS PAGES, NULL AS FILTER_CONDITION")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".KeyColumns k")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(TableName)") .append(LIKE_ESCAPE)
-        .append(" AND KeyType IN ('Unique', ?)").toString();
+            new StringBuffer("SELECT VDBName AS TABLE_CAT, SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME")
+                    .append(", case when KeyType = 'Index' then TRUE else FALSE end AS NON_UNIQUE, NULL AS INDEX_QUALIFIER, KeyName AS INDEX_NAME")
+                    .append(", 3 AS TYPE, convert(Position, short) AS ORDINAL_POSITION, k.Name AS COLUMN_NAME")
+                    .append(", NULL AS ASC_OR_DESC, 0 AS CARDINALITY, 1 AS PAGES, NULL AS FILTER_CONDITION")
+                    .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".KeyColumns k")
+                    .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(TableName)").append(LIKE_ESCAPE)
+                    .append(" AND KeyType IN ('Unique', ?)").toString();
 
     private static final String QUERY_INDEX_INFO_CARDINALITY =
-      new StringBuffer("SELECT VDBName AS TABLE_CAT, SchemaName AS TABLE_SCHEM, Name AS TABLE_NAME")
-        .append(", FALSE AS NON_UNIQUE, NULL AS INDEX_QUALIFIER, null AS INDEX_NAME")
-        .append(", 0 AS TYPE, cast(0 as short) AS ORDINAL_POSITION, null AS COLUMN_NAME")
-        .append(", NULL AS ASC_OR_DESC, CARDINALITY, 1 AS PAGES, NULL AS FILTER_CONDITION")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Tables t")
-        .append(" WHERE Cardinality > -1")
-        .append(" AND UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(Name)") .append(LIKE_ESCAPE).toString();
+            new StringBuffer("SELECT VDBName AS TABLE_CAT, SchemaName AS TABLE_SCHEM, Name AS TABLE_NAME")
+                    .append(", FALSE AS NON_UNIQUE, NULL AS INDEX_QUALIFIER, null AS INDEX_NAME")
+                    .append(", 0 AS TYPE, cast(0 as short) AS ORDINAL_POSITION, null AS COLUMN_NAME")
+                    .append(", NULL AS ASC_OR_DESC, CARDINALITY, 1 AS PAGES, NULL AS FILTER_CONDITION")
+                    .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Tables t")
+                    .append(" WHERE Cardinality > -1")
+                    .append(" AND UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(Name)").append(LIKE_ESCAPE).toString();
 
     private static final String QUERY_PRIMARY_KEYS =
-      new StringBuffer("SELECT VDBName as TABLE_CAT, SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME")
-        .append(", k.Name AS COLUMN_NAME, convert(Position, short) AS KEY_SEQ, KeyName AS PK_NAME")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".KeyColumns k")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(TableName)") .append(LIKE_ESCAPE)
-        .append(" AND KeyType LIKE 'Primary'")
-        .append(" ORDER BY COLUMN_NAME, KEY_SEQ").toString();
+            new StringBuffer("SELECT VDBName as TABLE_CAT, SchemaName AS TABLE_SCHEM, TableName AS TABLE_NAME")
+                    .append(", k.Name AS COLUMN_NAME, convert(Position, short) AS KEY_SEQ, KeyName AS PK_NAME")
+                    .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".KeyColumns k")
+                    .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(TableName)").append(LIKE_ESCAPE)
+                    .append(" AND KeyType LIKE 'Primary'")
+                    .append(" ORDER BY COLUMN_NAME, KEY_SEQ").toString();
 
     private final static String QUERY_PROCEDURES =
-      new StringBuffer("SELECT VDBName AS PROCEDURE_CAT, SchemaName AS PROCEDURE_SCHEM")
-        .append(", p.Name AS PROCEDURE_NAME, convert(null, string) AS RESERVED_1")
-        .append(", convert(null, string) AS RESERVED_2, convert(null, string) AS RESERVED_3, p.Description AS REMARKS")
-        .append(", convert(decodeString(p.ReturnsResults, 'true, ").append(DatabaseMetaData.procedureReturnsResult)
-        .append(", false, ").append(DatabaseMetaData.procedureNoResult).append("'), short) AS PROCEDURE_TYPE, p.Name AS SPECIFIC_NAME FROM ")
-        .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Procedures as p")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(p.Name)").append(LIKE_ESCAPE)
-        .append(" ORDER BY PROCEDURE_SCHEM, PROCEDURE_NAME").toString();
+            new StringBuffer("SELECT VDBName AS PROCEDURE_CAT, SchemaName AS PROCEDURE_SCHEM")
+                    .append(", p.Name AS PROCEDURE_NAME, convert(null, string) AS RESERVED_1")
+                    .append(", convert(null, string) AS RESERVED_2, convert(null, string) AS RESERVED_3, p.Description AS REMARKS")
+                    .append(", convert(decodeString(p.ReturnsResults, 'true, ").append(DatabaseMetaData.procedureReturnsResult)
+                    .append(", false, ").append(DatabaseMetaData.procedureNoResult).append("'), short) AS PROCEDURE_TYPE, p.Name AS SPECIFIC_NAME FROM ")
+                    .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Procedures as p")
+                    .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(p.Name)").append(LIKE_ESCAPE)
+                    .append(" ORDER BY PROCEDURE_SCHEM, PROCEDURE_NAME").toString();
 
     private final static String QUERY_PROCEDURE_COLUMNS =
-        new StringBuffer("SELECT VDBName PROCEDURE_CAT, SchemaName AS PROCEDURE_SCHEM")
-          .append(", ProcedureName AS PROCEDURE_NAME, p.Name AS COLUMN_NAME")
-          .append(", convert(decodeString(TYPE, '").append(PARAM_DIRECTION_MAPPING).append("', ','), short) AS COLUMN_TYPE")
-          .append(", TypeCode AS DATA_TYPE")
-          .append(", TypeName AS TYPE_NAME, ColumnSize AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
-          .append(", Radix AS RADIX, convert(decodeString(NullType, '")
-          .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
-          .append(", p.Description AS REMARKS, %s AS COLUMN_DEF")
-          .append(", NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB, NULL AS CHAR_OCTET_LENGTH, p.Position AS ORDINAL_POSITION")
-          .append(", "+IS_NULLABLE+", p.ProcedureName as SPECIFIC_NAME FROM ")
-          .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
-          .append(".ProcedureParams as p")
-          .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-          .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-          .append(" AND UCASE(ProcedureName)").append(LIKE_ESCAPE)
-          .append(" AND UCASE(p.Name)").append(LIKE_ESCAPE)
-          .append(" ORDER BY PROCEDURE_SCHEM, PROCEDURE_NAME, case TYPE when 'ReturnValue' then 0 when 'ResultSet' then 2 else 1 end, POSITION").toString();
+            new StringBuffer("SELECT VDBName PROCEDURE_CAT, SchemaName AS PROCEDURE_SCHEM")
+                    .append(", ProcedureName AS PROCEDURE_NAME, p.Name AS COLUMN_NAME")
+                    .append(", convert(decodeString(TYPE, '").append(PARAM_DIRECTION_MAPPING).append("', ','), short) AS COLUMN_TYPE")
+                    .append(", TypeCode AS DATA_TYPE")
+                    .append(", TypeName AS TYPE_NAME, ColumnSize AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
+                    .append(", Radix AS RADIX, convert(decodeString(NullType, '")
+                    .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
+                    .append(", p.Description AS REMARKS, %s AS COLUMN_DEF")
+                    .append(", NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB, NULL AS CHAR_OCTET_LENGTH, p.Position AS ORDINAL_POSITION")
+                    .append(", " + IS_NULLABLE + ", p.ProcedureName as SPECIFIC_NAME FROM ")
+                    .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
+                    .append(".ProcedureParams as p")
+                    .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(ProcedureName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(p.Name)").append(LIKE_ESCAPE)
+                    .append(" ORDER BY PROCEDURE_SCHEM, PROCEDURE_NAME, case TYPE when 'ReturnValue' then 0 when 'ResultSet' then 2 else 1 end, POSITION").toString();
 
     private final static String QUERY_PROCEDURE_COLUMNS_OLD =
-      new StringBuffer("SELECT VDBName PROCEDURE_CAT, SchemaName AS PROCEDURE_SCHEM")
-        .append(", ProcedureName AS PROCEDURE_NAME, p.Name AS COLUMN_NAME")
-        .append(", convert(decodeString(TYPE, '").append(PARAM_DIRECTION_MAPPING).append("', ','), short) AS COLUMN_TYPE")
-        .append(", 1 AS DATA_TYPE")
-        .append(", DataType AS TYPE_NAME, p.Precision AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
-        .append(", Radix AS RADIX, convert(decodeString(NullType, '")
-        .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
-        .append(", p.Description AS REMARKS, NULL AS COLUMN_DEF")
-        .append(", NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB, NULL AS CHAR_OCTET_LENGTH, p.Position AS ORDINAL_POSITION")
-        .append(", "+IS_NULLABLE+", p.ProcedureName as SPECIFIC_NAME FROM ")
-        .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
-        .append(".ProcedureParams as p")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(ProcedureName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(p.Name)").append(LIKE_ESCAPE)
-        .append(" ORDER BY PROCEDURE_SCHEM, PROCEDURE_NAME, case TYPE when 'ReturnValue' then 0 when 'ResultSet' then 2 else 1 end, POSITION").toString();
+            new StringBuffer("SELECT VDBName PROCEDURE_CAT, SchemaName AS PROCEDURE_SCHEM")
+                    .append(", ProcedureName AS PROCEDURE_NAME, p.Name AS COLUMN_NAME")
+                    .append(", convert(decodeString(TYPE, '").append(PARAM_DIRECTION_MAPPING).append("', ','), short) AS COLUMN_TYPE")
+                    .append(", 1 AS DATA_TYPE")
+                    .append(", DataType AS TYPE_NAME, p.Precision AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
+                    .append(", Radix AS RADIX, convert(decodeString(NullType, '")
+                    .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
+                    .append(", p.Description AS REMARKS, NULL AS COLUMN_DEF")
+                    .append(", NULL AS SQL_DATA_TYPE, NULL AS SQL_DATETIME_SUB, NULL AS CHAR_OCTET_LENGTH, p.Position AS ORDINAL_POSITION")
+                    .append(", " + IS_NULLABLE + ", p.ProcedureName as SPECIFIC_NAME FROM ")
+                    .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME)
+                    .append(".ProcedureParams as p")
+                    .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(ProcedureName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(p.Name)").append(LIKE_ESCAPE)
+                    .append(" ORDER BY PROCEDURE_SCHEM, PROCEDURE_NAME, case TYPE when 'ReturnValue' then 0 when 'ResultSet' then 2 else 1 end, POSITION").toString();
 
     private static final String QUERY_SCHEMAS =
-      new StringBuffer("SELECT Name AS TABLE_SCHEM, VDBName AS TABLE_CATALOG")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Schemas")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
-        .append(" ORDER BY TABLE_SCHEM").toString();
+            new StringBuffer("SELECT Name AS TABLE_SCHEM, VDBName AS TABLE_CATALOG")
+                    .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Schemas")
+                    .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                    .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
+                    .append(" ORDER BY TABLE_SCHEM").toString();
 
     private static final String QUERY_FUNCTIONS = new StringBuffer("SELECT VDBName AS Function_CAT, SchemaName AS FUNCTION_SCHEM, "
             + "Name AS FUNCTION_NAME, Description as REMARKS, 1 as FUNCTION_TYPE, UID AS SPECIFIC_NAME")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Functions")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
-        .append(" ORDER BY FUNCTION_CAT, FUNCTION_SCHEM, FUNCTION_NAME, SPECIFIC_NAME").toString();
+            .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Functions")
+            .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
+            .append(" ORDER BY FUNCTION_CAT, FUNCTION_SCHEM, FUNCTION_NAME, SPECIFIC_NAME").toString();
 
-   private static final String QUERY_FUNCTION_COLUMNS = new StringBuffer("SELECT VDBName AS Function_CAT, SchemaName AS FUNCTION_SCHEM, ")
-       .append("FunctionName AS FUNCTION_NAME, Name as COLUMN_NAME, CASE WHEN Type = 'ReturnValue' Then 4 WHEN Type = 'In' Then 1 ELSE 0 END AS COLUMN_TYPE")
-       .append(", TypeCode AS DATA_TYPE")
-       .append(", TypeName AS TYPE_NAME, ColumnSize AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
-       .append(", Radix AS RADIX, convert(decodeString(NullType, '")
-       .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
-       .append(", Description AS REMARKS, NULL AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION,")
-       .append(IS_NULLABLE).append(", FunctionUID as SPECIFIC_NAME")
-       .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".FunctionParams")
-       .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-       .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-       .append(" AND UCASE(FunctionName)").append(LIKE_ESCAPE)
-       .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
-       .append(" ORDER BY FUNCTION_CAT, FUNCTION_SCHEM, FUNCTION_NAME, SPECIFIC_NAME, ORDINAL_POSITION").toString();
+    private static final String QUERY_FUNCTION_COLUMNS = new StringBuffer("SELECT VDBName AS Function_CAT, SchemaName AS FUNCTION_SCHEM, ")
+            .append("FunctionName AS FUNCTION_NAME, Name as COLUMN_NAME, CASE WHEN Type = 'ReturnValue' Then 4 WHEN Type = 'In' Then 1 ELSE 0 END AS COLUMN_TYPE")
+            .append(", TypeCode AS DATA_TYPE")
+            .append(", TypeName AS TYPE_NAME, ColumnSize AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
+            .append(", Radix AS RADIX, convert(decodeString(NullType, '")
+            .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
+            .append(", Description AS REMARKS, NULL AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION,")
+            .append(IS_NULLABLE).append(", FunctionUID as SPECIFIC_NAME")
+            .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".FunctionParams")
+            .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(FunctionName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
+            .append(" ORDER BY FUNCTION_CAT, FUNCTION_SCHEM, FUNCTION_NAME, SPECIFIC_NAME, ORDINAL_POSITION").toString();
 
     private static final String QUERY_FUNCTION_COLUMNS_OLD = new StringBuffer("SELECT VDBName AS Function_CAT, SchemaName AS FUNCTION_SCHEM, ")
-        .append("FunctionName AS FUNCTION_NAME, Name as COLUMN_NAME, CASE WHEN Type = 'ReturnValue' Then 4 WHEN Type = 'In' Then 1 ELSE 0 END AS COLUMN_TYPE")
-        .append(", 1 AS DATA_TYPE")
-        .append(", DataType AS TYPE_NAME, \"Precision\" AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
-        .append(", Radix AS RADIX, convert(decodeString(NullType, '")
-        .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
-        .append(", Description AS REMARKS, NULL AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION,")
-        .append(IS_NULLABLE).append(", FunctionUID as SPECIFIC_NAME")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".FunctionParams")
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(FunctionName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
-        .append(" ORDER BY FUNCTION_CAT, FUNCTION_SCHEM, FUNCTION_NAME, SPECIFIC_NAME, ORDINAL_POSITION").toString();
+            .append("FunctionName AS FUNCTION_NAME, Name as COLUMN_NAME, CASE WHEN Type = 'ReturnValue' Then 4 WHEN Type = 'In' Then 1 ELSE 0 END AS COLUMN_TYPE")
+            .append(", 1 AS DATA_TYPE")
+            .append(", DataType AS TYPE_NAME, \"Precision\" AS \"PRECISION\", TypeLength  AS LENGTH, convert(case when scale > 32767 then 32767 else Scale end, short) AS SCALE")
+            .append(", Radix AS RADIX, convert(decodeString(NullType, '")
+            .append(PROC_COLUMN_NULLABILITY_MAPPING).append("', ','), integer) AS NULLABLE")
+            .append(", Description AS REMARKS, NULL AS CHAR_OCTET_LENGTH, Position AS ORDINAL_POSITION,")
+            .append(IS_NULLABLE).append(", FunctionUID as SPECIFIC_NAME")
+            .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".FunctionParams")
+            .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(FunctionName)").append(LIKE_ESCAPE)
+            .append(" AND UCASE(Name)").append(LIKE_ESCAPE)
+            .append(" ORDER BY FUNCTION_CAT, FUNCTION_SCHEM, FUNCTION_NAME, SPECIFIC_NAME, ORDINAL_POSITION").toString();
 
     private static String QUERY_TYPEINFO = "SELECT name as TYPE_NAME, typecode as DATA_TYPE, \"PRECISION\", LITERAL_PREFIX, LITERAL_SUFFIX, null as CREATE_PARAMS, "
-            + "convert(decodeString(NullType, '" + TYPE_NULLABILITY_MAPPING + "', ','), short) AS NULLABLE, " 
+            + "convert(decodeString(NullType, '" + TYPE_NULLABILITY_MAPPING + "', ','), short) AS NULLABLE, "
             + "IsCaseSensitive as CASE_SENSITIVE, "
             + "cast(case SearchType"
-                    + " when 'Like Only' then " + DatabaseMetaData.typePredChar
-                    + " when 'All Except Like' then " + DatabaseMetaData.typePredBasic
-                    + " when 'Searchable' then " + DatabaseMetaData.typeSearchable
-                    + " else " + DatabaseMetaData.typePredNone
-                    + " end as short) as SEARCHABLE, "
+            + " when 'Like Only' then " + DatabaseMetaData.typePredChar
+            + " when 'All Except Like' then " + DatabaseMetaData.typePredBasic
+            + " when 'Searchable' then " + DatabaseMetaData.typeSearchable
+            + " else " + DatabaseMetaData.typePredNone
+            + " end as short) as SEARCHABLE, "
             + "not(IsSigned) as UNSIGNED_ATTRIBUTE, false as FIXED_PREC_SCALE, "
             + "IsAutoIncremented as AUTO_INCREMENT, null as LOCAL_TYPE_NAME, cast(0 as short) as MINIMUM_SCALE, "
             + "cast(32767 as short) as MAXIMUM_SCALE, cast(null as integer) AS SQL_DATA_TYPE, cast(null as integer) AS SQL_DATETIME_SUB, radix as NUM_PREC_RADIX "
@@ -356,7 +358,9 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 //        .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".VirtualDatabases v") 
 //        .append(" WHERE UCASE(v.Name)").append(LIKE_ESCAPE).append("AND UCASE(TypeName)").append(LIKE_ESCAPE).append("ORDER BY DATA_TYPE, TYPE_SCHEM, TYPE_NAME ").toString();
 
-    /** ATTRIBUTES */
+    /**
+     * ATTRIBUTES
+     */
 
     // driver's connection object used in constructing this object.
     private ConnectionImpl driverConnection;
@@ -366,6 +370,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Constructor which initializes with the connection object on which metadata
      * is sought
+     *
      * @param connection driver's connection object.
      */
     DatabaseMetaDataImpl(ConnectionImpl connection) {
@@ -382,12 +387,12 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
 
         QUERY_TABLES = new StringBuffer("SELECT VDBName AS TABLE_CAT, SchemaName AS TABLE_SCHEM, Name AS TABLE_NAME")
-        .append(", ").append(TABLE_TYPE).append(" AS TABLE_TYPE, Description AS REMARKS, NULL AS TYPE_CAT, NULL AS TYPE_SCHEM")
-        .append(", NULL AS TYPE_NAME, NULL AS SELF_REFERENCING_COL_NAME, NULL AS REF_GENERATION, IsPhysical AS ISPHYSICAL")
-        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Tables g ") 
-        .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
-        .append(" AND UCASE(Name)") .append(LIKE_ESCAPE).toString();
+                .append(", ").append(TABLE_TYPE).append(" AS TABLE_TYPE, Description AS REMARKS, NULL AS TYPE_CAT, NULL AS TYPE_SCHEM")
+                .append(", NULL AS TYPE_NAME, NULL AS SELF_REFERENCING_COL_NAME, NULL AS REF_GENERATION, IsPhysical AS ISPHYSICAL")
+                .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".Tables g ")
+                .append(" WHERE UCASE(VDBName)").append(LIKE_ESCAPE)
+                .append(" AND UCASE(SchemaName)").append(LIKE_ESCAPE)
+                .append(" AND UCASE(Name)").append(LIKE_ESCAPE).toString();
     }
 
     @Override
@@ -402,6 +407,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Checks whether a DDL statement within a transaction forces the transaction
      * to commit.
+     *
      * @return if so return true else return false.
      * @throws SQLException Should never occur.
      */
@@ -411,6 +417,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Checks whether a DDL statement within a transaction is ignored.
+     *
      * @return if so return true, else false
      * @throws SQLException Should never occur.
      */
@@ -426,6 +433,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Did getMaxRowSize() include LONGVARCHAR and LONGVARBINARY
      * blobs?
+     *
      * @return <code>true</code> if so; <code>false</code> otherwise
      * @throws SQLException should never occur
      */
@@ -434,7 +442,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     @Override
-    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable) 
+    public ResultSet getBestRowIdentifier(String catalog, String schema, String table, int scope, boolean nullable)
             throws SQLException {
 
         // here it always returns a empty result set, when this functionality
@@ -442,44 +450,44 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         // to filter.
 
         // list containing records/rows in the ResultSet
-        List records = new ArrayList (0);
+        List records = new ArrayList(0);
 
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
         Map[] metadataList = new Map[8];
 
         // HardCoding metadata details for SCOPE column
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.SCOPE,
-                            DataTypeManager.DefaultDataTypes.SHORT,  ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for COLUMN_NAME column
         metadataList[1] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.COLUMN_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for DATA_TYPE column
         metadataList[2] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.DATA_TYPE,
-                            DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for TYPE_NAME column
         metadataList[3] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.TYPE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for COLUMN_SIZE column
         metadataList[4] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.COLUMN_SIZE,
-                            DataTypeManager.DefaultDataTypes.INTEGER, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.INTEGER, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for BUFFER_LENGTH column
         metadataList[5] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.BUFFER_LENGTH,
-                            DataTypeManager.DefaultDataTypes.INTEGER, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.INTEGER, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for DECIMAL_DIGITS column
         metadataList[6] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.DECIMAL_DIGITS,
-                            DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for PSEUDO_COLUMN column
         metadataList[7] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.BEST_ROW.PSEUDO_COLUMN,
-                            DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.SHORT, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // logging
         String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.Best_row_sucess", table);
@@ -491,17 +499,17 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     public ResultSet getCatalogs() throws SQLException {
         // list containing records/rows in the ResultSet
-        List<List<String>> records = new ArrayList<List<String>> (1);
+        List<List<String>> records = new ArrayList<List<String>>(1);
         records.add(Arrays.asList(this.driverConnection.getCatalog()));
 
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
         Map[] metadataList = new Map[1];
 
         // HardCoding metadata details for TABLE_CAT column
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.CATALOGS.TABLE_CAT,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // logging
         String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.Catalog_success");
@@ -513,6 +521,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the String object used to separate a catalog name and a table name
+     *
      * @return String delimiter
      * @throws SQLException should never occur.
      */
@@ -527,28 +536,28 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     @Override
     public ResultSet getColumnPrivileges(String catalog, String schema, String table, String columnName) throws SQLException {
 
-        List records = new ArrayList (0);
+        List records = new ArrayList(0);
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
         Map[] metadataList = new Map[8];
 
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.TABLE_CAT,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
         metadataList[1] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.TABLE_SCHEM,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
         metadataList[2] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.TABLE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[3] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.COLUMN_NAME,
-                             DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[4] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.GRANTOR,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
         metadataList[5] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.GRANTEE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[6] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.PRIVILEGE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[7] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.IS_GRANTABLE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         return dummyStatement().createResultSet(records, metadataList);
 
@@ -565,16 +574,16 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             schema = PERCENT;
         }
         // Get columns in all the tables if tableNamePattern is null
-        if(tableNamePattern == null) {
+        if (tableNamePattern == null) {
             tableNamePattern = PERCENT;
         }
         // Get all columns if columnNamePattern is null
-        if(columnNamePattern == null) {
+        if (columnNamePattern == null) {
             columnNamePattern = PERCENT;
         }
 
         // list which represent records containing column info
-        List records = new ArrayList ();
+        List records = new ArrayList();
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
         PreparedStatement prepareQuery = null;
@@ -582,7 +591,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         boolean newMetadata = driverConnection.getServerConnection().getServerVersion().compareTo("09.03") >= 0;
 
         try {
-            prepareQuery = driverConnection.prepareStatement(newMetadata?QUERY_COLUMNS:QUERY_COLUMNS_OLD);
+            prepareQuery = driverConnection.prepareStatement(newMetadata ? QUERY_COLUMNS : QUERY_COLUMNS_OLD);
             prepareQuery.setObject(1, schema.toUpperCase());
             prepareQuery.setObject(2, tableNamePattern.toUpperCase());
             prepareQuery.setObject(3, columnNamePattern.toUpperCase());
@@ -592,34 +601,34 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             results = (ResultSetImpl) prepareQuery.executeQuery();
 
             // build the list of records of column description
-            while (results.next ()) {
+            while (results.next()) {
                 // list represents a record on the Results object.
                 List currentRow = new ArrayList(JDBCColumnPositions.COLUMNS.MAX_COLUMNS);
 
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
-                for(int i=0; i < results.getMetaData().getColumnCount(); i++) {
+                for (int i = 0; i < results.getMetaData().getColumnCount(); i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
                 if (!newMetadata) {
-                    String typeName = (String)currentRow.get(JDBCColumnPositions.COLUMNS.TYPE_NAME-1);
-                    Integer length = (Integer)currentRow.get(JDBCColumnPositions.COLUMNS.DATA_TYPE-1);
-                    Integer precision = (Integer)currentRow.get(JDBCColumnPositions.COLUMNS.COLUMN_SIZE-1);
+                    String typeName = (String) currentRow.get(JDBCColumnPositions.COLUMNS.TYPE_NAME - 1);
+                    Integer length = (Integer) currentRow.get(JDBCColumnPositions.COLUMNS.DATA_TYPE - 1);
+                    Integer precision = (Integer) currentRow.get(JDBCColumnPositions.COLUMNS.COLUMN_SIZE - 1);
                     if (typeName != null) {
-                        currentRow.set(JDBCColumnPositions.COLUMNS.DATA_TYPE-1, JDBCSQLTypeInfo.getSQLType(typeName));
+                        currentRow.set(JDBCColumnPositions.COLUMNS.DATA_TYPE - 1, JDBCSQLTypeInfo.getSQLType(typeName));
                         if (!Number.class.isAssignableFrom(DataTypeManager.getDataTypeClass(typeName))) {
                             if (length != null && length <= 0) {
-                                currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE-1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
+                                currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE - 1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
                             } else {
-                                currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE-1, length);
+                                currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE - 1, length);
                             }
                         } else if (precision != null && precision <= 0) {
-                            currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE-1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
+                            currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE - 1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
                         }
                     } else {
-                        currentRow.set(JDBCColumnPositions.COLUMNS.DATA_TYPE-1, null);
-                        currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE-1, null);
+                        currentRow.set(JDBCColumnPositions.COLUMNS.DATA_TYPE - 1, null);
+                        currentRow.set(JDBCColumnPositions.COLUMNS.COLUMN_SIZE - 1, null);
                     }
                 }
                 records.add(currentRow);
@@ -634,7 +643,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // logging
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getCols_error", columnNamePattern, tableNamePattern, e.getMessage());
             throw TeiidSQLException.create(e, logMsg);
@@ -647,7 +656,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     @Override
-    public ResultSet getCrossReference(String primaryCatalog, String primarySchema,String primaryTable,String foreignCatalog,String foreignSchema, String foreignTable) throws SQLException {
+    public ResultSet getCrossReference(String primaryCatalog, String primarySchema, String primaryTable, String foreignCatalog, String foreignSchema, String foreignTable) throws SQLException {
 
         if (primaryCatalog == null) {
             primaryCatalog = PERCENT;
@@ -693,9 +702,9 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getCrossRef_success", primaryTable, foreignTable);
             logger.fine(logMsg);
             return resultSet;
-        } catch(Exception e) {
+        } catch (Exception e) {
             // logging
-            String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getCrossRef_error", 
+            String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getCrossRef_error",
                     primaryTable, foreignTable, e.getMessage());
             throw TeiidSQLException.create(e, logMsg);
         } finally {
@@ -707,6 +716,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * Retrieves the minor version number of the underlying database.
+     *
      * @return intValue of database's minor version
      * @throws SQLException if a database access error occurs.
      */
@@ -716,6 +726,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * Retrieves the major version number of the underlying database.
+     *
      * @return intValue of database's minor version
      * @throws SQLException if a database access error occurs.
      */
@@ -725,24 +736,27 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * Retrieves the major JDBC version number for this driver.
+     *
      * @return intValue JDBC major version number
      * @throws SQLException should never occur.
      */
-    public int getJDBCMajorVersion()  throws SQLException {
+    public int getJDBCMajorVersion() throws SQLException {
         return 3;
     }
 
     /**
      * Retrieves the minor JDBC version number for this driver.
+     *
      * @return intValue JDBC major version number
      * @throws SQLException should never occur.
      */
-    public int getJDBCMinorVersion()  throws SQLException {
+    public int getJDBCMinorVersion() throws SQLException {
         return 0;
     }
 
     /**
      * <p>Gets the product name for this database
+     *
      * @return String representing the product name
      * @throws SQLException should never occur.
      */
@@ -760,6 +774,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets this drivers major version number
+     *
      * @return int representing the driver's major version
      */
     public int getDriverMajorVersion() {
@@ -768,6 +783,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets this drivers minor version number
+     *
      * @return int representing the driver's minor version
      */
     public int getDriverMinorVersion() {
@@ -776,6 +792,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Get the name of this JDBC driver
+     *
      * @return String representing the driver's name
      * @throws SQLException if the connection is already closed.
      */
@@ -786,11 +803,12 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>This method gets the version of this JDBC driver. It combines the major
      * and minor version numbers
+     *
      * @return String representing the driver's version
      * @throws SQLException should never occur.
      */
     public String getDriverVersion() throws SQLException {
-        return getDriverMajorVersion()+"."+getDriverMinorVersion ();
+        return getDriverMajorVersion() + "." + getDriverMinorVersion();
     }
 
     public ResultSet getExportedKeys(String catalog, String schema, String table) throws SQLException {
@@ -821,7 +839,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             logger.fine(JDBCPlugin.Util.getString("MMDatabaseMetadata.getExpKey_success", table));
 
             return resultSet;
-        } catch(Exception e) {
+        } catch (Exception e) {
             // logging
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getExpKey_error", table, e.getMessage());
             throw TeiidSQLException.create(e, logMsg);
@@ -835,6 +853,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Gets the extra characters that can be used in unquoted identifier names
      * (those beyond a-z, 0-9, and _)
+     *
      * @return String representing extra charachters that can be used in identifier names.
      * @throws SQLException should never occur
      */
@@ -845,6 +864,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Get's the string used to quote SQL identifiers. This returns a " " if identifier
      * quoting is not supported.
+     *
      * @return string used to quote SQL identifiers.
      */
     public String getIdentifierQuoteString() {
@@ -881,7 +901,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             logger.fine(JDBCPlugin.Util.getString("MMDatabaseMetadata.getImpKey_success", table));
 
             return resultSet;
-        } catch(Exception e) {
+        } catch (Exception e) {
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getImpKey_error", table, e.getMessage());
             throw TeiidSQLException.create(e, logMsg);
         } finally {
@@ -891,7 +911,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
     }
 
-    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate) 
+    public ResultSet getIndexInfo(String catalog, String schema, String table, boolean unique, boolean approximate)
             throws SQLException {
         if (catalog == null) {
             catalog = PERCENT;
@@ -905,7 +925,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             table = PERCENT;
         }
         // list which represent records containing primary key info
-        List records = new ArrayList ();
+        List records = new ArrayList();
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
         PreparedStatement prepareQuery = null;
@@ -921,7 +941,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             prepareQuery.setObject(1, catalog.toUpperCase());
             prepareQuery.setObject(2, schema.toUpperCase());
             prepareQuery.setObject(3, table.toUpperCase());
-            prepareQuery.setObject(4, unique?null:"Index");
+            prepareQuery.setObject(4, unique ? null : "Index");
 
             if (approximate) {
                 prepareQuery.setObject(5, catalog.toUpperCase());
@@ -933,14 +953,14 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             results = (ResultSetImpl) prepareQuery.executeQuery();
 
             // build the list of records from server's Results object.
-            while (results.next ()) {
+            while (results.next()) {
                 // list represents a record on the Results object.
-                List currentRow = new ArrayList (13);
+                List currentRow = new ArrayList(13);
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
-                for(int i=0; i < JDBCColumnPositions.INDEX_INFO.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.INDEX_INFO.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 // add the current row to the list of records.
@@ -965,6 +985,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Gets the maximum number of hexadecimal characters allowed in an inline
      * binary literal
+     *
      * @return int value giving maximum length of a binary literal
      */
     public int getMaxBinaryLiteralLength() {
@@ -973,6 +994,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a catalog name
+     *
      * @return int value giving maximum length of a catalog name
      * @throws SQLException should never occur
      */
@@ -982,6 +1004,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a character literal
+     *
      * @return int value giving maximum length of a charachter literal
      * @throws SQLException should never occur
      */
@@ -991,6 +1014,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a column name
+     *
      * @return int value giving maximum length of the column name
      * @throws SQLException should never occur
      */
@@ -1000,6 +1024,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of columns allowed in a GROUP BY clause
+     *
      * @return int values giving max columns in GROUP BY
      * @throws SQLException should never occur
      */
@@ -1009,6 +1034,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of columns allowed in an index
+     *
      * @return int gives maximum columns in an index.
      * @throws SQLException should never occur
      */
@@ -1018,6 +1044,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of columns allowed in a ORDER BY clause
+     *
      * @return int gives maximum columns in an order by.
      * @throws SQLException should never occur
      */
@@ -1027,6 +1054,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of columns allowed in a SELECT clause
+     *
      * @return int gives maximum columns in a select.
      * @throws SQLException should never occur
      */
@@ -1052,6 +1080,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a procedure name
+     *
      * @return int gives maximum length of procedure name.
      * @throws SQLException should never occur
      */
@@ -1061,6 +1090,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of bytes allowed in a single row
+     *
      * @return int max row size in the result set.
      * @throws SQLException should never occur
      */
@@ -1070,6 +1100,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a schema name
+     *
      * @return int maximum length of a schema.
      * @throws SQLException should never occur
      */
@@ -1079,6 +1110,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in an SQL statement
+     *
      * @return maximum length of a statement
      * @throws SQLException should never occur
      */
@@ -1089,6 +1121,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Gets the maximum number of active statements that may be open on one
      * connection at any time
+     *
      * @return max number of open statements on a connection.
      * @throws SQLException should never occur
      */
@@ -1098,6 +1131,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a table name
+     *
      * @return max length of table name.
      * @throws SQLException should never occur
      */
@@ -1107,6 +1141,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of tables allowed in a SELECT clause
+     *
      * @return max tables in a select.
      * @throws SQLException should never occur
      */
@@ -1116,6 +1151,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Gets the maximum number of characters allowed in a username
+     *
      * @return max length of username.
      * @throws SQLException should never occur
      */
@@ -1141,7 +1177,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
 
         // list which represent records containing primary key info
-        List records = new ArrayList ();
+        List records = new ArrayList();
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
         PreparedStatement prepareQuery = null;
@@ -1156,14 +1192,14 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             results = (ResultSetImpl) prepareQuery.executeQuery();
 
             // build the list of records from server's Results object.
-            while (results.next ()) {
+            while (results.next()) {
                 // list represents a record on the Results object.
-                List currentRow = new ArrayList (7);
+                List currentRow = new ArrayList(7);
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
-                for(int i=0; i < JDBCColumnPositions.PRIMARY_KEYS.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.PRIMARY_KEYS.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 // add the current row to the list of records.
@@ -1178,7 +1214,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, 
+            throw TeiidSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getPrimaryKey_error", table, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -1187,7 +1223,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
     }
 
-    public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern) 
+    public ResultSet getProcedureColumns(String catalog, String schemaPattern, String procedureNamePattern, String columnNamePattern)
             throws SQLException {
         if (catalog == null) {
             catalog = PERCENT;
@@ -1197,16 +1233,16 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
 
         // Get all columns in all procedures if procedureNamePattern is null
-        if(procedureNamePattern == null) {
+        if (procedureNamePattern == null) {
             procedureNamePattern = PERCENT;
         }
         // Get all columns if columnNamePattern is null
-        if(columnNamePattern == null) {
+        if (columnNamePattern == null) {
             columnNamePattern = PERCENT;
         }
 
         // list which represent records containing procedure column info
-        List records = new ArrayList ();
+        List records = new ArrayList();
 
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
@@ -1233,29 +1269,29 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // make a query against runtimemetadata and get results
             results = (ResultSetImpl) prepareQuery.executeQuery();
             // build the list of records from server's Results object.
-            while (results.next ()) {
+            while (results.next()) {
                 // list represents a record on the Results object.
-                List currentRow = new ArrayList (13);
+                List currentRow = new ArrayList(13);
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
-                for(int i=0; i < JDBCColumnPositions.PROCEDURE_COLUMNS.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.PROCEDURE_COLUMNS.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
                 if (!newMetadata) {
-                    String typeName = (String)currentRow.get(JDBCColumnPositions.PROCEDURE_COLUMNS.TYPE_NAME-1);
-                    Integer length = (Integer)currentRow.get(JDBCColumnPositions.PROCEDURE_COLUMNS.LENGTH-1);
-                    Integer precision = (Integer)currentRow.get(JDBCColumnPositions.PROCEDURE_COLUMNS.PRECISION-1);
+                    String typeName = (String) currentRow.get(JDBCColumnPositions.PROCEDURE_COLUMNS.TYPE_NAME - 1);
+                    Integer length = (Integer) currentRow.get(JDBCColumnPositions.PROCEDURE_COLUMNS.LENGTH - 1);
+                    Integer precision = (Integer) currentRow.get(JDBCColumnPositions.PROCEDURE_COLUMNS.PRECISION - 1);
                     if (precision != null && precision <= 0) {
-                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.PRECISION-1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
+                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.PRECISION - 1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
                     }
                     if (length != null && length <= 0) {
-                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.LENGTH-1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
+                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.LENGTH - 1, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
                     }
                     if (typeName != null) {
-                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.DATA_TYPE-1, JDBCSQLTypeInfo.getSQLType(typeName));
+                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.DATA_TYPE - 1, JDBCSQLTypeInfo.getSQLType(typeName));
                     } else {
-                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.DATA_TYPE-1, null);
+                        currentRow.set(JDBCColumnPositions.PROCEDURE_COLUMNS.DATA_TYPE - 1, null);
                     }
                 }
                 // add the current row to the list of records.
@@ -1268,8 +1304,8 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-           throw TeiidSQLException.create(e, 
-                   JDBCPlugin.Util.getString("MMDatabaseMetadata.getProcCol_error", columnNamePattern, e.getMessage()));
+            throw TeiidSQLException.create(e,
+                    JDBCPlugin.Util.getString("MMDatabaseMetadata.getProcCol_error", columnNamePattern, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
                 prepareQuery.close();
@@ -1287,12 +1323,12 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
 
         // Get all procedures if procedureNamePattern is null
-        if(procedureNamePattern == null) {
+        if (procedureNamePattern == null) {
             procedureNamePattern = PERCENT;
         }
 
         // list which represent records containing procedure info
-        List records = new ArrayList ();
+        List records = new ArrayList();
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
         PreparedStatement prepareQuery = null;
@@ -1307,15 +1343,15 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             results = (ResultSetImpl) prepareQuery.executeQuery();
 
             // build the list of records from server's Results object.
-            while (results.next ()) {
+            while (results.next()) {
                 // list represents a record on the Results object.
-                List currentRow = new ArrayList (JDBCColumnPositions.PROCEDURES.MAX_COLUMNS);
+                List currentRow = new ArrayList(JDBCColumnPositions.PROCEDURES.MAX_COLUMNS);
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
                 // there are 3 columns are reserved for future use
-                for(int i=0; i < JDBCColumnPositions.PROCEDURES.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.PROCEDURES.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 // add the current row to the list of records.
@@ -1330,7 +1366,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, 
+            throw TeiidSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getProc_error", procedureNamePattern, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -1354,6 +1390,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Gets the string that can be used to escape "_" or "%" wildcards in the
      * string search pattern used for search parameters
+     *
      * @return String that is used for escaping wildcards
      */
     public String getSearchStringEscape() {
@@ -1367,6 +1404,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * Indicates whether the SQLSTATE returned by SQLException.getSQLState is X/Open
      * (now known as Open Group) SQL CLI or SQL99.
+     *
      * @return intValue, the type of SQLSTATE; one of: sqlStateXOpen or sqlStateSQL99
      */
     public int getSQLStateType() {
@@ -1381,36 +1419,37 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * Retrieves a description of the table hierarchies defined in a
      * particular schema in this database.
-     * @param catalog A catalog name; "" retrieves those without a catalog;
-     * null means drop catalog name from the selection criteria.
-     * @param schemaPattern A schema name pattern; "" retrieves those without a schema.
+     *
+     * @param catalog          A catalog name; "" retrieves those without a catalog;
+     *                         null means drop catalog name from the selection criteria.
+     * @param schemaPattern    A schema name pattern; "" retrieves those without a schema.
      * @param tableNamePattern A table name pattern; may be a fully-qualified name.
      * @throws SQLException since not supported
      */
     public ResultSet getSuperTables(String catalog, String schemaPattern,
-        String tableNamePattern) throws SQLException {
-        List records = new ArrayList (0);
+                                    String tableNamePattern) throws SQLException {
+        List records = new ArrayList(0);
 
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
         Map[] metadataList = new Map[4];
 
         // HardCoding metadata details for TABLE_CAT column
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TABLES.TABLE_CAT,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for TABLE_SCHEM column
         metadataList[1] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TABLES.TABLE_SCHEM,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for TABLE_NAME column
         metadataList[2] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TABLES.TABLE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for SUPERTABLE_NAME column
         metadataList[3] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TABLES.SUPERTABLE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // construct results object from column values and their metadata
         return dummyStatement().createResultSet(records, metadataList);
@@ -1420,43 +1459,44 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * Retrieves a description of the user-defined type (UDT) hierarchies
      * defined in a particular schema in this database.
-     * @param catalog A catalog name; "" retrieves those without a catalog;
-     * null means drop catalog name from the selection criteria.
-     * @param schemaPattern A schema name pattern; "" retrieves those without a schema.
+     *
+     * @param catalog          A catalog name; "" retrieves those without a catalog;
+     *                         null means drop catalog name from the selection criteria.
+     * @param schemaPattern    A schema name pattern; "" retrieves those without a schema.
      * @param tableNamePattern A table name pattern; may be a fully-qualified name.
      */
     public ResultSet getSuperTypes(String catalog, String schemaPattern,
-        String tableNamePattern) throws SQLException {
-        List records = new ArrayList (0);
+                                   String tableNamePattern) throws SQLException {
+        List records = new ArrayList(0);
 
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
         Map[] metadataList = new Map[6];
 
         // HardCoding metadata details for TYPE_CAT column
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TYPES.TYPE_CAT,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for TYPE_SCHEM column
         metadataList[1] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TYPES.TYPE_SCHEM,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for TYPE_NAME column
         metadataList[2] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TYPES.TYPE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // HardCoding metadata details for SUPERTYPE_CAT column
         metadataList[3] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TYPES.SUPERTYPE_CAT,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for SUPERTYPE_SCHEM column
         metadataList[4] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TYPES.SUPERTYPE_SCHEM,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         // HardCoding metadata details for SUPERTYPE_NAME column
         metadataList[5] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.SUPER_TYPES.SUPERTYPE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         // construct results object from column values and their metadata
         return dummyStatement().createResultSet(records, metadataList);
@@ -1467,32 +1507,32 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     public ResultSet getTablePrivileges(String catalog, String schemaPattern, String tableName) throws SQLException {
-        List records = new ArrayList (0);
+        List records = new ArrayList(0);
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
         Map[] metadataList = new Map[7];
 
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.TABLE_CAT,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
         metadataList[1] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.TABLE_SCHEM,
-                            DataTypeManager.DefaultDataTypes.STRING,  ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
         metadataList[2] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.TABLE_NAME,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[3] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.GRANTOR,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
         metadataList[4] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.GRANTEE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[5] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.PRIVILEGE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
         metadataList[6] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.PRIVILEGES.IS_GRANTABLE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NULLABLE, driverConnection);
 
         return dummyStatement().createResultSet(records, metadataList);
 
     }
 
-    public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String types[]) 
+    public ResultSet getTables(String catalog, String schemaPattern, String tableNamePattern, String types[])
             throws SQLException {
         if (catalog == null) {
             catalog = PERCENT;
@@ -1503,12 +1543,12 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         }
 
         // Get all tables if tableNamePattern is null
-        if(tableNamePattern == null) {
+        if (tableNamePattern == null) {
             tableNamePattern = PERCENT;
         }
 
         // list which represent records containing tables info
-        List records = new ArrayList ();
+        List records = new ArrayList();
 
         // query string to be submitted to get table metadata info
         StringBuffer sqlQuery = new StringBuffer(QUERY_TABLES);
@@ -1519,7 +1559,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
                 typesString.append("1 = 0");
             } else {
                 // construct the criteria string
-                for(int i=0; i < types.length; i++) {
+                for (int i = 0; i < types.length; i++) {
                     if (types[i] != null && types[i].length() > 0) {
                         if (i > 0) {
                             typesString.append(" OR ");
@@ -1546,8 +1586,8 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             prepareQuery.setObject(++columnIndex, schemaPattern.toUpperCase());
             prepareQuery.setObject(++columnIndex, tableNamePattern.toUpperCase());
 
-            if(types != null) {
-                for(int i=0; i < types.length; i++) {
+            if (types != null) {
+                for (int i = 0; i < types.length; i++) {
                     if (types[i] != null && types[i].length() > 0) {
                         prepareQuery.setObject(++columnIndex, types[i].toUpperCase());
                     }
@@ -1558,14 +1598,14 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             results = (ResultSetImpl) prepareQuery.executeQuery();
 
             // build the list of records from server's Results object.
-            while (results.next ()) {
+            while (results.next()) {
                 // list represents a record on the Results object.
-                List currentRow = new ArrayList (11);
+                List currentRow = new ArrayList(11);
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
-                for(int i=0; i < JDBCColumnPositions.TABLES.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.TABLES.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 // add the current row to the list of records.
@@ -1580,7 +1620,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, 
+            throw TeiidSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getTable_error", tableNamePattern, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -1592,25 +1632,25 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     public ResultSet getTableTypes() throws SQLException {
 
         // list which represent records containing Table Type info
-        List records = new ArrayList (5);
+        List records = new ArrayList(5);
         /********************************
-        * HardCoding JDBC specific values
-        *********************************/
+         * HardCoding JDBC specific values
+         *********************************/
 
-        records.add(Arrays.asList(new String[] {"DOCUMENT"}));
-        records.add(Arrays.asList(new String[] {"TABLE"}));
-        records.add(Arrays.asList(new String[] {"VIEW"}));
-        records.add(Arrays.asList(new String[] {"XMLSTAGINGTABLE"}));
-        records.add(Arrays.asList(new String[] {"SYSTEM TABLE"}));
+        records.add(Arrays.asList(new String[]{"DOCUMENT"}));
+        records.add(Arrays.asList(new String[]{"TABLE"}));
+        records.add(Arrays.asList(new String[]{"VIEW"}));
+        records.add(Arrays.asList(new String[]{"XMLSTAGINGTABLE"}));
+        records.add(Arrays.asList(new String[]{"SYSTEM TABLE"}));
 
         /***********************************************************************
-        * Hardcoding JDBC column names for the columns returned in results object
-        ***********************************************************************/
+         * Hardcoding JDBC column names for the columns returned in results object
+         ***********************************************************************/
 
         Map[] metadataList = new Map[1];
 
         metadataList[0] = StatementImpl.getColumnMetadata(null, JDBCColumnNames.TABLE_TYPES.TABLE_TYPE,
-                            DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
+                DataTypeManager.DefaultDataTypes.STRING, ResultsMetadataConstants.NULL_TYPES.NOT_NULL, driverConnection);
 
         logger.fine(JDBCPlugin.Util.getString("MMDatabaseMetadata.getTableType_success"));
 
@@ -1635,10 +1675,10 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
                 results = (ResultSetImpl) prepareQuery.executeQuery();
 
-                while (results.next ()) {
+                while (results.next()) {
                     List<Object> currentRow = new ArrayList<Object>();
-                    for(int i=0; i < results.getMetaData().getColumnCount(); i++) {
-                        currentRow.add(results.getObject(i+1));
+                    for (int i = 0; i < results.getMetaData().getColumnCount(); i++) {
+                        currentRow.add(results.getObject(i + 1));
                     }
 
                     records.add(currentRow);
@@ -1648,7 +1688,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
                 return dummyStatement().createResultSet(records, rmetadata);
             } catch (Exception e) {
-                throw TeiidSQLException.create(e, 
+                throw TeiidSQLException.create(e,
                         JDBCPlugin.Util.getString("MMDatabaseMetadata.getTypeInfo_error", e.getMessage()));
             } finally {
                 if (prepareQuery != null) {
@@ -1664,7 +1704,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         List<List<Object>> records = new ArrayList<List<Object>>();
 
         records.add(Arrays.asList(
-                createTypeInfoRow("boolean",  "{b'", "}", Boolean.TRUE, Boolean.TRUE, 0)));
+                createTypeInfoRow("boolean", "{b'", "}", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
                 createTypeInfoRow("byte", null, null, Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
@@ -1676,13 +1716,13 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         records.add(Arrays.asList(
                 createTypeInfoRow("char", "'", "'", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
-                createTypeInfoRow("bigdecimal",null, null, Boolean.FALSE, Boolean.TRUE, 10)));
+                createTypeInfoRow("bigdecimal", null, null, Boolean.FALSE, Boolean.TRUE, 10)));
         records.add(Arrays.asList(
-                createTypeInfoRow("decimal",null, null, Boolean.FALSE, Boolean.TRUE, 10)));
+                createTypeInfoRow("decimal", null, null, Boolean.FALSE, Boolean.TRUE, 10)));
         records.add(Arrays.asList(
                 createTypeInfoRow("biginteger", null, null, Boolean.FALSE, Boolean.FALSE, 10)));
         records.add(Arrays.asList(
-                createTypeInfoRow("integer",  null, null, Boolean.FALSE, Boolean.FALSE, 10)));
+                createTypeInfoRow("integer", null, null, Boolean.FALSE, Boolean.FALSE, 10)));
         records.add(Arrays.asList(
                 createTypeInfoRow("short", null, null, Boolean.FALSE, Boolean.FALSE, 10)));
         records.add(Arrays.asList(
@@ -1692,25 +1732,25 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         records.add(Arrays.asList(
                 createTypeInfoRow("real", null, null, Boolean.FALSE, Boolean.FALSE, 10)));
         records.add(Arrays.asList(
-                createTypeInfoRow("double",  null, null, Boolean.FALSE, Boolean.FALSE, 10)));
+                createTypeInfoRow("double", null, null, Boolean.FALSE, Boolean.FALSE, 10)));
         records.add(Arrays.asList(
-                createTypeInfoRow("string", "'", "'", Boolean.TRUE, Boolean.TRUE, 0)));//$NON-NLS-3$
+                createTypeInfoRow("string", "'", "'", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
-                createTypeInfoRow("varchar", "'", "'", Boolean.TRUE, Boolean.TRUE, 0)));//$NON-NLS-3$
+                createTypeInfoRow("varchar", "'", "'", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
                 createTypeInfoRow("xml", null, null, Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
-                createTypeInfoRow("date", "{d'", "}", Boolean.TRUE, Boolean.TRUE, 0)));//$NON-NLS-3$
+                createTypeInfoRow("date", "{d'", "}", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
-                createTypeInfoRow("time", "{t'", "}", Boolean.TRUE, Boolean.TRUE, 0)));//$NON-NLS-3$
+                createTypeInfoRow("time", "{t'", "}", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
-                createTypeInfoRow("timestamp",  "{ts'", "}", Boolean.TRUE, Boolean.TRUE, 0)));//$NON-NLS-3$
+                createTypeInfoRow("timestamp", "{ts'", "}", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
                 createTypeInfoRow("object", null, null, Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
                 createTypeInfoRow("blob", null, null, Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
-                createTypeInfoRow("varbinary", "X'", "'", Boolean.TRUE, Boolean.TRUE, 0)));//$NON-NLS-3$
+                createTypeInfoRow("varbinary", "X'", "'", Boolean.TRUE, Boolean.TRUE, 0)));
         records.add(Arrays.asList(
                 createTypeInfoRow("clob", null, null, Boolean.TRUE, Boolean.TRUE, 0)));
 
@@ -1922,41 +1962,43 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         return dummyStatement().createResultSet(records, rmetadata);
     }
 
-    private Object[] createTypeInfoRow(String typeName, String prefix, String suffix, Boolean unsigned, Boolean fixedPrecScale, int radix){
-        return new Object[] {
+    private Object[] createTypeInfoRow(String typeName, String prefix, String suffix, Boolean unsigned, Boolean fixedPrecScale, int radix) {
+        return new Object[]{
                 typeName,
                 Integer.valueOf(JDBCSQLTypeInfo.getSQLType(typeName)),
                 JDBCSQLTypeInfo.getDefaultPrecision(typeName),
                 prefix, suffix, null,
-                Short.valueOf((short)DatabaseMetaData.typeNullable),
-                Boolean.FALSE, Short.valueOf((short)DatabaseMetaData.typeSearchable),
+                Short.valueOf((short) DatabaseMetaData.typeNullable),
+                Boolean.FALSE, Short.valueOf((short) DatabaseMetaData.typeSearchable),
                 unsigned, fixedPrecScale, Boolean.FALSE, typeName,
-                Short.valueOf((short)0), Short.valueOf((short)255), null, null, Integer.valueOf(radix)};
+                Short.valueOf((short) 0), Short.valueOf((short) 255), null, null, Integer.valueOf(radix)};
     }
 
     /**
      * <p>Gets a description of the user-defined types defined in a particular
      * schema.  Schema-specific UDTs may have type JAVA_OBJECT, STRUCT, or DISTINCT.
      * Supports 1.4
-     * @param catalog a catalog name
-     * @param schemaPattern a schema name pattern
+     *
+     * @param catalog         a catalog name
+     * @param schemaPattern   a schema name pattern
      * @param typeNamePattern a type name pattern
-     * @param types a list of user-named types to include (JAVA_OBJECT, STRUCT,
-     * or DISTINCT); null returns all types
+     * @param types           a list of user-named types to include (JAVA_OBJECT, STRUCT,
+     *                        or DISTINCT); null returns all types
      * @return ResultSet. Empty ResultSet object as this method is not supported.
      * @throws SQLException if catalog/schema info does not match for the given connection.
      */
     public ResultSet getUDTs(String catalog, String schemaPattern,
-        String typeNamePattern, int[] types) throws SQLException {
+                             String typeNamePattern, int[] types) throws SQLException {
         return emptyUDTSResultSet();
     }
 
     /**
      * Return a empty result set for to aid getUDTS() functions.
+     *
      * @return ResultSet.
      */
     private ResultSet emptyUDTSResultSet() throws SQLException {
-        String[] columnNames = new String[] {
+        String[] columnNames = new String[]{
                 JDBCColumnNames.UDTS.TYPE_CAT,
                 JDBCColumnNames.UDTS.TYPE_SCHEM,
                 JDBCColumnNames.UDTS.TYPE_NAME,
@@ -1965,7 +2007,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
                 JDBCColumnNames.UDTS.REMARKS,
                 JDBCColumnNames.UDTS.BASE_TYPE
         };
-        String[] dataTypes = new String[] {
+        String[] dataTypes = new String[]{
                 DataTypeManager.DefaultDataTypes.STRING,
                 DataTypeManager.DefaultDataTypes.STRING,
                 DataTypeManager.DefaultDataTypes.STRING,
@@ -1998,13 +2040,14 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
         logger.fine(JDBCPlugin.Util.getString("MMDatabaseMetadata.getVersionCols_success"));
 
-       return resultSet;
+        return resultSet;
     }
 
 
     /**
      * <p>Checks whether a catalog name appears at the start of a fully qualified table
      * name. If it is not at the beginning, it appears at the end.
+     *
      * @return if so return true, else false.
      */
     public boolean isCatalogAtStart() {
@@ -2022,6 +2065,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Indicates whether updates made to a LOB are made on a copy or directly to the LOB.
+     *
      * @return if so return true, else false.
      */
     public boolean locatorsUpdateCopy() {
@@ -2031,6 +2075,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>Checks whether the concatenation of a NULL value and a non-NULL value results
      * in a NULL value.
+     *
      * @return if so return true, else false.
      */
     public boolean nullPlusNonNullIsNull() {
@@ -2039,6 +2084,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Checks whether NULL values are sorted at the end regardless of sort order.
+     *
      * @return if so return true, else false.
      */
     public boolean nullsAreSortedAtEnd() {
@@ -2047,6 +2093,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Checks whether NULL values are sorted at the start regardless of sort order.
+     *
      * @return if so return true, else false.
      */
     public boolean nullsAreSortedAtStart() {
@@ -2055,6 +2102,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Checks whether NULL values are sorted high.
+     *
      * @return if so return true, else false.
      */
     public boolean nullsAreSortedHigh() {
@@ -2063,6 +2111,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Checks whether NULL values are sorted low.
+     *
      * @return if so return true, else false.
      */
     public boolean nullsAreSortedLow() {
@@ -2145,6 +2194,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Indicates whether the driver supports batch updates.
+     *
      * @return true if the driver supports batch updates; false otherwise
      */
     public boolean supportsBatchUpdates() {
@@ -2316,13 +2366,12 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         return false;
     }
 
-    public boolean supportsResultSetConcurrency(int type, int concurrency)
-      {
-        if(type == ResultSet.TYPE_FORWARD_ONLY || type == ResultSet.TYPE_SCROLL_INSENSITIVE) {
-            if(concurrency == ResultSet.CONCUR_READ_ONLY) {
+    public boolean supportsResultSetConcurrency(int type, int concurrency) {
+        if (type == ResultSet.TYPE_FORWARD_ONLY || type == ResultSet.TYPE_SCROLL_INSENSITIVE) {
+            if (concurrency == ResultSet.CONCUR_READ_ONLY) {
                 return true;
-              }
-              return false;
+            }
+            return false;
         }
         return false;
     }
@@ -2334,6 +2383,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     /**
      * <p>Does the database support the given result set type?
+     *
      * @param type defined in <code>java.sql.ResultSet</code>
      * @return <code>true</code> if so; <code>false</code> otherwise
      * @throws SQLException should never occur
@@ -2341,7 +2391,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
      */
     public boolean supportsResultSetType(int type) {
 
-        if(type == ResultSet.TYPE_FORWARD_ONLY || type == ResultSet.TYPE_SCROLL_INSENSITIVE) {
+        if (type == ResultSet.TYPE_FORWARD_ONLY || type == ResultSet.TYPE_SCROLL_INSENSITIVE) {
             return true;
         }
         return false;
@@ -2434,6 +2484,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     /**
      * <p>This method is used to produce ResultSets from server's Results objects for
      * getCrossReference, getExportedKeys and getImportedKeys methods.
+     *
      * @param results server's Results object.
      * @return ResultSet object giving the reference key info.
      * @throws SQLException if there is an accesing server results
@@ -2441,18 +2492,18 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     private ResultSet getReferenceKeys(ResultSet results) throws SQLException {
 
         // list which represent records containing reference key info
-        List records = new ArrayList ();
+        List records = new ArrayList();
         ResultSetMetaData rmetadata = null;
         try {
             // build the list of records from Results object.
             while (results.next()) {
                 // list represents a record on the Results object.
-                List currentRow = new ArrayList (15);
+                List currentRow = new ArrayList(15);
                 // add values in the current record on the Results object to the list
                 // number of values to be fetched from each row is MAX_COLUMNS.
-                for(int i=0; i < JDBCColumnPositions.REFERENCE_KEYS.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.REFERENCE_KEYS.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 // add the current row to the list of records.
@@ -2502,7 +2553,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     public ResultSet getFunctionColumns(String catalog, String schemaPattern,
-            String functionNamePattern, String columnNamePattern)
+                                        String functionNamePattern, String columnNamePattern)
             throws SQLException {
         if (catalog == null) {
             catalog = PERCENT;
@@ -2520,7 +2571,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             columnNamePattern = PERCENT;
         }
 
-        List records = new ArrayList ();
+        List records = new ArrayList();
 
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
@@ -2529,7 +2580,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         boolean newMetadata = driverConnection.getServerConnection().getServerVersion().compareTo("09.03") >= 0;
 
         try {
-            prepareQuery = driverConnection.prepareStatement(newMetadata?QUERY_FUNCTION_COLUMNS:QUERY_FUNCTION_COLUMNS_OLD);
+            prepareQuery = driverConnection.prepareStatement(newMetadata ? QUERY_FUNCTION_COLUMNS : QUERY_FUNCTION_COLUMNS_OLD);
             prepareQuery.setString(1, catalog.toUpperCase());
             prepareQuery.setString(2, schemaPattern.toUpperCase());
             prepareQuery.setString(3, functionNamePattern.toUpperCase());
@@ -2538,15 +2589,15 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // Get the metadata for the results
             rmetadata = results.getMetaData();
             int cols = rmetadata.getColumnCount();
-            while (results.next ()) {
-                List currentRow = new ArrayList (cols);
-                for(int i=0; i < cols; i++) {
-                    currentRow.add(results.getObject(i+1));
+            while (results.next()) {
+                List currentRow = new ArrayList(cols);
+                for (int i = 0; i < cols; i++) {
+                    currentRow.add(results.getObject(i + 1));
                 }
                 if (!newMetadata) {
-                    String typeName = (String)currentRow.get(6);
-                    Integer length = (Integer)currentRow.get(8);
-                    Integer precision = (Integer)currentRow.get(7);
+                    String typeName = (String) currentRow.get(6);
+                    Integer length = (Integer) currentRow.get(8);
+                    Integer precision = (Integer) currentRow.get(7);
                     if (precision != null && precision <= 0) {
                         currentRow.set(7, JDBCSQLTypeInfo.getDefaultPrecision(typeName));
                     }
@@ -2567,7 +2618,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getfunctioncolumns_error", e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -2577,7 +2628,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     public ResultSet getFunctions(String catalog, String schemaPattern,
-            String functionNamePattern) throws SQLException {
+                                  String functionNamePattern) throws SQLException {
         if (catalog == null) {
             catalog = PERCENT;
         }
@@ -2589,7 +2640,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         if (functionNamePattern == null) {
             functionNamePattern = PERCENT;
         }
-        List records = new ArrayList ();
+        List records = new ArrayList();
 
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
@@ -2603,11 +2654,11 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // Get the metadata for the results
             rmetadata = results.getMetaData();
             int cols = rmetadata.getColumnCount();
-            while (results.next ()) {
+            while (results.next()) {
                 List currentRow = new ArrayList(cols);
 
-                for(int i = 0; i < cols; i++) {
-                    currentRow.add(results.getObject(i+1));
+                for (int i = 0; i < cols; i++) {
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 records.add(currentRow);
@@ -2617,7 +2668,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getfunctions_error", e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -2640,7 +2691,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             schemaPattern = PERCENT;
         }
         // list which represent records containing schema info
-        List records = new ArrayList ();
+        List records = new ArrayList();
 
         ResultSetMetaData rmetadata = null;
         ResultSetImpl results = null;
@@ -2652,13 +2703,13 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // make a query against runtimemetadata and get results
             results = prepareQuery.executeQuery();
 
-            while (results.next ()) {
+            while (results.next()) {
                 // each row will have only one column(Virtual database name)
-                List currentRow = new ArrayList (2);
+                List currentRow = new ArrayList(2);
 
-                for(int i = 0; i < JDBCColumnPositions.SCHEMAS.MAX_COLUMNS; i++) {
+                for (int i = 0; i < JDBCColumnPositions.SCHEMAS.MAX_COLUMNS; i++) {
                     // get the value at the current index add it to currentRow
-                    currentRow.add(results.getObject(i+1));
+                    currentRow.add(results.getObject(i + 1));
                 }
 
                 records.add(currentRow);
@@ -2671,7 +2722,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getschema_error", e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -2685,7 +2736,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     public ResultSet getPseudoColumns(String catalog, String schemaPattern,
-            String tableNamePattern, String columnNamePattern) throws SQLException {
+                                      String tableNamePattern, String columnNamePattern) throws SQLException {
         throw SqlUtil.createFeatureNotSupportedException();
     }
 }

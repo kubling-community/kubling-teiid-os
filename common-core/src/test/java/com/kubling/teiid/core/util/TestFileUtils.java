@@ -18,11 +18,11 @@
 
 package com.kubling.teiid.core.util;
 
+import com.kubling.teiid.core.CorePlugin;
+import com.kubling.teiid.core.TeiidException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.kubling.teiid.core.CorePlugin;
-import com.kubling.teiid.core.TeiidException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,17 +36,17 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public final class TestFileUtils {
 
-    private static final String FILE_NAME = UnitTestUtil.getTestDataPath() + File.separator + "fakeScript.txt"; //$NON-NLS-1$
+    private static final String FILE_NAME = UnitTestUtil.getTestDataPath() + File.separator + "fakeScript.txt";
 
-    private final static String TEMP_DIR_NAME = "tempdir"; //$NON-NLS-1$
+    private final static String TEMP_DIR_NAME = "tempdir";
     File tempDir;
-    public static final String TEMP_FILE = "delete.me"; //$NON-NLS-1$
-    public static final String TEMP_FILE_RENAMED = "delete.me.old"; //$NON-NLS-1$
-    private final static String TEMP_FILE_NAME = UnitTestUtil.getTestDataPath() + File.separator + "tempfile.txt"; //$NON-NLS-1$
-    private final static String TEMP_FILE_NAME2 = "tempfile2.txt"; //$NON-NLS-1$
+    public static final String TEMP_FILE = "delete.me";
+    public static final String TEMP_FILE_RENAMED = "delete.me.old";
+    private final static String TEMP_FILE_NAME = UnitTestUtil.getTestDataPath() + File.separator + "tempfile.txt";
+    private final static String TEMP_FILE_NAME2 = "tempfile2.txt";
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
 
         //create a temp directory
         tempDir = new File(TEMP_DIR_NAME);
@@ -54,10 +54,11 @@ public final class TestFileUtils {
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
+    public void tearDown() {
         try {
             tempDir.delete();
         } catch (Exception e) {
+            // Ignored
         }
 
         try {
@@ -75,6 +76,7 @@ public final class TestFileUtils {
 
     /**
      * Tests FileUtils.testDirectoryPermissions()
+     *
      * @since 4.3
      */
     @Test
@@ -86,16 +88,17 @@ public final class TestFileUtils {
 
         //negative case: dir doesn't exist
         try {
-            TestFileUtils.testDirectoryPermissions("fakeDir"); //$NON-NLS-1$
-            fail("Expected a MetaMatrixCoreException"); //$NON-NLS-1$
+            TestFileUtils.testDirectoryPermissions("fakeDir");
+            fail("Expected a MetaMatrixCoreException");
         } catch (TeiidException e) {
+            // Ignored
         }
     }
 
 
-
     /**
      * Tests FileUtils.remove()
+     *
      * @since 4.3
      */
     @Test
@@ -113,6 +116,7 @@ public final class TestFileUtils {
 
     /**
      * Test whether it's possible to read and write files in the specified directory.
+     *
      * @param dirPath Name of the directory to test
      * @throws TeiidException
      * @since 4.3
@@ -125,19 +129,20 @@ public final class TestFileUtils {
         try {
             success = tmpFile.createNewFile();
         } catch (IOException e) {
+            // Ignored
         }
         if (!success) {
-              throw new TeiidException("cannot create file in " + dirPath); //$NON-NLS-1$
+            throw new TeiidException("cannot create file in " + dirPath);
         }
 
         //test if file can be written to
         if (!tmpFile.canWrite()) {
-              throw new TeiidException("cannot write " +dirPath); //$NON-NLS-1$
+            throw new TeiidException("cannot write " + dirPath);
         }
 
         //test if file can be read
         if (!tmpFile.canRead()) {
-              throw new TeiidException("cannot read " + dirPath); //$NON-NLS-1$
+            throw new TeiidException("cannot read " + dirPath);
         }
 
         //test if file can be renamed
@@ -146,9 +151,10 @@ public final class TestFileUtils {
         try {
             success = tmpFile.renameTo(newFile);
         } catch (Exception e) {
+            // Ignored
         }
         if (!success) {
-              throw new TeiidException("failed to rename " + dirPath); //$NON-NLS-1$
+            throw new TeiidException("failed to rename " + dirPath);
         }
 
         //test if file can be deleted
@@ -156,10 +162,11 @@ public final class TestFileUtils {
         try {
             success = newFile.delete();
         } catch (Exception e) {
+            // Ignored
         }
         if (!success) {
-            final String msg = CorePlugin.Util.getString("FileUtils.Unable_to_delete_file_in", dirPath); //$NON-NLS-1$
-              throw new TeiidException(msg);
+            final String msg = CorePlugin.Util.getString("FileUtils.Unable_to_delete_file_in", dirPath);
+            throw new TeiidException(msg);
         }
     }
 

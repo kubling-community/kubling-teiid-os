@@ -31,19 +31,17 @@ public class MixinProxy implements InvocationHandler {
         Method m;
     }
 
-    private Object[] delegates;
-    private Map<Method, Target> methodMap = new HashMap<Method, Target>();
+    private final Object[] delegates;
+    private final Map<Method, Target> methodMap = new HashMap<>();
 
     public MixinProxy(Object... delegates) {
         this.delegates = delegates;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-    {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Target t = methodMap.get(method);
         if (t == null) {
-            for (int i = 0; i < delegates.length; i++) {
-                Object object = delegates[i];
+            for (Object object : delegates) {
                 try {
                     Method m = object.getClass().getMethod(method.getName(), method.getParameterTypes());
                     t = new Target();
@@ -52,6 +50,7 @@ public class MixinProxy implements InvocationHandler {
                     methodMap.put(method, t);
                     break;
                 } catch (NoSuchMethodException e) {
+                    // Ignored
                 }
             }
         }

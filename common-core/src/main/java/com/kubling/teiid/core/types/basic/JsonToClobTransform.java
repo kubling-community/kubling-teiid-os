@@ -26,13 +26,14 @@ public class JsonToClobTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        JsonType json = (JsonType)value;
+        JsonType json = (JsonType) value;
         ClobType clob = new ClobType(json.getReference());
         clob.setType(ClobType.Type.JSON);
         return clob;
@@ -40,6 +41,7 @@ public class JsonToClobTransform extends Transform {
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -48,14 +50,11 @@ public class JsonToClobTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {
         return DataTypeManager.DefaultDataClasses.CLOB;
-    }
-
-    public boolean isExplicit() {
-        return false;
     }
 
 }

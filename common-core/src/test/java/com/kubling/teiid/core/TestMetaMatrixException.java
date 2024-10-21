@@ -18,9 +18,10 @@
 
 package com.kubling.teiid.core;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests the children Iterator of the MetaMatrixException.
@@ -29,42 +30,48 @@ public class TestMetaMatrixException {
 
     @Test
     public void testMetaMatrixExceptionWithNullThrowable() {
-        final TeiidException err = new TeiidException((Throwable)null);
+        final TeiidException err = new TeiidException((Throwable) null);
         assertNull(err.getCode());
         assertNull(err.getMessage());
 
     }
 
-    @Test public void testMetaMatrixExceptionWithMessage() {
-        final TeiidException err = new TeiidException("Test"); //$NON-NLS-1$
+    @Test
+    public void testMetaMatrixExceptionWithMessage() {
+        final TeiidException err = new TeiidException("Test");
         assertNull(err.getCode());
-        assertEquals("Test", err.getMessage()); //$NON-NLS-1$
+        assertEquals("Test", err.getMessage());
 
     }
-    public static enum Event implements BundleUtil.Event {
+
+    public enum Event implements BundleUtil.Event {
         Code,
         propertyValuePhrase,
     }
-    @Test public void testMetaMatrixExceptionWithCodeAndMessage() {
-        final TeiidException err = new TeiidException(Event.Code, "Test"); //$NON-NLS-1$
-        assertEquals("Code", err.getCode()); //$NON-NLS-1$
-        assertEquals("Code Test", err.getMessage()); //$NON-NLS-1$
+
+    @Test
+    public void testMetaMatrixExceptionWithCodeAndMessage() {
+        final TeiidException err = new TeiidException(Event.Code, "Test");
+        assertEquals("Code", err.getCode());
+        assertEquals("Code Test", err.getMessage());
     }
 
 
-    @Test public void testMetaMatrixExceptionWithExceptionAndMessage() {
-        final TeiidException child = new TeiidException(Event.propertyValuePhrase, "Child"); //$NON-NLS-1$
-        final TeiidException err = new TeiidException(child, "Test"); //$NON-NLS-1$
-        assertEquals("propertyValuePhrase", err.getCode()); //$NON-NLS-1$
-        assertEquals("propertyValuePhrase Test", err.getMessage()); //$NON-NLS-1$
+    @Test
+    public void testMetaMatrixExceptionWithExceptionAndMessage() {
+        final TeiidException child = new TeiidException(Event.propertyValuePhrase, "Child");
+        final TeiidException err = new TeiidException(child, "Test");
+        assertEquals("propertyValuePhrase", err.getCode());
+        assertEquals("propertyValuePhrase Test", err.getMessage());
 
     }
 
-    @Test public void testMetaMatrixExceptionWithExceptionAndCodeAndMessage() {
-        final TeiidException child = new TeiidException(Event.propertyValuePhrase, "Child"); //$NON-NLS-1$
-        final TeiidException err = new TeiidException(Event.Code,child, "Test"); //$NON-NLS-1$
-        assertEquals("Code", err.getCode()); //$NON-NLS-1$
-        assertEquals("Code Test", err.getMessage()); //$NON-NLS-1$
+    @Test
+    public void testMetaMatrixExceptionWithExceptionAndCodeAndMessage() {
+        final TeiidException child = new TeiidException(Event.propertyValuePhrase, "Child");
+        final TeiidException err = new TeiidException(Event.Code, child, "Test");
+        assertEquals("Code", err.getCode());
+        assertEquals("Code Test", err.getMessage());
 
     }
 }

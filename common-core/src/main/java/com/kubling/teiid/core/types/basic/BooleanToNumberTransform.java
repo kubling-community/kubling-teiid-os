@@ -24,9 +24,9 @@ import com.kubling.teiid.core.types.TransformationException;
 
 public class BooleanToNumberTransform extends Transform {
 
-    private Object trueVal;
-    private Object falseVal;
-    private Class<?> targetType;
+    private final Object trueVal;
+    private final Object falseVal;
+    private final Class<?> targetType;
 
     public BooleanToNumberTransform(Object trueVal, Object falseVal) {
         this.trueVal = trueVal;
@@ -46,7 +46,7 @@ public class BooleanToNumberTransform extends Transform {
 
     @Override
     public Object transformDirect(Object value) throws TransformationException {
-        return value.equals(Boolean.TRUE)?trueVal:falseVal;
+        return value.equals(Boolean.TRUE) ? trueVal : falseVal;
     }
 
 }

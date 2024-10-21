@@ -64,7 +64,7 @@ public class FilesystemHelper {
             public int read(ByteBuffer dst) throws IOException {
                 var arr = new byte[dst.remaining()];
                 int r = rac.getInputStream().read(arr, 0, arr.length);
-                if(r > 0)
+                if (r > 0)
                     dst.put(arr, 0, r);
                 return r;
             }
@@ -75,7 +75,7 @@ public class FilesystemHelper {
                 for (var dst : dsts) {
                     var arr = new byte[dst.remaining()];
                     int r = rac.getInputStream().read(arr, offset, length);
-                    if(r > 0)
+                    if (r > 0)
                         dst.put(arr, 0, r);
                     t += r;
                 }
@@ -119,12 +119,12 @@ public class FilesystemHelper {
             }
 
             @Override
-            public FileChannel truncate(long size) throws IOException {
+            public FileChannel truncate(long size) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void force(boolean metaData) throws IOException {
+            public void force(boolean metaData) {
                 // Noop?
             }
 
@@ -168,7 +168,7 @@ public class FilesystemHelper {
                 long pos = position;
                 try {
                     while (tw < count) {
-                        bb.limit((int) Math.min((count - tw), (long) TRANSFER_SIZE));
+                        bb.limit((int) Math.min((count - tw), TRANSFER_SIZE));
                         // ## Bug: Will block reading src if this channel
                         // ## is asynchronously closed
                         int nr = src.read(bb);

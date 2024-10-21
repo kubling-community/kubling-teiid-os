@@ -45,7 +45,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
 
     public InputStreamFactory getStreamFactory() throws SQLException {
         if (this.streamFactory == null) {
-            throw new SQLException("Already freed"); //$NON-NLS-1$
+            throw new SQLException("Already freed"); 
         }
         return streamFactory;
     }
@@ -78,8 +78,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
                 return r;
             }
         } catch (IOException e) {
-            SQLException ex = new SQLException(e.getMessage(), e);
-            throw ex;
+            throw new SQLException(e.getMessage(), e);
         }
         Charset cs = getCharset();
         if (cs == null) {
@@ -92,8 +91,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
         try {
             return this.getStreamFactory().getInputStream();
         } catch (IOException e) {
-            SQLException ex = new SQLException(e.getMessage(), e);
-            throw ex;
+            throw new SQLException(e.getMessage(), e);
         }
     }
 
@@ -103,9 +101,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
         streamFactory = (InputStreamFactory)in.readObject();
         try {
             charset = (Charset) in.readObject();
-        } catch (EOFException e) {
-            //just ignore
-        } catch (OptionalDataException e) {
+        } catch (EOFException | OptionalDataException e) {
             //just ignore
         }
     }
@@ -142,6 +138,7 @@ public class BaseLob implements Externalizable, StreamFactoryReference {
             try {
                 is.close();
             } catch (IOException e) {
+                // Ignored
             }
         }
     }

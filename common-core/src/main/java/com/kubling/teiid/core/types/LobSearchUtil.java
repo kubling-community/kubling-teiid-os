@@ -36,11 +36,11 @@ public class LobSearchUtil {
     }
 
     static long position(
-            StreamProvider pattern, 
-            long patternLength, 
-            StreamProvider target, 
-            long targetLength, 
-            long start, 
+            StreamProvider pattern,
+            long patternLength,
+            StreamProvider target,
+            long targetLength,
+            long start,
             int bytesPerComparison) throws SQLException {
         if (pattern == null) {
             return -1;
@@ -50,11 +50,11 @@ public class LobSearchUtil {
         targetLength *= bytesPerComparison;
 
         if (start < 1) {
-            Object[] params = new Object[] {Long.valueOf(start)};
+            Object[] params = new Object[]{start};
             throw new SQLException(CorePlugin.Util.getString("MMClob_MMBlob.2", params));
         }
 
-        start = (start - 1)*bytesPerComparison;
+        start = (start - 1) * bytesPerComparison;
 
         if (start + patternLength > targetLength) {
             return -1;
@@ -82,8 +82,8 @@ public class LobSearchUtil {
                 int streamHash = computeStreamHash(targetStream, patternLength);
 
                 do {
-                    if ((position -1)%bytesPerComparison == 0 && patternHash == streamHash && validateMatch(pattern, target, position)) {
-                        return (position - 1)/bytesPerComparison + 1;
+                    if ((position - 1) % bytesPerComparison == 0 && patternHash == streamHash && validateMatch(pattern, target, position)) {
+                        return (position - 1) / bytesPerComparison + 1;
                     }
 
                     streamHash = MOD * streamHash + targetStream.read() - lastMod * laggingTargetStream.read();
@@ -110,8 +110,9 @@ public class LobSearchUtil {
 
     /**
      * validate that the pattern matches the given position.
-     *
+     * <p>
      * TODO: optimize to reuse the same targetstream/buffer for small patterns
+     *
      * @throws SQLException
      */
     static private boolean validateMatch(StreamProvider pattern, StreamProvider target, long position)
@@ -120,8 +121,8 @@ public class LobSearchUtil {
         InputStream targetStream = target.getBinaryStream();
         InputStream patternStream = pattern.getBinaryStream();
         try {
-            Assertion.assertTrue(targetStream.skip(position -1) == position -1);
-            int value = 0;
+            Assertion.assertTrue(targetStream.skip(position - 1) == position - 1);
+            int value;
             while ((value = patternStream.read()) != -1) {
                 if (value != targetStream.read()) {
                     return false;

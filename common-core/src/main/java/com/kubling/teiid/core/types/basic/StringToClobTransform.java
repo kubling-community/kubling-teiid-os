@@ -28,19 +28,21 @@ public class StringToClobTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        String contents = (String)value;
+        String contents = (String) value;
         //TODO: if the value is too large, we should store in a file buffer
         return new ClobType(new ClobImpl(contents));
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class getSourceType() {
@@ -49,6 +51,7 @@ public class StringToClobTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class getTargetType() {

@@ -45,6 +45,7 @@ public class BundleUtil {
 
     /**
      * Return the {@link BundleUtil} for the class.  The bundle must be in the same package or a parent package of the class.
+     *
      * @param clazz
      */
     public static BundleUtil getBundleUtil(Class<?> clazz) {
@@ -69,16 +70,13 @@ public class BundleUtil {
     /**
      * Construct an instance of this class by specifying the plugin ID.
      *
-     * @param pluginId
-     *            the identifier of the plugin for which this utility is being instantiated
-     * @param bundleName
-     *            the name of the resource bundle; used for problem reporting purposes only
-     * @param bundle
-     *            the resource bundle
+     * @param pluginId   the identifier of the plugin for which this utility is being instantiated
+     * @param bundleName the name of the resource bundle; used for problem reporting purposes only
+     * @param bundle     the resource bundle
      */
     public BundleUtil(final String pluginId,
-                          final String bundleName,
-                          final ResourceBundle bundle) {
+                      final String bundleName,
+                      final ResourceBundle bundle) {
         this.pluginId = pluginId;
         this.bundleName = bundleName;
         this.bundle = bundle;
@@ -87,13 +85,12 @@ public class BundleUtil {
     /**
      * Get the string identified by the given key and localized to the current locale.
      *
-     * @param key
-     *            the key in the resource file
+     * @param key the key in the resource file
      * @return the localized String, or <code>
-     *    "Missing message: " + key + " in: " + this.bundleName
+     * "Missing message: " + key + " in: " + this.bundleName
      * </code> if the string could
-     *         not be found in the current locale, or <code>
-     *    "No message available"
+     * not be found in the current locale, or <code>
+     * "No message available"
      * </code> if the <code>key</code> is null.
      */
     public String getString(final String key) {
@@ -128,8 +125,7 @@ public class BundleUtil {
     /**
      * Determines if the given key exists in the resource file.
      *
-     * @param key
-     *            the key in the resource file
+     * @param key the key in the resource file
      * @return True if the key exists.
      * @since 4.0
      */
@@ -145,15 +141,13 @@ public class BundleUtil {
      * Get the string identified by the given key and localized to the current locale, and replace placeholders in the localized
      * string with the string form of the parameters.
      *
-     * @param key
-     *            the key in the resource file
-     * @param parameters
-     *            the list of parameters that should replace placeholders in the localized string (e.g., "{0}", "{1}", etc.)
+     * @param key        the key in the resource file
+     * @param parameters the list of parameters that should replace placeholders in the localized string (e.g., "{0}", "{1}", etc.)
      * @return the localized String, or <code>
-     *    "Missing message: " + key + " in: " + this.bundleName
+     * "Missing message: " + key + " in: " + this.bundleName
      * </code> if the string could
-     *         not be found in the current locale, or <code>
-     *    "No message available"
+     * not be found in the current locale, or <code>
+     * "No message available"
      * </code> if the <code>key</code> is null.
      */
     public String getString(final String key,
@@ -168,15 +162,13 @@ public class BundleUtil {
      * Get the string identified by the given key and localized to the current locale, and replace placeholders in the localized
      * string with the string form of the parameters.
      *
-     * @param key
-     *            the key in the resource file
-     * @param parameters
-     *            the list of parameters that should replace placeholders in the localized string (e.g., "{0}", "{1}", etc.)
+     * @param key        the key in the resource file
+     * @param parameters the list of parameters that should replace placeholders in the localized string (e.g., "{0}", "{1}", etc.)
      * @return the localized String, or <code>
-     *    "Missing message: " + key + " in: " + this.bundleName
+     * "Missing message: " + key + " in: " + this.bundleName
      * </code> if the string could
-     *         not be found in the current locale, or <code>
-     *    "No message available"
+     * not be found in the current locale, or <code>
+     * "No message available"
      * </code> if the <code>key</code> is null.
      */
     public String getString(final String key,
@@ -199,11 +191,9 @@ public class BundleUtil {
     }
 
     public String gs(final Event key, final Object... parameters) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(key);
-        sb.append(" ");
-        sb.append(getString(key.toString(), parameters));
-        return sb.toString();
+        return key +
+                " " +
+                getString(key.toString(), parameters);
     }
 
     public String getStringOrKey(final String key) {

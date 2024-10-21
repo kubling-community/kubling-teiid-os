@@ -32,23 +32,27 @@ import java.util.*;
  */
 public class RequestMessage implements Externalizable {
 
-    private static final String SPAN_CONTEXT = "spanContext"; //$NON-NLS-1$
+    private static final String SPAN_CONTEXT = "spanContext";
 
     private static final RequestOptions DEFAULT_REQUEST_OPTIONS = new RequestOptions();
 
     public static final int DEFAULT_FETCH_SIZE = 2048;
 
-    /** Transaction auto wrap constant - never wrap a command execution in a transaction */
-    public static final String TXN_WRAP_OFF = "OFF"; //$NON-NLS-1$
+    /**
+     * Transaction auto wrap constant - never wrap a command execution in a transaction
+     */
+    public static final String TXN_WRAP_OFF = "OFF";
 
-    /** Transaction auto wrap constant - always wrap commands in a transaction. */
-    public static final String TXN_WRAP_ON = "ON"; //$NON-NLS-1$
+    /**
+     * Transaction auto wrap constant - always wrap commands in a transaction.
+     */
+    public static final String TXN_WRAP_ON = "ON";
 
     /**
      * Transaction auto wrap constant - checks if a command
      * requires a transaction and will be automatically wrap it.
      */
-    public static final String TXN_WRAP_DETECT = "DETECT"; //$NON-NLS-1$
+    public static final String TXN_WRAP_DETECT = "DETECT";
 
     public enum StatementType {
         PREPARED, CALLABLE, STATEMENT
@@ -174,6 +178,7 @@ public class RequestMessage implements Externalizable {
 
     /**
      * Sets the cursorType.
+     *
      * @param cursorType The cursorType to set
      */
     public void setCursorType(int cursorType) {
@@ -192,6 +197,7 @@ public class RequestMessage implements Externalizable {
 
     /**
      * Sets the txnAutoWrapMode.
+     *
      * @param txnAutoWrapMode The txnAutoWrapMode to set
      * @throws TeiidProcessingException
      */
@@ -199,10 +205,10 @@ public class RequestMessage implements Externalizable {
         if (txnAutoWrapMode != null) {
             txnAutoWrapMode = txnAutoWrapMode.toUpperCase();
             if (!(txnAutoWrapMode.equals(TXN_WRAP_OFF)
-                || txnAutoWrapMode.equals(TXN_WRAP_ON)
-                || txnAutoWrapMode.equals(TXN_WRAP_DETECT))) {
-                 throw new TeiidProcessingException(JDBCPlugin.Event.TEIID20000,
-                         JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20000, txnAutoWrapMode));
+                    || txnAutoWrapMode.equals(TXN_WRAP_ON)
+                    || txnAutoWrapMode.equals(TXN_WRAP_DETECT))) {
+                throw new TeiidProcessingException(JDBCPlugin.Event.TEIID20000,
+                        JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20000, txnAutoWrapMode));
             }
         }
         this.txnAutoWrapMode = txnAutoWrapMode;
@@ -217,6 +223,7 @@ public class RequestMessage implements Externalizable {
 
     /**
      * Sets the styleSheet.
+     *
      * @param styleSheet The styleSheet to set
      */
     public void setStyleSheet(String styleSheet) {
@@ -346,15 +353,15 @@ public class RequestMessage implements Externalizable {
         this.statementType = StatementType.values()[in.readByte()];
         this.parameterValues = ExternalizeUtil.readList(in);
         in.readBoolean(); //legacy validation mode
-        this.txnAutoWrapMode = (String)in.readObject();
+        this.txnAutoWrapMode = (String) in.readObject();
         in.readObject(); // legacy xml format
-        this.styleSheet = (String)in.readObject();
+        this.styleSheet = (String) in.readObject();
         this.resultsMode = ResultsMode.values()[in.readByte()];
         this.useResultSetCache = in.readBoolean();
         this.ansiQuotedIdentifiers = in.readBoolean();
         this.showPlan = ShowPlan.values()[in.readByte()];
         this.rowLimit = in.readInt();
-        this.executionPayload = (Serializable)in.readObject();
+        this.executionPayload = (Serializable) in.readObject();
         this.executionId = in.readLong();
         this.transactionIsolation = in.readInt();
         this.noExec = in.readBoolean();

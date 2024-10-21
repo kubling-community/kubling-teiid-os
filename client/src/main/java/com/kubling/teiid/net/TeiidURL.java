@@ -50,9 +50,10 @@ public class TeiidURL {
         String CLIENT_MAC = "clientMAC";
         /**
          * If true, will automatically select a new server instance after a communication exception.
+         *
          * @since 5.6
          */
-        String AUTO_FAILOVER = "autoFailover"; 
+        String AUTO_FAILOVER = "autoFailover";
 
         String SERVER_URL = "serverURL";
         /**
@@ -74,9 +75,11 @@ public class TeiidURL {
 
         String JAAS_NAME = "jaasName";
 
-        String KERBEROS_SERVICE_PRINCIPLE_NAME = "kerberosServicePrincipleName";;
+        String KERBEROS_SERVICE_PRINCIPLE_NAME = "kerberosServicePrincipleName";
+        ;
 
-        String ENCRYPT_REQUESTS = "encryptRequests";;
+        String ENCRYPT_REQUESTS = "encryptRequests";
+        ;
         String LOGIN_TIMEOUT = "loginTimeout";
 
     }
@@ -87,8 +90,8 @@ public class TeiidURL {
 
     public static final String COLON_DELIMITER = ":";
     public static final String BACKSLASH_DELIMITER = "\\";
-    public static final String DEFAULT_PROTOCOL= CONNECTION.NON_SECURE_PROTOCOL + "://";
-    public static final String SECURE_PROTOCOL= CONNECTION.SECURE_PROTOCOL + "://";
+    public static final String DEFAULT_PROTOCOL = CONNECTION.NON_SECURE_PROTOCOL + "://";
+    public static final String SECURE_PROTOCOL = CONNECTION.SECURE_PROTOCOL + "://";
 
     public static final String INVALID_FORMAT_SERVER = JDBCPlugin.Util.getString("MMURL.INVALID_FORMAT");
     /*
@@ -104,7 +107,8 @@ public class TeiidURL {
 
     /**
      * Create an MMURL from the server URL.  For use by the server-side.
-     * @param serverURL   Expected format: mm[s]://server1:port1[,server2:port2]
+     *
+     * @param serverURL Expected format: mm[s]://server1:port1[,server2:port2]
      * @throws MalformedURLException
      * @since 4.2
      */
@@ -125,7 +129,7 @@ public class TeiidURL {
 
     public TeiidURL(String host, int port, boolean secure) {
         usingSSL = secure;
-        if(host.startsWith("[")) {
+        if (host.startsWith("[")) {
             host = host.substring(1, host.indexOf(']'));
         }
         hosts.add(new HostInfo(host, port));
@@ -133,7 +137,8 @@ public class TeiidURL {
 
     /**
      * Validates that a server URL is in the correct format.
-     * @param serverURL  Expected format: mm[s]://server1:port1[,server2:port2]
+     *
+     * @param serverURL Expected format: mm[s]://server1:port1[,server2:port2]
      * @since 4.2
      */
     public static boolean isValidServerURL(String serverURL) {
@@ -158,13 +163,13 @@ public class TeiidURL {
      * @since 4.2
      */
     public String getHosts() {
-        StringBuffer hostList = new StringBuffer(""); 
-        if( hosts != null) {
+        StringBuffer hostList = new StringBuffer("");
+        if (hosts != null) {
             Iterator<HostInfo> iterator = hosts.iterator();
             while (iterator.hasNext()) {
                 HostInfo element = iterator.next();
                 hostList.append(element.getHostName());
-                if( iterator.hasNext()) {
+                if (iterator.hasNext()) {
                     hostList.append(COMMA_DELIMITER);
                 }
             }
@@ -179,13 +184,13 @@ public class TeiidURL {
      * @since 4.2
      */
     public String getPorts() {
-        StringBuffer portList = new StringBuffer(""); 
-        if( hosts != null) {
+        StringBuffer portList = new StringBuffer("");
+        if (hosts != null) {
             Iterator<HostInfo> iterator = hosts.iterator();
             while (iterator.hasNext()) {
                 HostInfo element = iterator.next();
                 portList.append(element.getPortNumber());
-                if( iterator.hasNext()) {
+                if (iterator.hasNext()) {
                     portList.append(COMMA_DELIMITER);
                 }
             }
@@ -215,19 +220,18 @@ public class TeiidURL {
                             (JDBCPlugin.Util.getString("TeiidURL.invalid_ipv6_hostport", nextToken, exceptionMessage));
                 }
                 host = nextToken.substring(1, hostEnd);
-                port = nextToken.substring(hostEnd+2);
-            }
-            else {
+                port = nextToken.substring(hostEnd + 2);
+            } else {
                 int hostEnd = nextToken.indexOf(":");
                 if (hostEnd == -1) {
                     throw new MalformedURLException(JDBCPlugin.Util.getString("TeiidURL.invalid_hostport", nextToken, exceptionMessage));
                 }
                 host = nextToken.substring(0, hostEnd);
-                port = nextToken.substring(hostEnd+1);
+                port = nextToken.substring(hostEnd + 1);
             }
             host = host.trim();
             port = port.trim();
-            if (host.equals("") || port.equals("")) { //$NON-NLS-2$
+            if (host.equals("") || port.equals("")) {
                 throw new MalformedURLException(JDBCPlugin.Util.getString("TeiidURL.invalid_hostport", nextToken, exceptionMessage));
             }
             int portNumber = validatePort(port);
@@ -313,7 +317,7 @@ public class TeiidURL {
         if (!(obj instanceof TeiidURL)) {
             return false;
         }
-        TeiidURL url = (TeiidURL)obj;
+        TeiidURL url = (TeiidURL) obj;
         return (appServerURL.equals(url.getAppServerURL()));
     }
 

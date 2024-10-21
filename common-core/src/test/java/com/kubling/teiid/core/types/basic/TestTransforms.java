@@ -281,9 +281,10 @@ public class TestTransforms {
                         Double.class.getSimpleName(), Integer.class.getSimpleName()));
     }
 
-    @Test public void testPrimitiveArrayConversion() throws Exception {
-        Object val = DataTypeManager.transformValue(new long[] {1}, DefaultDataClasses.OBJECT, Long[].class);
-        assertEquals(new ArrayImpl(new Long[]{Long.valueOf(1)}), val);
+    @Test
+    public void testPrimitiveArrayConversion() throws Exception {
+        Object val = DataTypeManager.transformValue(new long[]{1}, DefaultDataClasses.OBJECT, Long[].class);
+        assertEquals(new ArrayImpl(new Long[]{1L}), val);
     }
 
 }

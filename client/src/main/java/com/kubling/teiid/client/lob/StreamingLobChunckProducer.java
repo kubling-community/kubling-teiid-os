@@ -36,7 +36,7 @@ public class StreamingLobChunckProducer implements LobChunkProducer {
         private final long requestId;
 
         public Factory(DQP dqp,
-                long requestId, Streamable<?> streamable) {
+                       long requestId, Streamable<?> streamable) {
             super();
             this.dqp = dqp;
             this.requestId = requestId;
@@ -56,7 +56,7 @@ public class StreamingLobChunckProducer implements LobChunkProducer {
     private final int streamRequestId = REQUEST_SEQUENCE.getAndIncrement();
 
     public StreamingLobChunckProducer(DQP dqp, long requestId,
-            Streamable<?> streamable) {
+                                      Streamable<?> streamable) {
         this.dqp = dqp;
         this.requestId = requestId;
         this.streamable = streamable;
@@ -68,7 +68,7 @@ public class StreamingLobChunckProducer implements LobChunkProducer {
                     dqp.requestNextLobChunk(streamRequestId, requestId, streamable.getReferenceStreamId());
             return result.get();
         } catch (Exception e) {
-            IOException ex = new IOException(JDBCPlugin.Util.getString("StreamImpl.Unable_to_read_data_from_stream", e.getMessage()), e); //$NON-NLS-1$
+            IOException ex = new IOException(JDBCPlugin.Util.getString("StreamImpl.Unable_to_read_data_from_stream", e.getMessage()), e);
             throw ex;
         }
     }
@@ -78,7 +78,7 @@ public class StreamingLobChunckProducer implements LobChunkProducer {
             dqp.closeLobChunkStream(streamRequestId, requestId, streamable.getReferenceStreamId());
         } catch (TeiidException e) {
             IOException ex = new IOException(e.getMessage(), e);
-            throw  ex;
+            throw ex;
         }
     }
 }

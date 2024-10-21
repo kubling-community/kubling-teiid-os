@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * and set using setter methods, and where the getter and setter methods follow the JavaBean
  * naming convention (e.g., <code>get</code><i>PropertyName</i><code>() : </code><i>PropertyType</i>
  * and <code>set</code><i>PropertyName</i><code>(</code><i>PropertyType</i><code>) : void</code>).
- *
+ * <p>
  * The {@link javax.sql.XADataSource} interface is almost identical to the {@link javax.sql.DataSource}
  * interface, but rather than returning {@link Connection} instances, there are methods that
  * return {@link XAConnection} instances that can be used with distributed transactions.
@@ -72,6 +72,7 @@ public class TeiidDataSource extends BaseDataSource {
     /**
      * Specify whether to make a secure (SSL, mms:) connection or a normal non-SSL mm: connection.
      * the default is to use a non-secure connection.
+     *
      * @since 5.0.2
      */
     private boolean secure = false;
@@ -79,6 +80,7 @@ public class TeiidDataSource extends BaseDataSource {
     /**
      * Holds a comma delimited list of alternate Server(s):Port(s) that can
      * be used for connection fail-over.
+     *
      * @since 5.5
      */
     private String alternateServers;
@@ -152,7 +154,7 @@ public class TeiidDataSource extends BaseDataSource {
             return null;
         }
 
-        if ( this.alternateServers == null || this.alternateServers.length() == 0) {
+        if (this.alternateServers == null || this.alternateServers.length() == 0) {
             // Format:  "mm://server:port"
             return new TeiidURL(this.serverName, this.portNumber, this.secure).getAppServerURL();
         }
@@ -160,8 +162,8 @@ public class TeiidDataSource extends BaseDataSource {
         // Format: "mm://server1:port,server2:port,..."
         String serverURL = this.secure ? TeiidURL.SECURE_PROTOCOL : TeiidURL.DEFAULT_PROTOCOL;
 
-        if (this.serverName.indexOf(':') != -1 && !this.serverName.startsWith("[")) { //$NON-NLS-1$
-            serverURL += "[" + this.serverName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (this.serverName.indexOf(':') != -1 && !this.serverName.startsWith("[")) {
+            serverURL += "[" + this.serverName + "]";
         } else {
             serverURL += this.serverName;
         }
@@ -170,29 +172,29 @@ public class TeiidDataSource extends BaseDataSource {
 
         //add in the port number if not specified
 
-        String[] as = this.alternateServers.split( TeiidURL.COMMA_DELIMITER);
+        String[] as = this.alternateServers.split(TeiidURL.COMMA_DELIMITER);
 
-        for ( int i = 0; i < as.length; i++ ) {
+        for (int i = 0; i < as.length; i++) {
             String server = as[i].trim();
             //ipv6 without port
-            if (server.startsWith("[") && server.endsWith("]")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (server.startsWith("[") && server.endsWith("]")) {
                 String msg = reasonWhyInvalidServerName(server.substring(1, server.length() - 1));
                 if (msg != null) {
-                    throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", msg)); //$NON-NLS-1$
+                    throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", msg));
                 }
-                serverURL += (TeiidURL.COMMA_DELIMITER +as[i] + TeiidURL.COLON_DELIMITER + this.portNumber);
+                serverURL += (TeiidURL.COMMA_DELIMITER + as[i] + TeiidURL.COLON_DELIMITER + this.portNumber);
             } else {
                 String[] serverParts = server.split(TeiidURL.COLON_DELIMITER, 2);
                 String msg = reasonWhyInvalidServerName(serverParts[0]);
                 if (msg != null) {
-                    throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", msg)); //$NON-NLS-1$
+                    throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", msg));
                 }
                 serverURL += (TeiidURL.COMMA_DELIMITER + serverParts[0] + TeiidURL.COLON_DELIMITER);
-                if ( serverParts.length > 1 ) {
+                if (serverParts.length > 1) {
                     try {
                         TeiidURL.validatePort(serverParts[1]);
                     } catch (MalformedURLException e) {
-                        throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", e.getMessage())); //$NON-NLS-1$
+                        throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", e.getMessage()));
                     }
 
                     serverURL += serverParts[1];
@@ -213,22 +215,22 @@ public class TeiidDataSource extends BaseDataSource {
         return new JDBCURL(this.getDatabaseName(), buildServerURL(), buildProperties(getUser(), getPassword()));
     }
 
-    protected void validateProperties( final String userName, final String password) throws java.sql.SQLException {
+    protected void validateProperties(final String userName, final String password) throws java.sql.SQLException {
         super.validateProperties(userName, password);
 
         String reason = reasonWhyInvalidPortNumber(this.portNumber);
-        if ( reason != null ) {
+        if (reason != null) {
             throw createConnectionError(reason);
         }
 
         reason = reasonWhyInvalidServerName(this.serverName);
-        if ( reason != null ) {
+        if (reason != null) {
             throw createConnectionError(reason);
         }
     }
 
     private TeiidSQLException createConnectionError(String reason) {
-        String msg = JDBCPlugin.Util.getString("MMDataSource.Err_connecting", reason); //$NON-NLS-1$
+        String msg = JDBCPlugin.Util.getString("MMDataSource.Err_connecting", reason);
         return new TeiidSQLException(msg);
     }
 
@@ -238,16 +240,18 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Attempt to establish a database connection.
+     *
      * @return a Connection to the database
      * @throws java.sql.SQLException if a database-access error occurs
      * @see javax.sql.DataSource#getConnection()
      */
     public Connection getConnection() throws java.sql.SQLException {
-        return getConnection(null,null);
+        return getConnection(null, null);
     }
 
     /**
      * Attempt to establish a database connection.
+     *
      * @param userName the database user on whose behalf the Connection is being made
      * @param password the user's password
      * @return a Connection to the database
@@ -265,7 +269,7 @@ public class TeiidDataSource extends BaseDataSource {
         }
 
         // if not proceed with socket connection.
-        validateProperties(userName,password);
+        validateProperties(userName, password);
         final Properties props = buildProperties(userName, password);
         return driver.connect(new JDBCURL(this.getDatabaseName(), buildServerURL(), null).getJDBCURL(), props);
     }
@@ -276,7 +280,7 @@ public class TeiidDataSource extends BaseDataSource {
         return props;
     }
 
-   /**
+    /**
      * @see Object#toString()
      */
     public String toString() {
@@ -293,6 +297,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Returns the port number.
+     *
      * @return the port number
      */
     public int getPortNumber() {
@@ -301,6 +306,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Returns the name of the server.
+     *
      * @return the name of the server
      */
     public String getServerName() {
@@ -309,14 +315,17 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Returns a flag indicating whether to create a secure connection or not.
+     *
      * @return True if using secure mms: protocol, false for normal mm: protocol.
      * @since 5.0.2
      */
     public boolean isSecure() {
         return this.secure;
     }
+
     /**
      * Same as "isSecure". Required by the reflection login in connection pools to identify the type
+     *
      * @return
      */
     public boolean getSecure() {
@@ -326,15 +335,16 @@ public class TeiidDataSource extends BaseDataSource {
     /**
      * Returns a string containing a comma delimited list of alternate
      * server(s).
-     *
+     * <p>
      * The list will be in the form of server2[:port2][,server3[:port3]].  If no
      * alternate servers have been defined <code>null</code> is returned.
+     *
      * @return A comma delimited list of server:port or <code>null</code> If
      * no alternate servers are defined.
      * @since 5.5
      */
     public String getAlternateServers() {
-        if ( this.alternateServers != null && this.alternateServers.length() < 1 ) {
+        if (this.alternateServers != null && this.alternateServers.length() < 1) {
             return null;
         }
         return this.alternateServers;
@@ -342,6 +352,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Sets the portNumber.
+     *
      * @param portNumber The portNumber to set
      */
     public void setPortNumber(final int portNumber) {
@@ -350,6 +361,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Sets the serverName.
+     *
      * @param serverName The serverName to set
      */
     public void setServerName(final String serverName) {
@@ -358,6 +370,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Sets the secure flag to use mms: protocol instead of the default mm: protocol.
+     *
      * @param secure True to use mms:
      * @since 5.0.2
      */
@@ -368,21 +381,22 @@ public class TeiidDataSource extends BaseDataSource {
     /**
      * Sets a list of alternate server(s) that can be used for
      * connection fail-over.
-     *
+     * <p>
      * The form of the list should be server2[:port2][,server3:[port3][,...]].
-     *
+     * <p>
      * If ":port" is omitted, the port defined by <code>portNumber</code> is used.
-     *
+     * <p>
      * If <code>servers</code> is empty or <code>null</code>, the value of
      * <code>alternateServers</code> is cleared.
+     *
      * @param servers A comma delimited list of alternate
-     * Server(s):Port(s) to use for connection fail-over. If blank or
-     * <code>null</code>, the list is cleared.
+     *                Server(s):Port(s) to use for connection fail-over. If blank or
+     *                <code>null</code>, the list is cleared.
      * @since 5.5
      */
     public void setAlternateServers(final String servers) {
         this.alternateServers = servers;
-        if ( this.alternateServers != null && this.alternateServers.length() < 1 ) {
+        if (this.alternateServers != null && this.alternateServers.length() < 1) {
             this.alternateServers = null;
         }
     }
@@ -395,30 +409,33 @@ public class TeiidDataSource extends BaseDataSource {
     /**
      * Return the reason why the supplied port number may be invalid, or null
      * if it is considered valid.
+     *
      * @param portNumber a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setPortNumber(int)
      */
-    public static String reasonWhyInvalidPortNumber( final int portNumber) {
+    public static String reasonWhyInvalidPortNumber(final int portNumber) {
         return TeiidURL.validatePort(portNumber);
     }
 
     /**
      * Return the reason why the supplied server name may be invalid, or null
      * if it is considered valid.
+     *
      * @param serverName a possible value for the property
      * @return the reason why the property is invalid, or null if it is considered valid
      * @see #setServerName(String)
-     * */
-    public static String reasonWhyInvalidServerName( final String serverName ) {
-        if ( serverName == null || serverName.trim().length() == 0 ) {
-            return JDBCPlugin.Util.getString("MMDataSource.Server_name_required"); //$NON-NLS-1$
+     */
+    public static String reasonWhyInvalidServerName(final String serverName) {
+        if (serverName == null || serverName.trim().length() == 0) {
+            return JDBCPlugin.Util.getString("MMDataSource.Server_name_required");
         }
         return null;
     }
 
     /**
      * The reason why "socketsPerVM" is invalid.
+     *
      * @param socketsPerVM property
      * @return reason
      */
@@ -431,7 +448,7 @@ public class TeiidDataSource extends BaseDataSource {
             }
 
             if (value <= 0) {
-                return JDBCPlugin.Util.getString("MMDataSource.Sockets_per_vm_invalid"); //$NON-NLS-1$
+                return JDBCPlugin.Util.getString("MMDataSource.Sockets_per_vm_invalid");
             }
         }
         return null;
@@ -440,14 +457,15 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * The reason why "stickyConnections" is invalid.
+     *
      * @param stickyConnections property
      * @return reason
      */
     public static String reasonWhyInvalidStickyConnections(final String stickyConnections) {
         if (stickyConnections != null) {
-            if ((! stickyConnections.equalsIgnoreCase("true")) &&    //$NON-NLS-1$
-                (! stickyConnections.equalsIgnoreCase("false"))) {   //$NON-NLS-1$
-                return JDBCPlugin.Util.getString("MMDataSource.Sticky_connections_invalid"); //$NON-NLS-1$
+            if ((!stickyConnections.equalsIgnoreCase("true")) &&
+                    (!stickyConnections.equalsIgnoreCase("false"))) {
+                return JDBCPlugin.Util.getString("MMDataSource.Sticky_connections_invalid");
             }
         }
         return null;
@@ -469,6 +487,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * When true, this connection uses the passed in security domain to do the authentication.
+     *
      * @return
      */
     public boolean isPassthroughAuthentication() {
@@ -477,6 +496,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Same as "isPassthroughAuthentication". Required by the reflection login in connection pools to identify the type
+     *
      * @return
      */
     public boolean getPassthroughAuthentication() {
@@ -485,6 +505,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * When set to true, the connection uses the passed in security domain to do the authentication.
+     *
      * @since 7.1
      */
     public void setPassthroughAuthentication(final boolean passthroughAuthentication) {
@@ -493,8 +514,9 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Application name from JAAS Login Config file
-     * @since 7.6
+     *
      * @return
+     * @since 7.6
      */
     public String getJaasName() {
         return jaasName;
@@ -502,6 +524,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Application name from JAAS Login Config file
+     *
      * @since 7.6
      */
     public void setJaasName(String jaasApplicationName) {
@@ -510,8 +533,9 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Kerberos KDC service principle name
-     * @since 7.6
+     *
      * @return
+     * @since 7.6
      */
     public String getKerberosServicePrincipleName() {
         return kerberosServicePrincipleName;
@@ -519,6 +543,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Kerberos KDC service principle name
+     *
      * @since 7.6
      */
     public void setKerberosServicePrincipleName(String kerberosServerName) {
@@ -558,6 +583,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     /**
      * Attempt to establish a database connection that can be used with distributed transactions.
+     *
      * @param userName the database user on whose behalf the XAConnection is being made
      * @param password the user's password
      * @return an XAConnection to the database

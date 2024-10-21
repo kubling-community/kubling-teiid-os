@@ -31,36 +31,38 @@ import java.util.Properties;
  * Generic logon interface.
  */
 public interface ILogon {
-    String KRB5TOKEN = "KRB5TOKEN"; //$NON-NLS-1$
-    String KRB5_ESTABLISHED = "KRB5_CONTEXT_ESTABLISHED"; //$NON-NLS-1$
-    String AUTH_TYPE = "authType"; //$NON-NLS-1$
+    String KRB5TOKEN = "KRB5TOKEN";
+    String KRB5_ESTABLISHED = "KRB5_CONTEXT_ESTABLISHED";
+    String AUTH_TYPE = "authType";
 
     @Secure
     LogonResult logon(Properties connectionProperties)
-    throws LogonException, TeiidComponentException, CommunicationException;
+            throws LogonException, TeiidComponentException, CommunicationException;
 
     @Secure
     LogonResult neogitiateGssLogin(Properties connectionProperties, byte[] serviceToken, boolean createSession) throws LogonException;
 
-   /**
-    * Ping the server to see if the client-server connection is alive.
-    * @throws InvalidSessionException if the sessionID is invalid
-    * @throws ComponentNotFoundException if can't find the Session service.
-    */
-   ResultsFuture<?> ping()
-       throws InvalidSessionException, TeiidComponentException, CommunicationException;
+    /**
+     * Ping the server to see if the client-server connection is alive.
+     *
+     * @throws InvalidSessionException    if the sessionID is invalid
+     * @throws ComponentNotFoundException if can't find the Session service.
+     */
+    ResultsFuture<?> ping()
+            throws InvalidSessionException, TeiidComponentException, CommunicationException;
 
-   @Deprecated
-   ResultsFuture<?> ping(Collection<String> sessions)
-           throws TeiidComponentException, CommunicationException;
+    @Deprecated
+    ResultsFuture<?> ping(Collection<String> sessions)
+            throws TeiidComponentException, CommunicationException;
 
-   /**
-    * Log off the specified session.
-    * @throws InvalidSessionException If session has expired or doesn't exist
-    * @throws ComponentNotFoundException If couldn't find needed service component
-    */
-   ResultsFuture<?> logoff() throws InvalidSessionException, TeiidComponentException;
+    /**
+     * Log off the specified session.
+     *
+     * @throws InvalidSessionException    If session has expired or doesn't exist
+     * @throws ComponentNotFoundException If couldn't find needed service component
+     */
+    ResultsFuture<?> logoff() throws InvalidSessionException, TeiidComponentException;
 
-   @Secure
-   void assertIdentity(SessionToken sessionId) throws InvalidSessionException, TeiidComponentException, CommunicationException;
+    @Secure
+    void assertIdentity(SessionToken sessionId) throws InvalidSessionException, TeiidComponentException, CommunicationException;
 }

@@ -43,10 +43,12 @@ import java.sql.*;
 final class DataTypeTransformer {
 
     // Prevent instantiation
-    private DataTypeTransformer() {}
+    private DataTypeTransformer() {
+    }
 
     /**
      * Gets an object value and transforms it into a java.math.BigDecimal object.
+     *
      * @param value the object to be transformed
      * @return a BigDecimal object
      * @throws SQLException if failed to transform to the desired datatype
@@ -65,38 +67,38 @@ final class DataTypeTransformer {
         }
         if (targetType == byte[].class) {
             if (value instanceof Blob) {
-                Blob blob = (Blob)value;
+                Blob blob = (Blob) value;
                 long length = blob.length();
                 if (length > Integer.MAX_VALUE) {
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("DataTypeTransformer.blob_too_big")); //$NON-NLS-1$
+                    throw new TeiidSQLException(JDBCPlugin.Util.getString("DataTypeTransformer.blob_too_big"));
                 }
-                return targetType.cast(blob.getBytes(1, (int)length));
+                return targetType.cast(blob.getBytes(1, (int) length));
             } else if (value instanceof String) {
-                return targetType.cast(((String)value).getBytes());
+                return targetType.cast(((String) value).getBytes());
             } else if (value instanceof BinaryType) {
-                return targetType.cast(((BinaryType)value).getBytesDirect());
+                return targetType.cast(((BinaryType) value).getBytesDirect());
             }
         } else if (targetType == String.class) {
             if (value instanceof SQLXML) {
-                return targetType.cast(((SQLXML)value).getString());
+                return targetType.cast(((SQLXML) value).getString());
             } else if (value instanceof Clob) {
-                Clob c = (Clob)value;
+                Clob c = (Clob) value;
                 long length = c.length();
                 if (length == 0) {
                     //there is a bug in SerialClob with 0 length
-                    return targetType.cast(""); //$NON-NLS-1$
+                    return targetType.cast("");
                 }
-                return targetType.cast(c.getSubString(1, length>Integer.MAX_VALUE?Integer.MAX_VALUE:(int)length));
+                return targetType.cast(c.getSubString(1, length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length));
             }
         }
         try {
-            return (T)DataTypeManager.transformValue(DataTypeManager.convertToRuntimeType(value, true), runtimeType);
+            return (T) DataTypeManager.transformValue(DataTypeManager.convertToRuntimeType(value, true), runtimeType);
         } catch (Exception e) {
             String valueStr = value.toString();
             if (valueStr.length() > 20) {
-                valueStr = valueStr.substring(0, 20) + "..."; //$NON-NLS-1$
+                valueStr = valueStr.substring(0, 20) + "...";
             }
-            String msg = JDBCPlugin.Util.getString("DataTypeTransformer.Err_converting", valueStr, targetType.getSimpleName()); //$NON-NLS-1$
+            String msg = JDBCPlugin.Util.getString("DataTypeTransformer.Err_converting", valueStr, targetType.getSimpleName());
             throw TeiidSQLException.create(e, msg);
         }
     }
@@ -121,7 +123,8 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a boolean
-     * @param  value the object to be transformed
+     *
+     * @param value the object to be transformed
      * @return a Boolean object
      * @throws SQLException if failed to transform to the desired datatype
      */
@@ -134,6 +137,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a byte
+     *
      * @param value the object to be transformed
      * @return a Byte object
      * @throws SQLException if failed to transform to the desired datatype
@@ -155,6 +159,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a java.sql.Date object.
+     *
      * @param value the object to be transformed
      * @throws SQLException if failed to transform to the desired datatype
      */
@@ -164,6 +169,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a double
+     *
      * @param value the object to be transformed
      * @return a Double object
      * @throws SQLException if failed to transform to the desired datatype
@@ -177,6 +183,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a float
+     *
      * @param value the object to be transformed
      * @return a Float object
      * @throws SQLException if failed to transform to the desired datatype
@@ -190,6 +197,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a integer
+     *
      * @param value the object to be transformed
      * @return a Integer object
      * @throws SQLException if failed to transform to the desired datatype
@@ -203,6 +211,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a long
+     *
      * @param value the object to be transformed
      * @return a Long object
      * @throws SQLException if failed to transform to the desired datatype
@@ -216,6 +225,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a short
+     *
      * @param value the object to be transformed
      * @return a Short object
      * @throws SQLException if failed to transform to the desired datatype
@@ -229,6 +239,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a java.sql.Time object.
+     *
      * @param value the object to be transformed
      * @return a Time object
      * @throws SQLException if failed to transform to the desired datatype
@@ -239,6 +250,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a java.sql.Timestamp object.
+     *
      * @param value the object to be transformed
      * @return a Timestamp object
      * @throws SQLException if failed to transform to the desired datatype
@@ -253,6 +265,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a java.sql.Timestamp object.
+     *
      * @param value the object to be transformed
      * @return a Timestamp object
      * @throws SQLException if failed to transform to the desired datatype
@@ -263,6 +276,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a java.sql.Timestamp object.
+     *
      * @param value the object to be transformed
      * @return a Timestamp object
      * @throws SQLException if failed to transform to the desired datatype
@@ -273,6 +287,7 @@ final class DataTypeTransformer {
 
     /**
      * Gets an object value and transforms it into a SQLXML object.
+     *
      * @param value the object to be transformed
      * @return a SQLXML object
      * @throws SQLException if failed to transform to the desired datatype
@@ -291,7 +306,7 @@ final class DataTypeTransformer {
         }
 
         if (value instanceof SQLXML) {
-            return ((SQLXML)value).getCharacterStream();
+            return ((SQLXML) value).getCharacterStream();
         }
 
         return new StringReader(getString(value));
@@ -308,10 +323,10 @@ final class DataTypeTransformer {
 
         if (value instanceof SQLXML) {
             //TODO: could check the SQLXML encoding
-            return new ReaderInputStream(((SQLXML)value).getCharacterStream(), Charset.forName("ASCII")); //$NON-NLS-1$
+            return new ReaderInputStream(((SQLXML) value).getCharacterStream(), Charset.forName("ASCII"));
         }
 
-        return new ByteArrayInputStream(getString(value).getBytes(Charset.forName("ASCII"))); //$NON-NLS-1$
+        return new ByteArrayInputStream(getString(value).getBytes(Charset.forName("ASCII")));
     }
 
     static final NClob getNClob(Object value) throws SQLException {
@@ -320,9 +335,9 @@ final class DataTypeTransformer {
             return null;
         }
         if (clob instanceof NClob) {
-            return (NClob)clob;
+            return (NClob) clob;
         }
-        return (NClob) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {NClob.class}, new InvocationHandler() {
+        return (NClob) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{NClob.class}, new InvocationHandler() {
 
             @Override
             public Object invoke(Object proxy, Method method, Object[] args)

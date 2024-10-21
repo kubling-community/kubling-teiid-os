@@ -22,7 +22,6 @@ import com.kubling.teiid.core.util.ObjectConverterUtil;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
 
@@ -31,61 +30,68 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("nls")
 public class TestSQLXMLImpl {
 
-    String testStr = "<foo>test</foo>"; //$NON-NLS-1$
+    String testStr = "<foo>test</foo>";
 
-    @Test public void testGetSource() throws Exception {
+    @Test
+    public void testGetSource() throws Exception {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
-        assertTrue(xml.getSource(null) instanceof StreamSource);
+        assertInstanceOf(StreamSource.class, xml.getSource(null));
 
-        StreamSource ss = (StreamSource)xml.getSource(null);
+        StreamSource ss = xml.getSource(null);
         assertEquals(testStr, new String(ObjectConverterUtil.convertToByteArray(ss.getInputStream()), Streamable.ENCODING));
     }
 
-    @Test public void testGetCharacterStream() throws Exception {
+    @Test
+    public void testGetCharacterStream() throws Exception {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
         assertEquals(testStr, ObjectConverterUtil.convertToString(xml.getCharacterStream()));
     }
 
-    @Test public void testGetBinaryStream() throws Exception {
+    @Test
+    public void testGetBinaryStream() throws Exception {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
         assertEquals(testStr, new String(ObjectConverterUtil.convertToByteArray(xml.getBinaryStream()), Streamable.ENCODING));
     }
 
-    @Test public void testGetString() throws Exception {
+    @Test
+    public void testGetString() throws Exception {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
         assertEquals(testStr, xml.getString());
     }
 
-    @Test public void testSetBinaryStream() throws Exception {
+    @Test
+    public void testSetBinaryStream() {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
-        assertThrows(SQLException.class, () -> xml.setBinaryStream());
+        assertThrows(SQLException.class, xml::setBinaryStream);
     }
 
-    @Test public void testSetCharacterStream() throws Exception {
+    @Test
+    public void testSetCharacterStream() {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
-        assertThrows(SQLException.class, () -> xml.setCharacterStream());
+        assertThrows(SQLException.class, xml::setCharacterStream);
     }
 
-    @Test public void testSetString() throws Exception {
+    @Test
+    public void testSetString() {
         SQLXMLImpl xml = new SQLXMLImpl(testStr);
         assertThrows(SQLException.class, () -> xml.setString(testStr));
     }
 
-    @Test public void testGetString1() throws Exception {
+    @Test
+    public void testGetString1() throws Exception {
         SQLXMLImpl clob = new SQLXMLImpl() {
-            public Reader getCharacterStream() throws SQLException {
+            public Reader getCharacterStream() {
                 return new Reader() {
 
                     int pos = 0;
 
                     @Override
-                    public void close() throws IOException {
+                    public void close() {
 
                     }
 
                     @Override
-                    public int read(char[] cbuf, int off, int len)
-                            throws IOException {
+                    public int read(char[] cbuf, int off, int len) {
                         if (pos < 5) {
                             cbuf[off] = 'a';
                             pos++;

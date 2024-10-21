@@ -16,9 +16,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package com.kubling.teiid.core.util;
 
 import com.kubling.teiid.core.CorePlugin;
@@ -36,25 +33,26 @@ import java.nio.charset.*;
 public class ReaderInputStream extends InputStream {
 
     //even though we're dealing with chars, we'll use the same default
-    static final int DEFAULT_BUFFER_SIZE = 1<<13;
+    static final int DEFAULT_BUFFER_SIZE = 1 << 13;
 
     private final Reader reader;
-    private CharBuffer cb;
-    private ByteBuffer bb;
+    private final CharBuffer cb;
+    private final ByteBuffer bb;
     private boolean done;
     private boolean wasOverflow;
-    private CharsetEncoder encoder;
-    private byte[] singleByte = new byte[1];
+    private final CharsetEncoder encoder;
+    private final byte[] singleByte = new byte[1];
 
     /**
      * Creates a new inputstream that will replace any malformed/unmappable input
+     *
      * @param reader
      * @param charset
      */
     public ReaderInputStream(Reader reader, Charset charset) {
         this(reader, charset.newEncoder()
-                .onMalformedInput(CodingErrorAction.REPLACE)
-                .onUnmappableCharacter(CodingErrorAction.REPLACE),
+                        .onMalformedInput(CodingErrorAction.REPLACE)
+                        .onUnmappableCharacter(CodingErrorAction.REPLACE),
                 DEFAULT_BUFFER_SIZE);
     }
 
@@ -74,7 +72,7 @@ public class ReaderInputStream extends InputStream {
     @Override
     public int read(byte[] bbuf, int off, int len) throws IOException {
         if ((off < 0) || (off > bbuf.length) || (len < 0) ||
-            ((off + len) > bbuf.length) || ((off + len) < 0)) {
+                ((off + len) > bbuf.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return 0;

@@ -18,8 +18,8 @@
 
 package com.kubling.teiid.core.util;
 
-import org.junit.jupiter.api.Test;
 import com.kubling.teiid.core.CorePlugin;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 public class TestAssertion {
 
-    private static final String TEST_MESSAGE = "This is a test assertion message"; //$NON-NLS-1$
+    private static final String TEST_MESSAGE = "This is a test assertion message";
 
     /*
      * Test for void assertTrue(boolean)
@@ -41,9 +41,9 @@ public class TestAssertion {
         try {
             Assertion.assertTrue(false);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
-            final String msg = CorePlugin.Util.getString("Assertion.Assertion_failed"); //$NON-NLS-1$
+            final String msg = CorePlugin.Util.getString("Assertion.Assertion_failed");
             assertEquals(msg, e.getMessage());
         }
     }
@@ -53,12 +53,12 @@ public class TestAssertion {
      */
     @Test
     public void testAssertTruebooleanString() {
-        Assertion.assertTrue(true,TEST_MESSAGE);
+        Assertion.assertTrue(true, TEST_MESSAGE);
 
         try {
-            Assertion.assertTrue(false,TEST_MESSAGE);
+            Assertion.assertTrue(false, TEST_MESSAGE);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
             assertEquals(TEST_MESSAGE, e.getMessage());
         }
@@ -69,15 +69,15 @@ public class TestAssertion {
         try {
             Assertion.failed(null);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
-            assertEquals("null", e.getMessage()); //$NON-NLS-1$
+            assertEquals("null", e.getMessage());
         }
 
         try {
             Assertion.failed(TEST_MESSAGE);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
             assertEquals(TEST_MESSAGE, e.getMessage());
         }
@@ -91,11 +91,11 @@ public class TestAssertion {
         Assertion.isNull(null);
 
         try {
-            Assertion.isNull(""); //$NON-NLS-1$
+            Assertion.isNull("");
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
-            final String msg = CorePlugin.Util.getString("Assertion.isNull"); //$NON-NLS-1$
+            final String msg = CorePlugin.Util.getString("Assertion.isNull");
             assertEquals(msg, e.getMessage());
         }
     }
@@ -105,12 +105,12 @@ public class TestAssertion {
      */
     @Test
     public void testIsNullObjectString() {
-        Assertion.isNull(null,TEST_MESSAGE);
+        Assertion.isNull(null, TEST_MESSAGE);
 
         try {
-            Assertion.isNull("",TEST_MESSAGE); //$NON-NLS-1$
+            Assertion.isNull("", TEST_MESSAGE);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
             assertEquals(TEST_MESSAGE, e.getMessage());
         }
@@ -121,14 +121,14 @@ public class TestAssertion {
      */
     @Test
     public void testIsNotNullObject() {
-        Assertion.isNotNull(""); //$NON-NLS-1$
+        Assertion.isNotNull("");
 
         try {
             Assertion.isNotNull(null);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
-            final String msg = CorePlugin.Util.getString("Assertion.isNotNull"); //$NON-NLS-1$
+            final String msg = CorePlugin.Util.getString("Assertion.isNotNull");
             assertEquals(msg, e.getMessage());
         }
     }
@@ -138,12 +138,12 @@ public class TestAssertion {
      */
     @Test
     public void testIsNotNullObjectString() {
-        Assertion.isNotNull("",TEST_MESSAGE); //$NON-NLS-1$
+        Assertion.isNotNull("", TEST_MESSAGE);
 
         try {
-            Assertion.isNotNull(null,TEST_MESSAGE);
+            Assertion.isNotNull(null, TEST_MESSAGE);
             fail();
-        } catch ( AssertionError e ) {
+        } catch (AssertionError e) {
             // expected, but check the message
             assertEquals(TEST_MESSAGE, e.getMessage());
         }
@@ -151,16 +151,16 @@ public class TestAssertion {
 
     @Test
     public void testIsInstanceOf() {
-        Assertion.isInstanceOf(Integer.valueOf(1),Integer.class,"name"); //$NON-NLS-1$
-        Assertion.isInstanceOf("asdfasdf",String.class,"name2"); //$NON-NLS-1$ //$NON-NLS-2$
+        Assertion.isInstanceOf(1, Integer.class, "name");
+        Assertion.isInstanceOf("asdfasdf", String.class, "name2");
 
         try {
-            Assertion.isInstanceOf(Integer.valueOf(1),Long.class,"name3"); //$NON-NLS-1$
+            Assertion.isInstanceOf(1, Long.class, "name3");
             fail();
-        } catch ( ClassCastException e ) {
+        } catch (ClassCastException e) {
             // expected, but check the message
-            final Object[] params = new Object[]{"name3", Long.class, Integer.class.getName()}; //$NON-NLS-1$
-            final String msg = CorePlugin.Util.getString("Assertion.invalidClassMessage",params); //$NON-NLS-1$
+            final Object[] params = new Object[]{"name3", Long.class, Integer.class.getName()};
+            final String msg = CorePlugin.Util.getString("Assertion.invalidClassMessage", params);
             assertEquals(msg, e.getMessage());
         }
     }

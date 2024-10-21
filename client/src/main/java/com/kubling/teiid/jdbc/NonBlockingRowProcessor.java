@@ -100,7 +100,7 @@ public class NonBlockingRowProcessor implements
             List<?> row = stmt.getResultSet().getCurrentRecord();
             if (row == null) {
                 if (callback instanceof ContinuousStatementCallback) {
-                    ((ContinuousStatementCallback)callback).beforeNextExecution(this.stmt);
+                    ((ContinuousStatementCallback) callback).beforeNextExecution(this.stmt);
                 }
                 return true;
             }
@@ -119,7 +119,7 @@ public class NonBlockingRowProcessor implements
 
     private void onException(Exception e) {
         if (e instanceof ExecutionException) {
-            ExecutionException ee = (ExecutionException)e;
+            ExecutionException ee = (ExecutionException) e;
             if (ee.getCause() instanceof Exception) {
                 e = (Exception) ee.getCause();
             }
@@ -127,7 +127,7 @@ public class NonBlockingRowProcessor implements
         try {
             callback.onException(stmt, e);
         } catch (Exception e1) {
-            logger.log(Level.WARNING, "Unhandled exception from StatementCallback", e); //$NON-NLS-1$
+            logger.log(Level.WARNING, "Unhandled exception from StatementCallback", e);
         }
     }
 

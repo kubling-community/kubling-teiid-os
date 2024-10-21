@@ -37,7 +37,6 @@ import com.kubling.teiid.core.CorePlugin;
  * into the language.  When MetaMatrix begins using JDK 1.4 across the board, this
  * class should no longer be needed and all usage of assertions should be replaced with
  * use of the built-in JDK assertion facility.
- *
  */
 public final class Assertion {
     //============================================================================================================================
@@ -52,67 +51,68 @@ public final class Assertion {
 
     // ########################## BASIC METHODS ###################################
 
-    public static final void assertTrue(boolean condition) {
-        assertTrue(condition,null);
+    public static void assertTrue(boolean condition) {
+        assertTrue(condition, null);
     }
 
-    public static final void assertTrue(boolean condition, String msgKey) {
+    public static void assertTrue(boolean condition, String msgKey) {
         if (!condition) {
             final String msg = msgKey != null ?
-                               msgKey :
-                               CorePlugin.Util.getString("Assertion.Assertion_failed");
+                    msgKey :
+                    CorePlugin.Util.getString("Assertion.Assertion_failed");
             failed(msg);
         }
     }
 
-    public static final void failed(String msg) {
+    public static void failed(String msg) {
         throw new AssertionError(msg);
     }
 
     // ########################## OBJECT METHODS ###################################
 
-    public static final void isNull(Object value) {
-        isNull(value,null);
+    public static void isNull(Object value) {
+        isNull(value, null);
     }
 
-    public static final void isNull(Object value, String message) {
-        if ( value != null ) {
+    public static void isNull(Object value, String message) {
+        if (value != null) {
             final String msg = message != null ?
-                               message :
-                               CorePlugin.Util.getString("Assertion.isNull");
+                    message :
+                    CorePlugin.Util.getString("Assertion.isNull");
             failed(msg);
         }
     }
 
-    public static final void isNotNull(Object value) {
-        isNotNull(value,null);
+    public static void isNotNull(Object value) {
+        isNotNull(value, null);
     }
 
-    public static final void isNotNull(Object value, String message) {
-        if ( value == null ) {
+    public static void isNotNull(Object value, String message) {
+        if (value == null) {
             final String msg = message != null ?
-                               message :
-                               CorePlugin.Util.getString("Assertion.isNotNull");
+                    message :
+                    CorePlugin.Util.getString("Assertion.isNotNull");
             failed(msg);
         }
     }
 
     /**
      * Verifies that the specified value is an instance of the specified class.
-     * @param object            The value to verify
-     * @param expectedClass   The class of which the value must be an instance
-     * @param name             The text identifying the name or type of value
+     *
+     * @param object        The value to verify
+     * @param expectedClass The class of which the value must be an instance
+     * @param name          The text identifying the name or type of value
      * @throws ClassCastException If the value is not an instance of the specified class.
      * @since 2.1
      */
-    public static final <T> T isInstanceOf(final Object object, final Class<T> expectedClass, final String name) {
+    public static <T> T isInstanceOf(final Object object, final Class<T> expectedClass, final String name) {
         if (object == null) {
             return null;
         }
         final Class<?> objClass = object.getClass();
         if (!expectedClass.isAssignableFrom(objClass)) {
             final Object[] params = new Object[]{name, expectedClass, objClass.getName()};
-            final String msg = CorePlugin.Util.getString("Assertion.invalidClassMessage",params);
+            final String msg = CorePlugin.Util.getString("Assertion.invalidClassMessage", params);
             throw new ClassCastException(msg);
         }
         return expectedClass.cast(object);

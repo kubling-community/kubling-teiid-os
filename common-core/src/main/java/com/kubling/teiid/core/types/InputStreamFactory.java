@@ -73,6 +73,7 @@ public abstract class InputStreamFactory implements Source {
 
     /**
      * Length in bytes of the {@link InputStream}
+     *
      * @return the length or -1 if the length is not known
      */
     public long getLength() {
@@ -96,7 +97,7 @@ public abstract class InputStreamFactory implements Source {
 
     public static class FileInputStreamFactory extends InputStreamFactory {
 
-        private File f;
+        private final File f;
 
         public FileInputStreamFactory(File f) {
             this.f = f;
@@ -122,7 +123,7 @@ public abstract class InputStreamFactory implements Source {
 
     public static class ClobInputStreamFactory extends InputStreamFactory implements DataSource {
 
-        private Clob clob;
+        private final Clob clob;
         private Charset charset = Charset.forName(Streamable.ENCODING);
 
         public ClobInputStreamFactory(Clob clob) {
@@ -157,16 +158,16 @@ public abstract class InputStreamFactory implements Source {
 
         @Override
         public String getContentType() {
-            return "text/plain"; //$NON-NLS-1$
+            return "text/plain";
         }
 
         @Override
         public String getName() {
-            return "clob"; //$NON-NLS-1$
+            return "clob";
         }
 
         @Override
-        public OutputStream getOutputStream() throws IOException {
+        public OutputStream getOutputStream() {
             throw new UnsupportedOperationException();
         }
 
@@ -188,7 +189,7 @@ public abstract class InputStreamFactory implements Source {
 
     public static class BlobInputStreamFactory extends InputStreamFactory implements DataSource {
 
-        private Blob blob;
+        private final Blob blob;
 
         public BlobInputStreamFactory(Blob blob) {
             this.blob = blob;
@@ -209,6 +210,7 @@ public abstract class InputStreamFactory implements Source {
                 try {
                     length = blob.length();
                 } catch (SQLException e) {
+                    // Ignored
                 }
             }
             return length;
@@ -216,16 +218,16 @@ public abstract class InputStreamFactory implements Source {
 
         @Override
         public String getContentType() {
-            return "application/octet-stream"; //$NON-NLS-1$
+            return "application/octet-stream";
         }
 
         @Override
         public String getName() {
-            return "blob"; //$NON-NLS-1$
+            return "blob";
         }
 
         @Override
-        public OutputStream getOutputStream() throws IOException {
+        public OutputStream getOutputStream() {
             throw new UnsupportedOperationException();
         }
 
@@ -243,7 +245,7 @@ public abstract class InputStreamFactory implements Source {
 
     public static StorageMode getStorageMode(Object lob) {
         if (lob instanceof Streamable<?>) {
-            return getStorageMode(((Streamable<?>)lob).getReference());
+            return getStorageMode(((Streamable<?>) lob).getReference());
         }
         if (lob instanceof SerialClob) {
             return StorageMode.MEMORY;
@@ -252,7 +254,7 @@ public abstract class InputStreamFactory implements Source {
             return StorageMode.MEMORY;
         }
         if (lob instanceof BaseLob) {
-            BaseLob baseLob = (BaseLob)lob;
+            BaseLob baseLob = (BaseLob) lob;
             try {
                 return baseLob.getStreamFactory().getStorageMode();
             } catch (SQLException e) {
@@ -264,13 +266,14 @@ public abstract class InputStreamFactory implements Source {
 
     public static void setTemporary(Object lob, boolean temp) {
         if (lob instanceof Streamable<?>) {
-            setTemporary(((Streamable<?>)lob).getReference(), temp);
+            setTemporary(((Streamable<?>) lob).getReference(), temp);
         }
         if (lob instanceof BaseLob) {
-            BaseLob baseLob = (BaseLob)lob;
+            BaseLob baseLob = (BaseLob) lob;
             try {
                 baseLob.getStreamFactory().setTemporary(temp);
             } catch (SQLException e) {
+                // Ignored
             }
         }
     }
@@ -307,16 +310,16 @@ public abstract class InputStreamFactory implements Source {
 
         @Override
         public String getContentType() {
-            return "application/xml"; //$NON-NLS-1$
+            return "application/xml";
         }
 
         @Override
         public String getName() {
-            return "sqlxml"; //$NON-NLS-1$
+            return "sqlxml";
         }
 
         @Override
-        public OutputStream getOutputStream() throws IOException {
+        public OutputStream getOutputStream() {
             throw new UnsupportedOperationException();
         }
 

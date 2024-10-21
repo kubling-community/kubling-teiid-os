@@ -63,6 +63,7 @@ public class DhKeyGenerator {
                     is.close();
                 }
             } catch (IOException e) {
+                // Ignored
             }
         }
         BigInteger p = new BigInteger(props.getProperty("p"));

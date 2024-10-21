@@ -58,16 +58,17 @@ public class TestCallableStatement {
         assertFalse(mmcs.wasNull());
     }
 
-    @Test public void testGetOutputParameter() throws Exception {
+    @Test
+    public void testGetOutputParameter() throws Exception {
         CallableStatementImpl mmcs = getCallableStatement();
 
         RequestMessage request = new RequestMessage();
         request.setExecutionId(1);
         ResultsMessage resultsMsg = new ResultsMessage();
-        List<?>[] results = new List[] {Arrays.asList(null, null, null), Arrays.asList(null, 1, 2)};
+        List<?>[] results = new List[]{Arrays.asList(null, null, null), Arrays.asList(null, 1, 2)};
         resultsMsg.setResults(results);
-        resultsMsg.setColumnNames(new String[] { "IntNum", "Out1", "Out2" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        resultsMsg.setDataTypes(new String[] { DataTypeManager.DefaultDataTypes.INTEGER, DataTypeManager.DefaultDataTypes.INTEGER, DataTypeManager.DefaultDataTypes.INTEGER });
+        resultsMsg.setColumnNames(new String[]{"IntNum", "Out1", "Out2"});
+        resultsMsg.setDataTypes(new String[]{DataTypeManager.DefaultDataTypes.INTEGER, DataTypeManager.DefaultDataTypes.INTEGER, DataTypeManager.DefaultDataTypes.INTEGER});
         resultsMsg.setFinalRow(results.length);
         resultsMsg.setLastRow(results.length);
         resultsMsg.setFirstRow(1);
@@ -82,20 +83,22 @@ public class TestCallableStatement {
         assertEquals(2, mmcs.getInt("Out2"));
     }
 
-    @Test public void testUnknownIndex() throws Exception {
+    @Test
+    public void testUnknownIndex() throws Exception {
         CallableStatementImpl mmcs = getCallableStatement();
 
         mmcs.outParamIndexMap = new HashMap<Integer, Integer>();
 
         try {
             mmcs.getBoolean(0);
-            fail("expected exception"); //$NON-NLS-1$
+            fail("expected exception");
         } catch (SQLException e) {
             assertEquals("Parameter 0 was not found.", e.getMessage());
         }
     }
 
-    @Test public void testSetLobs() throws Exception {
+    @Test
+    public void testSetLobs() throws Exception {
         CallableStatementImpl mmcs = getCallableStatement();
         mmcs.paramsByName = new TreeMap<String, Integer>();
         mmcs.paramsByName.put("foo", 2);

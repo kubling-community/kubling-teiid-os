@@ -121,8 +121,8 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 dbf.setNamespaceAware(true);
                 if (!XMLType.SUPPORT_DTD) {
-                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false); //$NON-NLS-1$
-                    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false); //$NON-NLS-1$
+                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false); 
+                    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false); 
                 }
                 DocumentBuilder docBuilder = dbf.newDocumentBuilder();
                 Node doc = docBuilder.parse(new InputSource(getBinaryStream()));
@@ -135,7 +135,7 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
                 throw new SQLException(e);
             }
         }
-        throw new SQLException("Unsupported source type " + sourceClass); //$NON-NLS-1$
+        throw new SQLException("Unsupported source type " + sourceClass); 
     }
 
     public String getString() throws SQLException {

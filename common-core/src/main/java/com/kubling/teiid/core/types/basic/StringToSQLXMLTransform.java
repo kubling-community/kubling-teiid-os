@@ -34,13 +34,14 @@ public class StringToSQLXMLTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        String xml = (String)value;
+        String xml = (String) value;
         Reader reader = new StringReader(xml);
         XMLType.Type type = isXml(reader);
         XMLType result = new XMLType(new SQLXMLImpl(xml));
@@ -51,22 +52,23 @@ public class StringToSQLXMLTransform extends Transform {
     public static XMLType.Type isXml(Reader reader) throws TransformationException {
         XMLType.Type type = XMLType.Type.ELEMENT;
         XMLInputFactory inputFactory = XMLType.getXmlInputFactory();
-        try{
-             XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(reader);
-             int event = xmlReader.getEventType();
-             if  (event == XMLEvent.START_DOCUMENT && xmlReader.getLocation().getColumnNumber() != 1) {
-                 type = XMLType.Type.DOCUMENT;
-             }
-             while (xmlReader.hasNext()) {
-                 xmlReader.next();
-             }
-        } catch (Exception e){
-              throw new TransformationException(CorePlugin.Event.TEIID10070, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10070));
+        try {
+            XMLStreamReader xmlReader = inputFactory.createXMLStreamReader(reader);
+            int event = xmlReader.getEventType();
+            if (event == XMLEvent.START_DOCUMENT && xmlReader.getLocation().getColumnNumber() != 1) {
+                type = XMLType.Type.DOCUMENT;
+            }
+            while (xmlReader.hasNext()) {
+                xmlReader.next();
+            }
+        } catch (Exception e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10070, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10070));
         } finally {
             try {
                 reader.close();
             } catch (IOException e) {
+                // Ignored
             }
         }
         return type;
@@ -74,6 +76,7 @@ public class StringToSQLXMLTransform extends Transform {
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -82,6 +85,7 @@ public class StringToSQLXMLTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

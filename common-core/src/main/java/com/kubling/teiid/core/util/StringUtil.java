@@ -414,7 +414,7 @@ public final class StringUtil {
             return (T)m;
         }
 
-        throw new IllegalArgumentException("Conversion from String to "+ type.getName() + " is not supported"); //$NON-NLS-2$
+        throw new IllegalArgumentException("Conversion from String to "+ type.getName() + " is not supported"); 
     }
 
     public static boolean equalsIgnoreCase(String s1, String s2) {

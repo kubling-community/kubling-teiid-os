@@ -25,6 +25,7 @@ public class ExecutorUtils {
     /**
      * Creates a fixed thread pool with named daemon threads that will expire after 60 seconds of
      * inactivity.
+     *
      * @param nThreads
      * @param name
      */
@@ -34,15 +35,15 @@ public class ExecutorUtils {
 
     public static ExecutorService newFixedThreadPool(int nThreads, int maxQueue, String name) {
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(nThreads, nThreads,
-                                      60L, TimeUnit.SECONDS,
-                                      maxQueue==0 ?
-                                              new SynchronousQueue<>() :
-                                              new LinkedBlockingQueue<>(maxQueue), new NamedThreadFactory(name));
+                60L, TimeUnit.SECONDS,
+                maxQueue == 0 ?
+                        new SynchronousQueue<>() :
+                        new LinkedBlockingQueue<>(maxQueue), new NamedThreadFactory(name));
         tpe.allowCoreThreadTimeOut(true);
         return tpe;
     }
 
-    private static Executor direct = command -> command.run();
+    private static final Executor direct = Runnable::run;
 
     public static Executor getDirectExecutor() {
         return direct;

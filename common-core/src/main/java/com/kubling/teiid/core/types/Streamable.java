@@ -42,7 +42,7 @@ public abstract class Streamable<T> implements Externalizable {
 
     private static final long serialVersionUID = -8252488562134729374L;
 
-    private static AtomicLong counter = new AtomicLong();
+    private static final AtomicLong counter = new AtomicLong();
 
     public static final String ENCODING = "UTF-8";
     public static final Charset CHARSET = Charset.forName(ENCODING);
@@ -111,7 +111,7 @@ public abstract class Streamable<T> implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         length = in.readLong();
-        this.referenceStreamId = (String)in.readObject();
+        this.referenceStreamId = (String) in.readObject();
         if (referenceStreamId == null) {
             //we expect the data inline
             readReference(in);
@@ -125,6 +125,7 @@ public abstract class Streamable<T> implements Externalizable {
         try {
             length();
         } catch (SQLException e) {
+            // Ignored
         }
         out.writeLong(length);
         boolean writeBuffer = false;
@@ -135,7 +136,7 @@ public abstract class Streamable<T> implements Externalizable {
                 throw new AssertionError("Should not inline a lob of length " + length);
             }
             if (length > 0) {
-                baos = new MultiArrayOutputStream((int)length);
+                baos = new MultiArrayOutputStream((int) length);
             } else {
                 baos = new MultiArrayOutputStream(256);
             }

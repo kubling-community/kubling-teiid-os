@@ -42,7 +42,7 @@ import java.util.TimeZone;
  */
 public class TimestampWithTimezone {
 
-    public static final String ISO8601_WEEK_PROP = "org.teiid.iso8601Week"; //$NON-NLS-1$
+    public static final String ISO8601_WEEK_PROP = "org.teiid.iso8601Week"; 
     public static final boolean ISO8601_WEEK =
             PropertiesUtils.getHierarchicalProperty(ISO8601_WEEK_PROP, true, Boolean.class);
 

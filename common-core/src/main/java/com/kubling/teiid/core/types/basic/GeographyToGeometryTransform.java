@@ -26,13 +26,14 @@ public class GeographyToGeometryTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
-        GeographyType geog = (GeographyType)value;
+        GeographyType geog = (GeographyType) value;
         GeometryType geom = new GeometryType(geog.getReference());
         geog.copyTo(geom);
         return geom;
@@ -40,6 +41,7 @@ public class GeographyToGeometryTransform extends Transform {
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -48,6 +50,7 @@ public class GeographyToGeometryTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

@@ -26,23 +26,25 @@ public class StringToCharacterTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         String s = (String) value;
 
-        if (s.length() == 0) {
-            return Character.valueOf(' ');
+        if (s.isEmpty()) {
+            return ' ';
         }
 
-        return Character.valueOf(s.charAt(0));
+        return s.charAt(0);
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -51,6 +53,7 @@ public class StringToCharacterTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

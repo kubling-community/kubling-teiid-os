@@ -29,21 +29,21 @@ public class TestEquivalenceUtil {
     public void testAreEqual() {
         // Test with nulls
         assertTrue(EquivalenceUtil.areEqual(null, null));
-        Object obj1 = Integer.valueOf(1000);
+        Object obj1 = 1000;
         assertFalse(EquivalenceUtil.areEqual(obj1, null));
         assertFalse(EquivalenceUtil.areEqual(null, obj1));
         // Reflexive
         assertTrue(EquivalenceUtil.areEqual(obj1, obj1));
         // Symmetric
-        Object obj2 = Integer.valueOf(1000);
+        Object obj2 = 1000;
         assertTrue(EquivalenceUtil.areEqual(obj1, obj2));
         assertTrue(EquivalenceUtil.areEqual(obj2, obj1));
-        obj2 = "1000"; //$NON-NLS-1$
+        obj2 = "1000";
         assertFalse(EquivalenceUtil.areEqual(obj1, obj2));
         assertFalse(EquivalenceUtil.areEqual(obj2, obj1));
         // Transitive
-        obj2 = Integer.valueOf(1000);
-        Object obj3 = Integer.valueOf(1000);
+        obj2 = 1000;
+        Object obj3 = 1000;
         assertTrue(EquivalenceUtil.areEqual(obj1, obj2));
         assertTrue(EquivalenceUtil.areEqual(obj2, obj3));
         assertTrue(EquivalenceUtil.areEqual(obj1, obj3));
@@ -61,12 +61,12 @@ public class TestEquivalenceUtil {
         assertTrue(EquivalenceUtil.areEquivalent(array1, array2));
 
         // Different arrays same length
-        array1 = new Integer[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)};
-        array2 = new Object[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)};
+        array1 = new Integer[]{1, 2, 3};
+        array2 = new Object[]{1, 2, 3};
         assertTrue(EquivalenceUtil.areEquivalent(array1, array2));
 
         // Different arrays, differing lengths
-        array2 = new Object[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), null};
+        array2 = new Object[]{1, 2, 3, null};
         assertFalse(EquivalenceUtil.areEquivalent(array1, array2));
     }
 
@@ -76,8 +76,8 @@ public class TestEquivalenceUtil {
     @Test
     public void testAreStrictlyEquivalentObjectObject() {
         // Equal references
-        assertFalse(EquivalenceUtil.areStrictlyEquivalent((Object)null, (Object)null));
-        Object obj1 = Integer.valueOf(1000);
+        assertFalse(EquivalenceUtil.areStrictlyEquivalent(null, (Object) null));
+        Object obj1 = 1000;
         assertFalse(EquivalenceUtil.areStrictlyEquivalent(obj1, obj1));
 
         // unequal with null, symmetric
@@ -85,7 +85,7 @@ public class TestEquivalenceUtil {
         assertFalse(EquivalenceUtil.areStrictlyEquivalent(null, obj1));
 
         // Equivalent, symmetric
-        Object obj2 = Integer.valueOf(1000);
+        Object obj2 = 1000;
         assertTrue(EquivalenceUtil.areStrictlyEquivalent(obj1, obj2));
         assertTrue(EquivalenceUtil.areStrictlyEquivalent(obj2, obj1));
     }
@@ -96,7 +96,7 @@ public class TestEquivalenceUtil {
     @Test
     public void testAreStrictlyEquivalentObjectArrayObjectArray() {
         // Same reference
-        assertFalse(EquivalenceUtil.areStrictlyEquivalent((Object[])null, (Object[])null));
+        assertFalse(EquivalenceUtil.areStrictlyEquivalent(null, null));
         Object[] array1 = new Object[0];
         assertFalse(EquivalenceUtil.areStrictlyEquivalent(array1, array1));
 
@@ -112,8 +112,8 @@ public class TestEquivalenceUtil {
         assertTrue(EquivalenceUtil.areStrictlyEquivalent(array2, array1));
 
         // Different lengths
-        array1 = new Integer[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)};
-        array2 = new Object[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), null};
+        array1 = new Integer[]{1, 2, 3};
+        array2 = new Object[]{1, 2, 3, null};
         assertFalse(EquivalenceUtil.areStrictlyEquivalent(array1, array2));
         assertFalse(EquivalenceUtil.areStrictlyEquivalent(array2, array1));
 
@@ -124,7 +124,7 @@ public class TestEquivalenceUtil {
         assertFalse(EquivalenceUtil.areStrictlyEquivalent(array2, array1));
 
         // Different arrays containing different references
-        array2 = new Integer[] {Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3)};
+        array2 = new Integer[]{1, 2, 3};
         //assertTrue(EquivalenceUtil.areStrictlyEquivalent(array1, array2));
         //assertTrue(EquivalenceUtil.areStrictlyEquivalent(array2, array1));
     }

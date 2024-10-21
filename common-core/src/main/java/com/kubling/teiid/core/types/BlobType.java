@@ -128,13 +128,13 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         try {
             return new SerialBlob(bytes);
         } catch (SQLException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10047, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10047, e);
         }
     }
 
     @Override
     protected void readReference(ObjectInput in) throws IOException {
-        byte[] bytes = new byte[(int)getLength()];
+        byte[] bytes = new byte[(int) getLength()];
         in.readFully(bytes);
         try {
             this.reference = new SerialBlob(bytes);
@@ -146,7 +146,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
     @Override
     protected void writeReference(final DataOutput out) throws IOException {
         try {
-            writeBinary(out, getBinaryStream(), (int)length);
+            writeBinary(out, getBinaryStream(), (int) length);
         } catch (SQLException e) {
             throw new IOException(e);
         }
@@ -163,7 +163,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         try {
             int bytes = ObjectConverterUtil.write(os, is, length, false);
             if (bytes != length) {
-                throw new IOException("Expected length " + length + " but was " + bytes); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new IOException("Expected length " + length + " but was " + bytes);
             }
         } finally {
             is.close();
@@ -187,9 +187,9 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
             }
             return Long.signum(len1 - len2);
         } catch (SQLException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10048, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10048, e);
         } catch (IOException e) {
-              throw new TeiidRuntimeException(CorePlugin.Event.TEIID10049, e);
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10049, e);
         }
     }
 
@@ -201,7 +201,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         if (!(obj instanceof BlobType)) {
             return false;
         }
-        BlobType other = (BlobType)obj;
+        BlobType other = (BlobType) obj;
         if (EquivalenceUtil.areEqual(reference, other.reference)) {
             return true;
         }
@@ -216,9 +216,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
     public int hashCode() {
         try {
             return (int) reference.length();
-        } catch (TeiidRuntimeException e) {
-            return 0;
-        } catch (SQLException e) {
+        } catch (TeiidRuntimeException | SQLException e) {
             return 0;
         }
     }

@@ -33,19 +33,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestEncryptDecrypt {
 
     // Some strings for testing...
-    private static final String ALPHA_U   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //$NON-NLS-1$
-    private static final String ALPHA_L   = ALPHA_U.toLowerCase();
-    private static final String NUMBERS   = "0123456789"; //$NON-NLS-1$
-    private static final String MISC_CHAR = "<>,.:;'{}[][]|`~!@#$%^&*()_+-="; //$NON-NLS-1$
+    private static final String ALPHA_U = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String ALPHA_L = ALPHA_U.toLowerCase();
+    private static final String NUMBERS = "0123456789";
+    private static final String MISC_CHAR = "<>,.:;'{}[][]|`~!@#$%^&*()_+-=";
 
-    /** String to encrypt and decrypt. */
+    /**
+     * String to encrypt and decrypt.
+     */
     private static final String CLEARTEXT = ALPHA_U + ALPHA_L + NUMBERS + MISC_CHAR;
 
     private static Cryptor cryptor;
 
     @BeforeAll
     public static void oneTimeSetup() throws CryptoException, IOException {
-        cryptor = SymmetricCryptor.getSymmectricCryptor(TestEncryptDecrypt.class.getResource("/teiid.keystore")); //$NON-NLS-1$
+        cryptor = SymmetricCryptor.getSymmectricCryptor(TestEncryptDecrypt.class.getResource("/teiid.keystore"));
     }
 
     // =========================================================================
@@ -55,10 +57,10 @@ public class TestEncryptDecrypt {
     /**
      * Test encryption (and decryption) for specified string.
      */
-    public void helpTestEncryptDecrypt( String cleartext ) throws CryptoException {
+    public void helpTestEncryptDecrypt(String cleartext) throws CryptoException {
 //      Encrypt the cleartext into ciphertext
-        byte[] ciphertext = cryptor.encrypt( cleartext.getBytes(Charset.forName("UTF-8")));
-        byte[] cleartext2 = cryptor.decrypt( ciphertext );
+        byte[] ciphertext = cryptor.encrypt(cleartext.getBytes(Charset.forName("UTF-8")));
+        byte[] cleartext2 = cryptor.decrypt(ciphertext);
 
         assertArrayEquals(cleartext.getBytes(Charset.forName("UTF-8")), cleartext2);
     }
@@ -69,67 +71,78 @@ public class TestEncryptDecrypt {
 
     /**
      * Test the {@link Cryptor#encrypt} method.
+     *
      * @throws CryptoException
      */
-    @Test public void testPos_EncryptDecryptLongString() throws CryptoException {
-        helpTestEncryptDecrypt( CLEARTEXT );
+    @Test
+    public void testPos_EncryptDecryptLongString() throws CryptoException {
+        helpTestEncryptDecrypt(CLEARTEXT);
     }
 
     /**
      * Test the {@link Cryptor#encrypt} method.
+     *
      * @throws CryptoException
      */
-    @Test public void testPos_EncryptDecryptHalfLongString() throws CryptoException {
-        helpTestEncryptDecrypt( CLEARTEXT.substring(0,CLEARTEXT.length()/2) );
+    @Test
+    public void testPos_EncryptDecryptHalfLongString() throws CryptoException {
+        helpTestEncryptDecrypt(CLEARTEXT.substring(0, CLEARTEXT.length() / 2));
     }
 
     /**
      * Test the {@link Cryptor#encrypt} method.
+     *
      * @throws CryptoException
      */
-    @Test public void testPos_EncryptDecryptStringsOfVariousLengths() throws CryptoException {
-        for ( int k = 1; k < CLEARTEXT.length()/4; k++ ) {
+    @Test
+    public void testPos_EncryptDecryptStringsOfVariousLengths() throws CryptoException {
+        for (int k = 1; k < CLEARTEXT.length() / 4; k++) {
             // Use substring starting at index k, and 'k' characters long
-            String cleartext = CLEARTEXT.substring(k,k+k);
-            helpTestEncryptDecrypt( cleartext );
+            String cleartext = CLEARTEXT.substring(k, k + k);
+            helpTestEncryptDecrypt(cleartext);
         }
     }
 
     /**
      * Test the {@link Cryptor#encrypt} method.
+     *
      * @throws CryptoException
      */
-    @Test public void testPos_EncryptDecryptStringsOfBlanks() throws CryptoException {
-        String BLANKS = "          "; //$NON-NLS-1$
-        for ( int k = 1; k < BLANKS.length(); k++ ) {
+    @Test
+    public void testPos_EncryptDecryptStringsOfBlanks() throws CryptoException {
+        String BLANKS = "          ";
+        for (int k = 1; k < BLANKS.length(); k++) {
             // Use substring starting at index 0, and 'k' characters long
-            String cleartext = BLANKS.substring(0,k);
-            helpTestEncryptDecrypt( cleartext );
+            String cleartext = BLANKS.substring(0, k);
+            helpTestEncryptDecrypt(cleartext);
         }
     }
 
     /**
      * Test the {@link Cryptor#encrypt} method.
      */
-    @Test public void testNeg_DecryptNullString() throws Exception {
+    @Test
+    public void testNeg_DecryptNullString() throws Exception {
         // Decrypt the Base64 encoded ciphertext back to the original cleartext
         try {
-            cryptor.decrypt( null );
-            fail("expected exception"); //$NON-NLS-1$
-        } catch ( CryptoException e ) {
+            cryptor.decrypt(null);
+            fail("expected exception");
+        } catch (CryptoException e) {
             //expected
         }
     }
 
-    @Test public void testLongEncryption() throws Exception {
+    @Test
+    public void testLongEncryption() throws Exception {
         helpTestEncryptDecrypt(CLEARTEXT + CLEARTEXT + CLEARTEXT);
     }
 
-    @Test public void testSymmetricEncryptionWithRandomKey() throws Exception {
+    @Test
+    public void testSymmetricEncryptionWithRandomKey() throws Exception {
 
         SymmetricCryptor randomSymCryptor = SymmetricCryptor.getSymmectricCryptor(true);
 
-        ArrayList test = new ArrayList(Arrays.asList(new String[] {ALPHA_L, ALPHA_U, CLEARTEXT, NUMBERS}));
+        ArrayList test = new ArrayList(Arrays.asList(new String[]{ALPHA_L, ALPHA_U, CLEARTEXT, NUMBERS}));
 
         Object result = randomSymCryptor.sealObject(test);
 
@@ -142,13 +155,13 @@ public class TestEncryptDecrypt {
         ObjectInputStream ois = new ObjectInputStream(bais);
         result = ois.readObject();
 
-        ArrayList clearObject = (ArrayList)randomSymCryptor.unsealObject(result);
+        ArrayList clearObject = (ArrayList) randomSymCryptor.unsealObject(result);
 
         assertEquals(test, clearObject);
 
         SymmetricCryptor cryptor1 = SymmetricCryptor.getSymmectricCryptor(randomSymCryptor.getEncodedKey(), true);
 
-        clearObject = (ArrayList)cryptor1.unsealObject(result);
+        clearObject = (ArrayList) cryptor1.unsealObject(result);
 
         assertEquals(test, clearObject);
     }

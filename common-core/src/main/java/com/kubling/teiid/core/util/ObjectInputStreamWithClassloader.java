@@ -28,7 +28,7 @@ public final class ObjectInputStreamWithClassloader extends
     private final ClassLoader cl;
 
     public ObjectInputStreamWithClassloader(InputStream in,
-            ClassLoader cl) throws IOException {
+                                            ClassLoader cl) throws IOException {
         super(in);
         this.cl = cl;
     }
@@ -36,7 +36,7 @@ public final class ObjectInputStreamWithClassloader extends
     @Override
     protected Class<?> resolveClass(ObjectStreamClass desc)
             throws IOException, ClassNotFoundException {
-        
+
         //see java bug id 6434149
         try {
             checkClass(desc.getName());

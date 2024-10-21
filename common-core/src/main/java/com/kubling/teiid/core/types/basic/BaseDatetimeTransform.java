@@ -13,20 +13,31 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public abstract class BaseDatetimeTransform extends Transform {
     protected static final List<DateTimeFormatter> formatters = new ArrayList<>();
 
+    protected static final Pattern literalsRegexPattern = Pattern.compile("\\{(d|t|dt) '([^']*)'\\}");
+
     static {
         formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS"));
         formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         formatters.add(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
         formatters.add(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss"));
+        formatters.add(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.S"));
+        formatters.add(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SS"));
         formatters.add(DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS"));
         formatters.add(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         formatters.add(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        formatters.add(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.S"));
+        formatters.add(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SS"));
         formatters.add(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.S"));
+        formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SS"));
         formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.SSS"));
     }
 

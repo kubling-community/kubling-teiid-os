@@ -39,7 +39,8 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     /**
      * <p>MMCallableStatement constructor that sets the procedureName, IN parameters
      * and OUT parameters on this object.
-     * @param connection object which creates this object.
+     *
+     * @param connection    object which creates this object.
      * @param procedureCall string
      * @throws SQLException if there is an error parsing the call
      */
@@ -58,7 +59,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
 
     @Override
     protected RequestMessage createRequestMessage(String[] commands,
-            boolean isBatchedCommand, RequestMessage.ResultsMode resultsMode) {
+                                                  boolean isBatchedCommand, RequestMessage.ResultsMode resultsMode) {
         RequestMessage message = super.createRequestMessage(commands, isBatchedCommand, resultsMode);
         message.setStatementType(RequestMessage.StatementType.CALLABLE);
         return message;
@@ -146,8 +147,8 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
         } else {
             indexInResults = this.outParamIndexMap.get(parameterIndex);
         }
-        if(indexInResults == null){
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMCallableStatement.Param_not_found", parameterIndex)); //$NON-NLS-1$
+        if (indexInResults == null) {
+            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMCallableStatement.Param_not_found", parameterIndex));
         }
         checkStatement();
         parameterValue = resultSet.getOutputParamValue(indexInResults);
@@ -159,7 +160,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     }
 
     public String getString(int parameterIndex) throws SQLException {
-       return DataTypeTransformer.getString(getObject(parameterIndex));
+        return DataTypeTransformer.getString(getObject(parameterIndex));
     }
 
     public Time getTime(int parameterIndex) throws SQLException {
@@ -218,7 +219,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
         // ignore - we don't care
     }
 
-    public void registerOutParameter (int parameterIndex, int jdbcSqlType, String typeName) {
+    public void registerOutParameter(int parameterIndex, int jdbcSqlType, String typeName) {
         // ignore - we don't care
     }
 
@@ -325,7 +326,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     }
 
     public Object getObject(String parameterName) throws SQLException {
-        return getObject((Object)parameterName);
+        return getObject((Object) parameterName);
     }
 
     public Object getObject(int parameterIndex, Map<String, Class<?>> map) throws SQLException {
@@ -391,22 +392,22 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     public void registerOutParameter(String parameterName, int sqlType) {
     }
 
-    public void registerOutParameter(String parameterName, int sqlType,int scale) {
+    public void registerOutParameter(String parameterName, int sqlType, int scale) {
     }
 
-    public void registerOutParameter(String parameterName, int sqlType,    String typeName) {
+    public void registerOutParameter(String parameterName, int sqlType, String typeName) {
     }
 
     public void setAsciiStream(String parameterName, InputStream x) throws SQLException {
-        setAsciiStream((Object)parameterName, x);
+        setAsciiStream((Object) parameterName, x);
     }
 
     public void setAsciiStream(String parameterName, InputStream x, int length) throws SQLException {
-        setAsciiStream((Object)parameterName, x);
+        setAsciiStream((Object) parameterName, x);
     }
 
     public void setAsciiStream(String parameterName, InputStream x, long length) throws SQLException {
-        setAsciiStream((Object)parameterName, x);
+        setAsciiStream((Object) parameterName, x);
     }
 
     public void setBigDecimal(String parameterName, BigDecimal x) throws SQLException {
@@ -414,7 +415,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     }
 
     public void setBinaryStream(String parameterName, InputStream x) throws SQLException {
-        setBlob((Object)parameterName, x);
+        setBlob((Object) parameterName, x);
     }
 
     public void setBinaryStream(String parameterName, InputStream x, int length)
@@ -433,24 +434,24 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
 
     public void setBlob(String parameterName, InputStream inputStream)
             throws SQLException {
-        setBlob((Object)parameterName, inputStream);
+        setBlob((Object) parameterName, inputStream);
     }
 
     public void setBlob(String parameterName, InputStream inputStream,
-            long length) throws SQLException {
-        setBlob((Object)parameterName, inputStream);
+                        long length) throws SQLException {
+        setBlob((Object) parameterName, inputStream);
     }
 
     public void setBoolean(String parameterName, boolean x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setByte(String parameterName, byte x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setBytes(String parameterName, byte[] x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setCharacterStream(String parameterName, Reader reader)
@@ -459,104 +460,104 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     }
 
     public void setCharacterStream(String parameterName, Reader reader,
-            int length) throws SQLException {
+                                   int length) throws SQLException {
         setClob(parameterName, reader);
     }
 
     public void setCharacterStream(String parameterName, Reader reader,
-            long length) throws SQLException {
+                                   long length) throws SQLException {
         setClob(parameterName, reader);
     }
 
     public void setClob(String parameterName, Clob x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setClob(String parameterName, Reader reader)
             throws SQLException {
-        setClob((Object)parameterName, reader);
+        setClob((Object) parameterName, reader);
     }
 
     public void setClob(String parameterName, Reader reader, long length)
             throws SQLException {
-        setClob((Object)parameterName, reader);
+        setClob((Object) parameterName, reader);
     }
 
     public void setDate(String parameterName, Date x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setDate(String parameterName, Date x, Calendar cal)
             throws SQLException {
-        setDate((Object)parameterName, x, cal);
+        setDate((Object) parameterName, x, cal);
     }
 
     public void setDouble(String parameterName, double x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setFloat(String parameterName, float x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setInt(String parameterName, int x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setLong(String parameterName, long x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setNCharacterStream(String parameterName, Reader value)
             throws SQLException {
-        setClob((Object)parameterName, value);
+        setClob((Object) parameterName, value);
     }
 
     public void setNCharacterStream(String parameterName, Reader value,
-            long length) throws SQLException {
-        setClob((Object)parameterName, value);
+                                    long length) throws SQLException {
+        setClob((Object) parameterName, value);
     }
 
     public void setNClob(String parameterName, NClob value) throws SQLException {
-        setObject((Object)parameterName, value);
+        setObject((Object) parameterName, value);
     }
 
     public void setNClob(String parameterName, Reader reader)
             throws SQLException {
-        setClob((Object)parameterName, reader);
+        setClob((Object) parameterName, reader);
     }
 
     public void setNClob(String parameterName, Reader reader, long length)
             throws SQLException {
-        setClob((Object)parameterName, reader);
+        setClob((Object) parameterName, reader);
     }
 
     public void setNString(String parameterName, String value)
             throws SQLException {
-        setObject((Object)parameterName, null);
+        setObject((Object) parameterName, null);
     }
 
     public void setNull(String parameterName, int sqlType) throws SQLException {
-        setObject((Object)parameterName, null);
+        setObject((Object) parameterName, null);
     }
 
     public void setNull(String parameterName, int sqlType, String typeName)
             throws SQLException {
-        setObject((Object)parameterName, null);
+        setObject((Object) parameterName, null);
     }
 
     public void setObject(String parameterName, Object x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setObject(String parameterName, Object x, int targetSqlType)
             throws SQLException {
-        setObject((Object)parameterName, x, targetSqlType);
+        setObject((Object) parameterName, x, targetSqlType);
     }
 
     public void setObject(String parameterName, Object x, int targetSqlType,
-            int scale) throws SQLException {
-        setObject((Object)parameterName, x, targetSqlType, scale);
+                          int scale) throws SQLException {
+        setObject((Object) parameterName, x, targetSqlType, scale);
     }
 
     public void setRowId(String parameterName, RowId x) throws SQLException {
@@ -565,38 +566,38 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
 
     public void setSQLXML(String parameterName, SQLXML xmlObject)
             throws SQLException {
-        setObject((Object)parameterName, xmlObject);
+        setObject((Object) parameterName, xmlObject);
     }
 
     public void setShort(String parameterName, short x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setString(String parameterName, String x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setTime(String parameterName, Time x) throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setTime(String parameterName, Time x, Calendar cal)
             throws SQLException {
-        setTime((Object)parameterName, x, cal);
+        setTime((Object) parameterName, x, cal);
     }
 
     public void setTimestamp(String parameterName, Timestamp x)
             throws SQLException {
-        setObject((Object)parameterName, x);
+        setObject((Object) parameterName, x);
     }
 
     public void setTimestamp(String parameterName, Timestamp x, Calendar cal)
             throws SQLException {
-        setTimestamp((Object)parameterName, x, cal);
+        setTimestamp((Object) parameterName, x, cal);
     }
 
     public void setURL(String parameterName, URL val) throws SQLException {
-        setObject((Object)parameterName, val);
+        setObject((Object) parameterName, val);
     }
 
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {

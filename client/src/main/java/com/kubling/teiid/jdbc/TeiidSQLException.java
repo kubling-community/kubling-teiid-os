@@ -62,7 +62,7 @@ public class TeiidSQLException extends SQLException {
 
     public static TeiidSQLException create(Throwable exception) {
         if (exception instanceof TeiidSQLException) {
-            return (TeiidSQLException)exception;
+            return (TeiidSQLException) exception;
         }
         return create(exception, exception.getMessage());
     }
@@ -82,7 +82,7 @@ public class TeiidSQLException extends SQLException {
                     super.setNextException(ex);
                     break;
                 }
-                super.setNextException(new TeiidSQLException(childException, getMessage(childException, null),false));
+                super.setNextException(new TeiidSQLException(childException, getMessage(childException, null), false));
                 childException = childException.getNextException();
             }
         }
@@ -111,7 +111,7 @@ public class TeiidSQLException extends SQLException {
             code = te.getCode();
             if (errorCode == 0) {
                 String intPart = code;
-                if (code.startsWith("TEIID")) { //$NON-NLS-1$
+                if (code.startsWith("TEIID")) {
                     intPart = code.substring(5);
                 }
                 try {

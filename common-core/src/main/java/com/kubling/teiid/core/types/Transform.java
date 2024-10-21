@@ -30,10 +30,11 @@ public abstract class Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transform(Object value, Class<?> targetType) throws TransformationException {
         if (value == null) {
@@ -47,12 +48,14 @@ public abstract class Transform {
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public abstract Class<?> getSourceType();
 
     /**
      * Name of the source type.
+     *
      * @return Name of source type
      */
     public String getSourceTypeName() {
@@ -61,12 +64,14 @@ public abstract class Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public abstract Class<?> getTargetType();
 
     /**
      * Name of the target type.
+     *
      * @return Name of target type
      */
     public String getTargetTypeName() {
@@ -75,14 +80,16 @@ public abstract class Transform {
 
     /**
      * Get nice display name for GUIs.
+     *
      * @return Display name
      */
     public String getDisplayName() {
-        return getSourceTypeName() + " to " + getTargetTypeName(); //$NON-NLS-1$
+        return getSourceTypeName() + " to " + getTargetTypeName();
     }
 
     /**
      * Get description.
+     *
      * @return Description of transform
      */
     public String getDescription() {
@@ -95,6 +102,7 @@ public abstract class Transform {
 
     /**
      * Override Object.toString() to do getDisplayName() version.
+     *
      * @return String representation of object
      */
     public String toString() {

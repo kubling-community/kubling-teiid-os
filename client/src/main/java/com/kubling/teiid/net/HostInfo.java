@@ -28,7 +28,7 @@ import java.net.UnknownHostException;
 
 /**
  * Defines the hostname/port or {@link InetAddress} to connect to a host.
- *
+ * <p>
  * Similar to an {@link InetSocketAddress} except that it can be constructed
  * fully resolved, with an {@link InetAddress} and a hostname.
  *
@@ -43,6 +43,7 @@ public class HostInfo {
 
     /**
      * Construct a fully resolved {@link HostInfo}.
+     *
      * @param hostName
      * @param addr
      */
@@ -55,10 +56,11 @@ public class HostInfo {
     /**
      * Construct a {@link HostInfo} that can resolve each
      * time an {@link InetAddress} is asked for.
+     *
      * @param host
      * @param port
      */
-    public HostInfo (String host, int port) {
+    public HostInfo(String host, int port) {
         ArgCheck.isNotNull(host);
         this.hostName = host.toLowerCase();
         this.portNumber = port;
@@ -86,7 +88,7 @@ public class HostInfo {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append(hostName).append(":").append(portNumber); //$NON-NLS-1$
+        sb.append(hostName).append(":").append(portNumber);
         return sb.toString();
     }
 

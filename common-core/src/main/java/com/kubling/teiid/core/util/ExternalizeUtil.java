@@ -36,7 +36,8 @@ public class ExternalizeUtil {
 
     /**
      * Writes an array to the output.
-     * @param out the output instance
+     *
+     * @param out   the output instance
      * @param array reference to an array. Can be null.
      * @throws IOException
      */
@@ -46,15 +47,16 @@ public class ExternalizeUtil {
         } else {
             final int length = array.length;
             out.writeInt(length);
-            for (int i = 0; i < length; i++) {
-                out.writeObject(array[i]);
+            for (Object o : array) {
+                out.writeObject(o);
             }
         }
     }
 
     /**
      * Writes a Collection to the output using its Iterator.
-     * @param out the output instance
+     *
+     * @param out  the output instance
      * @param coll reference to a Collection. Can be null.
      * @throws IOException
      */
@@ -78,6 +80,7 @@ public class ExternalizeUtil {
 
     /**
      * Writes the key-value pairs of the given map to the output.
+     *
      * @param out the output instance
      * @param map reference to a Map. Can be null.
      * @throws IOException
@@ -96,6 +99,7 @@ public class ExternalizeUtil {
 
     /**
      * Reads an array of String that was written to the output by this utility class
+     *
      * @param in
      * @return a non-null String[]
      * @throws IOException
@@ -104,7 +108,7 @@ public class ExternalizeUtil {
     @SuppressWarnings("unchecked")
     public static <T> T[] readArray(ObjectInput in, Class<T> type) throws IOException, ClassNotFoundException {
         final int length = in.readInt();
-        T[] result = (T[])Array.newInstance(type, length);
+        T[] result = (T[]) Array.newInstance(type, length);
         for (int i = 0; i < length; i++) {
             result[i] = type.cast(in.readObject());
         }
@@ -117,6 +121,7 @@ public class ExternalizeUtil {
 
     /**
      * Reads a List that was written by this utility class.
+     *
      * @param in
      * @return a non-null List
      * @throws IOException
@@ -133,6 +138,7 @@ public class ExternalizeUtil {
 
     /**
      * Reads a Map that was written by this utility class
+     *
      * @param in
      * @return a non-null Map
      * @throws IOException
@@ -141,9 +147,9 @@ public class ExternalizeUtil {
     @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> readMap(ObjectInput in) throws IOException, ClassNotFoundException {
         final int size = in.readInt();
-        HashMap<K, V> map = new HashMap<K, V>(size);
+        HashMap<K, V> map = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
-            map.put((K)in.readObject(), (V)in.readObject());
+            map.put((K) in.readObject(), (V) in.readObject());
         }
         return map;
     }

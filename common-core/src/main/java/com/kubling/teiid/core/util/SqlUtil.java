@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
  * Utilities for dealing with SQL strings.
  */
 public class SqlUtil {
-    private static TreeSet<String> updateKeywords = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private static final TreeSet<String> updateKeywords = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+
     static {
         updateKeywords.add("insert");
         updateKeywords.add("update");
@@ -36,10 +37,11 @@ public class SqlUtil {
         updateKeywords.add("drop");
         updateKeywords.add("create");
     }
-    private static Pattern PATTERN =
-            Pattern.compile("^(?:\\s|(?:/\\*.*\\*/))*(\\w*)\\s", Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
-    private static Pattern INTO_PATTERN =
-            Pattern.compile("(?:'[^']*')|(\\sinto\\s)", Pattern.CASE_INSENSITIVE|Pattern.DOTALL);
+
+    private static final Pattern PATTERN =
+            Pattern.compile("^(?:\\s|(?:/\\*.*\\*/))*(\\w*)\\s", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private static final Pattern INTO_PATTERN =
+            Pattern.compile("(?:'[^']*')|(\\sinto\\s)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     private SqlUtil() {
         super();
@@ -49,10 +51,11 @@ public class SqlUtil {
      * Determines whether a sql statement is an update (INSERT, UPDATE, or DELETE).
      * Throws exception if SQL statement appears to be invalid (because it's null, has
      * 0 length, etc.
+     *
      * @param sql Sql string
      * @return True if INSERT, UPDATE, or DELETE, and false otherwise
      * @throws IllegalArgumentException If sql string is invalid and neither a
-     * query or an update
+     *                                  query or an update
      */
     public static boolean isUpdateSql(String sql) throws IllegalArgumentException {
         String keyWord = getKeyword(sql);

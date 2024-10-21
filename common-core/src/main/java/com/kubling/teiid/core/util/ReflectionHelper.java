@@ -29,18 +29,19 @@ import java.util.*;
 
 public class ReflectionHelper {
 
-    private Class<?> targetClass;
+    private final Class<?> targetClass;
     private Map<String, LinkedList<Method>> methodMap = null;
 
     /**
      * Construct a ReflectionHelper instance that cache's some information about
      * the target class.  The target class is the Class object upon which the
      * methods will be found.
+     *
      * @param targetClass the target class
      * @throws IllegalArgumentException if the target class is null
      */
-    public ReflectionHelper( Class<?> targetClass ) {
-        if ( targetClass == null ) {
+    public ReflectionHelper(Class<?> targetClass) {
+        if (targetClass == null) {
             throw new IllegalArgumentException(CorePlugin.Util.getString("ReflectionHelper.errorConstructing"));
         }
         this.targetClass = targetClass;
@@ -51,19 +52,20 @@ public class ReflectionHelper {
      * with the specified name and the list of arguments.  This method first
      * attempts to find the method with the specified arguments; if no such
      * method is found, a NoSuchMethodException is thrown.
-     * <P>
+     * <p>
      * This method is unable to find methods with signatures that include both
      * primitive arguments <i>and</i> arguments that are instances of <code>Number</code>
      * or its subclasses.
+     *
      * @param methodName the name of the method that is to be invoked.
-     * @param arguments the array of Object instances that correspond
-     * to the arguments passed to the method.
+     * @param arguments  the array of Object instances that correspond
+     *                   to the arguments passed to the method.
      * @return the Method object that references the method that satisfies
      * the requirements, or null if no satisfactory method could be found.
      * @throws NoSuchMethodException if a matching method is not found.
-     * @throws SecurityException if access to the information is denied.
+     * @throws SecurityException     if access to the information is denied.
      */
-    public Method findBestMethodOnTarget( String methodName, Object[] arguments ) throws NoSuchMethodException, SecurityException {
+    public Method findBestMethodOnTarget(String methodName, Object[] arguments) throws NoSuchMethodException, SecurityException {
         createMethodMap();
         List<Method> methods = methodMap.get(methodName);
         if (methods != null && methods.size() == 1) {
@@ -74,16 +76,16 @@ public class ReflectionHelper {
             return findBestMethodWithSignature(methodName, Collections.EMPTY_LIST);
         }
         int size = arguments.length;
-        List<Class<?>> argumentClasses = new ArrayList<Class<?>>(size);
-        for (int i=0; i!=size; ++i) {
-            if ( arguments[i] != null ) {
+        List<Class<?>> argumentClasses = new ArrayList<>(size);
+        for (int i = 0; i != size; ++i) {
+            if (arguments[i] != null) {
                 Class<?> clazz = arguments[i].getClass();
-                argumentClasses.add( clazz );
+                argumentClasses.add(clazz);
             } else {
                 argumentClasses.add(null);
             }
         }
-        return findBestMethodWithSignature(methodName,argumentClasses);
+        return findBestMethodWithSignature(methodName, argumentClasses);
     }
 
     /**
@@ -91,18 +93,19 @@ public class ReflectionHelper {
      * with the specified name and the list of argument classes.  This method first
      * attempts to find the method with the specified argument classes; if no such
      * method is found, a NoSuchMethodException is thrown.
-     * @param methodName the name of the method that is to be invoked.
+     *
+     * @param methodName       the name of the method that is to be invoked.
      * @param argumentsClasses the list of Class instances that correspond
-     * to the classes for each argument passed to the method.
+     *                         to the classes for each argument passed to the method.
      * @return the Method object that references the method that satisfies
      * the requirements, or null if no satisfactory method could be found.
      * @throws NoSuchMethodException if a matching method is not found.
-     * @throws SecurityException if access to the information is denied.
+     * @throws SecurityException     if access to the information is denied.
      */
-    public Method findBestMethodWithSignature( String methodName, Object[] argumentsClasses ) 
+    public Method findBestMethodWithSignature(String methodName, Object[] argumentsClasses)
             throws NoSuchMethodException, SecurityException {
         List argumentClassesList = Arrays.asList(argumentsClasses);
-        return findBestMethodWithSignature(methodName,argumentClassesList);
+        return findBestMethodWithSignature(methodName, argumentClassesList);
     }
 
     /**
@@ -110,15 +113,16 @@ public class ReflectionHelper {
      * with the specified name and the list of argument classes.  This method first
      * attempts to find the method with the specified argument classes; if no such
      * method is found, a NoSuchMethodException is thrown.
-     * @param methodName the name of the method that is to be invoked.
+     *
+     * @param methodName       the name of the method that is to be invoked.
      * @param argumentsClasses the list of Class instances that correspond
-     * to the classes for each argument passed to the method.
+     *                         to the classes for each argument passed to the method.
      * @return the Method object that references the method that satisfies
      * the requirements, or null if no satisfactory method could be found.
      * @throws NoSuchMethodException if a matching method is not found.
-     * @throws SecurityException if access to the information is denied.
+     * @throws SecurityException     if access to the information is denied.
      */
-    public Method findBestMethodWithSignature( String methodName, List<Class<?>> argumentsClasses ) 
+    public Method findBestMethodWithSignature(String methodName, List<Class<?>> argumentsClasses)
             throws NoSuchMethodException, SecurityException {
         // Attempt to find the method
         Method result = null;
@@ -129,9 +133,9 @@ public class ReflectionHelper {
         // -------------------------------------------------------------------------------
         try {
             argumentsClasses.toArray(classArgs);
-            result = this.targetClass.getMethod(methodName,classArgs);  // this may throw an exception if not found
+            result = this.targetClass.getMethod(methodName, classArgs);  // this may throw an exception if not found
             return result;
-        } catch ( NoSuchMethodException e ) {
+        } catch (NoSuchMethodException e) {
             // No method found, so continue ...
         }
 
@@ -143,13 +147,13 @@ public class ReflectionHelper {
         createMethodMap();
 
         LinkedList<Method> methodsWithSameName = this.methodMap.get(methodName);
-        if ( methodsWithSameName == null ) {
+        if (methodsWithSameName == null) {
             throw new NoSuchMethodException(methodName);
         }
         for (Method method : methodsWithSameName) {
             Class[] args = method.getParameterTypes();
             boolean allMatch = argsMatch(argumentsClasses, args);
-            if ( allMatch ) {
+            if (allMatch) {
                 if (result != null) {
                     throw new NoSuchMethodException(methodName + " Args: " + argumentsClasses + " has multiple possible signatures.");
                 }
@@ -165,20 +169,16 @@ public class ReflectionHelper {
     }
 
     private void createMethodMap() {
-        if ( this.methodMap == null ) {
+        if (this.methodMap == null) {
             synchronized (this) {
                 if (this.methodMap != null) {
                     return;
                 }
-                HashMap<String, LinkedList<Method>> newMethodMap = new HashMap<String, LinkedList<Method>>();
+                HashMap<String, LinkedList<Method>> newMethodMap = new HashMap<>();
                 Method[] methods = this.targetClass.getMethods();
-                for ( int i=0; i!=methods.length; ++i ) {
+                for (int i = 0; i != methods.length; ++i) {
                     Method method = methods[i];
-                    LinkedList<Method> methodsWithSameName = newMethodMap.get(method.getName());
-                    if ( methodsWithSameName == null ) {
-                        methodsWithSameName = new LinkedList<Method>();
-                        newMethodMap.put(method.getName(),methodsWithSameName);
-                    }
+                    LinkedList<Method> methodsWithSameName = newMethodMap.computeIfAbsent(method.getName(), k -> new LinkedList<>());
                     methodsWithSameName.addFirst(method);   // add lower methods first
                 }
                 this.methodMap = newMethodMap;
@@ -187,21 +187,21 @@ public class ReflectionHelper {
     }
 
     private static boolean argsMatch(List<Class<?>> argumentsClasses, Class[] args) {
-        if ( args.length != argumentsClasses.size() ) {
+        if (args.length != argumentsClasses.size()) {
             return false;
         }
-        for ( int i=0; i<args.length; ++i ) {
+        for (int i = 0; i < args.length; ++i) {
             Class<?> objectClazz = argumentsClasses.get(i);
-            if ( objectClazz != null ) {
+            if (objectClazz != null) {
                 Class<?> primitiveClazz = convertArgumentClassesToPrimitive(objectClazz);
                 // Check for possible matches with (converted) primitive types
                 // as well as the original Object type
-                if ( ! args[i].equals(primitiveClazz) && ! args[i].isAssignableFrom(objectClazz) ) {
+                if (!args[i].equals(primitiveClazz) && !args[i].isAssignableFrom(objectClazz)) {
                     return false;   // found one that doesn't match
                 }
             } else {
                 // a null is assignable for everything except a primitive
-                if ( args[i].isPrimitive() ) {
+                if (args[i].isPrimitive()) {
                     return false;   // found one that doesn't match
                 }
             }
@@ -212,33 +212,44 @@ public class ReflectionHelper {
     /**
      * Convert any argument class to primitive.
      */
-    private static Class<?> convertArgumentClassesToPrimitive( Class<?> clazz ) {
-        if      ( clazz == Boolean.class   ) { clazz = Boolean.TYPE; }
-        else if ( clazz == Character.class ) { clazz = Character.TYPE; }
-        else if ( clazz == Byte.class      ) { clazz = Byte.TYPE; }
-        else if ( clazz == Short.class     ) { clazz = Short.TYPE; }
-        else if ( clazz == Integer.class   ) { clazz = Integer.TYPE; }
-        else if ( clazz == Long.class      ) { clazz = Long.TYPE; }
-        else if ( clazz == Float.class     ) { clazz = Float.TYPE; }
-        else if ( clazz == Double.class    ) { clazz = Double.TYPE; }
-        else if ( clazz == Void.class      ) { clazz = Void.TYPE; }
+    private static Class<?> convertArgumentClassesToPrimitive(Class<?> clazz) {
+        if (clazz == Boolean.class) {
+            clazz = Boolean.TYPE;
+        } else if (clazz == Character.class) {
+            clazz = Character.TYPE;
+        } else if (clazz == Byte.class) {
+            clazz = Byte.TYPE;
+        } else if (clazz == Short.class) {
+            clazz = Short.TYPE;
+        } else if (clazz == Integer.class) {
+            clazz = Integer.TYPE;
+        } else if (clazz == Long.class) {
+            clazz = Long.TYPE;
+        } else if (clazz == Float.class) {
+            clazz = Float.TYPE;
+        } else if (clazz == Double.class) {
+            clazz = Double.TYPE;
+        } else if (clazz == Void.class) {
+            clazz = Void.TYPE;
+        }
         return clazz;
     }
 
     /**
      * Helper method to load a class.
-     * @param className is the class to instantiate
+     *
+     * @param className   is the class to instantiate
      * @param classLoader the class loader to use; may be null if the current
-     * class loader is to be used
+     *                    class loader is to be used
      * @return Class is the instance of the class
      * @throws ClassNotFoundException
      */
-    private static final Class<?> loadClass(final String className, final ClassLoader classLoader) throws ClassNotFoundException {
+    private static Class<?> loadClass(final String className, final ClassLoader classLoader) throws ClassNotFoundException {
         Class<?> cls;
-        if ( classLoader == null ) {
+        if (classLoader == null) {
             cls = Class.forName(className.trim());
         } else {
-            cls = Class.forName(className.trim(),true,classLoader);
+            cls = Class.forName(className.trim(), true, classLoader);
         }
         return cls;
     }
@@ -246,16 +257,17 @@ public class ReflectionHelper {
     /**
      * Helper method to create an instance of the class using the appropriate
      * constructor based on the ctorObjs passed.
-     * @param className is the class to instantiate
-     * @param ctorObjs are the objects to pass to the constructor; optional, nullable
+     *
+     * @param className   is the class to instantiate
+     * @param ctorObjs    are the objects to pass to the constructor; optional, nullable
      * @param classLoader the class loader to use; may be null if the current
-     * class loader is to be used
+     *                    class loader is to be used
      * @return Object is the instance of the class
      * @throws TeiidException if an error occurs instantiating the class
      */
 
-    public static final Object create(String className, Collection<?> ctorObjs,
-                                      final ClassLoader classLoader) throws TeiidException {
+    public static Object create(String className, Collection<?> ctorObjs,
+                                final ClassLoader classLoader) throws TeiidException {
         try {
             int size = (ctorObjs == null ? 0 : ctorObjs.size());
             Class[] names = new Class[size];
@@ -263,8 +275,7 @@ public class ReflectionHelper {
             int i = 0;
 
             if (size > 0) {
-                for (Iterator<?> it=ctorObjs.iterator(); it.hasNext(); ) {
-                    Object obj = it.next();
+                for (Object obj : ctorObjs) {
                     if (obj != null) {
                         names[i] = obj.getClass();
                         objArray[i] = obj;
@@ -274,23 +285,23 @@ public class ReflectionHelper {
             }
             return create(className, objArray, names, classLoader);
         } catch (Exception e) {
-              throw new TeiidException(CorePlugin.Event.TEIID10033, e);
+            throw new TeiidException(CorePlugin.Event.TEIID10033, e);
         }
     }
 
-    public static final Object create(String className, Object[] ctorObjs, Class<?>[] argTypes,
-                final ClassLoader classLoader) throws TeiidException {
+    public static Object create(String className, Object[] ctorObjs, Class<?>[] argTypes,
+                                final ClassLoader classLoader) throws TeiidException {
         Class<?> cls;
         try {
-            cls = loadClass(className,classLoader);
-        } catch(Exception e) {
-              throw new TeiidException(CorePlugin.Event.TEIID10034, e);
+            cls = loadClass(className, classLoader);
+        } catch (Exception e) {
+            throw new TeiidException(CorePlugin.Event.TEIID10034, e);
         }
         Constructor<?> ctor = null;
         try {
             ctor = cls.getDeclaredConstructor(argTypes);
         } catch (NoSuchMethodException e) {
-
+            // Ignored
         }
 
         if (ctor == null && argTypes != null && argTypes.length > 0) {
@@ -304,7 +315,7 @@ public class ReflectionHelper {
         }
 
         if (ctor == null) {
-              throw new TeiidException(CorePlugin.Event.TEIID10035, className + CorePlugin.Event.TEIID10035 + Arrays.toString(argTypes));
+            throw new TeiidException(CorePlugin.Event.TEIID10035, className + CorePlugin.Event.TEIID10035 + Arrays.toString(argTypes));
         }
 
         try {

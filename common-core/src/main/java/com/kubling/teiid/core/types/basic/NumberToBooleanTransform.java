@@ -24,8 +24,8 @@ import com.kubling.teiid.core.types.TransformationException;
 
 public class NumberToBooleanTransform extends Transform {
 
-    private Comparable falseVal;
-    private Class<?> sourceType;
+    private final Comparable falseVal;
+    private final Class<?> sourceType;
 
     public NumberToBooleanTransform(Comparable falseVal) {
         this.falseVal = falseVal;

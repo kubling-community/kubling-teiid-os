@@ -30,16 +30,17 @@ public class CryptoException extends TeiidException {
     /**
      * No-Arg Constructor
      */
-    public CryptoException(  ) {
-        super( );
+    public CryptoException() {
+        super();
     }
+
     /**
      * Construct an instance with the message specified.
      *
      * @param message A message describing the exception
      */
-    public CryptoException( String message ) {
-        super( message );
+    public CryptoException(String message) {
+        super(message);
     }
 
     /**
@@ -47,39 +48,39 @@ public class CryptoException extends TeiidException {
      *
      * @param e An exception to chain to this exception
      */
-    public CryptoException( Throwable e ) {
-        super( e );
+    public CryptoException(Throwable e) {
+        super(e);
     }
 
     /**
      * Construct an instance with the message and error code specified.
      *
      * @param message A message describing the exception
-     * @param code The error code
+     * @param code    The error code
      */
-    public CryptoException(BundleUtil.Event code, String message ) {
-        super( code, message );
+    public CryptoException(BundleUtil.Event code, String message) {
+        super(code, message);
     }
 
     /**
      * Construct an instance from a message and an exception to chain to this one.
      *
      * @param message A code denoting the exception
-     * @param e An exception to nest within this one
+     * @param e       An exception to nest within this one
      */
-    public CryptoException( Throwable e, String message ) {
-        super( e, message );
+    public CryptoException(Throwable e, String message) {
+        super(e, message);
     }
 
     /**
      * Construct an instance from a message and a code and an exception to
      * chain to this one.
      *
-     * @param e An exception to nest within this one
+     * @param e       An exception to nest within this one
      * @param message A message describing the exception
-     * @param code A code denoting the exception
+     * @param code    A code denoting the exception
      */
-    public CryptoException(BundleUtil.Event code, Throwable e, String message ) {
+    public CryptoException(BundleUtil.Event code, Throwable e, String message) {
         super(code, e, message);
     }
 

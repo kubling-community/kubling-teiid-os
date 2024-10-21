@@ -31,22 +31,23 @@ import com.kubling.teiid.core.TeiidException;
 public class SourceWarning extends TeiidException {
 
     public static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
-    private String modelName = "UNKNOWN"; // variable stores the name of the model for the atomic query //$NON-NLS-1$
-    private String connectorBindingName = "UNKNOWN"; // variable stores name of the connector binding //$NON-NLS-1$
+    private String modelName = "UNKNOWN"; // variable stores the name of the model for the atomic query 
+    private String connectorBindingName = "UNKNOWN"; // variable stores name of the connector binding 
     private boolean partialResults;
 
     /**
      * <p>Constructor that stores atomic query failure details.
-     * @param model Name of the model for the atomic query
+     *
+     * @param model            Name of the model for the atomic query
      * @param connectorBinding Name of the connector binding name for the atomic query
-     * @param ex Exception thrown when atomic query fails
+     * @param ex               Exception thrown when atomic query fails
      */
     public SourceWarning(String model, String connectorBinding, Throwable ex, boolean partialResults) {
         super(ex);
-        if(model != null) {
+        if (model != null) {
             this.modelName = model;
         }
-        if(connectorBinding != null) {
+        if (connectorBinding != null) {
             this.connectorBindingName = connectorBinding;
         }
         this.partialResults = partialResults;
@@ -55,6 +56,7 @@ public class SourceWarning extends TeiidException {
 
     /**
      * <p>Get's the model name for the atomic query.
+     *
      * @return The name of the model
      */
     public String getModelName() {
@@ -63,6 +65,7 @@ public class SourceWarning extends TeiidException {
 
     /**
      * <p>Get's the connector binding name for the atomic query.
+     *
      * @return The Connector Binding Name
      */
     public String getConnectorBindingName() {
@@ -75,20 +78,21 @@ public class SourceWarning extends TeiidException {
 
     /**
      * <p>Gets a message detailing the source against which the atomic query failed.
+     *
      * @return Message containing details of the source for which there is a failure.
      */
     public String toString() {
         StringBuffer warningBuf = new StringBuffer();
         if (partialResults) {
-            warningBuf.append("Error "); //$NON-NLS-1$
+            warningBuf.append("Error ");
         } else {
-            warningBuf.append("Warning "); //$NON-NLS-1$
+            warningBuf.append("Warning ");
         }
-        warningBuf.append("querying the connector with binding name "); //$NON-NLS-1$
+        warningBuf.append("querying the connector with binding name ");
         warningBuf.append(connectorBindingName);
-        warningBuf.append(" for the model "); //$NON-NLS-1$
+        warningBuf.append(" for the model ");
         warningBuf.append(modelName);
-        warningBuf.append(" : "); //$NON-NLS-1$
+        warningBuf.append(" : ");
         warningBuf.append(this.getCause());
         return warningBuf.toString();
     }

@@ -23,7 +23,7 @@ import com.kubling.teiid.core.types.TransformationException;
 
 public class NumberToShortTransform extends NumberToNumberTransform {
 
-    private boolean isNarrowing;
+    private final boolean isNarrowing;
 
     public NumberToShortTransform(Class<?> sourceType, boolean isNarrowing) {
         super(Short.MIN_VALUE, Short.MAX_VALUE, sourceType);
@@ -33,20 +33,22 @@ public class NumberToShortTransform extends NumberToNumberTransform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         if (isNarrowing) {
             checkValueRange(value);
         }
-        return Short.valueOf(((Number)value).shortValue());
+        return ((Number) value).shortValue();
     }
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

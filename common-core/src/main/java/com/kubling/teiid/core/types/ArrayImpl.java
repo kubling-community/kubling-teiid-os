@@ -38,7 +38,7 @@ import java.util.Map;
  * Provides a serializable {@link Array} implementation with minimal JDBC functionality.
  */
 public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, Array {
-    private static final String INVALID = ""; //$NON-NLS-1$
+    private static final String INVALID = "";
     private static final long serialVersionUID = 517794153664734815L;
     /**
      * a regrettable hack for pg compatibility since we want to avoid adding a vector type
@@ -46,8 +46,9 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
     private boolean zeroBased;
     private Object[] values;
 
-    @SuppressWarnings("serial")
-    public final static class NullException extends RuntimeException {};
+    public final static class NullException extends RuntimeException {
+    }
+
     private final static NullException ex = new NullException();
 
     public ArrayImpl(Object... values) {
@@ -60,7 +61,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
 
     private void checkValues() throws SQLException {
         if (values == null) {
-            throw new SQLException("Already freed or invalid"); //$NON-NLS-1$
+            throw new SQLException("Already freed or invalid");
         }
     }
 
@@ -71,7 +72,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
 
     public int compareTo(ArrayImpl o, boolean noNulls, Comparator<Object> comparator) {
         if (zeroBased != o.zeroBased) {
-            throw new TeiidRuntimeException("Incompatible types"); //$NON-NLS-1$
+            throw new TeiidRuntimeException("Incompatible types");
         }
         try {
             checkValues();
@@ -84,7 +85,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
     }
 
     private static int compare(boolean noNulls, Comparator<Object> comparator,
-            Object[] values, Object[] values2) {
+                               Object[] values, Object[] values2) {
         int len1 = values.length;
         int len2 = values2.length;
         int lim = Math.min(len1, len2);
@@ -105,13 +106,13 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
                 }
                 return 1;
             }
-            int comp = 0;
+            int comp;
             if (object1 instanceof Object[] && object2 instanceof Object[]) {
-                comp = compare(noNulls, comparator, (Object[])object1, (Object[])object2);
+                comp = compare(noNulls, comparator, (Object[]) object1, (Object[]) object2);
             } else if (comparator != null) {
                 comp = comparator.compare(object1, object2);
             } else {
-                comp = ((Comparable)object1).compareTo(object2);
+                comp = ((Comparable) object1).compareTo(object2);
             }
             if (comp != 0) {
                 return comp;
@@ -133,7 +134,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
         if (!(obj instanceof ArrayImpl)) {
             return false;
         }
-        ArrayImpl other = (ArrayImpl)obj;
+        ArrayImpl other = (ArrayImpl) obj;
         try {
             return zeroBased == other.zeroBased && compareTo(other) == 0;
         } catch (ClassCastException e) {
@@ -143,7 +144,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
 
     public Object[] getValues() {
         if (values == null) {
-            throw new TeiidRuntimeException("Already freed or invalid"); //$NON-NLS-1$
+            throw new TeiidRuntimeException("Already freed or invalid");
         }
         return values;
     }
@@ -182,8 +183,8 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
         if (index > Integer.MAX_VALUE) {
             throw new ArrayIndexOutOfBoundsException(String.valueOf(index));
         }
-        int offset = zeroBased?0:1;
-        int iIndex = (int)index - offset;
+        int offset = zeroBased ? 0 : 1;
+        int iIndex = (int) index - offset;
         if (iIndex >= values.length || iIndex < 0) {
             throw new ArrayIndexOutOfBoundsException(iIndex);
         }
@@ -227,7 +228,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
 
     @Override
     public ResultSet getResultSet(long index, int count,
-            Map<String, Class<?>> map) throws SQLException {
+                                  Map<String, Class<?>> map) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 

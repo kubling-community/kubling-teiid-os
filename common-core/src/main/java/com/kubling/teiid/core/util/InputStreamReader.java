@@ -35,10 +35,10 @@ import java.nio.charset.CoderResult;
 @Deprecated
 public class InputStreamReader extends Reader {
 
-    private CharsetDecoder cd;
-    private ReadableByteChannel rbc;
-    private ByteBuffer bb;
-    private CharBuffer cb;
+    private final CharsetDecoder cd;
+    private final ReadableByteChannel rbc;
+    private final ByteBuffer bb;
+    private final CharBuffer cb;
     private boolean done;
     private int bytesProcessed;
 
@@ -50,7 +50,7 @@ public class InputStreamReader extends Reader {
         this.cd = cd;
         this.rbc = Channels.newChannel(in);
         this.bb = ByteBuffer.allocate(bufferSize);
-        this.cb = CharBuffer.allocate((int)(bufferSize * (double)cd.maxCharsPerByte()));
+        this.cb = CharBuffer.allocate((int) (bufferSize * (double) cd.maxCharsPerByte()));
         this.cb.limit(0);
     }
 
@@ -63,13 +63,13 @@ public class InputStreamReader extends Reader {
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
         if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-            ((off + len) > cbuf.length) || ((off + len) < 0)) {
+                ((off + len) > cbuf.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return 0;
         }
         while (!done && !cb.hasRemaining()) {
-            int read = 0;
+            int read;
             int pos = bb.position();
             while ((read = rbc.read(bb)) == 0) {
                 //blocking read

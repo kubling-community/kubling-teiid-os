@@ -18,49 +18,54 @@
 
 package com.kubling.teiid.core.types.basic;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
-import java.sql.SQLXML;
 import com.kubling.teiid.core.types.TransformationException;
 import com.kubling.teiid.core.types.XMLType;
+import org.junit.jupiter.api.Test;
+
+import java.sql.SQLXML;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SuppressWarnings("nls")
 public class TestStringToXmlTransform {
 
-    @Test public void testGoodXML() throws Exception {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><customer>\n" + //$NON-NLS-1$
-                        "<name>ABC</name>" + //$NON-NLS-1$
-                        "<age>32</age>" + //$NON-NLS-1$
-                     "</customer>"; //$NON-NLS-1$
+    @Test
+    public void testGoodXML() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><customer>\n" +
+                "<name>ABC</name>" +
+                "<age>32</age>" +
+                "</customer>";
 
-       StringToSQLXMLTransform transform = new StringToSQLXMLTransform();
+        StringToSQLXMLTransform transform = new StringToSQLXMLTransform();
 
-       SQLXML xmlValue = (SQLXML)transform.transformDirect(xml);
-       assertEquals(xml.replaceAll("[\r]", ""), xmlValue.getString().replaceAll("[\r]", ""));
+        SQLXML xmlValue = (SQLXML) transform.transformDirect(xml);
+        assertEquals(xml.replaceAll("[\r]", ""), xmlValue.getString().replaceAll("[\r]", ""));
     }
 
-    @Test public void testGoodElement() throws Exception {
-        String xml = "<customer>\n" + //$NON-NLS-1$
-                        "<name>ABC</name>" + //$NON-NLS-1$
-                        "<age>32</age>" + //$NON-NLS-1$
-                     "</customer>"; //$NON-NLS-1$
+    @Test
+    public void testGoodElement() throws Exception {
+        String xml = "<customer>\n" +
+                "<name>ABC</name>" +
+                "<age>32</age>" +
+                "</customer>";
 
-       StringToSQLXMLTransform transform = new StringToSQLXMLTransform();
+        StringToSQLXMLTransform transform = new StringToSQLXMLTransform();
 
-       XMLType xmlValue = (XMLType)transform.transformDirect(xml);
-       assertEquals(xml.replaceAll("[\r]", ""), xmlValue.getString().replaceAll("[\r]", ""));
-       assertEquals(XMLType.Type.ELEMENT, xmlValue.getType());
+        XMLType xmlValue = (XMLType) transform.transformDirect(xml);
+        assertEquals(xml.replaceAll("[\r]", ""), xmlValue.getString().replaceAll("[\r]", ""));
+        assertEquals(XMLType.Type.ELEMENT, xmlValue.getType());
     }
 
-    @Test public void testBadXML() throws Exception {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><customer>\n" + //$NON-NLS-1$
-                        "<name>ABC</name>" + //$NON-NLS-1$
-                        "<age>32</age>" + //$NON-NLS-1$
-                     "<customer>"; //$NON-NLS-1$ (********no ending)
+    @Test
+    public void testBadXML() {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><customer>\n" +
+                "<name>ABC</name>" +
+                "<age>32</age>" +
+                "<customer>";
 
-       StringToSQLXMLTransform transform = new StringToSQLXMLTransform();
+        StringToSQLXMLTransform transform = new StringToSQLXMLTransform();
 
         assertThrows(TransformationException.class, () -> transform.transformDirect(xml));
     }

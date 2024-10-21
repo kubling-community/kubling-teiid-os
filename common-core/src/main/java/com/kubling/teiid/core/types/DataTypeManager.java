@@ -44,8 +44,8 @@ import java.util.*;
  * Class name. The benefit of the Class name option is that the user does not
  * need to load the Class object, which may not be in the classpath. The
  * advantage of the Class option is speed.
- *
- *
+ * <p>
+ * <p>
  * TODO: refactor the string/class/code into an enum
  */
 public class DataTypeManager {
@@ -82,7 +82,7 @@ public class DataTypeManager {
             int index = hash(primaryHash(value)) & (cache.length - 1);
             Object canonicalValue = get(index);
             if (value.equals(canonicalValue)) {
-                return (T)canonicalValue;
+                return (T) canonicalValue;
             }
             set(index, value);
             return value;
@@ -103,7 +103,7 @@ public class DataTypeManager {
         /*
          * The same power of 2 hash bucketing from the Java HashMap
          */
-        final static int hash(int h) {
+        static int hash(int h) {
             h ^= (h >>> 20) ^ (h >>> 12);
             return h ^= (h >>> 7) ^ (h >>> 4);
         }
@@ -135,13 +135,13 @@ public class DataTypeManager {
 
         @Override
         protected void set(int index, T value) {
-            cache[index] = new WeakReference<T>(value);
+            cache[index] = new WeakReference<>(value);
         }
 
     }
 
-    private static Map<Class<?>, ValueCache<?>> valueMaps = new HashMap<Class<?>, ValueCache<?>>(128);
-    private static HashedValueCache<String> stringCache = new WeakReferenceHashedValueCache<String>(17) {
+    private static final Map<Class<?>, ValueCache<?>> valueMaps = new HashMap<>(128);
+    private static final HashedValueCache<String> stringCache = new WeakReferenceHashedValueCache<>(17) {
 
         @Override
         protected int primaryHash(String value) {
@@ -153,8 +153,8 @@ public class DataTypeManager {
     };
 
     public static final int MAX_STRING_LENGTH = PropertiesUtils.getHierarchicalProperty("org.teiid.maxStringLength", 4000, Integer.class);
-    public static final int MAX_VARBINARY_BYTES = Math.max(nextPowOf2(2*MAX_STRING_LENGTH), 1<<13);
-    public static final int MAX_LOB_MEMORY_BYTES = Math.max(nextPowOf2(8*MAX_STRING_LENGTH), 1<<15);
+    public static final int MAX_VARBINARY_BYTES = Math.max(nextPowOf2(2 * MAX_STRING_LENGTH), 1 << 13);
+    public static final int MAX_LOB_MEMORY_BYTES = Math.max(nextPowOf2(8 * MAX_STRING_LENGTH), 1 << 15);
 
     public static int nextPowOf2(int val) {
         int result = 1;
@@ -253,7 +253,7 @@ public class DataTypeManager {
 
     public static final int MAX_TYPE_CODE = DefaultTypeCodes.JSON;
 
-    private static final Map<Class<?>, Integer> typeMap = new LinkedHashMap<Class<?>, Integer>(64);
+    private static final Map<Class<?>, Integer> typeMap = new LinkedHashMap<>(64);
     private static final List<Class<?>> typeList;
 
     static {
@@ -280,7 +280,7 @@ public class DataTypeManager {
         typeMap.put(DefaultDataClasses.GEOMETRY, DefaultTypeCodes.GEOMETRY);
         typeMap.put(DefaultDataClasses.GEOGRAPHY, DefaultTypeCodes.GEOGRAPHY);
         typeMap.put(DefaultDataClasses.JSON, DefaultTypeCodes.JSON);
-        typeList = new ArrayList<Class<?>>(typeMap.keySet());
+        typeList = new ArrayList<>(typeMap.keySet());
     }
 
     public static int getTypeCode(Class<?> source) {
@@ -303,12 +303,14 @@ public class DataTypeManager {
      * Doubly-nested map of String srcType --> Map of String targetType -->
      * Transform
      */
-    private static Map<String, Map<String, Transform>> transforms =
-            new HashMap<String, Map<String, Transform>>(128);
+    private static final Map<String, Map<String, Transform>> transforms =
+            new HashMap<>(128);
 
-    /** Utility to easily get Transform given srcType and targetType */
+    /**
+     * Utility to easily get Transform given srcType and targetType
+     */
     private static Transform getTransformFromMaps(String srcType,
-            String targetType) {
+                                                  String targetType) {
 
         Map<String, Transform> innerMap = transforms.get(srcType);
         boolean found = false;
@@ -341,7 +343,7 @@ public class DataTypeManager {
             sourceDims++;
         }
         int targetDims = 0;
-        while(isArrayType(targetType)) {
+        while (isArrayType(targetType)) {
             targetType = targetType.substring(0, targetType.length() - 2);
             targetDims++;
         }
@@ -357,19 +359,25 @@ public class DataTypeManager {
         return null;
     }
 
-    /** Base data type names and classes, Type name --> Type class */
-    private static Map<String, Class<?>> dataTypeNames = new LinkedHashMap<String, Class<?>>(128);
+    /**
+     * Base data type names and classes, Type name --> Type class
+     */
+    private static final Map<String, Class<?>> dataTypeNames = new LinkedHashMap<>(128);
 
-    /** Base data type names and classes, Type class --> Type name */
-    private static Map<Class<?>, String> dataTypeClasses = new LinkedHashMap<Class<?>, String>(128);
+    /**
+     * Base data type names and classes, Type class --> Type name
+     */
+    private static final Map<Class<?>, String> dataTypeClasses = new LinkedHashMap<>(128);
 
-    private static Map<Class<?>, Class<?>> arrayTypes = new HashMap<Class<?>, Class<?>>(128);
-    private static Map<Class<?>, String> arrayTypeNames = new HashMap<Class<?>, String>(128);
+    private static final Map<Class<?>, Class<?>> arrayTypes = new HashMap<>(128);
+    private static final Map<Class<?>, String> arrayTypeNames = new HashMap<>(128);
 
-    /** a set of all type names roughly ordered based upon data width */
+    /**
+     * a set of all type names roughly ordered based upon data width
+     */
     private static Set<String> DATA_TYPE_NAMES;
 
-    private static Set<Class<?>> DATA_TYPE_CLASSES = Collections.unmodifiableSet(dataTypeClasses.keySet());
+    private static final Set<Class<?>> DATA_TYPE_CLASSES = Collections.unmodifiableSet(dataTypeClasses.keySet());
 
     // Static initializer - loads basic transforms types
     static {
@@ -397,8 +405,7 @@ public class DataTypeManager {
      * future a data type will be a more complicated entity. This is
      * package-level for now as it is just used to add the default data types.
      *
-     * @param dataType
-     *         New data type defined by Class
+     * @param dataType New data type defined by Class
      */
     static void addDataType(String typeName, Class<?> dataType) {
         dataTypeNames.put(typeName, dataType);
@@ -422,8 +429,7 @@ public class DataTypeManager {
      * Get data type class.
      * <br>IMPORTANT: only valid for default runtime types
      *
-     * @param name
-     *         Data type name
+     * @param name Data type name
      * @return Data type class
      */
     public static Class<?> getDataTypeClass(String name) {
@@ -460,10 +466,7 @@ public class DataTypeManager {
         if (result == null) {
             if (typeClass.isArray() && !typeClass.getComponentType().isPrimitive()) {
                 result = arrayTypeNames.get(typeClass);
-                if (result == null) {
-                    return getDataTypeName(typeClass.getComponentType()) + ARRAY_SUFFIX;
-                }
-                return result;
+                return Objects.requireNonNullElseGet(result, () -> getDataTypeName(typeClass.getComponentType()) + ARRAY_SUFFIX);
             }
             result = DefaultDataTypes.OBJECT;
         }
@@ -495,10 +498,8 @@ public class DataTypeManager {
      * Get a data value transformation between the sourceType and the
      * targetType.
      *
-     * @param sourceType
-     *         Incoming value type
-     * @param targetType
-     *         Outgoing value type
+     * @param sourceType Incoming value type
+     * @param targetType Outgoing value type
      * @return A transform if one exists, null otherwise
      */
     public static Transform getTransform(Class<?> sourceType, Class<?> targetType) {
@@ -516,14 +517,12 @@ public class DataTypeManager {
      * and the targetType of given name. The Class for source and target type
      * are not needed to do this lookup.
      *
-     * @param sourceTypeName
-     *         Incoming value type name
-     * @param targetTypeName
-     *         Outgoing value type name
+     * @param sourceTypeName Incoming value type name
+     * @param targetTypeName Outgoing value type name
      * @return A transform if one exists, null otherwise
      */
     public static Transform getTransform(String sourceTypeName,
-            String targetTypeName) {
+                                         String targetTypeName) {
         if (sourceTypeName == null || targetTypeName == null) {
             throw new IllegalArgumentException(CorePlugin.Util.getString(
                     "ERR.003.029.0003", sourceTypeName,
@@ -535,10 +534,8 @@ public class DataTypeManager {
     /**
      * Does a transformation exist between the source and target type?
      *
-     * @param sourceType
-     *         Incoming value type
-     * @param targetType
-     *         Outgoing value type
+     * @param sourceType Incoming value type
+     * @param targetType Outgoing value type
      * @return True if a transform exists
      */
     public static boolean isTransformable(Class<?> sourceType, Class<?> targetType) {
@@ -550,14 +547,12 @@ public class DataTypeManager {
      * names? The Class for source and target type are not needed to do this
      * lookup.
      *
-     * @param sourceTypeName
-     *         Incoming value type name
-     * @param targetTypeName
-     *         Outgoing value type name
+     * @param sourceTypeName Incoming value type name
+     * @param targetTypeName Outgoing value type name
      * @return True if a transform exists
      */
     public static boolean isTransformable(String sourceTypeName,
-            String targetTypeName) {
+                                          String targetTypeName) {
         if (sourceTypeName == null || targetTypeName == null) {
             throw new IllegalArgumentException(CorePlugin.Util.getString(
                     "ERR.003.029.0003", sourceTypeName,
@@ -569,19 +564,14 @@ public class DataTypeManager {
     /**
      * Add a new transform to the known transform types.
      *
-     * @param transform
-     *         New transform to add
+     * @param transform New transform to add
      */
     static void addTransform(Transform transform) {
         ArgCheck.isNotNull(transform);
         String sourceName = transform.getSourceTypeName();
         String targetName = transform.getTargetTypeName();
 
-        Map<String, Transform> innerMap = transforms.get(sourceName);
-        if (innerMap == null) {
-            innerMap = new LinkedHashMap<String, Transform>();
-            transforms.put(sourceName, innerMap);
-        }
+        Map<String, Transform> innerMap = transforms.computeIfAbsent(sourceName, k -> new LinkedHashMap<>());
         innerMap.put(targetName, transform);
     }
 
@@ -664,7 +654,7 @@ public class DataTypeManager {
     static void loadDataTypes() {
         DataTypeManager.addDataType(DefaultDataTypes.BOOLEAN, DefaultDataClasses.BOOLEAN);
         DataTypeManager.addDataType(DefaultDataTypes.BYTE, DefaultDataClasses.BYTE);
-        DataTypeManager.addDataType(DefaultDataTypes.SHORT,    DefaultDataClasses.SHORT);
+        DataTypeManager.addDataType(DefaultDataTypes.SHORT, DefaultDataClasses.SHORT);
         DataTypeManager.addDataType(DefaultDataTypes.CHAR, DefaultDataClasses.CHAR);
         DataTypeManager.addDataType(DefaultDataTypes.INTEGER, DefaultDataClasses.INTEGER);
         DataTypeManager.addDataType(DefaultDataTypes.LONG, DefaultDataClasses.LONG);
@@ -685,7 +675,7 @@ public class DataTypeManager {
         DataTypeManager.addDataType(DefaultDataTypes.GEOMETRY, DefaultDataClasses.GEOMETRY);
         DataTypeManager.addDataType(DefaultDataTypes.GEOGRAPHY, DefaultDataClasses.GEOGRAPHY);
         DataTypeManager.addDataType(DefaultDataTypes.JSON, DefaultDataClasses.JSON);
-        DATA_TYPE_NAMES = Collections.unmodifiableSet(new LinkedHashSet<String>(dataTypeNames.keySet()));
+        DATA_TYPE_NAMES = Collections.unmodifiableSet(new LinkedHashSet<>(dataTypeNames.keySet()));
         dataTypeNames.put(DataTypeAliases.BIGINT, DefaultDataClasses.LONG);
         dataTypeNames.put(DataTypeAliases.DECIMAL, DefaultDataClasses.BIG_DECIMAL);
         dataTypeNames.put(DataTypeAliases.REAL, DefaultDataClasses.FLOAT);
@@ -693,18 +683,8 @@ public class DataTypeManager {
         dataTypeNames.put(DataTypeAliases.TINYINT, DefaultDataClasses.BYTE);
         dataTypeNames.put(DataTypeAliases.VARCHAR, DefaultDataClasses.STRING);
 
-        valueMaps.put(DefaultDataClasses.BOOLEAN, new ValueCache<Boolean>() {
-            @Override
-            public Boolean getValue(Boolean value) {
-                return Boolean.valueOf(value);
-            }
-        });
-        valueMaps.put(DefaultDataClasses.BYTE, new ValueCache<Byte>() {
-            @Override
-            public Byte getValue(Byte value) {
-                return Byte.valueOf(value);
-            }
-        });
+        valueMaps.put(DefaultDataClasses.BOOLEAN, (ValueCache<Boolean>) value -> value);
+        valueMaps.put(DefaultDataClasses.BYTE, (ValueCache<Byte>) value -> value);
 
         if (USE_VALUE_CACHE) {
             valueMaps.put(DefaultDataClasses.SHORT, new HashedValueCache<Short>(13));
@@ -728,17 +708,17 @@ public class DataTypeManager {
      * set is always installed but may be overridden.
      */
     static void loadBasicTransforms() {
-        DataTypeManager.addTransform(new BooleanToNumberTransform(Byte.valueOf((byte)1), Byte.valueOf((byte)0)));
-        DataTypeManager.addTransform(new BooleanToNumberTransform(Short.valueOf((short)1), Short.valueOf((short)0)));
-        DataTypeManager.addTransform(new BooleanToNumberTransform(Integer.valueOf(1), Integer.valueOf(0)));
-        DataTypeManager.addTransform(new BooleanToNumberTransform(Long.valueOf(1), Long.valueOf(0)));
+        DataTypeManager.addTransform(new BooleanToNumberTransform((byte) 1, (byte) 0));
+        DataTypeManager.addTransform(new BooleanToNumberTransform((short) 1, (short) 0));
+        DataTypeManager.addTransform(new BooleanToNumberTransform(1, 0));
+        DataTypeManager.addTransform(new BooleanToNumberTransform(1L, 0L));
         DataTypeManager.addTransform(new BooleanToNumberTransform(BigInteger.valueOf(1), BigInteger.valueOf(0)));
-        DataTypeManager.addTransform(new BooleanToNumberTransform(Float.valueOf(1), Float.valueOf(0)));
-        DataTypeManager.addTransform(new BooleanToNumberTransform(Double.valueOf(1), Double.valueOf(0)));
+        DataTypeManager.addTransform(new BooleanToNumberTransform(1F, (float) 0));
+        DataTypeManager.addTransform(new BooleanToNumberTransform(1.0, (double) 0));
         DataTypeManager.addTransform(new BooleanToNumberTransform(BigDecimal.valueOf(1), BigDecimal.valueOf(0)));
         DataTypeManager.addTransform(new AnyToStringTransform(DefaultDataClasses.BOOLEAN));
 
-        DataTypeManager.addTransform(new NumberToBooleanTransform(Byte.valueOf((byte)0)));
+        DataTypeManager.addTransform(new NumberToBooleanTransform((byte) 0));
         DataTypeManager.addTransform(new NumberToShortTransform(DefaultDataClasses.BYTE, false));
         DataTypeManager.addTransform(new NumberToIntegerTransform(DefaultDataClasses.BYTE, false));
         DataTypeManager.addTransform(new NumberToLongTransform(DefaultDataClasses.BYTE, false, false));
@@ -750,7 +730,7 @@ public class DataTypeManager {
 
         DataTypeManager.addTransform(new AnyToStringTransform(DefaultDataClasses.CHAR));
 
-        DataTypeManager.addTransform(new NumberToBooleanTransform(Short.valueOf((short)0)));
+        DataTypeManager.addTransform(new NumberToBooleanTransform((short) 0));
         DataTypeManager.addTransform(new NumberToByteTransform(DefaultDataClasses.SHORT));
         DataTypeManager.addTransform(new NumberToIntegerTransform(DefaultDataClasses.SHORT, false));
         DataTypeManager.addTransform(new NumberToLongTransform(DefaultDataClasses.SHORT, false, false));
@@ -760,7 +740,7 @@ public class DataTypeManager {
         DataTypeManager.addTransform(new FixedNumberToBigDecimalTransform(DefaultDataClasses.SHORT));
         DataTypeManager.addTransform(new AnyToStringTransform(DefaultDataClasses.SHORT));
 
-        DataTypeManager.addTransform(new NumberToBooleanTransform(Integer.valueOf(0)));
+        DataTypeManager.addTransform(new NumberToBooleanTransform(0));
         DataTypeManager.addTransform(new NumberToByteTransform(DefaultDataClasses.INTEGER));
         DataTypeManager.addTransform(new NumberToShortTransform(DefaultDataClasses.INTEGER, true));
         DataTypeManager.addTransform(new NumberToLongTransform(DefaultDataClasses.INTEGER, false, false));
@@ -770,7 +750,7 @@ public class DataTypeManager {
         DataTypeManager.addTransform(new FixedNumberToBigDecimalTransform(DefaultDataClasses.INTEGER));
         DataTypeManager.addTransform(new AnyToStringTransform(DefaultDataClasses.INTEGER));
 
-        DataTypeManager.addTransform(new NumberToBooleanTransform(Long.valueOf(0)));
+        DataTypeManager.addTransform(new NumberToBooleanTransform(0L));
         DataTypeManager.addTransform(new NumberToByteTransform(DefaultDataClasses.LONG));
         DataTypeManager.addTransform(new NumberToShortTransform(DefaultDataClasses.LONG, true));
         DataTypeManager.addTransform(new NumberToIntegerTransform(DefaultDataClasses.LONG, true));
@@ -800,7 +780,7 @@ public class DataTypeManager {
         DataTypeManager.addTransform(new NumberToDoubleTransform(DefaultDataClasses.BIG_DECIMAL, true, false));
         DataTypeManager.addTransform(new AnyToStringTransform(DefaultDataClasses.BIG_DECIMAL));
 
-        DataTypeManager.addTransform(new NumberToBooleanTransform(Float.valueOf(0)));
+        DataTypeManager.addTransform(new NumberToBooleanTransform((float) 0));
         DataTypeManager.addTransform(new NumberToByteTransform(DefaultDataClasses.FLOAT));
         DataTypeManager.addTransform(new NumberToShortTransform(DefaultDataClasses.FLOAT, true));
         DataTypeManager.addTransform(new NumberToIntegerTransform(DefaultDataClasses.FLOAT, true));
@@ -810,7 +790,7 @@ public class DataTypeManager {
         DataTypeManager.addTransform(new FloatingNumberToBigDecimalTransform(DefaultDataClasses.FLOAT));
         DataTypeManager.addTransform(new AnyToStringTransform(DefaultDataClasses.FLOAT));
 
-        DataTypeManager.addTransform(new NumberToBooleanTransform(Double.valueOf(0)));
+        DataTypeManager.addTransform(new NumberToBooleanTransform((double) 0));
         DataTypeManager.addTransform(new NumberToByteTransform(DefaultDataClasses.DOUBLE));
         DataTypeManager.addTransform(new NumberToShortTransform(DefaultDataClasses.DOUBLE, true));
         DataTypeManager.addTransform(new NumberToIntegerTransform(DefaultDataClasses.DOUBLE, true));
@@ -872,6 +852,7 @@ public class DataTypeManager {
 
     /**
      * Convert the value to the probable runtime type.
+     *
      * @param allConversions if false only lob conversions will be used
      */
     public static Object convertToRuntimeType(Object value, boolean allConversions) {
@@ -884,26 +865,26 @@ public class DataTypeManager {
         }
         if (allConversions) {
             if (c == char[].class) {
-                return new ClobType(ClobImpl.createClob((char[])value));
+                return new ClobType(ClobImpl.createClob((char[]) value));
             }
             if (c == byte[].class) {
-                return new BinaryType((byte[])value);
+                return new BinaryType((byte[]) value);
             }
             if (Date.class.isAssignableFrom(c)) {
-                return new Timestamp(((Date)value).getTime());
+                return new Timestamp(((Date) value).getTime());
             }
             if (Object[].class.isAssignableFrom(c)) {
-                return new ArrayImpl((Object[])value);
+                return new ArrayImpl((Object[]) value);
             }
         }
         if (Clob.class.isAssignableFrom(c)) {
-            return new ClobType((Clob)value);
+            return new ClobType((Clob) value);
         }
         if (Blob.class.isAssignableFrom(c)) {
-            return new BlobType((Blob)value);
+            return new BlobType((Blob) value);
         }
         if (SQLXML.class.isAssignableFrom(c)) {
-            return new XMLType((SQLXML)value);
+            return new XMLType((SQLXML) value);
         }
         return value; // "object type"
     }
@@ -951,15 +932,15 @@ public class DataTypeManager {
     }
 
     public static Object transformValue(Object value, Class<?> sourceType,
-            Class<?> targetClass) throws TransformationException {
+                                        Class<?> targetClass) throws TransformationException {
         if (value == null || sourceType == targetClass || DefaultDataClasses.OBJECT == targetClass) {
             return value;
         }
         Transform transform = DataTypeManager.getTransform(sourceType,
                 targetClass);
         if (transform == null) {
-            Object[] params = new Object[] { sourceType, targetClass, value};
-              throw new TransformationException(CorePlugin.Event.TEIID10076, CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
+            Object[] params = new Object[]{sourceType, targetClass, value};
+            throw new TransformationException(CorePlugin.Event.TEIID10076, CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
         }
         Object result = transform.transform(value, targetClass);
         return getCanonicalValue(result);
@@ -967,37 +948,37 @@ public class DataTypeManager {
 
     public static boolean isNonComparable(String type) {
         return (!COMPARABLE_OBJECT && DefaultDataTypes.OBJECT.equals(type))
-            || (!COMPARABLE_LOBS && DefaultDataTypes.BLOB.equals(type))
-            || (!COMPARABLE_LOBS && DefaultDataTypes.CLOB.equals(type))
-            || DefaultDataTypes.JSON.equals(type)
-            || DefaultDataTypes.GEOMETRY.equals(type)
-            || DefaultDataTypes.GEOGRAPHY.equals(type)
-            || DefaultDataTypes.XML.equals(type);
+                || (!COMPARABLE_LOBS && DefaultDataTypes.BLOB.equals(type))
+                || (!COMPARABLE_LOBS && DefaultDataTypes.CLOB.equals(type))
+                || DefaultDataTypes.JSON.equals(type)
+                || DefaultDataTypes.GEOMETRY.equals(type)
+                || DefaultDataTypes.GEOGRAPHY.equals(type)
+                || DefaultDataTypes.XML.equals(type);
     }
 
     public static void setValueCacheEnabled(boolean enabled) {
         valueCacheEnabled = enabled;
     }
 
-    public static final boolean isValueCacheEnabled() {
+    public static boolean isValueCacheEnabled() {
         return valueCacheEnabled;
     }
 
     @SuppressWarnings("unchecked")
-    public static final <T> T getCanonicalValue(T value) {
+    public static <T> T getCanonicalValue(T value) {
         if (valueCacheEnabled) {
             if (value == null) {
                 return null;
             }
             ValueCache valueCache = valueMaps.get(value.getClass());
             if (valueCache != null) {
-                value = (T)valueCache.getValue(value);
+                value = (T) valueCache.getValue(value);
             }
         }
         return value;
     }
 
-    public static final String getCanonicalString(String value) {
+    public static String getCanonicalString(String value) {
         if (value == null) {
             return null;
         }
@@ -1014,14 +995,14 @@ public class DataTypeManager {
         }
         if (collationLocale != null && (type == DefaultDataClasses.STRING
                 || type == DefaultDataClasses.CHAR
-                || type == DefaultDataClasses.CLOB) ) {
+                || type == DefaultDataClasses.CLOB)) {
             return false;
         }
         if (type == DefaultDataClasses.STRING
                 || type == DefaultDataClasses.CLOB) {
             return !padSpace;
         }
-        if (type.isArray() ) {
+        if (type.isArray()) {
             return isHashable(type.getComponentType(), padSpace, collationLocale);
         }
         return !(type == DefaultDataClasses.BIG_DECIMAL
@@ -1038,7 +1019,7 @@ public class DataTypeManager {
         return Array.newInstance(classType, 0).getClass();
     }
 
-    private static final HashSet<String> LENGTH_DATATYPES = new HashSet<String>(
+    private static final HashSet<String> LENGTH_DATATYPES = new HashSet<>(
             Arrays.asList(
                     DefaultDataTypes.CHAR,
                     DefaultDataTypes.CLOB,

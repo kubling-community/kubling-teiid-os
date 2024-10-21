@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-
 /**
  * A InputStream wrapper class for a Lob Chunks. Given a stream of Lob Chunks
  * this class will convert those chunks into InputStream, which can be used to
@@ -44,7 +43,7 @@ public class LobChunkInputStream extends InputStream {
 
     public int read() throws IOException {
         if (this.closed) {
-            throw new IllegalStateException(CorePlugin.Util.getString("stream_closed")); //$NON-NLS-1$
+            throw new IllegalStateException(CorePlugin.Util.getString("stream_closed"));
         }
         while (this.byteData == null || this.byteData.length <= currentCounter) {
             if (this.lastChunk) {

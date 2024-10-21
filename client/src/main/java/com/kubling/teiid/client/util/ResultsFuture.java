@@ -40,7 +40,8 @@ public class ResultsFuture<T> implements Future<T> {
     static {
         NULL_FUTURE.getResultsReceiver().receiveResults(null);
     }
-    private static final Logger logger = Logger.getLogger("org.teiid"); //$NON-NLS-1$
+
+    private static final Logger logger = Logger.getLogger("org.teiid");
 
     public interface CompletionListener<T> {
         void onCompletion(ResultsFuture<T> future);
@@ -55,7 +56,7 @@ public class ResultsFuture<T> implements Future<T> {
         public void exceptionOccurred(Throwable e) {
             synchronized (ResultsFuture.this) {
                 if (done) {
-                    throw new IllegalStateException("Already sent results"); //$NON-NLS-1$
+                    throw new IllegalStateException("Already sent results");
                 }
                 exception = e;
                 done = true;
@@ -67,7 +68,7 @@ public class ResultsFuture<T> implements Future<T> {
         public void receiveResults(T results) {
             synchronized (ResultsFuture.this) {
                 if (done) {
-                    throw new IllegalStateException("Already sent results"); //$NON-NLS-1$
+                    throw new IllegalStateException("Already sent results");
                 }
                 result = results;
                 done = true;

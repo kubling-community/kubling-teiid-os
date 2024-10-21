@@ -11,22 +11,19 @@ public class ClobToJsonTransform extends Transform {
 
     @Override
     protected Object transformDirect(Object value) throws TransformationException {
-        BaseClobType source = (BaseClobType)value;
+        BaseClobType source = (BaseClobType) value;
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader (source.getCharacterStream());
-            StringBuffer contents = new StringBuffer();
+            reader = new BufferedReader(source.getCharacterStream());
+            StringBuilder contents = new StringBuilder();
 
             int chr = reader.read();
             while (chr != -1 && contents.length() < DataTypeManager.MAX_STRING_LENGTH) {
-                contents.append((char)chr);
+                contents.append((char) chr);
                 chr = reader.read();
             }
             return new JsonType(new ClobImpl(contents.toString()));
-        } catch (SQLException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
-        } catch(IOException e) {
+        } catch (SQLException | IOException e) {
             throw new TransformationException(CorePlugin.Event.TEIID10080, e,
                     CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
         } finally {

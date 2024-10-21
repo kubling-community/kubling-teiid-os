@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 public final class BinaryType implements Comparable<BinaryType> {
 
-    private byte[] bytes;
+    private final byte[] bytes;
 
     public BinaryType(byte[] bytes) {
         Assertion.isNotNull(bytes);
@@ -34,7 +34,6 @@ public final class BinaryType implements Comparable<BinaryType> {
     }
 
     /**
-     *
      * @return the actual bytes - no modifications should be performed
      */
     public byte[] getBytesDirect() {
@@ -42,7 +41,6 @@ public final class BinaryType implements Comparable<BinaryType> {
     }
 
     /**
-     *
      * @return a copy of the bytes
      */
     public byte[] getBytes() {
@@ -51,6 +49,7 @@ public final class BinaryType implements Comparable<BinaryType> {
 
     /**
      * Get the byte value at a given index
+     *
      * @param index
      */
     public byte getByte(int index) {
@@ -90,7 +89,7 @@ public final class BinaryType implements Comparable<BinaryType> {
         if (!(obj instanceof BinaryType)) {
             return false;
         }
-        BinaryType other = (BinaryType)obj;
+        BinaryType other = (BinaryType) obj;
         return Arrays.equals(this.bytes, other.bytes);
     }
 

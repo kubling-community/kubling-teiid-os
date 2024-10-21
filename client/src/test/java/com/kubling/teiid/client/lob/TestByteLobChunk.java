@@ -30,7 +30,7 @@ public class TestByteLobChunk {
 
     @Test
     public void testGetBytes() {
-        String testString = "This is test string for testing ByteLobChunk"; //$NON-NLS-1$
+        String testString = "This is test string for testing ByteLobChunk";
         LobChunk chunk = new LobChunk(testString.getBytes(), false);
         assertEquals(testString, new String(chunk.getBytes()));
         assertFalse(chunk.isLast());
@@ -38,7 +38,7 @@ public class TestByteLobChunk {
 
     @Test
     public void testSerialization() throws Exception {
-        String testString = "This is test string for testing ByteLobChunk"; //$NON-NLS-1$
+        String testString = "This is test string for testing ByteLobChunk";
         LobChunk chunk = new LobChunk(testString.getBytes(), true);
 
         LobChunk result = UnitTestUtil.helpSerialize(chunk);

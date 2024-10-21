@@ -278,7 +278,7 @@ public class ObjectConverterUtil {
      * @throws IOException if a problem occurred reading the file.
      */
     public static String convertToString(final InputStream stream) throws IOException {
-        return convertToString(new InputStreamReader(stream, "UTF-8"), -1); //$NON-NLS-1$
+        return convertToString(new InputStreamReader(stream, "UTF-8"), -1); 
     }
 
     /**

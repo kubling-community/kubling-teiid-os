@@ -27,22 +27,24 @@ public class StringToByteTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         try {
-            return Byte.valueOf(((String)value).trim());
-        } catch(NumberFormatException e) {
-              throw new TransformationException(CorePlugin.Event.TEIID10074,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10074, value));
+            return Byte.valueOf(((String) value).trim());
+        } catch (NumberFormatException e) {
+            throw new TransformationException(CorePlugin.Event.TEIID10074,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10074, value));
         }
     }
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -51,6 +53,7 @@ public class StringToByteTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class EnhancedTimer {
 
-    private static final Logger LOGGER = Logger.getLogger("org.teiid.jdbc"); //$NON-NLS-1$
+    private static final Logger LOGGER = Logger.getLogger("org.teiid.jdbc");
     private static AtomicLong id = new AtomicLong();
 
     public class Task extends FutureTask<Void> implements Comparable<Task> {
@@ -76,6 +76,7 @@ public class EnhancedTimer {
 
     /**
      * Constructs a new Timer that directly executes tasks off of a single-thread thread pool.
+     *
      * @param name
      */
     public EnhancedTimer(final String name) {
@@ -130,13 +131,14 @@ public class EnhancedTimer {
         try {
             taskExecutor.execute(task);
         } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, "Unexpected exception running task", t); //$NON-NLS-1$
+            LOGGER.log(Level.SEVERE, "Unexpected exception running task", t);
         }
         return true;
     }
 
     /**
      * Add a delayed task
+     *
      * @param task
      * @param delay in ms
      * @return a cancellable Task

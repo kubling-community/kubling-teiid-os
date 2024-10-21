@@ -63,9 +63,9 @@ public class ResizingArrayList<T> extends AbstractList<T> implements RandomAcces
     public void add(int index, T element) {
         rangeCheck(index, true);
         modCount++;
-        ensureCapacity(size+1);
+        ensureCapacity(size + 1);
         System.arraycopy(elementData, index, elementData, index + 1,
-                 size - index);
+                size - index);
         elementData[index] = element;
         size++;
     }
@@ -75,7 +75,7 @@ public class ResizingArrayList<T> extends AbstractList<T> implements RandomAcces
             return;
         }
         int newCapacity = 1 << (32 - Integer.numberOfLeadingZeros(capacity - 1));
-        int lowerCapacity = newCapacity*70/99; //SQRT(2)
+        int lowerCapacity = newCapacity * 70 / 99; //SQRT(2)
         if (lowerCapacity > capacity) {
             newCapacity = lowerCapacity;
         }
@@ -113,12 +113,12 @@ public class ResizingArrayList<T> extends AbstractList<T> implements RandomAcces
         modCount++;
         int numMoved = size - index - 1;
         if (numMoved > 0) {
-            System.arraycopy(elementData, index+1, elementData, index, numMoved);
+            System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
         elementData[--size] = null;
-        int halfLength = elementData.length/2;
+        int halfLength = elementData.length / 2;
         if (size <= halfLength && elementData.length > MIN_SHRINK_SIZE) {
-            int newSize = Math.max(halfLength*99/70, MIN_SHRINK_SIZE);
+            int newSize = Math.max(halfLength * 99 / 70, MIN_SHRINK_SIZE);
             Object[] next = new Object[newSize];
             System.arraycopy(elementData, 0, next, 0, size);
             elementData = next;
@@ -128,7 +128,7 @@ public class ResizingArrayList<T> extends AbstractList<T> implements RandomAcces
 
     private void rangeCheck(int index, boolean inclusive) {
         if (index > size || (!inclusive && index == size)) {
-            throw new IndexOutOfBoundsException("Index: "+index+", Size: "+size); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 

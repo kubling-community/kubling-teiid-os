@@ -28,7 +28,7 @@ import com.kubling.teiid.core.types.TransformationException;
  */
 public class AnyToStringTransform extends Transform {
 
-    private Class<?> sourceType;
+    private final Class<?> sourceType;
 
     public AnyToStringTransform(Class<?> sourceType) {
         this.sourceType = sourceType;
@@ -36,6 +36,7 @@ public class AnyToStringTransform extends Transform {
 
     /**
      * Type of the incoming value.
+     *
      * @return Source type
      */
     public Class<?> getSourceType() {
@@ -44,6 +45,7 @@ public class AnyToStringTransform extends Transform {
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {
@@ -53,10 +55,11 @@ public class AnyToStringTransform extends Transform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value - Integer
      * @return Outgoing value - String
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         String result = value.toString();

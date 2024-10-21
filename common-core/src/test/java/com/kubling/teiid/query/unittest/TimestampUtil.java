@@ -36,12 +36,7 @@ import java.util.TimeZone;
  */
 public class TimestampUtil {
 
-    private static ThreadLocal<Calendar> CAL = new ThreadLocal<Calendar>() {
-        @Override
-        protected Calendar initialValue() {
-            return Calendar.getInstance();
-        }
-    };
+    private static final ThreadLocal<Calendar> CAL = ThreadLocal.withInitial(Calendar::getInstance);
 
     /**
      * Replaces deprecated <code>java.sql.Timestamp</code> constructor.
@@ -53,8 +48,8 @@ public class TimestampUtil {
      * @param minute 0 to 59
      * @param second 0 to 59
      * @param nano   0 to 999,999,999
-     * @see Timestamp
      * @return A <code>Timestamp</code>
+     * @see Timestamp
      */
     public static Timestamp createTimestamp(int year, int month, int date, int hour, int minute, int second, int nano) {
         primeCalendar();
@@ -68,26 +63,26 @@ public class TimestampUtil {
     /**
      * Replaces deprecated <code>java.sql.Date</code> constructor.
      *
-     * @param   year    the year minus 1900.
-     * @param   month   the month between 0-11.
-     * @param   date    the day of the month between 1-31.
-     * @see Date
+     * @param year  the year minus 1900.
+     * @param month the month between 0-11.
+     * @param date  the day of the month between 1-31.
      * @return A <code>Date</code>
+     * @see Date
      */
-   public static Date createDate(int year, int month, int date) {
+    public static Date createDate(int year, int month, int date) {
         primeCalendar();
         CAL.get().set(year + 1900, month, date);
         return new Date(CAL.get().getTimeInMillis());
-   }
+    }
 
     /**
      * Replaces deprecated <code>java.sql.Time</code> constructor.
      *
-     * @param hour 0 to 23
+     * @param hour   0 to 23
      * @param minute 0 to 59
      * @param second 0 to 59
-     * @see Time
      * @return A <code>Time</code>
+     * @see Time
      */
     public static Time createTime(int hour, int minute, int second) {
         primeCalendar();

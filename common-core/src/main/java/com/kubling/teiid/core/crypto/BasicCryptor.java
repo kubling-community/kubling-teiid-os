@@ -38,17 +38,25 @@ import java.util.Arrays;
  */
 public class BasicCryptor implements Cryptor {
 
-    /** The key to be used for decryption. */
+    /**
+     * The key to be used for decryption.
+     */
     protected Key decryptKey;
-    /** The <code>Cipher</code> to use for decryption. */
+    /**
+     * The <code>Cipher</code> to use for decryption.
+     */
     private Cipher decryptCipher;
-    /** The key to be used for encryption. */
+    /**
+     * The key to be used for encryption.
+     */
     private Key encryptKey;
-    /** The <code>Cipher</code> to use for encryption. */
+    /**
+     * The <code>Cipher</code> to use for encryption.
+     */
     protected Cipher encryptCipher;
     protected String cipherAlgorithm;
-    public static final String OLD_ENCRYPT_PREFIX = "{mm-encrypt}"; //$NON-NLS-1$
-    public static final String ENCRYPT_PREFIX = "{teiid-encrypt}"; //$NON-NLS-1$
+    public static final String OLD_ENCRYPT_PREFIX = "{mm-encrypt}";
+    public static final String ENCRYPT_PREFIX = "{teiid-encrypt}";
 
     private static final SecureRandom random = new SecureRandom();
 
@@ -57,7 +65,7 @@ public class BasicCryptor implements Cryptor {
     private IvParameterSpec iv;
     private byte[] randBuffer;
 
-    public BasicCryptor( Key encryptKey, Key decryptKey, String algorithm, IvParameterSpec iv) throws CryptoException {
+    public BasicCryptor(Key encryptKey, Key decryptKey, String algorithm, IvParameterSpec iv) throws CryptoException {
         this.encryptKey = encryptKey;
         this.cipherAlgorithm = algorithm;
         this.decryptKey = decryptKey;
@@ -80,10 +88,11 @@ public class BasicCryptor implements Cryptor {
 
     /**
      * Decrypt the ciphertext to yield the original cleartext.
+     *
      * @param ciphertext The text to be encrypted, in byte form
      * @return The decrypted cleartext, in byte form
      */
-    public synchronized byte[] decrypt( byte[] ciphertext ) throws CryptoException {
+    public synchronized byte[] decrypt(byte[] ciphertext) throws CryptoException {
         try {
             byte[] result = decryptCipher.doFinal(ciphertext);
             if (iv != null) {
@@ -91,13 +100,13 @@ public class BasicCryptor implements Cryptor {
                 return Arrays.copyOfRange(result, iv.getIV().length, result.length);
             }
             return result;
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             try {
                 initDecryptCipher();
             } catch (CryptoException err) {
                 //shouldn't happen
             }
-              throw new CryptoException(CorePlugin.Event.TEIID10006,  CorePlugin.Util.gs(CorePlugin.Event.TEIID10006, e.getClass().getName(), e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.TEIID10006, CorePlugin.Util.gs(CorePlugin.Event.TEIID10006, e.getClass().getName(), e.getMessage()));
         }
     }
 
@@ -110,19 +119,19 @@ public class BasicCryptor implements Cryptor {
 
         // Create and initialize decryption cipher
         try {
-            decryptCipher = Cipher.getInstance( cipherAlgorithm);
-            decryptCipher.init( Cipher.DECRYPT_MODE, decryptKey, iv );
-        } catch ( NoSuchAlgorithmException e ) {
-              throw new CryptoException(CorePlugin.Event.TEIID10009, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10009, cipherAlgorithm));
+            decryptCipher = Cipher.getInstance(cipherAlgorithm);
+            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, iv);
+        } catch (NoSuchAlgorithmException e) {
+            throw new CryptoException(CorePlugin.Event.TEIID10009, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10009, cipherAlgorithm));
 
-        } catch ( NoSuchPaddingException e ) {
-              throw new CryptoException(CorePlugin.Event.TEIID10010,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10010, cipherAlgorithm, e.getClass().getName(), e.getMessage()));
+        } catch (NoSuchPaddingException e) {
+            throw new CryptoException(CorePlugin.Event.TEIID10010,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10010, cipherAlgorithm, e.getClass().getName(), e.getMessage()));
 
-        } catch ( InvalidKeyException e ) {
-              throw new CryptoException(CorePlugin.Event.TEIID10011, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10011, e.getClass().getName(), e.getMessage()));
+        } catch (InvalidKeyException e) {
+            throw new CryptoException(CorePlugin.Event.TEIID10011, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10011, e.getClass().getName(), e.getMessage()));
 
         } catch (InvalidAlgorithmParameterException e) {
             throw new CryptoException(CorePlugin.Event.TEIID10009, e,
@@ -136,7 +145,7 @@ public class BasicCryptor implements Cryptor {
                 return object;
             }
 
-            SealedObject so = (SealedObject)object;
+            SealedObject so = (SealedObject) object;
 
             ClassLoader cl = Thread.currentThread().getContextClassLoader();
             try {
@@ -144,7 +153,7 @@ public class BasicCryptor implements Cryptor {
                     Thread.currentThread().setContextClassLoader(BasicCryptor.class.getClassLoader());
                 }
                 return so.getObject(decryptCipher);
-            } catch ( Exception e ) {
+            } catch (Exception e) {
                 try {
                     initDecryptCipher();
                 } catch (CryptoException err) {
@@ -159,7 +168,7 @@ public class BasicCryptor implements Cryptor {
         if (!(object instanceof byte[])) {
             return object;
         }
-        byte[] bytes = (byte[])object;
+        byte[] bytes = (byte[]) object;
         bytes = decrypt(bytes);
         try {
             ObjectInputStream ois = new ObjectInputStreamWithClassloader(new ByteArrayInputStream(bytes), classLoader);
@@ -172,10 +181,11 @@ public class BasicCryptor implements Cryptor {
 
     /**
      * Encrypt the cleartext in byte array format.
+     *
      * @param cleartext The text to be encrypted, in byte form
      * @return The encrypted ciphertext, in byte form
      */
-    public byte[] encrypt( byte[] cleartext ) throws CryptoException {
+    public byte[] encrypt(byte[] cleartext) throws CryptoException {
         return encrypt(cleartext, 0, cleartext.length);
     }
 
@@ -194,7 +204,7 @@ public class BasicCryptor implements Cryptor {
                 return newResult;
             }
             return result;
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             try {
                 initEncryptCipher();
             } catch (CryptoException err) {
@@ -214,30 +224,30 @@ public class BasicCryptor implements Cryptor {
 
         // Create and initialize encryption cipher
         try {
-            encryptCipher = Cipher.getInstance( cipherAlgorithm );
-            encryptCipher.init( Cipher.ENCRYPT_MODE, encryptKey, iv );
-        } catch ( NoSuchAlgorithmException e ) {
-              throw new CryptoException(CorePlugin.Event.TEIID10016, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10016, cipherAlgorithm ));
+            encryptCipher = Cipher.getInstance(cipherAlgorithm);
+            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, iv);
+        } catch (NoSuchAlgorithmException e) {
+            throw new CryptoException(CorePlugin.Event.TEIID10016, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10016, cipherAlgorithm));
 
-        } catch ( NoSuchPaddingException e ) {
-              throw new CryptoException(CorePlugin.Event.TEIID10017, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10017, cipherAlgorithm , e.getMessage() ));
+        } catch (NoSuchPaddingException e) {
+            throw new CryptoException(CorePlugin.Event.TEIID10017, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10017, cipherAlgorithm, e.getMessage()));
 
-        } catch ( InvalidKeyException e ) {
-              throw new CryptoException(CorePlugin.Event.TEIID10018, e,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10018, e.getMessage() ));
+        } catch (InvalidKeyException e) {
+            throw new CryptoException(CorePlugin.Event.TEIID10018, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10018, e.getMessage()));
 
         } catch (InvalidAlgorithmParameterException e) {
             throw new CryptoException(CorePlugin.Event.TEIID10016, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10016, cipherAlgorithm ));
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10016, cipherAlgorithm));
         }
     }
 
     public synchronized Object sealObject(Object object) throws CryptoException {
         try {
             if (useSealedObject) {
-                return new SealedObject((Serializable)object, encryptCipher);
+                return new SealedObject((Serializable) object, encryptCipher);
             }
             AccessibleByteArrayOutputStream baos = new AccessibleByteArrayOutputStream(1 << 13);
             ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -245,14 +255,14 @@ public class BasicCryptor implements Cryptor {
             oos.flush();
             oos.close();
             return encrypt(baos.getBuffer(), 0, baos.getCount());
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             try {
                 initEncryptCipher();
             } catch (CryptoException err) {
                 //shouldn't happen?
             }
-              throw new CryptoException(CorePlugin.Event.TEIID10013,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10013, e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.TEIID10013,
+                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10013, e.getMessage()));
         }
     }
 

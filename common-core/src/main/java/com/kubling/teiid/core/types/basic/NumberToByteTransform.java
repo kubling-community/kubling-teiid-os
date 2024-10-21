@@ -30,18 +30,20 @@ public class NumberToByteTransform extends NumberToNumberTransform {
     /**
      * This method transforms a value of the source type into a value
      * of the target type.
+     *
      * @param value Incoming value of source type
      * @return Outgoing value of target type
      * @throws TransformationException if value is an incorrect input type or
-     * the transformation fails
+     *                                 the transformation fails
      */
     public Object transformDirect(Object value) throws TransformationException {
         checkValueRange(value);
-        return Byte.valueOf(((Number)value).byteValue());
+        return ((Number) value).byteValue();
     }
 
     /**
      * Type of the outgoing value.
+     *
      * @return Target type
      */
     public Class<?> getTargetType() {

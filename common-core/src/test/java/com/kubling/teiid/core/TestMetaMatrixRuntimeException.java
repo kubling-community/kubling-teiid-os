@@ -22,9 +22,9 @@
  */
 package com.kubling.teiid.core;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * JUnit test for MetaMatrixRuntimeException
@@ -42,9 +42,9 @@ public final class TestMetaMatrixRuntimeException {
     public void testFailMetaMatrixRuntimeExceptionWithNullMessage() {
         Throwable e = null;
         try {
-            new TeiidRuntimeException((String)null);  // should throw NPE
-            fail("Should not get here"); //$NON-NLS-1$
-        } catch ( Throwable ex ) {
+            new TeiidRuntimeException((String) null);  // should throw NPE
+            fail("Should not get here");
+        } catch (Throwable ex) {
             e = ex;
         }
         assertNotNull(e);
@@ -52,7 +52,7 @@ public final class TestMetaMatrixRuntimeException {
 
     @Test
     public void testMetaMatrixRuntimeExceptionWithNullThrowable() {
-        final TeiidRuntimeException err = new TeiidRuntimeException((Throwable)null);
+        final TeiidRuntimeException err = new TeiidRuntimeException((Throwable) null);
         assertNull(err.getCause());
         assertNull(err.getCode());
         assertNull(err.getMessage());
@@ -61,35 +61,35 @@ public final class TestMetaMatrixRuntimeException {
 
     @Test
     public void testMetaMatrixRuntimeExceptionWithMessage() {
-        final TeiidRuntimeException err = new TeiidRuntimeException("Test"); //$NON-NLS-1$
+        final TeiidRuntimeException err = new TeiidRuntimeException("Test");
         assertNull(err.getCause());
         assertNull(err.getCode());
-        assertEquals("Test", err.getMessage()); //$NON-NLS-1$
+        assertEquals("Test", err.getMessage());
 
     }
 
     @Test
     public void testMetaMatrixRuntimeExceptionWithCodeAndMessage() {
-        final String code = "1234"; //$NON-NLS-1$
-        final TeiidRuntimeException err = new TeiidRuntimeException(code, "Test"); //$NON-NLS-1$
+        final String code = "1234";
+        final TeiidRuntimeException err = new TeiidRuntimeException(code, "Test");
         assertNull(err.getCause());
         assertEquals(code, err.getCode());
-        assertEquals("1234 Test", err.getMessage()); //$NON-NLS-1$
+        assertEquals("1234 Test", err.getMessage());
 
     }
 
-    public static enum Event implements BundleUtil.Event {
+    public enum Event implements BundleUtil.Event {
         Code,
     }
 
     @Test
     public void testMetaMatrixRuntimeExceptionWithExceptionAndCodeAndMessage() {
-        final String code = "1234"; //$NON-NLS-1$
-        final TeiidRuntimeException child = new TeiidRuntimeException(code, "Child"); //$NON-NLS-1$
-        final TeiidRuntimeException err = new TeiidRuntimeException(Event.Code, child,"Test"); //$NON-NLS-1$
+        final String code = "1234";
+        final TeiidRuntimeException child = new TeiidRuntimeException(code, "Child");
+        final TeiidRuntimeException err = new TeiidRuntimeException(Event.Code, child, "Test");
         assertSame(child, err.getCause());
-        assertEquals("Code", err.getCode()); //$NON-NLS-1$
-        assertEquals("Code Test", err.getMessage()); //$NON-NLS-1$
+        assertEquals("Code", err.getCode());
+        assertEquals("Code Test", err.getMessage());
 
     }
 }

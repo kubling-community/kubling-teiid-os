@@ -18,12 +18,11 @@
 
 package com.kubling.teiid.core.types;
 
-import org.junit.jupiter.api.Test;
 import com.kubling.teiid.core.util.UnitTestUtil;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,15 +32,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class TestBlobValue {
 
     public void testBlobValue() throws Exception {
-        String testString = "this is test blob"; //$NON-NLS-1$
+        String testString = "this is test blob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
 
         BlobType bv = new BlobType(blob);
-        assertEquals(testString, new String(bv.getBytes(1L, (int)bv.length())));
+        assertEquals(testString, new String(bv.getBytes(1L, (int) bv.length())));
     }
 
     public void testBlobValuePersistence() throws Exception {
-        String testString = "this is test clob"; //$NON-NLS-1$
+        String testString = "this is test clob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
 
         BlobType bv = new BlobType(blob);
@@ -57,8 +56,9 @@ public class TestBlobValue {
         assertNull(read.getReference());
     }
 
-    @Test public void testReferencePersistence() throws Exception {
-        String testString = "this is test clob"; //$NON-NLS-1$
+    @Test
+    public void testReferencePersistence() throws Exception {
+        String testString = "this is test clob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
 
         BlobType bv = new BlobType(blob);
@@ -68,11 +68,11 @@ public class TestBlobValue {
 
         assertNull(read.getReferenceStreamId());
 
-        assertEquals(testString, new String(read.getBytes(1, (int)blob.length())));
+        assertEquals(testString, new String(read.getBytes(1, (int) blob.length())));
     }
 
     public void testBlobCompare() throws Exception {
-        String testString = "this is test clob"; //$NON-NLS-1$
+        String testString = "this is test clob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
         BlobType bv = new BlobType(blob);
 
@@ -85,7 +85,7 @@ public class TestBlobValue {
         BlobImpl b = new BlobImpl(new InputStreamFactory() {
 
             @Override
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 return new ByteArrayInputStream(new byte[0]);
             }
         });
@@ -97,8 +97,8 @@ public class TestBlobValue {
         b = new BlobImpl(new InputStreamFactory() {
 
             @Override
-            public InputStream getInputStream() throws IOException {
-                return new ByteArrayInputStream(new byte[]{1,2});
+            public InputStream getInputStream() {
+                return new ByteArrayInputStream(new byte[]{1, 2});
             }
         });
 

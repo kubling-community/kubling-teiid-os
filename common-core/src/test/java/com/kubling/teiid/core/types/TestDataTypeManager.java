@@ -34,11 +34,11 @@ public class TestDataTypeManager {
 
     private void helpDetermineDataType(Object value, Class<?> expectedClass) {
         Class<?> actualClass = DataTypeManager.determineDataTypeClass(value);
-        assertEquals(expectedClass, actualClass, "Mismatch in expected and actual MetaMatrix type class for [" + value + "]: ");  //$NON-NLS-2$
+        assertEquals(expectedClass, actualClass, "Mismatch in expected and actual MetaMatrix type class for [" + value + "]: ");
     }
 
-    public static String[] dataTypes = {"string", "char", "boolean", "byte", "short", "integer", "long", "biginteger",  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
-            "float", "double", "bigdecimal", "date", "time", "timestamp", "object", "blob", "clob", "xml"};  //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+    public static String[] dataTypes = {"string", "char", "boolean", "byte", "short", "integer", "long", "biginteger",     //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+            "float", "double", "bigdecimal", "date", "time", "timestamp", "object", "blob", "clob", "xml"};     //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
 
     /**
      * I - Implicitly Converted
@@ -157,7 +157,7 @@ public class TestDataTypeManager {
                 boolean isExplicit = DataTypeManager.isExplicitConversion(src, tgt);
 
                 if (isImplicit && isExplicit) {
-                    fail("Can't be both implicit and explicit for " + src + " to " + tgt);      //$NON-NLS-2$
+                    fail("Can't be both implicit and explicit for " + src + " to " + tgt);
                 }
             }
         }

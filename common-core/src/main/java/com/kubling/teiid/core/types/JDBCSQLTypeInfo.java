@@ -40,7 +40,7 @@ public final class JDBCSQLTypeInfo {
         int[] jdbcTypes;
 
         public TypeInfo(int maxDisplaySize, int precision, String name,
-                String javaClassName, int[] jdbcTypes) {
+                        String javaClassName, int[] jdbcTypes) {
             super();
             this.maxDisplaySize = maxDisplaySize;
             this.defaultPrecision = precision;
@@ -52,7 +52,8 @@ public final class JDBCSQLTypeInfo {
     }
 
     // Prevent instantiation
-    private JDBCSQLTypeInfo() {}
+    private JDBCSQLTypeInfo() {
+    }
 
     public static final Integer DEFAULT_RADIX = 10;
     public static final Integer DEFAULT_SCALE = 0;
@@ -60,28 +61,28 @@ public final class JDBCSQLTypeInfo {
     // XML column constants
     public final static Integer XML_COLUMN_LENGTH = Integer.MAX_VALUE;
 
-    private static Map<String, TypeInfo> NAME_TO_TYPEINFO = new LinkedHashMap<String, TypeInfo>();
-    private static Map<Integer, TypeInfo> TYPE_TO_TYPEINFO = new HashMap<Integer, TypeInfo>();
-    private static Map<String, TypeInfo> CLASSNAME_TO_TYPEINFO = new HashMap<String, TypeInfo>();
+    private static final Map<String, TypeInfo> NAME_TO_TYPEINFO = new LinkedHashMap<>();
+    private static final Map<Integer, TypeInfo> TYPE_TO_TYPEINFO = new HashMap<>();
+    private static final Map<String, TypeInfo> CLASSNAME_TO_TYPEINFO = new HashMap<>();
 
     static {
         // Note the order in which these are added matters.
         // If there are multiple sql type mappings (e.g. biginteger and bigdecimal to numeric), the latter will be the primary
         addType(
-                DataTypeManager.DefaultDataTypes.BIG_INTEGER, 
-                20, 
-                19, 
-                DataTypeManager.DefaultDataClasses.BIG_INTEGER.getName(), 
+                DataTypeManager.DefaultDataTypes.BIG_INTEGER,
+                20,
+                19,
+                DataTypeManager.DefaultDataClasses.BIG_INTEGER.getName(),
                 Types.NUMERIC);
-        
+
         addType(
-                new String[] {DataTypeManager.DefaultDataTypes.BIG_DECIMAL, "decimal"},
-                22, 
-                20, 
-                DataTypeManager.DefaultDataClasses.BIG_DECIMAL.getName(), 
-                Types.NUMERIC, 
+                new String[]{DataTypeManager.DefaultDataTypes.BIG_DECIMAL, "decimal"},
+                22,
+                20,
+                DataTypeManager.DefaultDataClasses.BIG_DECIMAL.getName(),
+                Types.NUMERIC,
                 Types.DECIMAL);
-        
+
         addType(
                 DataTypeManager.DefaultDataTypes.GEOMETRY,
                 Integer.MAX_VALUE,
@@ -115,7 +116,7 @@ public final class JDBCSQLTypeInfo {
                 Types.BOOLEAN);
 
         addType(
-                new String[] {DataTypeManager.DefaultDataTypes.BYTE, "tinyint"},
+                new String[]{DataTypeManager.DefaultDataTypes.BYTE, "tinyint"},
                 4,
                 3,
                 DataTypeManager.DefaultDataClasses.BYTE.getName(),
@@ -164,7 +165,7 @@ public final class JDBCSQLTypeInfo {
                 Types.FLOAT);
 
         addType(
-                new String[] {DataTypeManager.DefaultDataTypes.FLOAT, "real"},
+                new String[]{DataTypeManager.DefaultDataTypes.FLOAT, "real"},
                 22,
                 20,
                 DataTypeManager.DefaultDataClasses.FLOAT.getName(),
@@ -178,7 +179,7 @@ public final class JDBCSQLTypeInfo {
                 Types.INTEGER);
 
         addType(
-                new String[] {DataTypeManager.DefaultDataTypes.LONG, "bigint"},
+                new String[]{DataTypeManager.DefaultDataTypes.LONG, "bigint"},
                 20,
                 19,
                 DataTypeManager.DefaultDataClasses.LONG.getName(),
@@ -192,14 +193,14 @@ public final class JDBCSQLTypeInfo {
                 Types.JAVA_OBJECT);
 
         addType(
-                new String[] {DataTypeManager.DefaultDataTypes.SHORT, "smallint"},
+                new String[]{DataTypeManager.DefaultDataTypes.SHORT, "smallint"},
                 6,
                 5,
                 DataTypeManager.DefaultDataClasses.SHORT.getName(),
                 Types.SMALLINT);
 
         addType(
-                new String[] {DataTypeManager.DefaultDataTypes.STRING, "varchar"},
+                new String[]{DataTypeManager.DefaultDataTypes.STRING, "varchar"},
                 DataTypeManager.MAX_STRING_LENGTH,
                 DataTypeManager.MAX_STRING_LENGTH,
                 DataTypeManager.DefaultDataClasses.STRING.getName(),
@@ -277,10 +278,11 @@ public final class JDBCSQLTypeInfo {
     /**
      * This method is used to obtain a short indicating JDBC SQL type for any object.
      * The short values that give the type info are from java.sql.Types.
+     *
      * @param typeName of the teiid type.
      * @return A short value representing SQL Type for the given java type.
      */
-    public static final int getSQLType(String typeName) {
+    public static int getSQLType(String typeName) {
 
         if (typeName == null) {
             return Types.NULL;
@@ -301,10 +303,11 @@ public final class JDBCSQLTypeInfo {
     /**
      * Get sql Type from java class type name.  This should not be called with runtime types
      * as Clob and Blob are represented by ClobType and BlobType respectively.
+     *
      * @param className
      * @return int
      */
-    public static final int getSQLTypeFromClass(String className) {
+    public static int getSQLTypeFromClass(String className) {
 
         if (className == null) {
             return Types.NULL;
@@ -321,10 +324,11 @@ public final class JDBCSQLTypeInfo {
 
     /**
      * Get the sql type from the given runtime type
+     *
      * @param type
      * @return the SQL type code
      */
-    public static final int getSQLTypeFromRuntimeType(Class<?> type) {
+    public static int getSQLTypeFromRuntimeType(Class<?> type) {
         if (type == null) {
             return Types.NULL;
         }
@@ -342,10 +346,11 @@ public final class JDBCSQLTypeInfo {
      * This method is used to obtain a the java class name given an int value
      * indicating JDBC SQL type. The int values that give the type info are from
      * java.sql.Types.
+     *
      * @param jdbcSQLType value giving the SQL type code.
      * @return A String representing the java class name for the given SQL Type.
      */
-    public static final String getJavaClassName(int jdbcSQLType) {
+    public static String getJavaClassName(int jdbcSQLType) {
         TypeInfo typeInfo = TYPE_TO_TYPEINFO.get(jdbcSQLType);
 
         if (typeInfo == null) {
@@ -355,7 +360,7 @@ public final class JDBCSQLTypeInfo {
         return typeInfo.javaClassName;
     }
 
-    public static final String getTypeName(int sqlType) {
+    public static String getTypeName(int sqlType) {
         TypeInfo typeInfo = TYPE_TO_TYPEINFO.get(sqlType);
 
         if (typeInfo == null) {
