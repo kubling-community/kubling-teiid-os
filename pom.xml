@@ -6,7 +6,7 @@
 
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
-    <version>24.2.5</version>
+    <version>24.2.6</version>
     <packaging>pom</packaging>
 
     <description>The only free Virtual DB Engine for Operations.</description>
@@ -48,7 +48,7 @@
 
         <gpg.keyname>${env.GPG_KEY}</gpg.keyname>
 
-        <version.org.hibernate.core>6.1.7.Final</version.org.hibernate.core>
+        <version.org.hibernate.core>6.6.3.Final</version.org.hibernate.core>
         <version.github.wnameless.json.json-base>2.4.3</version.github.wnameless.json.json-base>
         <version.commons-text>1.10.0</version.commons-text>
         <version.commons-lang3>3.12.0</version.commons-lang3>
@@ -59,10 +59,15 @@
         <version.opentracing>0.33.0</version.opentracing>
         <version.opentracing.concurrent>0.4.0</version.opentracing.concurrent>
         <version.jcip-annotations>1.0-1</version.jcip-annotations>
+        <version.hikaricp>6.2.1</version.hikaricp>
+        <version.slf4j>2.0.7</version.slf4j>
+        <version.logback>1.5.6</version.logback>
 
         <version.junit>5.10.2</version.junit>
         <version.org.mockito>5.8.0</version.org.mockito>
         <version.hamcrest>2.2</version.hamcrest>
+        <version.testcontainers>1.20.4</version.testcontainers>
+        <version.assertj>3.26.3</version.assertj>
     </properties>
 
     <profiles>
@@ -155,7 +160,6 @@
                 <artifactId>kubling-common-core</artifactId>
                 <type>test-jar</type>
                 <version>${project.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.kubling</groupId>
@@ -267,6 +271,23 @@
             </dependency>
 
             <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${version.hikaricp}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${version.slf4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${version.logback}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
                 <version>${version.junit}</version>
@@ -296,7 +317,22 @@
                 <version>${version.opentracing}</version>
                 <scope>test</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${version.testcontainers}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>jdbc</artifactId>
+                <version>${version.testcontainers}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
@@ -380,6 +416,7 @@
     <modules>
         <module>common-core</module>
         <module>client</module>
+        <module>test-container</module>
         <module>hibernate-dialect</module>
     </modules>
 

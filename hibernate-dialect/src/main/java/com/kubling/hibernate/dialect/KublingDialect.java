@@ -20,6 +20,7 @@ package com.kubling.hibernate.dialect;
 
 import org.hibernate.LockMode;
 import org.hibernate.MappingException;
+import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.dialect.pagination.AbstractSimpleLimitHandler;
@@ -28,7 +29,7 @@ import org.hibernate.dialect.sequence.SequenceSupport;
 import org.hibernate.dialect.temptable.TemporaryTableExporter;
 import org.hibernate.dialect.temptable.TemporaryTableKind;
 import org.hibernate.engine.jdbc.env.spi.NameQualifierSupport;
-import org.hibernate.query.spi.QueryEngine;
+import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 import org.hibernate.type.SqlTypes;
 import org.hibernate.type.StandardBasicTypes;
 
@@ -40,204 +41,95 @@ import static org.hibernate.type.SqlTypes.*;
 
 public class KublingDialect extends Dialect {
 
+    public KublingDialect() {
+        super();
+    }
+
     @Override
-    public void initializeFunctionRegistry(QueryEngine queryEngine) {
-        super.initializeFunctionRegistry(queryEngine);
-        queryEngine.getSqmFunctionRegistry()
-                .register("acos", new StandardSQLFunction("acos", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("asin", new StandardSQLFunction("asin", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("atan", new StandardSQLFunction("atan", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("atan2", new StandardSQLFunction("atan2", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("ceil", new StandardSQLFunction("ceiling"));
-        queryEngine.getSqmFunctionRegistry()
-                .register("cos", new StandardSQLFunction("cos", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("cot", new StandardSQLFunction("cot", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("degrees", new StandardSQLFunction("degrees", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("exp", new StandardSQLFunction("exp", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("floor", new StandardSQLFunction("floor"));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatbigdecimal",
-                        new StandardSQLFunction("formatbigdecimal", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatbiginteger",
-                        new StandardSQLFunction("formatbiginteger", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatdouble",
-                        new StandardSQLFunction("formatdouble", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatfloat",
-                        new StandardSQLFunction("formatfloat", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatinteger",
-                        new StandardSQLFunction("formatinteger", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatlong",
-                        new StandardSQLFunction("formatlong", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("log", new StandardSQLFunction("log", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("mod", new StandardSQLFunction("mod"));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsebigdecimal",
-                        new StandardSQLFunction("parsebigdecimal", StandardBasicTypes.BIG_DECIMAL));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsebiginteger",
-                        new StandardSQLFunction("parsebiginteger", StandardBasicTypes.BIG_INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsedouble",
-                        new StandardSQLFunction("parsedouble", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsefloat",
-                        new StandardSQLFunction("parsefloat", StandardBasicTypes.FLOAT));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parseinteger",
-                        new StandardSQLFunction("parseinteger", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parselong",
-                        new StandardSQLFunction("parselong", StandardBasicTypes.LONG));
-        queryEngine.getSqmFunctionRegistry()
-                .register("pi", new StandardSQLFunction("pi", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("power", new StandardSQLFunction("power", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("radians", new StandardSQLFunction("radians", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("round", new StandardSQLFunction("round"));
-        queryEngine.getSqmFunctionRegistry()
-                .register("sign", new StandardSQLFunction("sign", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("sin", new StandardSQLFunction("sin", StandardBasicTypes.DOUBLE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("tan", new StandardSQLFunction("tan", StandardBasicTypes.DOUBLE));
+    public void initializeFunctionRegistry(FunctionContributions functionContributions) {
 
-        queryEngine.getSqmFunctionRegistry()
-                .register("ascii", new StandardSQLFunction("ascii", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("chr", new StandardSQLFunction("chr", StandardBasicTypes.CHARACTER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("char", new StandardSQLFunction("char", StandardBasicTypes.CHARACTER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("initcap", new StandardSQLFunction("initcap", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("insert", new StandardSQLFunction("insert", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("lcase", new StandardSQLFunction("lcase", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("left", new StandardSQLFunction("left", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("locate", new StandardSQLFunction("locate", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("lpad", new StandardSQLFunction("lpad", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("ltrim", new StandardSQLFunction("ltrim", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("repeat", new StandardSQLFunction("repeat", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("replace", new StandardSQLFunction("replace", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("right", new StandardSQLFunction("right", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("rpad", new StandardSQLFunction("rpad", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("rtrim", new StandardSQLFunction("rtrim", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("substring",
-                        new StandardSQLFunction("substring", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("translate",
-                        new StandardSQLFunction("translate", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("ucase", new StandardSQLFunction("ucase", StandardBasicTypes.STRING));
+        super.initializeFunctionRegistry(functionContributions);
+        SqmFunctionRegistry functionRegistry = functionContributions.getFunctionRegistry();
 
-        queryEngine.getSqmFunctionRegistry()
-                .register("dayname", new StandardSQLFunction("dayname", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("dayofmonth",
-                        new StandardSQLFunction("dayofmonth", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("dayofweek",
-                        new StandardSQLFunction("dayofweek", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("dayofyear",
-                        new StandardSQLFunction("dayofyear", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formatdate",
-                        new StandardSQLFunction("formatdate", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formattime",
-                        new StandardSQLFunction("formattime", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("formattimestamp",
-                        new StandardSQLFunction("formattimestamp", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("hour", new StandardSQLFunction("hour", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("minute", new StandardSQLFunction("minute", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("monthname",
-                        new StandardSQLFunction("monthname", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsedate",
-                        new StandardSQLFunction("parsedate", StandardBasicTypes.DATE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsetime",
-                        new StandardSQLFunction("parsetime", StandardBasicTypes.TIME));
-        queryEngine.getSqmFunctionRegistry()
-                .register("parsetimestamp",
-                        new StandardSQLFunction("parsetimestamp", StandardBasicTypes.TIMESTAMP));
-        queryEngine.getSqmFunctionRegistry()
-                .register("second",
-                        new StandardSQLFunction("second", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("timestampcreate",
-                        new StandardSQLFunction("timestampcreate", StandardBasicTypes.TIMESTAMP));
-        queryEngine.getSqmFunctionRegistry()
-                .register("timestampAdd", new StandardSQLFunction("timestampAdd"));
-        queryEngine.getSqmFunctionRegistry()
-                .register("timestampDiff",
-                        new StandardSQLFunction("timestampDiff", StandardBasicTypes.LONG));
-        queryEngine.getSqmFunctionRegistry()
-                .register("week", new StandardSQLFunction("week", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("year", new StandardSQLFunction("year", StandardBasicTypes.INTEGER));
-        queryEngine.getSqmFunctionRegistry()
-                .register("modifytimezone",
-                        new StandardSQLFunction("modifytimezone", StandardBasicTypes.TIMESTAMP));
+        // Mathematical functions
+        functionRegistry.register("acos", new StandardSQLFunction("acos", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("asin", new StandardSQLFunction("asin", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("atan", new StandardSQLFunction("atan", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("atan2", new StandardSQLFunction("atan2", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("ceil", new StandardSQLFunction("ceiling"));
+        functionRegistry.register("cos", new StandardSQLFunction("cos", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("cot", new StandardSQLFunction("cot", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("degrees", new StandardSQLFunction("degrees", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("exp", new StandardSQLFunction("exp", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("floor", new StandardSQLFunction("floor"));
+        functionRegistry.register("log", new StandardSQLFunction("log", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("mod", new StandardSQLFunction("mod"));
+        functionRegistry.register("pi", new StandardSQLFunction("pi", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("power", new StandardSQLFunction("power", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("radians", new StandardSQLFunction("radians", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("round", new StandardSQLFunction("round"));
+        functionRegistry.register("sign", new StandardSQLFunction("sign", StandardBasicTypes.INTEGER));
+        functionRegistry.register("sin", new StandardSQLFunction("sin", StandardBasicTypes.DOUBLE));
+        functionRegistry.register("tan", new StandardSQLFunction("tan", StandardBasicTypes.DOUBLE));
 
-        queryEngine.getSqmFunctionRegistry()
-                .register("convert", new StandardSQLFunction("convert"));
+        // String functions
+        functionRegistry.register("ascii", new StandardSQLFunction("ascii", StandardBasicTypes.INTEGER));
+        functionRegistry.register("chr", new StandardSQLFunction("chr", StandardBasicTypes.CHARACTER));
+        functionRegistry.register("char", new StandardSQLFunction("char", StandardBasicTypes.CHARACTER));
+        functionRegistry.register("initcap", new StandardSQLFunction("initcap", StandardBasicTypes.STRING));
+        functionRegistry.register("insert", new StandardSQLFunction("insert", StandardBasicTypes.STRING));
+        functionRegistry.register("lcase", new StandardSQLFunction("lcase", StandardBasicTypes.STRING));
+        functionRegistry.register("left", new StandardSQLFunction("left", StandardBasicTypes.STRING));
+        functionRegistry.register("locate", new StandardSQLFunction("locate", StandardBasicTypes.INTEGER));
+        functionRegistry.register("lpad", new StandardSQLFunction("lpad", StandardBasicTypes.STRING));
+        functionRegistry.register("ltrim", new StandardSQLFunction("ltrim", StandardBasicTypes.STRING));
+        functionRegistry.register("repeat", new StandardSQLFunction("repeat", StandardBasicTypes.STRING));
+        functionRegistry.register("replace", new StandardSQLFunction("replace", StandardBasicTypes.STRING));
+        functionRegistry.register("right", new StandardSQLFunction("right", StandardBasicTypes.STRING));
+        functionRegistry.register("rpad", new StandardSQLFunction("rpad", StandardBasicTypes.STRING));
+        functionRegistry.register("rtrim", new StandardSQLFunction("rtrim", StandardBasicTypes.STRING));
+        functionRegistry.register("substring", new StandardSQLFunction("substring", StandardBasicTypes.STRING));
+        functionRegistry.register("translate", new StandardSQLFunction("translate", StandardBasicTypes.STRING));
+        functionRegistry.register("ucase", new StandardSQLFunction("ucase", StandardBasicTypes.STRING));
 
-        queryEngine.getSqmFunctionRegistry()
-                .register("to_bytes", new StandardSQLFunction("to_bytes", StandardBasicTypes.BLOB));
-        queryEngine.getSqmFunctionRegistry()
-                .register("to_chars", new StandardSQLFunction("to_chars", StandardBasicTypes.CLOB));
-        queryEngine.getSqmFunctionRegistry()
-                .register("from_unittime",
-                        new StandardSQLFunction("from_unittime", StandardBasicTypes.TIMESTAMP));
-        queryEngine.getSqmFunctionRegistry()
-                .register("session_id",
-                        new StandardSQLFunction("session_id", StandardBasicTypes.STRING));
+        // Date/Time functions
+        functionRegistry.register("dayname", new StandardSQLFunction("dayname", StandardBasicTypes.STRING));
+        functionRegistry.register("dayofmonth", new StandardSQLFunction("dayofmonth", StandardBasicTypes.INTEGER));
+        functionRegistry.register("dayofweek", new StandardSQLFunction("dayofweek", StandardBasicTypes.INTEGER));
+        functionRegistry.register("dayofyear", new StandardSQLFunction("dayofyear", StandardBasicTypes.INTEGER));
+        functionRegistry.register("hour", new StandardSQLFunction("hour", StandardBasicTypes.INTEGER));
+        functionRegistry.register("minute", new StandardSQLFunction("minute", StandardBasicTypes.INTEGER));
+        functionRegistry.register("second", new StandardSQLFunction("second", StandardBasicTypes.INTEGER));
+        functionRegistry.register("week", new StandardSQLFunction("week", StandardBasicTypes.INTEGER));
+        functionRegistry.register("year", new StandardSQLFunction("year", StandardBasicTypes.INTEGER));
 
-        queryEngine.getSqmFunctionRegistry()
-                .register("uuid", new StandardSQLFunction("uuid", StandardBasicTypes.STRING));
-        queryEngine.getSqmFunctionRegistry()
-                .register("unescape",
-                        new StandardSQLFunction("unescape", StandardBasicTypes.STRING));
+        // Custom functions
+        functionRegistry.register("formatbigdecimal", new StandardSQLFunction("formatbigdecimal", StandardBasicTypes.STRING));
+        functionRegistry.register("formatbiginteger", new StandardSQLFunction("formatbiginteger", StandardBasicTypes.STRING));
+        functionRegistry.register("formatdouble", new StandardSQLFunction("formatdouble", StandardBasicTypes.STRING));
+        functionRegistry.register("formatfloat", new StandardSQLFunction("formatfloat", StandardBasicTypes.STRING));
+        functionRegistry.register("formatinteger", new StandardSQLFunction("formatinteger", StandardBasicTypes.STRING));
+        functionRegistry.register("formatlong", new StandardSQLFunction("formatlong", StandardBasicTypes.STRING));
+        functionRegistry.register("convert", new StandardSQLFunction("convert"));
+        functionRegistry.register("uuid", new StandardSQLFunction("uuid", StandardBasicTypes.STRING));
+        functionRegistry.register("unescape", new StandardSQLFunction("unescape", StandardBasicTypes.STRING));
+        functionRegistry.register("modifytimezone", new StandardSQLFunction("modifytimezone", StandardBasicTypes.TIMESTAMP));
+        functionRegistry.register("session_id", new StandardSQLFunction("session_id", StandardBasicTypes.STRING));
 
-        queryEngine.getSqmFunctionRegistry()
-                .register("array_get",
-                        new StandardSQLFunction("array_get", StandardBasicTypes.OBJECT_TYPE));
-        queryEngine.getSqmFunctionRegistry()
-                .register("array_length",
-                        new StandardSQLFunction("array_length", StandardBasicTypes.INTEGER));
+        // Binary and array functions
+        functionRegistry.register("to_bytes", new StandardSQLFunction("to_bytes", StandardBasicTypes.BLOB));
+        functionRegistry.register("to_chars", new StandardSQLFunction("to_chars", StandardBasicTypes.CLOB));
+        functionRegistry.register("array_get", new StandardSQLFunction("array_get", StandardBasicTypes.OBJECT_TYPE));
+        functionRegistry.register("array_length", new StandardSQLFunction("array_length", StandardBasicTypes.INTEGER));
+
+        // Document functions
+        functionRegistry.register("jsonParse", new StandardSQLFunction("jsonParse", StandardBasicTypes.CLOB));
+        functionRegistry.register("jsonObject", new StandardSQLFunction("jsonObject", StandardBasicTypes.CLOB));
+        functionRegistry.register("yamlAsJSON", new StandardSQLFunction("yamlAsJSON", StandardBasicTypes.CLOB));
+        functionRegistry.register("jsonPath", new StandardSQLFunction("jsonPath", StandardBasicTypes.CLOB));
+        functionRegistry.register("jsonJq", new StandardSQLFunction("jsonJq", StandardBasicTypes.CLOB));
+        functionRegistry.register("jsonPathAsString", new StandardSQLFunction("jsonPathAsString", StandardBasicTypes.STRING));
+        functionRegistry.register("jsonJqAsString", new StandardSQLFunction("jsonJqAsString", StandardBasicTypes.STRING));
     }
 
     @Override
@@ -337,10 +229,6 @@ public class KublingDialect extends Dialect {
         return false;
     }
 
-    public boolean supportsUnionAll() {
-        return true;
-    }
-
     public boolean supportsUnique() {
         return false;
     }
@@ -370,15 +258,13 @@ public class KublingDialect extends Dialect {
         while (!isResultSet && ps.getUpdateCount() != -1) {
             isResultSet = ps.getMoreResults();
         }
-        ResultSet rs = ps.getResultSet();
-        return rs;
+        return ps.getResultSet();
     }
 
     /**
      * @see Dialect#registerResultSetOutParameter(CallableStatement, int)
      */
-    public int registerResultSetOutParameter(CallableStatement statement,
-                                             int col) throws SQLException {
+    public int registerResultSetOutParameter(CallableStatement statement, int col) {
         return col;
     }
 
@@ -413,11 +299,6 @@ public class KublingDialect extends Dialect {
             @Override
             public String getSelectSequenceNextValString(String sequenceName) throws MappingException {
                 return sequenceName + "_nextval()";
-            }
-
-            @Override
-            public boolean supportsSequences() {
-                return true;
             }
 
             @Override

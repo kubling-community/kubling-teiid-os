@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  * Teiid's Connection implementation.
  */
 public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
-    private static final int MAX_OPEN_STATEMENTS = 
+    private static final int MAX_OPEN_STATEMENTS =
             PropertiesUtils.getHierarchicalProperty("org.teiid.maxOpenStatements", 1000, Integer.class);
 
     private static Logger logger = Logger.getLogger("com.kubling.teiid.jdbc");
@@ -78,7 +78,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     // cached DatabaseMetadata
     private DatabaseMetaDataImpl dbmm;
 
-   //Xid for participating in TXN
+    //Xid for participating in TXN
     private XidImpl transactionXid;
 
     //  Flag to represent if the connection state needs to be readOnly, default value false.
@@ -200,8 +200,9 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Remove password & trusted token and log all other properties
+     *
      * @param connUrl - URL used to connect to server
-     * @param info - properties object supplied
+     * @param info    - properties object supplied
      */
     private void logConnectionProperties(String connUrl, Properties info) {
         StringBuffer modifiedUrl = new StringBuffer();
@@ -213,23 +214,23 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             if (startIndex != -1) {
                 modifiedUrl.append(connUrl.substring(0, startIndex));
                 modifiedUrl.append("password=***");
-                int endIndex = connUrl.indexOf(";", startIndex+9);
+                int endIndex = connUrl.indexOf(";", startIndex + 9);
                 if (endIndex != -1) {
                     modifiedUrl.append(";").append(connUrl.substring(endIndex));
                 }
             }
-            logger.fine("Connection Url="+modifiedUrl);
+            logger.fine("Connection Url=" + modifiedUrl);
         }
 
         // Now clone the properties object and remove password and trusted token
         if (info != null) {
             Enumeration<?> enumeration = info.keys();
             while (enumeration.hasMoreElements()) {
-                String key = (String)enumeration.nextElement();
+                String key = (String) enumeration.nextElement();
                 Object anObj = info.get(key);
                 // Log each property except for password and token.
                 if (!TeiidURL.CONNECTION.PASSWORD.equalsIgnoreCase(key)) {
-                    logger.fine(key+"="+anObj);
+                    logger.fine(key + "=" + anObj);
                 }
             }
         }
@@ -241,6 +242,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Connection identifier of this connection
+     *
      * @return identifier
      */
     public String getConnectionId() {
@@ -250,6 +252,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * Generate the next unique requestID for matching up requests with responses.
      * These IDs should be unique only in the context of a ServerConnection instance.
+     *
      * @return Request ID
      */
     protected synchronized long nextRequestID() {
@@ -258,6 +261,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Cancel the request
+     *
      * @throws TeiidProcessingException
      * @throws TeiidComponentException
      */
@@ -272,7 +276,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     public void close() throws SQLException {
         Throwable firstException = null;
 
-        if(closed) {
+        if (closed) {
             return;
         }
 
@@ -284,8 +288,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
                 firstException = se;
             } finally {
                 this.serverConn.close();
-                if ( firstException != null ) {
-                    throw (SQLException)firstException;
+                if (firstException != null) {
+                    throw (SQLException) firstException;
                 }
             }
         } catch (SQLException se) {
@@ -302,9 +306,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * <p>
      * Close all the statements open on this connection
      *
-     *
-     * @throws SQLException
-     *             server statement object could not be closed.
+     * @throws SQLException server statement object could not be closed.
      */
     void closeStatements() throws SQLException {
         // Closing the statement will cause the
@@ -328,6 +330,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * Called by MMStatement to notify the connection that the
      * statement has been closed.
+     *
      * @param statement
      */
     void closeStatement(Statement statement) {
@@ -338,6 +341,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * <p>This method makes any changes involved in a transaction permanent and releases
      * any locks held by the connection object.  This is only used when auto-commit
      * is set to false.
+     *
      * @throws SQLException if the transaction had been rolled back or marked to roll back.
      */
     public void commit() throws SQLException {
@@ -402,8 +406,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * @since 4.3
      */
     private void validateResultSetType(int resultSetType) throws TeiidSQLException {
-        if (resultSetType == ResultSet.TYPE_SCROLL_SENSITIVE ) {
-            String msg = JDBCPlugin.Util.getString("MMConnection.Scrollable_type_not_supported", 
+        if (resultSetType == ResultSet.TYPE_SCROLL_SENSITIVE) {
+            String msg = JDBCPlugin.Util.getString("MMConnection.Scrollable_type_not_supported",
                     "ResultSet.TYPE_SCROLL_SENSITIVE");
             throw new TeiidSQLException(msg);
         }
@@ -423,8 +427,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     public boolean getAutoCommit() throws SQLException {
         //Check to see the connection is open
-       checkConnection();
-       return autoCommitFlag;
+        checkConnection();
+        return autoCommitFlag;
     }
 
     public String getCatalog() throws SQLException {
@@ -436,6 +440,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * <p>This method gets the ServerConnection object wrapped by this object.
+     *
      * @return ServerConnection object
      */
     public ServerConnection getServerConnection() throws SQLException {
@@ -465,6 +470,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Get's the name of the user who got this connection.
+     *
      * @return Sring object giving the user name
      * @throws SQLException if the connection is closed
      */
@@ -486,6 +492,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Get the database name that this connection is representing
+     *
      * @return String name of the database
      */
     public String getDatabaseName() {
@@ -512,6 +519,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * <p>This method will return the first warning reported by calls on this connection,
      * or null if none exist.
+     *
      * @return A SQLWarning object if there are any warnings.
      * @throws SQLException should never occur
      */
@@ -523,6 +531,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * <p>This method will return whether this connection is closed or not.
+     *
      * @return booleanvalue indicating if the connection is closed
      * @throws SQLException should never occur
      */
@@ -545,6 +554,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * <p>Creates a CallableStatement object that contains sql and that will produce
      * ResultSet objects that are non-scrollable and non-updatable. A SQL stored
      * procedure call statement is handled by creating a CallableStatement for it.
+     *
      * @param sql String(escape syntax) for invoking a stored procedure.
      * @return CallableStatement object that can be used to execute the storedProcedure
      * @throws SQLException if there is an error creating the callable statement object
@@ -556,7 +566,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     @Override
-    public CallableStatementImpl prepareCall(String sql, int resultSetType, int resultSetConcurrency) 
+    public CallableStatementImpl prepareCall(String sql, int resultSetType, int resultSetConcurrency)
             throws SQLException {
         return prepareCall(sql, resultSetType, resultSetConcurrency, ResultSet.HOLD_CURSORS_OVER_COMMIT);
     }
@@ -577,13 +587,12 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
     }
 
-    public PreparedStatementImpl prepareStatement(String sql, int resultSetType, int resultSetConcurrency) 
+    public PreparedStatementImpl prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
             throws SQLException {
         return prepareStatement(sql, resultSetType, resultSetConcurrency, ResultSet.HOLD_CURSORS_OVER_COMMIT);
     }
 
     /**
-     *
      * @param sql
      * @param resultSetType
      * @param resultSetConcurrency
@@ -593,7 +602,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * @throws SQLException
      */
     public PreparedStatementImpl prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-        int resultSetHoldability, int autoGeneratedKeys) throws SQLException {
+                                                  int resultSetHoldability, int autoGeneratedKeys) throws SQLException {
         //Check to see the connection is open
         checkConnection();
 
@@ -609,7 +618,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     public PreparedStatementImpl prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-            int resultSetHoldability ) throws SQLException {
+                                                  int resultSetHoldability) throws SQLException {
         return prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability, Statement.NO_GENERATED_KEYS);
     }
 
@@ -619,6 +628,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Rollback the current local transaction
+     *
      * @param startTxn
      * @throws SQLException
      */
@@ -645,8 +655,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
                 restoreTransactionCharacteristics();
                 if (startTxn) {
                     this.inLocalTxn = false;
-                }
-                else {
+                } else {
                     this.autoCommitFlag = true;
                 }
             }
@@ -701,6 +710,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * <p>Teiid does not allow setting a catalog through a connection. This
      * method silently ignores the request as per the specification.
+     *
      * @param catalog
      * @throws SQLException This should never occur.
      */
@@ -713,7 +723,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         checkConnection();
         // During transaction do not allow to change this flag
         if (isInLocalTxn() || this.transactionXid != null) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_During_Transaction", 
+            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_During_Transaction",
                     "setReadOnly(" + readOnly + ")"));
         }
         this.readOnly = readOnly;
@@ -722,14 +732,15 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * <p> This utility method checks if the jdbc connection is closed and
      * throws an exception if it is closed.
+     *
      * @throws TeiidSQLException if the connection object is closed.
      */
-    void checkConnection() throws TeiidSQLException{
+    void checkConnection() throws TeiidSQLException {
         //Check to see the connection is closed and proceed if it is not
-       if (closed) {
+        if (closed) {
             throw new TeiidSQLException(JDBCPlugin.Util.getString("MMConnection.Cant_use_closed_connection"));
         }
-     }
+    }
 
     protected void commitTransaction(XidImpl arg0, boolean arg1) throws SQLException {
         checkConnection();
@@ -764,7 +775,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         }
     }
 
-    protected int prepareTransaction(XidImpl arg0) throws SQLException  {
+    protected int prepareTransaction(XidImpl arg0) throws SQLException {
         checkConnection();
         transactionXid = null;
         try {
@@ -775,7 +786,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         }
     }
 
-    protected Xid[] recoverTransaction(int arg0) throws SQLException  {
+    protected Xid[] recoverTransaction(int arg0) throws SQLException {
         checkConnection();
         try {
             ResultsFuture<Xid[]> future = this.dqp.recover(arg0);
@@ -846,11 +857,11 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     public void setClientInfo(Properties properties)
-        throws SQLClientInfoException {
+            throws SQLClientInfoException {
     }
 
     public void setClientInfo(String name, String value)
-        throws SQLClientInfoException {
+            throws SQLClientInfoException {
     }
 
     public Properties getClientInfo() throws SQLException {
@@ -883,7 +894,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     public StatementImpl createStatement(int resultSetType,
-            int resultSetConcurrency, int resultSetHoldability)
+                                         int resultSetConcurrency, int resultSetHoldability)
             throws SQLException {
         //Check to see the connection is open
         checkConnection();
@@ -913,7 +924,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     public CallableStatementImpl prepareCall(String sql, int resultSetType,
-            int resultSetConcurrency, int resultSetHoldability)
+                                             int resultSetConcurrency, int resultSetHoldability)
             throws SQLException {
         //Check to see the connection is open
         checkConnection();

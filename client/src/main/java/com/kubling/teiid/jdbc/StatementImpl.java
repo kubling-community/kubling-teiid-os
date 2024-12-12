@@ -234,7 +234,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         //Check to see the statement is closed and throw an exception
         checkStatement();
         if (batchedUpdates == null) {
-            batchedUpdates = new ArrayList<String>();
+            batchedUpdates = new ArrayList<>();
         }
         batchedUpdates.add(sql);
     }
@@ -410,10 +410,10 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
     }
 
     protected ResultsFuture<Boolean> executeSql(
-            String[] commands, 
-            boolean isBatchedCommand, 
-            RequestMessage.ResultsMode resultsMode, 
-            boolean synch, 
+            String[] commands,
+            boolean isBatchedCommand,
+            RequestMessage.ResultsMode resultsMode,
+            boolean synch,
             RequestOptions options)
             throws SQLException {
         return executeSql(commands, isBatchedCommand, resultsMode, synch, options, false);
@@ -421,11 +421,11 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
 
     @SuppressWarnings("unchecked")
     protected ResultsFuture<Boolean> executeSql(
-            String[] commands, 
-            boolean isBatchedCommand, 
-            RequestMessage.ResultsMode resultsMode, 
-            boolean synch, 
-            RequestOptions options, 
+            String[] commands,
+            boolean isBatchedCommand,
+            RequestMessage.ResultsMode resultsMode,
+            boolean synch,
+            RequestOptions options,
             boolean autoGenerateKeys)
         throws SQLException {
         checkStatement();
@@ -737,7 +737,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
             compeletionListener = future -> c.cancel();
         }
 
-        ResultsFuture<ResultsMessage> pendingResult = null;
+        ResultsFuture<ResultsMessage> pendingResult;
         try {
             pendingResult = this.getDQP().executeRequest(this.currentRequestID, reqMsg);
         } catch (TeiidException e) {
@@ -777,6 +777,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
 
         //throw an exception unless this represents a batch update exception
         if (resultsMsg.getException() != null && (!resultsMsg.isUpdateResult() || resultsMsg.getResultsList() == null)) {
+            resultsMsg.getException().printStackTrace();
             throw TeiidSQLException.create(resultsMsg.getException());
         }
 
