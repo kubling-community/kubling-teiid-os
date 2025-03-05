@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.kubling</groupId>
         <artifactId>kubling-teiid</artifactId>
-        <version>24.2.6</version>
+        <version>25.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -121,6 +121,11 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
             <scope>test</scope>
         </dependency>
 

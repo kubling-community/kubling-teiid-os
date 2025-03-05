@@ -4,8 +4,8 @@
 This repository contains Kubling common core datatypes, and other modules for connecting to the Engine.
 
 ## Versioning
-Please note that even though the Engine uses the `common-core` and `client`, this is an independent project of `Kubling` server,
-with its own release cycles.
-<br>
-The versions of libraries contained in this repo might not match with the version of the `Kubling` server,
-for that reason each server release will specify what `common-core` and `client` versions were used for building.
+Please note that, although the Engine utilizes the `common-core` and `client` libraries, this is an independent 
+project from the `Kubling` server, with its own release cycles.
+
+The versions of the libraries in this repository may not align with the version of the `Kubling` server.  
+To address this, each server release will explicitly specify the versions of `common-core` and `client` used during its build process.

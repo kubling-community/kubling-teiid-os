@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.kubling</groupId>
         <artifactId>kubling-teiid</artifactId>
-        <version>24.2.6</version>
+        <version>25.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>com.kubling</groupId>
             <artifactId>kubling-test-container</artifactId>
-            <version>24.2.6</version>
+            <version>24.2.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>

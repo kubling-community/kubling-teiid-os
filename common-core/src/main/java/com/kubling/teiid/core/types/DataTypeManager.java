@@ -152,7 +152,10 @@ public class DataTypeManager {
         }
     };
 
-    public static final int MAX_STRING_LENGTH = PropertiesUtils.getHierarchicalProperty("org.teiid.maxStringLength", 4000, Integer.class);
+    public static final int MAX_STRING_LENGTH =
+            PropertiesUtils.getHierarchicalProperty("com.kubling.maxStringLength", 4000, Integer.class);
+    public static final long MAX_JSON_LENGTH =
+            PropertiesUtils.getHierarchicalProperty("com.kubling.maxJsonLength", Integer.MAX_VALUE, Integer.class);
     public static final int MAX_VARBINARY_BYTES = Math.max(nextPowOf2(2 * MAX_STRING_LENGTH), 1 << 13);
     public static final int MAX_LOB_MEMORY_BYTES = Math.max(nextPowOf2(8 * MAX_STRING_LENGTH), 1 << 15);
 

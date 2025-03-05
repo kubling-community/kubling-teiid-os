@@ -13,12 +13,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class BaseDatetimeTransform extends Transform {
+
     protected static final List<DateTimeFormatter> formatters = new ArrayList<>();
 
-    protected static final Pattern literalsRegexPattern = Pattern.compile("\\{(d|t|dt) '([^']*)'\\}");
+    protected static final Pattern literalsRegexPattern = Pattern.compile("\\{(d|t|ts) '([^']*)'\\}");
 
     static {
         formatters.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -43,14 +45,22 @@ public abstract class BaseDatetimeTransform extends Transform {
 
     protected static Timestamp normalizeToTimestamp(String dt) {
 
+        // Extract value if JDBC escape format is detected
+        final Matcher matcher = literalsRegexPattern.matcher(dt);
+        if (matcher.matches() && matcher.group(1).equals("ts")) {
+            dt = matcher.group(2); // Extract raw value and process normally
+        }
+
+        // Try predefined formatters
         for (DateTimeFormatter formatter : formatters) {
             try {
                 return Timestamp.valueOf(LocalDateTime.parse(dt, formatter));
-            } catch (DateTimeParseException e) {
+            } catch (DateTimeParseException ignored) {
                 // Try next formatter
             }
         }
 
+        // Try epoch timestamp
         try {
             return Timestamp.from(Instant.ofEpochSecond(Long.parseLong(dt)));
         } catch (NumberFormatException e) {
@@ -59,21 +69,29 @@ public abstract class BaseDatetimeTransform extends Transform {
 
         try {
             return Timestamp.from(Instant.parse(dt));
-        } catch (NumberFormatException e) {
+        } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid timestamp format: " + dt);
         }
     }
 
     protected static Date normalizeToDate(String dt) {
 
+        // Extract value if JDBC escape format {d 'YYYY-MM-DD'} is detected
+        final Matcher matcher = literalsRegexPattern.matcher(dt);
+        if (matcher.matches() && matcher.group(1).equals("d")) {
+            dt = matcher.group(2); // Extract raw value and process normally
+        }
+
+        // Try predefined formatters
         for (DateTimeFormatter formatter : formatters) {
             try {
                 return Date.valueOf(LocalDate.parse(dt, formatter));
-            } catch (DateTimeParseException e) {
+            } catch (DateTimeParseException ignored) {
                 // Try next formatter
             }
         }
 
+        // Try epoch timestamp
         try {
             return (Date) Date.from(Instant.ofEpochSecond(Long.parseLong(dt)));
         } catch (NumberFormatException e) {
@@ -89,10 +107,17 @@ public abstract class BaseDatetimeTransform extends Transform {
 
     protected static Time normalizeToTime(String dt) {
 
+        // Extract value if JDBC escape format {t 'HH:mm:ss'} is detected
+        final Matcher matcher = literalsRegexPattern.matcher(dt);
+        if (matcher.matches() && matcher.group(1).equals("t")) {
+            dt = matcher.group(2); // Extract raw value and process normally
+        }
+
+        // Try predefined formatters
         for (DateTimeFormatter formatter : formatters) {
             try {
                 return Time.valueOf(LocalTime.parse(dt, formatter));
-            } catch (DateTimeParseException e) {
+            } catch (DateTimeParseException ignored) {
                 // Try next formatter
             }
         }

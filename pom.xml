@@ -6,7 +6,7 @@
 
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
-    <version>24.2.6</version>
+    <version>25.1</version>
     <packaging>pom</packaging>
 
     <description>The only free Virtual DB Engine for Operations.</description>
@@ -41,7 +41,7 @@
 
     <properties>
         <!-- Needs to be targeted to JDK11 for compatibility -->
-        <project.build.targetJdk>11</project.build.targetJdk>
+        <project.build.targetJdk>21</project.build.targetJdk>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,6 +53,7 @@
         <version.commons-text>1.10.0</version.commons-text>
         <version.commons-lang3>3.12.0</version.commons-lang3>
         <version.commons-vfs2>2.9.0</version.commons-vfs2>
+        <version.commons-logging>1.2</version.commons-logging>
         <version.jackson.core>2.16.0</version.jackson.core>
         <version.google.guava>27.0.1-jre</version.google.guava>
         <version.google.gson>2.10.1</version.google.gson>
@@ -64,7 +65,7 @@
         <version.logback>1.5.6</version.logback>
 
         <version.junit>5.10.2</version.junit>
-        <version.org.mockito>5.8.0</version.org.mockito>
+        <version.org.mockito>5.15.2</version.org.mockito>
         <version.hamcrest>2.2</version.hamcrest>
         <version.testcontainers>1.20.4</version.testcontainers>
         <version.assertj>3.26.3</version.assertj>
@@ -219,6 +220,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-vfs2</artifactId>
                 <version>${version.commons-vfs2}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${version.commons-logging}</version>
             </dependency>
 
             <dependency>

@@ -12,13 +12,11 @@ public class ClobToJsonTransform extends Transform {
     @Override
     protected Object transformDirect(Object value) throws TransformationException {
         BaseClobType source = (BaseClobType) value;
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(source.getCharacterStream());
+        try (BufferedReader reader = new BufferedReader(source.getCharacterStream())) {
             StringBuilder contents = new StringBuilder();
 
             int chr = reader.read();
-            while (chr != -1 && contents.length() < DataTypeManager.MAX_STRING_LENGTH) {
+            while (chr != -1 && contents.length() < DataTypeManager.MAX_JSON_LENGTH) {
                 contents.append((char) chr);
                 chr = reader.read();
             }
@@ -26,13 +24,6 @@ public class ClobToJsonTransform extends Transform {
         } catch (SQLException | IOException e) {
             throw new TransformationException(CorePlugin.Event.TEIID10080, e,
                     CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                }
-            }
         }
     }
 
