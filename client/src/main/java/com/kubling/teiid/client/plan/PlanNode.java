@@ -76,9 +76,9 @@ public class PlanNode implements Externalizable {
         @Override
         public void readExternal(ObjectInput in) throws IOException,
                 ClassNotFoundException {
-            this.name = (String)in.readObject();
+            this.name = (String) in.readObject();
             this.values = ExternalizeUtil.readList(in, String.class);
-            this.planNode = (PlanNode)in.readObject();
+            this.planNode = (PlanNode) in.readObject();
         }
 
         @Override
@@ -147,6 +147,7 @@ public class PlanNode implements Externalizable {
     /**
      * Converts this PlanNode to XML. See the JAXB bindings for the
      * document form.
+     *
      * @return an XML document of this PlanNode
      */
     public String toXml() {
@@ -159,9 +160,9 @@ public class PlanNode implements Externalizable {
             writer.writeEndDocument();
             return stringWriter.toString();
         } catch (FactoryConfigurationError e) {
-             throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20002, e);
+            throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20002, e);
         } catch (XMLStreamException e) {
-             throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20003, e);
+            throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20003, e);
         }
     }
 
@@ -169,7 +170,7 @@ public class PlanNode implements Externalizable {
         writer.writeStartElement("property");
         writer.writeAttribute("name", property.getName());
         if (property.getValues() != null) {
-            for (String value:property.getValues()) {
+            for (String value : property.getValues()) {
                 if (value != null) {
                     writeElement(writer, "value", value);
                 }
@@ -185,7 +186,7 @@ public class PlanNode implements Externalizable {
     private void writePlanNode(PlanNode node, XMLStreamWriter writer) throws XMLStreamException {
         writer.writeStartElement("node");
         writer.writeAttribute("name", node.getName());
-        for (Property p:node.getProperties()) {
+        for (Property p : node.getProperties()) {
             writeProperty(p, writer);
         }
         writer.writeEndElement();
@@ -202,7 +203,7 @@ public class PlanNode implements Externalizable {
     private static Properties getAttributes(XMLStreamReader reader) {
         Properties props = new Properties();
         if (reader.getAttributeCount() > 0) {
-            for(int i=0; i<reader.getAttributeCount(); i++) {
+            for (int i = 0; i < reader.getAttributeCount(); i++) {
                 String attrName = reader.getAttributeLocalName(i);
                 String attrValue = reader.getAttributeValue(i);
                 props.setProperty(attrName, attrValue);
@@ -212,9 +213,11 @@ public class PlanNode implements Externalizable {
     }
 
     public static PlanNode fromXml(String planString) throws XMLStreamException {
+
         XMLInputFactory inputFactory = XMLType.getXmlInputFactory();
         XMLStreamReader reader = inputFactory.createXMLStreamReader(new StringReader(planString));
 
+        // TODO XML Support is marked for removal
         while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
             String element = reader.getLocalName();
             if (element.equals("node")) {
@@ -224,45 +227,42 @@ public class PlanNode implements Externalizable {
                 buildNode(reader, planNode);
                 return planNode;
             }
-            throw new XMLStreamException(JDBCPlugin.Util.gs("unexpected_element", reader.getName(), "node"),reader.getLocation());
+            throw new XMLStreamException(JDBCPlugin.Util.gs("unexpected_element", reader.getName(), "node"), reader.getLocation());
         }
         return null;
     }
 
     private static PlanNode buildNode(XMLStreamReader reader, PlanNode node) throws XMLStreamException {
-       while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
-           String property = reader.getLocalName();
-           if (property.equals("property")) {
-               Properties props = getAttributes(reader);
-               ArrayList<String> values = new ArrayList<>();
-               while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
-                   String valueNode = reader.getLocalName();
-                   if (values != null && valueNode.equals("value")) {
-                       values.add(reader.getElementText());
-                   }
-                   else if (valueNode.equals("node")) {
-                       values = null;
-                       Properties nodeProps = getAttributes(reader);
-                       PlanNode childNode = new PlanNode(nodeProps.getProperty("name"));
-                       node.addProperty(props.getProperty("name"), buildNode(reader, childNode));
-                   }
-                   else {
-                       throw new XMLStreamException(
-                               JDBCPlugin.Util.gs("unexpected_element", reader.getName(), "value"), 
-                               reader.getLocation());
-                   }
-               }
-               if (values != null) {
-                   node.addProperty(props.getProperty("name"), values);
-               }
-           }
-           else {
-               throw new XMLStreamException(
-                       JDBCPlugin.Util.gs("unexpected_element", reader.getName(), "property"),
-                       reader.getLocation());
-           }
-       }
-       return node;
+        while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+            String property = reader.getLocalName();
+            if (property.equals("property")) {
+                Properties props = getAttributes(reader);
+                ArrayList<String> values = new ArrayList<>();
+                while (reader.hasNext() && (reader.nextTag() != XMLStreamConstants.END_ELEMENT)) {
+                    String valueNode = reader.getLocalName();
+                    if (values != null && valueNode.equals("value")) {
+                        values.add(reader.getElementText());
+                    } else if (valueNode.equals("node")) {
+                        values = null;
+                        Properties nodeProps = getAttributes(reader);
+                        PlanNode childNode = new PlanNode(nodeProps.getProperty("name"));
+                        node.addProperty(props.getProperty("name"), buildNode(reader, childNode));
+                    } else {
+                        throw new XMLStreamException(
+                                JDBCPlugin.Util.gs("unexpected_element", reader.getName(), "value"),
+                                reader.getLocation());
+                    }
+                }
+                if (values != null) {
+                    node.addProperty(props.getProperty("name"), values);
+                }
+            } else {
+                throw new XMLStreamException(
+                        JDBCPlugin.Util.gs("unexpected_element", reader.getName(), "property"),
+                        reader.getLocation());
+            }
+        }
+        return node;
     }
 
     @Override
@@ -305,7 +305,7 @@ public class PlanNode implements Externalizable {
         if (p.getPlanNode() != null) {
             text.append(":\n");
             visitNode(p.getPlanNode(), nodeLevel + 2, yaml, text);
-        } else if (p.getValues().size() > 1){
+        } else if (p.getValues().size() > 1) {
             text.append(":\n");
             for (int i = 0; i < p.getValues().size(); i++) {
                 text.append("  ".repeat(Math.max(0, nodeLevel + 2)));
@@ -324,7 +324,7 @@ public class PlanNode implements Externalizable {
             } else {
                 text.append(":");
             }
-            text.append(p.getValues().get(0));
+            text.append(p.getValues().getFirst());
             text.append("\n");
         } else {
             if (yaml) {
@@ -342,8 +342,8 @@ public class PlanNode implements Externalizable {
         for (Property p : ExternalizeUtil.readList(in, Property.class)) {
             this.properties.put(p.name, p);
         }
-        this.parent = (PlanNode)in.readObject();
-        this.name = (String)in.readObject();
+        this.parent = (PlanNode) in.readObject();
+        this.name = (String) in.readObject();
     }
 
     @Override

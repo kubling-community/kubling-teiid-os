@@ -30,7 +30,8 @@ import java.io.InputStream;
  * stream the lob data.
  */
 public class LobChunkInputStream extends InputStream {
-    private LobChunkProducer reader;
+
+    private final LobChunkProducer reader;
 
     private byte[] byteData = null;
     private int currentCounter = 0;

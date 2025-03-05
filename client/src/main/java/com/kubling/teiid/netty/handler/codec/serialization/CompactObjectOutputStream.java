@@ -53,64 +53,63 @@ import java.util.Map;
 /**
  * @author The Netty Project (netty-dev@lists.jboss.org)
  * @author Trustin Lee (tlee@redhat.com)
- *
  */
 public class CompactObjectOutputStream extends ObjectOutputStream {
 
     static final int TYPE_PRIMITIVE = 0;
     static final int TYPE_NON_PRIMITIVE = 1;
 
-    public static final Map<Class<?>, Integer> KNOWN_CLASSES = new HashMap<Class<?>, Integer>();
-    public static final Map<Integer, Class<?>> KNOWN_CODES = new HashMap<Integer, Class<?>>();
+    public static final Map<Class<?>, Integer> KNOWN_CLASSES = new HashMap<>();
+    public static final Map<Integer, Class<?>> KNOWN_CODES = new HashMap<>();
 
-    private List<InputStream> streams = new LinkedList<InputStream>();
-    private List<StreamFactoryReference> references = new LinkedList<StreamFactoryReference>();
+    private final List<InputStream> streams = new LinkedList<>();
+    private final List<StreamFactoryReference> references = new LinkedList<>();
 
     public static void addKnownClass(Class<?> clazz, byte code) {
-        KNOWN_CLASSES.put(clazz, Integer.valueOf(code));
-        if (KNOWN_CODES.put(Integer.valueOf(code), clazz) != null) {
-             throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20007, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20007));
+        KNOWN_CLASSES.put(clazz, (int) code);
+        if (KNOWN_CODES.put((int) code, clazz) != null) {
+            throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20007, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20007));
         }
     }
 
     static {
-        addKnownClass(ServiceInvocationStruct.class, (byte)2);
-        addKnownClass(Handshake.class, (byte)3);
-        addKnownClass(Message.class, (byte)4);
-        addKnownClass(SerializableReader.class, (byte)5);
-        addKnownClass(SerializableInputStream.class, (byte)6);
+        addKnownClass(ServiceInvocationStruct.class, (byte) 2);
+        addKnownClass(Handshake.class, (byte) 3);
+        addKnownClass(Message.class, (byte) 4);
+        addKnownClass(SerializableReader.class, (byte) 5);
+        addKnownClass(SerializableInputStream.class, (byte) 6);
 
-        addKnownClass(DQP.class, (byte)10);
-        addKnownClass(LobChunk.class, (byte)11);
-        addKnownClass(RequestMessage.class, (byte)12);
-        addKnownClass(ResultsMessage.class, (byte)13);
-        addKnownClass(PlanNode.class, (byte)14);
-        addKnownClass(PlanNode.Property.class, (byte)15);
-        addKnownClass(Annotation.class, (byte)16);
-        addKnownClass(MetadataResult.class, (byte)17);
-        addKnownClass(ParameterInfo.class, (byte)18);
-        addKnownClass(XidImpl.class, (byte)19);
-        addKnownClass(BlobImpl.class, (byte)20);
-        addKnownClass(ClobImpl.class, (byte)21);
-        addKnownClass(SQLXMLImpl.class, (byte)22);
-        addKnownClass(BlobType.class, (byte)23);
-        addKnownClass(ClobType.class, (byte)24);
-        addKnownClass(XMLType.class, (byte)25);
-        addKnownClass(XATransactionException.class, (byte)26);
+        addKnownClass(DQP.class, (byte) 10);
+        addKnownClass(LobChunk.class, (byte) 11);
+        addKnownClass(RequestMessage.class, (byte) 12);
+        addKnownClass(ResultsMessage.class, (byte) 13);
+        addKnownClass(PlanNode.class, (byte) 14);
+        addKnownClass(PlanNode.Property.class, (byte) 15);
+        addKnownClass(Annotation.class, (byte) 16);
+        addKnownClass(MetadataResult.class, (byte) 17);
+        addKnownClass(ParameterInfo.class, (byte) 18);
+        addKnownClass(XidImpl.class, (byte) 19);
+        addKnownClass(BlobImpl.class, (byte) 20);
+        addKnownClass(ClobImpl.class, (byte) 21);
+        addKnownClass(SQLXMLImpl.class, (byte) 22);
+        addKnownClass(BlobType.class, (byte) 23);
+        addKnownClass(ClobType.class, (byte) 24);
+        addKnownClass(XMLType.class, (byte) 25);
+        addKnownClass(XATransactionException.class, (byte) 26);
 
-        addKnownClass(ILogon.class, (byte)30);
-        addKnownClass(LogonResult.class, (byte)31);
-        addKnownClass(SessionToken.class, (byte)32);
-        addKnownClass(LogonException.class, (byte)33);
-        addKnownClass(TeiidSecurityException.class, (byte)34);
-        addKnownClass(InvalidSessionException.class, (byte)35);
+        addKnownClass(ILogon.class, (byte) 30);
+        addKnownClass(LogonResult.class, (byte) 31);
+        addKnownClass(SessionToken.class, (byte) 32);
+        addKnownClass(LogonException.class, (byte) 33);
+        addKnownClass(TeiidSecurityException.class, (byte) 34);
+        addKnownClass(InvalidSessionException.class, (byte) 35);
 
-        addKnownClass(ExceptionHolder.class, (byte)40);
-        addKnownClass(TeiidRuntimeException.class, (byte)41);
-        addKnownClass(TeiidComponentException.class, (byte)42);
-        addKnownClass(TeiidException.class, (byte)43);
-        addKnownClass(TeiidProcessingException.class, (byte)44);
-        addKnownClass(ComponentNotFoundException.class, (byte)45);
+        addKnownClass(ExceptionHolder.class, (byte) 40);
+        addKnownClass(TeiidRuntimeException.class, (byte) 41);
+        addKnownClass(TeiidComponentException.class, (byte) 42);
+        addKnownClass(TeiidException.class, (byte) 43);
+        addKnownClass(TeiidProcessingException.class, (byte) 44);
+        addKnownClass(ComponentNotFoundException.class, (byte) 45);
     }
 
     public CompactObjectOutputStream(OutputStream out) throws IOException {
@@ -147,7 +146,7 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
         } else {
             Integer b = KNOWN_CLASSES.get(desc.forClass());
             if (b != null) {
-                write(b.intValue());
+                write(b);
             } else {
                 write(TYPE_NON_PRIMITIVE);
                 writeUTF(desc.getName());
@@ -159,54 +158,58 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
     protected Object replaceObject(Object obj) throws IOException {
         if (obj instanceof BaseLob) {
             try {
-                if (obj instanceof SQLXMLImpl) {
-                    streams.add(((SQLXMLImpl)obj).getBinaryStream());
-                    StreamFactoryReference sfr = new SQLXMLImpl();
-                    references.add(sfr);
-                    return sfr;
-                } else if (obj instanceof ClobImpl) {
-                    streams.add(new ReaderInputStream(((ClobImpl)obj).getCharacterStream(),
-                            Charset.forName(Streamable.ENCODING)));
-                    StreamFactoryReference sfr = new ClobImpl();
-                    references.add(sfr);
-                    return sfr;
-                } else if (obj instanceof BlobImpl) {
-                    streams.add(((Blob)obj).getBinaryStream());
-                    StreamFactoryReference sfr = new BlobImpl();
-                    references.add(sfr);
-                    return sfr;
+                switch (obj) {
+                    case SQLXMLImpl sqlxml -> {
+                        streams.add(sqlxml.getBinaryStream());
+                        StreamFactoryReference sfr = new SQLXMLImpl();
+                        references.add(sfr);
+                        return sfr;
+                    }
+                    case ClobImpl clob -> {
+                        streams.add(new ReaderInputStream(clob.getCharacterStream(),
+                                Charset.forName(Streamable.ENCODING)));
+                        StreamFactoryReference sfr = new ClobImpl();
+                        references.add(sfr);
+                        return sfr;
+                    }
+                    case BlobImpl ignored -> {
+                        streams.add(((Blob) obj).getBinaryStream());
+                        StreamFactoryReference sfr = new BlobImpl();
+                        references.add(sfr);
+                        return sfr;
+                    }
+                    default -> {
+                    }
                 }
             } catch (SQLException e) {
                 throw new IOException(e);
             }
-        }
-        else if (obj instanceof Serializable) {
+        } else if (obj instanceof Serializable) {
             return obj;
-        }
-        else {
+        } else {
             try {
                 if (obj instanceof Reader) {
-                    streams.add(new ReaderInputStream((Reader)obj, Charset.forName(Streamable.ENCODING)));
+                    streams.add(new ReaderInputStream((Reader) obj, Charset.forName(Streamable.ENCODING)));
                     StreamFactoryReference sfr = new SerializableReader();
                     references.add(sfr);
                     return sfr;
                 } else if (obj instanceof InputStream) {
-                    streams.add((InputStream)obj);
+                    streams.add((InputStream) obj);
                     StreamFactoryReference sfr = new SerializableInputStream();
                     references.add(sfr);
                     return sfr;
                 } else if (obj instanceof SQLXML) {
-                    streams.add(((SQLXML)obj).getBinaryStream());
+                    streams.add(((SQLXML) obj).getBinaryStream());
                     StreamFactoryReference sfr = new SQLXMLImpl();
                     references.add(sfr);
                     return sfr;
                 } else if (obj instanceof Clob) {
-                    streams.add(new ReaderInputStream(((Clob)obj).getCharacterStream(), Charset.forName(Streamable.ENCODING)));
+                    streams.add(new ReaderInputStream(((Clob) obj).getCharacterStream(), Charset.forName(Streamable.ENCODING)));
                     StreamFactoryReference sfr = new ClobImpl();
                     references.add(sfr);
                     return sfr;
                 } else if (obj instanceof Blob) {
-                    streams.add(((Blob)obj).getBinaryStream());
+                    streams.add(((Blob) obj).getBinaryStream());
                     StreamFactoryReference sfr = new BlobImpl();
                     references.add(sfr);
                     return sfr;

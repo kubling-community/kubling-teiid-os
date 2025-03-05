@@ -22,10 +22,7 @@ import com.kubling.teiid.core.util.StringUtil;
 import com.kubling.teiid.jdbc.JDBCPlugin;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 /**
@@ -35,7 +32,7 @@ import java.util.StringTokenizer;
  */
 public class TeiidURL {
 
-    public static interface JDBC {
+    public interface JDBC {
         // constant indicating Virtual database name
         String VDB_NAME = "VirtualDatabaseName";
         // constant indicating Virtual database version
@@ -44,7 +41,7 @@ public class TeiidURL {
         String VERSION = "version";
     }
 
-    public static interface CONNECTION {
+    public interface CONNECTION {
         String CLIENT_IP_ADDRESS = "clientIpAddress";
         String CLIENT_HOSTNAME = "clientHostName";
         String CLIENT_MAC = "clientMAC";
@@ -76,10 +73,8 @@ public class TeiidURL {
         String JAAS_NAME = "jaasName";
 
         String KERBEROS_SERVICE_PRINCIPLE_NAME = "kerberosServicePrincipleName";
-        ;
 
         String ENCRYPT_REQUESTS = "encryptRequests";
-        ;
         String LOGIN_TIMEOUT = "loginTimeout";
 
     }
@@ -101,7 +96,7 @@ public class TeiidURL {
     /*
      * List of <code> HostData </code> in a cluster
      */
-    private List<HostInfo> hosts = new ArrayList<HostInfo>();
+    private final List<HostInfo> hosts = new ArrayList<>();
 
     private boolean usingSSL = false;
 
@@ -109,7 +104,6 @@ public class TeiidURL {
      * Create an MMURL from the server URL.  For use by the server-side.
      *
      * @param serverURL Expected format: mm[s]://server1:port1[,server2:port2]
-     * @throws MalformedURLException
      * @since 4.2
      */
     public TeiidURL(String serverURL) throws MalformedURLException {
@@ -163,7 +157,7 @@ public class TeiidURL {
      * @since 4.2
      */
     public String getHosts() {
-        StringBuffer hostList = new StringBuffer("");
+        StringBuilder hostList = new StringBuilder();
         if (hosts != null) {
             Iterator<HostInfo> iterator = hosts.iterator();
             while (iterator.hasNext()) {
@@ -180,12 +174,12 @@ public class TeiidURL {
     /**
      * Get a list of ports
      *
-     * @return string of ports seperated by commas
+     * @return string of ports separated by commas
      * @since 4.2
      */
     public String getPorts() {
-        StringBuffer portList = new StringBuffer("");
-        if (hosts != null) {
+        StringBuilder portList = new StringBuilder();
+        if (Objects.nonNull(hosts)) {
             Iterator<HostInfo> iterator = hosts.iterator();
             while (iterator.hasNext()) {
                 HostInfo element = iterator.next();
@@ -199,8 +193,6 @@ public class TeiidURL {
     }
 
     /**
-     * @param serverURL
-     * @throws MalformedURLException
      * @since 4.2
      */
     private void parseServerURL(String serverURL, String exceptionMessage) throws MalformedURLException {
@@ -211,8 +203,8 @@ public class TeiidURL {
         while (st.hasMoreTokens()) {
             String nextToken = st.nextToken();
             nextToken = nextToken.trim();
-            String host = "";
-            String port = "";
+            String host;
+            String port;
             if (nextToken.startsWith("[")) {
                 int hostEnd = nextToken.indexOf("]:");
                 if (hostEnd == -1) {
@@ -231,7 +223,7 @@ public class TeiidURL {
             }
             host = host.trim();
             port = port.trim();
-            if (host.equals("") || port.equals("")) {
+            if (host.isEmpty() || port.isEmpty()) {
                 throw new MalformedURLException(JDBCPlugin.Util.getString("TeiidURL.invalid_hostport", nextToken, exceptionMessage));
             }
             int portNumber = validatePort(port);
@@ -269,7 +261,7 @@ public class TeiidURL {
      */
     public String getAppServerURL() {
         if (appServerURL == null) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             if (usingSSL) {
                 sb.append(SECURE_PROTOCOL);
             } else {
@@ -314,10 +306,9 @@ public class TeiidURL {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof TeiidURL)) {
+        if (!(obj instanceof TeiidURL url)) {
             return false;
         }
-        TeiidURL url = (TeiidURL) obj;
         return (appServerURL.equals(url.getAppServerURL()));
     }
 

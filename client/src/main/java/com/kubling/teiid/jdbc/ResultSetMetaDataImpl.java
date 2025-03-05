@@ -26,10 +26,11 @@ import java.sql.SQLException;
 
 
 /**
+ *
  */
 public class ResultSetMetaDataImpl extends WrapperImpl implements ResultSetMetaData {
 
-    private MetadataProvider provider;
+    private final MetadataProvider provider;
 
     private boolean useJDBC4ColumnNameAndLabelSemantics = true;
 
@@ -42,11 +43,12 @@ public class ResultSetMetaDataImpl extends WrapperImpl implements ResultSetMetaD
 
     /**
      * Adjust from 1-based to internal 0-based representation
+     *
      * @param index External 1-based representation
      * @return Internal 0-based representation
      */
     private int adjustColumn(int index) {
-        return index-1;
+        return index - 1;
     }
 
     public String getVirtualDatabaseName(int index) throws SQLException {
@@ -80,9 +82,9 @@ public class ResultSetMetaDataImpl extends WrapperImpl implements ResultSetMetaD
 
     public int isNullable(int index) throws SQLException {
         Object nullable = provider.getValue(adjustColumn(index), ResultsMetadataConstants.NULLABLE);
-        if(nullable.equals(ResultsMetadataConstants.NULL_TYPES.NULLABLE)) {
+        if (nullable.equals(ResultsMetadataConstants.NULL_TYPES.NULLABLE)) {
             return columnNullable;
-        } else if(nullable.equals(ResultsMetadataConstants.NULL_TYPES.NOT_NULL)) {
+        } else if (nullable.equals(ResultsMetadataConstants.NULL_TYPES.NOT_NULL)) {
             return columnNoNulls;
         } else {
             return columnNullableUnknown;
@@ -160,7 +162,7 @@ public class ResultSetMetaDataImpl extends WrapperImpl implements ResultSetMetaD
     }
 
     public boolean isReadOnly(int index) throws SQLException {
-        return ! provider.getBooleanValue(adjustColumn(index), ResultsMetadataConstants.WRITABLE);
+        return !provider.getBooleanValue(adjustColumn(index), ResultsMetadataConstants.WRITABLE);
     }
 
     public boolean isWritable(int index) throws SQLException {

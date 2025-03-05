@@ -150,7 +150,7 @@ public class ResizingArrayList<T> extends AbstractList<T> implements RandomAcces
         return Arrays.copyOf(elementData, size);
     }
 
-    public <U extends Object> U[] toArray(U[] a) {
+    public <U> U[] toArray(U[] a) {
         if (a.length < size) {
             return (U[]) Arrays.copyOf(elementData, size, a.getClass());
         }

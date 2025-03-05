@@ -29,6 +29,7 @@ import com.kubling.teiid.net.CommunicationException;
 import com.kubling.teiid.net.ConnectionException;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.NoRouteToHostException;
@@ -42,6 +43,7 @@ import java.sql.SQLException;
 
 public class TeiidSQLException extends SQLException {
 
+    @Serial
     private static final long serialVersionUID = 3672305321346173922L;
     private String teiidCode;
 
@@ -115,9 +117,9 @@ public class TeiidSQLException extends SQLException {
                     intPart = code.substring(5);
                 }
                 try {
-                    errorCode = Integer.valueOf(intPart);
+                    errorCode = Integer.parseInt(intPart);
                 } catch (NumberFormatException e) {
-
+                    // Ignored
                 }
             }
         }
@@ -133,11 +135,6 @@ public class TeiidSQLException extends SQLException {
         return tse;
     }
 
-    /**
-     * @param exception
-     * @param sqlState
-     * @return
-     */
     private static String determineSQLState(Throwable exception,
                                             String sqlState) {
         if (exception instanceof InvalidSessionException) {
@@ -175,18 +172,13 @@ public class TeiidSQLException extends SQLException {
         return sqlState;
     }
 
-    /**
-     * @param exception
-     * @return
-     */
     private static Throwable findRootException(Throwable exception) {
         if (exception instanceof TeiidRuntimeException) {
             while (exception.getCause() != exception
                     && exception.getCause() != null) {
                 exception = exception.getCause();
             }
-            if (exception instanceof TeiidRuntimeException) {
-                TeiidRuntimeException runtimeException = (TeiidRuntimeException) exception;
+            if (exception instanceof TeiidRuntimeException runtimeException) {
                 while (runtimeException.getCause() != exception
                         && runtimeException.getCause() != null) {
                     if (runtimeException.getCause() instanceof TeiidRuntimeException) {
@@ -203,9 +195,6 @@ public class TeiidSQLException extends SQLException {
     }
 
     /**
-     * @param exception
-     * @param message
-     * @return
      * @since 4.1
      */
     private static String getMessage(Throwable exception,

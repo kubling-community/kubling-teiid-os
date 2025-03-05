@@ -24,7 +24,7 @@ import java.sql.Statement;
  * A callback for continuous result processing.
  * {@link Statement#close()} must still be called to release
  * statement resources.
- *
+ * <p>
  * Statement methods, such as cancel, are perfectly valid
  * even when using a callback.
  */
@@ -34,8 +34,6 @@ public interface ContinuousStatementCallback extends StatementCallback {
      * Called before the next execution iteration has begun.
      * There is no valid row at the time of this call.  Any attempt to access the current row
      * will result in an exception.
-     * @param s
-     * @throws Exception
      */
     void beforeNextExecution(Statement s) throws Exception;
 

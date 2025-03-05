@@ -25,7 +25,7 @@ import java.sql.Statement;
  * A callback for non-blocking statement result processing.
  * {@link Statement#close()} must still be called to release
  * statement resources.
- *
+ * <p>
  * Statement methods, such as cancel, are perfectly valid
  * even when using a callback.
  */
@@ -35,22 +35,18 @@ public interface StatementCallback {
      * Process the current row of the {@link ResultSet}.
      * Any call that retrieves non-lob values from the current row
      * will be performed without blocking on more data from sources.
-     * Calls outside of the current row, such as next(), may block.
-     * @param rs
-     * @throws Exception
+     * Calls outside the current row, such as next(), may block.
      */
     void onRow(Statement s, ResultSet rs) throws Exception;
 
     /**
      * Called when an exception occurs.  No further rows will
      * be processed by this callback.
-     * @param e
      */
     void onException(Statement s, Exception e) throws Exception;
 
     /**
      * Called when processing has completed normally.
-     * @param s
      */
     void onComplete(Statement s) throws Exception;
 

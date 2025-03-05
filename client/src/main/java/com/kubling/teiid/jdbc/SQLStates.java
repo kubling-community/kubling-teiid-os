@@ -135,17 +135,17 @@ public class SQLStates {
     }
 
     public static SQLStateClass getClass(String sqlStateCode) {
-        for (int i = 0; i < stateClasses.length; i++) {
-            if (stateClasses[i].containsSQLState(sqlStateCode)) {
-                return stateClasses[i];
+        for (SQLStateClass stateClass : stateClasses) {
+            if (stateClass.containsSQLState(sqlStateCode)) {
+                return stateClass;
             }
         }
         return null;
     }
 
     public static final class SQLStateClass {
-        private String codeBeginsWith;
-        private Set stateCodes = new HashSet();
+        private final String codeBeginsWith;
+        private final Set stateCodes = new HashSet();
 
         private SQLStateClass(String beginsWith) {
             this.codeBeginsWith = beginsWith;

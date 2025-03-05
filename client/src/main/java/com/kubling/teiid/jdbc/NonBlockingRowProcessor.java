@@ -32,9 +32,9 @@ import java.util.logging.Logger;
 public class NonBlockingRowProcessor implements
         ResultsFuture.CompletionListener<Boolean> {
 
-    private static Logger logger = Logger.getLogger(NonBlockingRowProcessor.class.getName());
-    private StatementImpl stmt;
-    private StatementCallback callback;
+    private static final Logger logger = Logger.getLogger(NonBlockingRowProcessor.class.getName());
+    private final StatementImpl stmt;
+    private final StatementCallback callback;
 
     public NonBlockingRowProcessor(StatementImpl stmt, StatementCallback callback) {
         this.stmt = stmt;
@@ -118,8 +118,7 @@ public class NonBlockingRowProcessor implements
     }
 
     private void onException(Exception e) {
-        if (e instanceof ExecutionException) {
-            ExecutionException ee = (ExecutionException) e;
+        if (e instanceof ExecutionException ee) {
             if (ee.getCause() instanceof Exception) {
                 e = (Exception) ee.getCause();
             }

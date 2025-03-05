@@ -25,7 +25,7 @@ import java.sql.Wrapper;
 
 
 public class WrapperImpl implements Wrapper {
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         ArgCheck.isNotNull(iface);
 
         return iface.isInstance(this);

@@ -21,39 +21,32 @@ package com.kubling.teiid.net;
 import com.kubling.teiid.core.BundleUtil;
 import com.kubling.teiid.core.TeiidException;
 
+import java.io.Serial;
+
 /**
  * An error occurred in communication between client and server.  This
  * error may or may not be recoverable.  Generally the communication
  * transport should be able to tell the difference and recover if possible.
  */
 public class CommunicationException extends TeiidException {
+    @Serial
     private static final long serialVersionUID = -8352601998078723446L;
 
     /**
      * No-Arg Constructor
      */
-    public CommunicationException(  ) {
-        super( );
+    public CommunicationException() {
+        super();
     }
 
-    /**
-     * @param message
-     */
     public CommunicationException(String message) {
         super(message);
     }
 
-    /**
-     * @param e
-     */
     public CommunicationException(Throwable e) {
         super(e);
     }
 
-    /**
-     * @param e
-     * @param message
-     */
     public CommunicationException(Throwable e, String message) {
         super(e, message);
     }

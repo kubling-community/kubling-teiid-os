@@ -27,6 +27,7 @@ import com.kubling.teiid.core.util.StringUtil;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -34,8 +35,8 @@ import java.util.Map;
  * but must lazily load the rest of the metadata when necessary.
  */
 public class DeferredMetadataProvider extends MetadataProvider {
-    private StatementImpl statement;
-    private long requestID;
+    private final StatementImpl statement;
+    private final long requestID;
     private boolean loaded;
 
     public DeferredMetadataProvider(String[] columnNames, String[] columnTypes, StatementImpl statement, long requestID) {
@@ -45,15 +46,15 @@ public class DeferredMetadataProvider extends MetadataProvider {
     }
 
     static Map<Integer, String>[] loadPartialMetadata(String[] columnNames, String[] columnTypes) {
-        if(columnNames == null || columnTypes == null || columnNames.length != columnTypes.length) {
-            Object[] params = new Object[] {
-                StringUtil.toString(columnNames), StringUtil.toString(columnTypes)
+        if (columnNames == null || columnTypes == null || columnNames.length != columnTypes.length) {
+            Object[] params = new Object[]{
+                    StringUtil.toString(columnNames), StringUtil.toString(columnTypes)
             };
             throw new IllegalArgumentException(JDBCPlugin.Util.getString("DeferredMetadataProvider.Invalid_data", params));
         }
         Map<Integer, String>[] columnMetadata = new Map[columnNames.length];
-        for(int i=0; i<columnNames.length; i++) {
-            columnMetadata[i] = new HashMap<Integer, String>();
+        for (int i = 0; i < columnNames.length; i++) {
+            columnMetadata[i] = new HashMap<>();
             columnMetadata[i].put(ResultsMetadataConstants.ELEMENT_LABEL, columnNames[i]);
             columnMetadata[i].put(ResultsMetadataConstants.DATA_TYPE, columnTypes[i]);
         }
@@ -64,9 +65,7 @@ public class DeferredMetadataProvider extends MetadataProvider {
         MetadataResult results;
         try {
             results = this.statement.getDQP().getMetadata(this.requestID);
-        } catch (TeiidComponentException e) {
-            throw TeiidSQLException.create(e);
-        } catch (TeiidProcessingException e) {
+        } catch (TeiidComponentException | TeiidProcessingException e) {
             throw TeiidSQLException.create(e);
         }
         this.metadata = results.getColumnMetadata();
@@ -74,8 +73,8 @@ public class DeferredMetadataProvider extends MetadataProvider {
 
     @Override
     public Object getValue(int columnIndex, Integer metadataPropertyKey) throws SQLException {
-        if(!loaded && !(metadataPropertyKey == ResultsMetadataConstants.ELEMENT_LABEL || 
-                metadataPropertyKey == ResultsMetadataConstants.DATA_TYPE)) {
+        if (!loaded && !(Objects.equals(metadataPropertyKey, ResultsMetadataConstants.ELEMENT_LABEL) ||
+                Objects.equals(metadataPropertyKey, ResultsMetadataConstants.DATA_TYPE))) {
             loadFullMetadata();
             loaded = true;
         }

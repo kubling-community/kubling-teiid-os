@@ -18,10 +18,7 @@
 
 package com.kubling.teiid.client.lob;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 
 
 /**
@@ -30,7 +27,9 @@ import java.io.ObjectOutput;
  * between the client and server.
  */
 public class LobChunk implements Externalizable {
-    static final long serialVersionUID = -5634014429424520672L;
+
+    @Serial
+    private static final long serialVersionUID = -5634014429424520672L;
 
     private byte[] data;
     private boolean last = false;
@@ -39,7 +38,7 @@ public class LobChunk implements Externalizable {
 
     }
 
-    public LobChunk(byte[] data, boolean last){
+    public LobChunk(byte[] data, boolean last) {
         this.last = last;
         this.data = data;
     }
@@ -55,7 +54,7 @@ public class LobChunk implements Externalizable {
     @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        data = (byte[])in.readObject();
+        data = (byte[]) in.readObject();
         last = in.readBoolean();
     }
 

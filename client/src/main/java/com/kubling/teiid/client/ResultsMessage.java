@@ -40,34 +40,51 @@ import java.util.List;
  */
 public class ResultsMessage implements Externalizable {
 
-    static final long serialVersionUID = 3546924172976187793L;
+    @Serial
+    private static final long serialVersionUID = 3546924172976187793L;
 
     private List<? extends List<?>> results;
     private String[] columnNames;
     private String[] dataTypes;
 
-    /** A description of planning that occurred as requested in the request. */
+    /**
+     * A description of planning that occurred as requested in the request.
+     */
     private PlanNode planDescription;
 
-    /** An exception that occurred. */
+    /**
+     * An exception that occurred.
+     */
     private TeiidException exception;
 
-    /** Warning could be schema validation errors or partial results warnings */
+    /**
+     * Warning could be schema validation errors or partial results warnings
+     */
     private List<Throwable> warnings;
 
-    /** First row index */
+    /**
+     * First row index
+     */
     private int firstRow = 0;
 
-    /** Last row index */
+    /**
+     * Last row index
+     */
     private int lastRow;
 
-    /** Final row index in complete result set, if known */
+    /**
+     * Final row index in complete result set, if known
+     */
     private int finalRow = -1;
 
-    /** The parameters of a Stored Procedure */
+    /**
+     * The parameters of a Stored Procedure
+     */
     private List<ParameterInfo> parameters;
 
-    /** OPTION DEBUG log if OPTION DEBUG was used */
+    /**
+     * OPTION DEBUG log if OPTION DEBUG was used
+     */
     private String debugLog;
 
     private byte clientSerializationVersion;
@@ -87,13 +104,13 @@ public class ResultsMessage implements Externalizable {
 
     private MultiArrayOutputStream serializationBuffer;
 
-    public ResultsMessage(){
+    public ResultsMessage() {
     }
 
     public ResultsMessage(List<? extends List<?>> results, String[] columnNames, String[] dataTypes) {
         this.results = results;
-        setFirstRow( 1 );
-        setLastRow( results.size() );
+        setFirstRow(1);
+        setLastRow(results.size());
 
         this.columnNames = columnNames;
         this.dataTypes = dataTypes;
@@ -109,9 +126,7 @@ public class ResultsMessage implements Externalizable {
                 CompactObjectInputStream ois = new CompactObjectInputStream(
                         new ByteArrayInputStream(resultBytes), ResultsMessage.class.getClassLoader());
                 results = BatchSerializer.readBatch(ois, dataTypes);
-            } catch (IOException e) {
-                throw TeiidSQLException.create(e);
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 throw TeiidSQLException.create(e);
             } finally {
                 resultBytes = null;
@@ -127,7 +142,7 @@ public class ResultsMessage implements Externalizable {
         this.results = results;
     }
 
-    public  String[] getColumnNames() {
+    public String[] getColumnNames() {
         return this.columnNames;
     }
 
@@ -135,102 +150,63 @@ public class ResultsMessage implements Externalizable {
         return this.dataTypes;
     }
 
-    /**
-     * @return
-     */
     public TeiidException getException() {
         return exception;
     }
 
-    /**
-     * @return
-     */
     public int getFinalRow() {
         return finalRow;
     }
 
-    /**
-     * @return
-     */
     public int getFirstRow() {
         return firstRow;
     }
 
-    /**
-     * @return
-     */
     public int getLastRow() {
         return lastRow;
     }
 
-    /**
-     * @return
-     */
     public PlanNode getPlanDescription() {
         return planDescription;
     }
 
-    /**
-     * @return
-     */
     public List<Throwable> getWarnings() {
         return warnings;
     }
 
     public void setException(Throwable e) {
-        if(e instanceof TeiidException) {
-            this.exception = (TeiidException)e;
+        if (e instanceof TeiidException) {
+            this.exception = (TeiidException) e;
         } else {
             this.exception = new TeiidException(e, e.getMessage());
         }
     }
 
-    /**
-     * @param i
-     */
     public void setFinalRow(int i) {
         finalRow = i;
     }
 
-    /**
-     * @param i
-     */
     public void setFirstRow(int i) {
         firstRow = i;
     }
 
-    /**
-     * @param i
-     */
     public void setLastRow(int i) {
         lastRow = i;
     }
 
-    /**
-     * @param object
-     */
     public void setPlanDescription(PlanNode object) {
         planDescription = object;
     }
 
-    /**
-     * @param list
-     */
     public void setWarnings(List<Throwable> list) {
         warnings = list;
     }
 
-    /**
-     * @return
-     */
-    public List getParameters() {
+    public List<ParameterInfo> getParameters() {
         return parameters;
     }
 
-    /**
-     * @param list
-     */
-    public void setParameters(List list) {
+    public void setParameters(List<ParameterInfo> list) {
         parameters = list;
     }
 
@@ -251,11 +227,11 @@ public class ResultsMessage implements Externalizable {
         results = BatchSerializer.readBatch(in, dataTypes);
 
         // Plan Descriptions
-        planDescription = (PlanNode)in.readObject();
+        planDescription = (PlanNode) in.readObject();
 
-        ExceptionHolder holder = (ExceptionHolder)in.readObject();
+        ExceptionHolder holder = (ExceptionHolder) in.readObject();
         if (holder != null) {
-            this.exception = (TeiidException)holder.getException();
+            this.exception = (TeiidException) holder.getException();
         }
 
         //delayed deserialization
@@ -265,7 +241,7 @@ public class ResultsMessage implements Externalizable {
             in.readFully(resultBytes);
         }
 
-        List<ExceptionHolder> holderList = (List<ExceptionHolder>)in.readObject();
+        List<ExceptionHolder> holderList = (List<ExceptionHolder>) in.readObject();
         if (holderList != null) {
             this.warnings = ExceptionHolder.toThrowables(holderList);
         }
@@ -277,14 +253,14 @@ public class ResultsMessage implements Externalizable {
         //Parameters
         parameters = ExternalizeUtil.readList(in, ParameterInfo.class);
 
-        debugLog = (String)in.readObject();
+        debugLog = (String) in.readObject();
         annotations = ExternalizeUtil.readList(in, Annotation.class);
         isUpdateResult = in.readBoolean();
         if (isUpdateResult) {
             try {
                 updateCount = in.readInt();
-            } catch (OptionalDataException e) {
-            } catch (EOFException e) {
+            } catch (OptionalDataException | EOFException e) {
+                // Ignored
             }
         }
     }
@@ -307,7 +283,7 @@ public class ResultsMessage implements Externalizable {
         if (exception != null) {
             out.writeObject(new ExceptionHolder(exception));
         } else {
-            out.writeObject(exception);
+            out.writeObject(null);
         }
 
         if (delayDeserialization && results != null) {
@@ -320,7 +296,7 @@ public class ResultsMessage implements Externalizable {
         if (this.warnings != null) {
             out.writeObject(ExceptionHolder.toExceptionHolders(this.warnings));
         } else {
-            out.writeObject(this.warnings);
+            out.writeObject(null);
         }
 
         out.writeInt(firstRow);
@@ -340,8 +316,8 @@ public class ResultsMessage implements Externalizable {
 
     /**
      * Serialize the result data
+     *
      * @return the size of the data bytes
-     * @throws IOException
      */
     public int serialize(boolean keepSerialization) throws IOException {
         if (serializationBuffer == null) {
@@ -357,30 +333,18 @@ public class ResultsMessage implements Externalizable {
         return result;
     }
 
-    /**
-     * @return
-     */
     public Collection<Annotation> getAnnotations() {
         return annotations;
     }
 
-    /**
-     * @return
-     */
     public String getDebugLog() {
         return debugLog;
     }
 
-    /**
-     * @param collection
-     */
     public void setAnnotations(Collection<Annotation> collection) {
         annotations = collection;
     }
 
-    /**
-     * @param string
-     */
     public void setDebugLog(String string) {
         debugLog = string;
     }
@@ -390,11 +354,10 @@ public class ResultsMessage implements Externalizable {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return new StringBuffer("ResultsMessage rowCount=")
-            .append(results == null ? 0 : results.size())
-            .append(" finalRow=")
-            .append(finalRow)
-            .toString();
+        return "ResultsMessage rowCount=" +
+                (results == null ? 0 : results.size()) +
+                " finalRow=" +
+                finalRow;
     }
 
     public void setUpdateResult(boolean isUpdateResult) {

@@ -26,8 +26,8 @@ public class TeiidSecurityException extends TeiidProcessingException {
     /**
      * No-Arg Constructor
      */
-    public TeiidSecurityException(  ) {
-        super( );
+    public TeiidSecurityException() {
+        super();
     }
 
     /**
@@ -38,39 +38,46 @@ public class TeiidSecurityException extends TeiidProcessingException {
      * @param message The error message
      * @param code    The error code
      */
-    public TeiidSecurityException(BundleUtil.Event code, Throwable t, String message ) {
+    public TeiidSecurityException(BundleUtil.Event code, Throwable t, String message) {
         super(code, t, message);
     }
+
     /**
      * Construct an instance with an error code and message specified.
      *
      * @param message The error message
      * @param code    The error code
      */
-    public TeiidSecurityException(BundleUtil.Event code, String message ) {
-        super( code, message );
+    public TeiidSecurityException(BundleUtil.Event code, String message) {
+        super(code, message);
     }
+
     /**
      * Constructs an instance of the exception with the specified detail message
      * and a single exception. A detail message is a String that describes this
      * particular exception.
+     *
      * @param message the detail message
-     * @param e the exception that is encapsulated by this exception
+     * @param e       the exception that is encapsulated by this exception
      */
-    public TeiidSecurityException( Throwable e, String message ) {
+    public TeiidSecurityException(Throwable e, String message) {
         super(e, message);
     }
+
     /**
      * Constructs an instance of the exception with no detail message but with a
      * single exception.
+     *
      * @param e the exception that is encapsulated by this exception
      */
     public TeiidSecurityException(Throwable e) {
         super(e);
     }
+
     /**
      * Constructs an instance of the exception with the specified detail message. A detail
      * message is a String that describes this particular exception.
+     *
      * @param message the detail message
      */
     public TeiidSecurityException(String message) {

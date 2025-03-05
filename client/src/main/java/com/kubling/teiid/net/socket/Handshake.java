@@ -30,6 +30,7 @@ import java.util.List;
  */
 public class Handshake implements Externalizable {
 
+    @Serial
     private static final long serialVersionUID = 7839271224736355515L;
 
     private String version = ApplicationInfo.getInstance().getReleaseNumber();
@@ -93,7 +94,6 @@ public class Handshake implements Externalizable {
     /**
      * Represents the default auth type for the entire instance.
      * Per vdb auth types are now supported and provided in the {@link com.kubling.teiid.client.security.LogonResult}
-     * @return
      */
     @Deprecated
     public AuthenticationType getAuthType() {
@@ -123,8 +123,8 @@ public class Handshake implements Externalizable {
     @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        version = (String)in.readObject();
-        publicKey = (byte[])in.readObject();
+        version = (String) in.readObject();
+        publicKey = (byte[]) in.readObject();
         try {
             authType = AuthenticationType.values()[in.readByte()];
             int byteLength = in.readInt();
@@ -137,9 +137,7 @@ public class Handshake implements Externalizable {
         }
         try {
             cbc = in.readBoolean();
-        } catch (OptionalDataException e) {
-            cbc = false;
-        } catch (EOFException e) {
+        } catch (OptionalDataException | EOFException e) {
             cbc = false;
         }
     }

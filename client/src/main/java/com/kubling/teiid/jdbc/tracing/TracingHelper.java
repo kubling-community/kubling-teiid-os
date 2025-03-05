@@ -32,7 +32,7 @@ public class TracingHelper {
         String getSpanContext();
     }
 
-    private static Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
 
     private static Injector INJECTOR;
 

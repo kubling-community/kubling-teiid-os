@@ -198,27 +198,27 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
         Properties props = new Properties();
         props.setProperty(BaseDataSource.VDB_NAME, this.getDatabaseName());
 
-        if (this.getDatabaseVersion() != null && this.getDatabaseVersion().trim().length() != 0) {
+        if (this.getDatabaseVersion() != null && !this.getDatabaseVersion().trim().isEmpty()) {
             props.setProperty(BaseDataSource.VDB_VERSION, this.getDatabaseVersion());
         }
 
-        if (userName != null && userName.trim().length() != 0) {
+        if (userName != null && !userName.trim().isEmpty()) {
             props.setProperty(BaseDataSource.USER_NAME, userName);
-        } else if (this.getUser() != null && this.getUser().trim().length() != 0) {
+        } else if (this.getUser() != null && !this.getUser().trim().isEmpty()) {
             props.setProperty(BaseDataSource.USER_NAME, this.getUser());
         }
 
-        if (password != null && password.trim().length() != 0) {
+        if (password != null && !password.trim().isEmpty()) {
             props.setProperty(BaseDataSource.PASSWORD, password);
-        } else if (this.getPassword() != null && this.getPassword().trim().length() != 0) {
+        } else if (this.getPassword() != null && !this.getPassword().trim().isEmpty()) {
             props.setProperty(BaseDataSource.PASSWORD, this.getPassword());
         }
 
-        if (this.getApplicationName() != null && this.getApplicationName().trim().length() != 0) {
+        if (this.getApplicationName() != null && !this.getApplicationName().trim().isEmpty()) {
             props.setProperty(BaseDataSource.APP_NAME, this.getApplicationName());
         }
 
-        if (this.getPartialResultsMode() != null && this.getPartialResultsMode().trim().length() != 0) {
+        if (this.getPartialResultsMode() != null && !this.getPartialResultsMode().trim().isEmpty()) {
             props.setProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE, this.getPartialResultsMode());
         }
 
@@ -230,7 +230,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
             props.setProperty(ExecutionProperties.QUERYTIMEOUT, String.valueOf(this.getQueryTimeout()));
         }
 
-        if (this.getResultSetCacheMode() != null && this.getResultSetCacheMode().trim().length() != 0) {
+        if (this.getResultSetCacheMode() != null && !this.getResultSetCacheMode().trim().isEmpty()) {
             props.setProperty(ExecutionProperties.RESULT_SET_CACHE_MODE, this.getResultSetCacheMode());
         }
 
@@ -242,7 +242,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
             props.setProperty(ExecutionProperties.NOEXEC, String.valueOf(this.isNoExec()));
         }
 
-        if (this.getAutoCommitTxn() != null && this.getAutoCommitTxn().trim().length() != 0) {
+        if (this.getAutoCommitTxn() != null && !this.getAutoCommitTxn().trim().isEmpty()) {
             props.setProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP, this.getAutoCommitTxn());
         }
 
@@ -635,14 +635,14 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * @see #setDatabaseName(String)
      */
     public static String reasonWhyInvalidDatabaseName(final String databaseName) {
-        if (databaseName == null || databaseName.trim().length() == 0) {
+        if (databaseName == null || databaseName.trim().isEmpty()) {
             return JDBCPlugin.Util.getString("MMDataSource.Virtual_database_name_must_be_specified");
         }
         return null;
     }
 
     /**
-     * Return the reason why the supplied user name may be invalid, or null
+     * Return the reason why the supplied username may be invalid, or null
      * if it is considered valid.
      *
      * @param userName a possible value for the property
@@ -664,18 +664,14 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * @see #setAutoCommitTxn(String)
      */
     public static String reasonWhyInvalidTransactionAutoWrap(final String autoWrap) {
-        if (autoWrap == null || autoWrap.trim().length() == 0) {
+        if (autoWrap == null || autoWrap.trim().isEmpty()) {
             return null;    // no longer require an app server name, 'cause will look on classpath
         }
         final String trimmedAutoWrap = autoWrap.trim();
-        if (TXN_WRAP_ON.equals(trimmedAutoWrap)) {
-            return null;
-        }
-        if (TXN_WRAP_OFF.equals(trimmedAutoWrap)) {
-            return null;
-        }
-        if (TXN_WRAP_AUTO.equals(trimmedAutoWrap)) {
-            return null;
+        switch (trimmedAutoWrap) {
+            case TXN_WRAP_ON, TXN_WRAP_OFF, TXN_WRAP_AUTO -> {
+                return null;
+            }
         }
 
         Object[] params = new Object[]{

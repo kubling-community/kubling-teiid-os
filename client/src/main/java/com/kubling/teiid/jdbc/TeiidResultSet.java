@@ -27,9 +27,9 @@ public interface TeiidResultSet extends ResultSet {
      * Returns an estimate of the minimum number of rows that can be read (after the current)
      * without blocking or the end of the ResultSet is reached.
      *
-     * @return     an estimate of the minimum number of rows that can be read (after the current)
-     *             without blocking or the end of the ResultSet is reached.
-     * @exception  SQLException if the statement is closed or another error condition occurs.
+     * @return an estimate of the minimum number of rows that can be read (after the current)
+     * without blocking or the end of the ResultSet is reached.
+     * @throws SQLException if the statement is closed or another error condition occurs.
      */
     int available() throws SQLException;
 

@@ -41,7 +41,6 @@ import java.util.logging.Logger;
  * The comm approach is object based and layered.  Connections manage failover and identity.
  * ServerInstances represent the service layer to a particular cluster member.  ObjectChannels
  * abstract the underlying IO.
- *
  */
 public class SocketServerConnectionFactory implements ServerConnectionFactory, SocketServerInstanceFactory {
 
@@ -116,7 +115,7 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
         try {
             url = new TeiidURL(connectionProperties.getProperty(TeiidURL.CONNECTION.SERVER_URL));
         } catch (MalformedURLException e1) {
-             throw new ConnectionException(JDBCPlugin.Event.TEIID20014, e1, e1.getMessage());
+            throw new ConnectionException(JDBCPlugin.Event.TEIID20014, e1, e1.getMessage());
         }
 
         UrlServerDiscovery discovery = new UrlServerDiscovery();

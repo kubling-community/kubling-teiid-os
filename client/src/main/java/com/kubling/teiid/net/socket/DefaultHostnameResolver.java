@@ -24,14 +24,14 @@ import java.net.InetAddress;
 import java.util.concurrent.*;
 
 /**
- * Due to https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6450279 and similar,
+ * Due to <a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=6450279">...</a> and similar,
  * attempts to call hostname resolution may block for considerable amounts of time
  * rather than require workarounds on the host system, this class will handle making
  * the call asynchronous.
  */
 public class DefaultHostnameResolver {
 
-    private class Resolver implements Callable<String> {
+    private static class Resolver implements Callable<String> {
         private InetAddress addr;
 
         private Resolver(InetAddress addr) {
@@ -39,7 +39,7 @@ public class DefaultHostnameResolver {
         }
 
         @Override
-        public String call() throws Exception {
+        public String call() {
             String hostName = addr.getCanonicalHostName();
             addr = null;
             return hostName;
@@ -48,14 +48,11 @@ public class DefaultHostnameResolver {
 
     //as this is only used on the client side, we aren't yet worried about
     //how many addresses will be resolved
-    private ConcurrentHashMap<String, Future<String>> resolved = new ConcurrentHashMap<String, Future<String>>();
-    private ExecutorService executor = ExecutorUtils.newFixedThreadPool(1, "resolver");
+    private final ConcurrentHashMap<String, Future<String>> resolved = new ConcurrentHashMap<>();
+    private final ExecutorService executor = ExecutorUtils.newFixedThreadPool(1, "resolver");
 
     /**
      * Resolve the given address in the given milliseconds or return null if it's not possible
-     * @param addr
-     * @param timeoutMillis
-     * @return
      */
     public String resolve(final InetAddress addr, int timeoutMillis) {
         if (addr.isLoopbackAddress()) {
@@ -77,8 +74,8 @@ public class DefaultHostnameResolver {
             return hostName.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.interrupted();
-        } catch (ExecutionException e) {
-        } catch (TimeoutException e) {
+        } catch (ExecutionException | TimeoutException e) {
+            // Ignored
         }
 
         return null;

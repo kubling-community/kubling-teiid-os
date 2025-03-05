@@ -27,9 +27,7 @@ import java.util.logging.Logger;
 /**
  * @author The Netty Project (netty-dev@lists.jboss.org)
  * @author Trustin Lee (tlee@redhat.com)
- *
  * @version $Rev: 381 $, $Date: 2008-10-01 06:06:18 -0500 (Wed, 01 Oct 2008) $
- *
  */
 public class CompactObjectInputStream extends ObjectInputStream {
 
@@ -45,8 +43,7 @@ public class CompactObjectInputStream extends ObjectInputStream {
     }
 
     @Override
-    protected void readStreamHeader() throws IOException,
-            StreamCorruptedException {
+    protected void readStreamHeader() throws IOException {
         int version = readByte() & 0xFF;
         if (version != STREAM_VERSION) {
             throw new StreamCorruptedException(
@@ -62,26 +59,26 @@ public class CompactObjectInputStream extends ObjectInputStream {
             throw new EOFException();
         }
         switch (type) {
-        case CompactObjectOutputStream.TYPE_PRIMITIVE:
-            return super.readClassDescriptor();
-        case CompactObjectOutputStream.TYPE_NON_PRIMITIVE:
-            String className = readUTF();
-            Class<?> clazz;
-            if (classLoader == null) {
-                clazz = Class.forName(
-                        className, true,
-                        CompactObjectInputStream.class.getClassLoader());
-            } else {
-                clazz = Class.forName(className, true, classLoader);
-            }
-            return ObjectStreamClass.lookupAny(clazz);
-        default:
-            clazz = CompactObjectOutputStream.KNOWN_CODES.get(type);
-            if (clazz != null) {
+            case CompactObjectOutputStream.TYPE_PRIMITIVE:
+                return super.readClassDescriptor();
+            case CompactObjectOutputStream.TYPE_NON_PRIMITIVE:
+                String className = readUTF();
+                Class<?> clazz;
+                if (classLoader == null) {
+                    clazz = Class.forName(
+                            className, true,
+                            CompactObjectInputStream.class.getClassLoader());
+                } else {
+                    clazz = Class.forName(className, true, classLoader);
+                }
                 return ObjectStreamClass.lookupAny(clazz);
-            }
-            throw new StreamCorruptedException(
-                    "Unexpected class descriptor type: " + type);
+            default:
+                clazz = CompactObjectOutputStream.KNOWN_CODES.get(type);
+                if (clazz != null) {
+                    return ObjectStreamClass.lookupAny(clazz);
+                }
+                throw new StreamCorruptedException(
+                        "Unexpected class descriptor type: " + type);
         }
     }
 

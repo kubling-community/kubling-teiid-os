@@ -57,21 +57,21 @@ import java.util.logging.Logger;
  */
 public class SocketServerInstanceImpl implements SocketServerInstance {
 
-    private static Logger log = Logger.getLogger("org.teiid.client.sockets");
+    private static final Logger log = Logger.getLogger("org.teiid.client.sockets");
 
-    private static AtomicInteger MESSAGE_ID = new AtomicInteger();
-    private Map<Serializable, ResultsReceiver<Object>> asynchronousListeners = new ConcurrentHashMap<>();
+    private static final AtomicInteger MESSAGE_ID = new AtomicInteger();
+    private final Map<Serializable, ResultsReceiver<Object>> asynchronousListeners = new ConcurrentHashMap<>();
 
-    private long synchTimeout;
-    private HostInfo info;
+    private final long synchTimeout;
+    private final HostInfo info;
 
     private ObjectChannel socketChannel;
     private Cryptor cryptor;
     private String serverVersion;
-    private HashMap<Class<?>, Object> serviceMap = new HashMap<Class<?>, Object>();
+    private final HashMap<Class<?>, Object> serviceMap = new HashMap<>();
 
     private boolean hasReader;
-    private int soTimeout;
+    private final int soTimeout;
 
     public SocketServerInstanceImpl(HostInfo info, long synchTimeout, int soTimeout) {
         if (!info.isResolved()) {
@@ -86,10 +86,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
         this.socketChannel = channelFactory.createObjectChannel(info);
         try {
             doHandshake();
-        } catch (CommunicationException e) {
-            this.socketChannel.close();
-            throw e;
-        } catch (IOException e) {
+        } catch (CommunicationException | IOException e) {
             this.socketChannel.close();
             throw e;
         }
@@ -245,8 +242,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
 
     private void receivedMessage(Object packet) {
         log.log(Level.FINE, "reading packet");
-        if (packet instanceof Message) {
-            Message messagePacket = (Message) packet;
+        if (packet instanceof Message messagePacket) {
             Serializable messageKey = messagePacket.getMessageKey();
             ExceptionHolder holder = null;
             if (messageKey instanceof ExceptionHolder) {
@@ -316,6 +312,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
                         message = socketChannel.read();
                     }
                 } catch (SocketTimeoutException e) {
+                    // Ignored
                 } catch (Exception e) {
                     exceptionOccurred(e);
                 } finally {
@@ -361,8 +358,8 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
 
     public static abstract class RemoteInvocationHandler implements InvocationHandler {
 
-        private Class<?> targetClass;
-        private boolean secureOptional;
+        private final Class<?> targetClass;
+        private final boolean secureOptional;
 
         public RemoteInvocationHandler(Class<?> targetClass, boolean secureOptional) {
             this.targetClass = targetClass;
@@ -372,7 +369,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
-            Throwable t = null;
+            Throwable t;
             try {
                 final SocketServerInstance instance = getInstance();
                 Message message = new Message();
@@ -422,7 +419,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
                 };
                 final ResultsReceiver<Object> receiver = results.getResultsReceiver();
 
-                instance.send(message, receiver, Integer.valueOf(MESSAGE_ID.getAndIncrement()));
+                instance.send(message, receiver, MESSAGE_ID.getAndIncrement());
                 if (ResultsFuture.class.isAssignableFrom(method.getReturnType())) {
                     return results;
                 }

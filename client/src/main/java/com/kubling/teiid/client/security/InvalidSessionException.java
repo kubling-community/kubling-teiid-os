@@ -20,59 +20,71 @@ package com.kubling.teiid.client.security;
 
 import com.kubling.teiid.core.BundleUtil;
 
+import java.io.Serial;
+
 public class InvalidSessionException extends TeiidSecurityException {
+
+    @Serial
     private static final long serialVersionUID = 594047711693346844L;
 
     /**
      * No-Arg Constructor
      */
-    public InvalidSessionException(  ) {
-        super( );
+    public InvalidSessionException() {
+        super();
     }
+
     /**
      * Constructs an instance of the exception with the specified detail message. A detail
      * message is a String that describes this particular exception.
+     *
      * @param message the detail message
      */
     public InvalidSessionException(String message) {
         super(message);
     }
+
     /**
      * Constructs an instance of the exception with no detail message but with a
      * single exception.
+     *
      * @param e the exception that is encapsulated by this exception
      */
     public InvalidSessionException(Throwable e) {
         super(e);
     }
+
     /**
      * Constructs an instance of the exception with the specified detail message
      * and a single exception. A detail message is a String that describes this
      * particular exception.
+     *
      * @param message the detail message
-     * @param e the exception that is encapsulated by this exception
+     * @param e       the exception that is encapsulated by this exception
      */
-    public InvalidSessionException( Throwable e, String message ) {
+    public InvalidSessionException(Throwable e, String message) {
         super(e, message);
     }
+
     /**
      * Construct an instance with an error code and message specified.
      *
      * @param message The error message
-     * @param event    The error code
+     * @param event   The error code
      */
-    public InvalidSessionException( BundleUtil.Event event, String message ) {
+    public InvalidSessionException(BundleUtil.Event event, String message) {
         super(event, message);
     }
+
     /**
      * Construct an instance with a linked exception, and an error code and
      * message, specified.
      *
      * @param t       An exception to chain to this exception
      * @param message The error message
-     * @param event    The error code
+     * @param event   The error code
      */
-    public InvalidSessionException( BundleUtil.Event event, Throwable t, String message ) {
+    public InvalidSessionException(BundleUtil.Event event, Throwable t, String message) {
         super(event, t, message);
     }
 

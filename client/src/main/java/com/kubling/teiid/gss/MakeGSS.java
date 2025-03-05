@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 
 public class MakeGSS {
 
-    private static Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
 
     public static LogonResult authenticate(ILogon logon, Properties props)
             throws LogonException, TeiidComponentException, CommunicationException {
@@ -62,7 +62,7 @@ public class MakeGSS {
 
         StringBuilder errors = new StringBuilder();
         String jaasApplicationName = props.getProperty(TeiidURL.CONNECTION.JAAS_NAME);
-        String nl = System.getProperty("line.separator");
+        String nl = System.lineSeparator();
         if (jaasApplicationName == null) {
             jaasApplicationName = "Teiid";
         }
@@ -71,7 +71,7 @@ public class MakeGSS {
         if (kerberosPrincipalName == null) {
             try {
                 TeiidURL url = new TeiidURL(props.getProperty(TeiidURL.CONNECTION.SERVER_URL));
-                kerberosPrincipalName = "TEIID/" + url.getHostInfo().get(0).getHostName();
+                kerberosPrincipalName = "TEIID/" + url.getHostInfo().getFirst().getHostName();
             } catch (Exception e) {
                 // Ignore exception
             }
@@ -119,7 +119,7 @@ public class MakeGSS {
             Subject sub = Subject.getSubject(AccessController.getContext());
             if (sub != null) {
                 Set<GSSCredential> gssCreds = sub.getPrivateCredentials(GSSCredential.class);
-                if (gssCreds != null && gssCreds.size() > 0) {
+                if (gssCreds != null && !gssCreds.isEmpty()) {
                     gssCredential = gssCreds.iterator().next();
                     performAuthentication = false;
                     if (logger.isLoggable(Level.FINE)) {
@@ -133,7 +133,7 @@ public class MakeGSS {
             }
 
             if (performAuthentication) {
-                if (errors.length() > 0) {
+                if (!errors.isEmpty()) {
                     throw new LogonException(JDBCPlugin.Event.TEIID20005, errors.toString());
                 }
 
@@ -167,12 +167,12 @@ public class MakeGSS {
 
 class GssAction implements PrivilegedAction {
 
-    private static Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
     private final ILogon logon;
     private final String kerberosPrincipalName;
-    private Properties props;
-    private GSSCredential gssCredential;
-    private String user;
+    private final Properties props;
+    private final GSSCredential gssCredential;
+    private final String user;
 
     public GssAction(ILogon pgStream, String kerberosPrincipalName, Properties props, String user, GSSCredential gssCredential) {
         this.logon = pgStream;
@@ -183,10 +183,10 @@ class GssAction implements PrivilegedAction {
     }
 
     public Object run() {
-        byte outToken[] = null;
+        byte[] outToken;
 
         try {
-            Oid desiredMechs[] = new Oid[1];
+            Oid[] desiredMechs = new Oid[1];
             desiredMechs[0] = new Oid("1.2.840.113554.1.2.2");
 
             GSSManager manager = GSSManager.getInstance();
@@ -209,7 +209,7 @@ class GssAction implements PrivilegedAction {
             secContext.requestInteg(true); // Will use integrity later
             secContext.requestCredDeleg(true); //will use credential delegation
 
-            byte inToken[] = new byte[0];
+            byte[] inToken = new byte[0];
 
             boolean established = false;
             LogonResult result = null;

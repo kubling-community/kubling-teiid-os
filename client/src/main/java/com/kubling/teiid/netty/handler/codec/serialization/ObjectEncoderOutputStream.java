@@ -28,12 +28,11 @@ import java.io.*;
  *
  * @author The Netty Project (netty-dev@lists.jboss.org)
  * @author Trustin Lee (tlee@redhat.com)
- *
  */
 public class ObjectEncoderOutputStream extends ObjectOutputStream {
 
     private final DataOutputStream out;
-    private MultiArrayOutputStream baos;
+    private final MultiArrayOutputStream baos;
 
     public ObjectEncoderOutputStream(DataOutputStream out, int initialBufferSize)
             throws SecurityException, IOException {
@@ -51,7 +50,7 @@ public class ObjectEncoderOutputStream extends ObjectOutputStream {
         oout.flush();
         oout.close();
 
-        int val = baos.getCount()-4;
+        int val = baos.getCount() - 4;
         byte[] b = baos.getBuffers()[0];
         b[3] = (byte) (val >>> 0);
         b[2] = (byte) (val >>> 8);
@@ -100,7 +99,7 @@ public class ObjectEncoderOutputStream extends ObjectOutputStream {
     }
 
     @Override
-    public void reset() throws IOException {
+    public void reset() {
         //automatically resets with each use
     }
 

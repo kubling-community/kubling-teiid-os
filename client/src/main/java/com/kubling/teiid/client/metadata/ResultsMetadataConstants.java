@@ -35,19 +35,19 @@ public interface ResultsMetadataConstants {
     Integer GROUP_NAME = 2;
     // constant indicating the position of column or element name.
     Integer ELEMENT_NAME = 3;
-    // constant indicating the position of column lable used for display purposes.
+    // constant indicating the position of column label used for display purposes.
     Integer ELEMENT_LABEL = 4;
     // constant indicating the position of datatype of the column.
     Integer DATA_TYPE = 6;
     // constant indicating the position of precision of the column.
     Integer PRECISION = 7;
-    // constant indiacting the position of radix of a column.
+    // constant indicating the position of radix of a column.
     Integer RADIX = 8;
     // constant indicating scale of the column.
     Integer SCALE = 9;
-    // constant indiacting the position of auto-incrementable property of a column.
+    // constant indicating the position of auto-incrementable property of a column.
     Integer AUTO_INCREMENTING = 10;
-    // constant indiacting the position of columns case sensitivity.
+    // constant indicating the position of columns case sensitivity.
     Integer CASE_SENSITIVE = 11;
     // constant indicating the position of nullable property of a column.
     Integer NULLABLE = 12;

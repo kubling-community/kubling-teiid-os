@@ -19,5 +19,5 @@
 package com.kubling.teiid.net.socket;
 
 public enum AuthenticationType {
-    USERPASSWORD,GSS,SSL;
+    USERPASSWORD,GSS,SSL
 }

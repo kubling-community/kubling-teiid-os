@@ -45,7 +45,7 @@ public class GlobalTracerInjector implements TracingHelper.Injector {
         if (span == null) {
             return null;
         }
-        Map<String,String> spanMap = new HashMap<>();
+        Map<String, String> spanMap = new HashMap<>();
         tracer.inject(span.context(), Builtin.TEXT_MAP, new TextMapAdapter(spanMap));
 
         //simple json creation
@@ -59,8 +59,8 @@ public class GlobalTracerInjector implements TracingHelper.Injector {
                 first = false;
             }
             json.append('"').append(entry.getKey().replace("\"", "\\\""))
-            .append("\":\"")
-            .append(entry.getValue().replace("\"", "\\\"")).append('"');
+                    .append("\":\"")
+                    .append(entry.getValue().replace("\"", "\\\"")).append('"');
         }
         json.append('}');
         return json.toString();

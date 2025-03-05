@@ -31,10 +31,11 @@ public class JDBCPlugin { // extends Plugin {
 
     public static final String PLUGIN_ID = "com.kubling.teiid.jdbc";
 
-    public static final BundleUtil Util = 
-            new BundleUtil(PLUGIN_ID, PLUGIN_ID + ".i18n", 
+    public static final BundleUtil Util =
+            new BundleUtil(PLUGIN_ID, PLUGIN_ID + ".i18n",
                     ResourceBundle.getBundle(PLUGIN_ID + ".i18n"));
-    public static enum Event implements BundleUtil.Event {
+
+    public enum Event implements BundleUtil.Event {
         TEIID20000,
         TEIID20001,
         TEIID20002,

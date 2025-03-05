@@ -180,7 +180,7 @@ public class TeiidDriver implements Driver {
     }
 
     /**
-     * This method parses the URL and adds properties to the the properties object.
+     * This method parses the URL and adds properties to the properties object.
      * These include required and any optional properties specified in the URL.
      *
      * @param url  The URL needed to be parsed.

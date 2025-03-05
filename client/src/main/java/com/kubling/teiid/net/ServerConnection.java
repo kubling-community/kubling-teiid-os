@@ -22,7 +22,7 @@ import com.kubling.teiid.client.security.LogonResult;
 
 public interface ServerConnection {
 
-    public static final int PING_INTERVAL = 120000;
+    int PING_INTERVAL = 120000;
 
     <T> T getService(Class<T> iface);
 

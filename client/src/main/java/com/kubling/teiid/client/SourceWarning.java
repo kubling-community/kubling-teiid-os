@@ -33,7 +33,7 @@ public class SourceWarning extends TeiidException {
     public static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
     private String modelName = "UNKNOWN"; // variable stores the name of the model for the atomic query 
     private String connectorBindingName = "UNKNOWN"; // variable stores name of the connector binding 
-    private boolean partialResults;
+    private final boolean partialResults;
 
     /**
      * <p>Constructor that stores atomic query failure details.
@@ -55,7 +55,7 @@ public class SourceWarning extends TeiidException {
     }
 
     /**
-     * <p>Get's the model name for the atomic query.
+     * <p>Return the model name for the atomic query.
      *
      * @return The name of the model
      */
@@ -64,7 +64,7 @@ public class SourceWarning extends TeiidException {
     }
 
     /**
-     * <p>Get's the connector binding name for the atomic query.
+     * <p>Return the connector binding name for the atomic query.
      *
      * @return The Connector Binding Name
      */
@@ -82,7 +82,7 @@ public class SourceWarning extends TeiidException {
      * @return Message containing details of the source for which there is a failure.
      */
     public String toString() {
-        StringBuffer warningBuf = new StringBuffer();
+        StringBuilder warningBuf = new StringBuilder();
         if (partialResults) {
             warningBuf.append("Error ");
         } else {

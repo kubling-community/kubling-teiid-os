@@ -25,7 +25,9 @@ import java.io.*;
  * the key is set to an {@link com.kubling.teiid.client.util.ExceptionHolder}
  */
 public class Message implements Externalizable {
-    public static final long serialVersionUID = 1063704220782714098L;
+
+    @Serial
+    private static final long serialVersionUID = 1063704220782714098L;
     private Object contents;
     private Serializable messageKey;
 

@@ -16,21 +16,17 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package com.kubling.teiid.net.socket;
 
 import com.kubling.teiid.core.util.ArgCheck;
 import com.kubling.teiid.core.util.ExternalizeUtil;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 
 
 public final class ServiceInvocationStruct implements Externalizable {
+
+    @Serial
     private static final long serialVersionUID = 1207674062670068350L;
     public Class<?> targetClass;
     public String methodName;
@@ -41,7 +37,7 @@ public final class ServiceInvocationStruct implements Externalizable {
     }
 
     public ServiceInvocationStruct(Object[] args, String methodName,
-            Class<?> targetClass) {
+                                   Class<?> targetClass) {
         ArgCheck.isNotNull(methodName);
         ArgCheck.isNotNull(targetClass);
         this.args = args;
@@ -51,8 +47,8 @@ public final class ServiceInvocationStruct implements Externalizable {
 
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        this.targetClass = (Class<?>)in.readObject();
-        this.methodName = (String)in.readObject();
+        this.targetClass = (Class<?>) in.readObject();
+        this.methodName = (String) in.readObject();
         this.args = ExternalizeUtil.readArray(in, Object.class);
     }
 

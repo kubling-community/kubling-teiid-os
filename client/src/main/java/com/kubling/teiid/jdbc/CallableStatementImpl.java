@@ -141,7 +141,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
     }
 
     Object getObject(Object parameterIndex) throws SQLException {
-        Integer indexInResults = null;
+        Integer indexInResults;
         if (parameterIndex instanceof String) {
             indexInResults = this.outParamByName.get(parameterIndex);
         } else {

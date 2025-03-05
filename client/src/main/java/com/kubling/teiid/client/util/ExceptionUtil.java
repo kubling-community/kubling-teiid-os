@@ -72,21 +72,22 @@ public class ExceptionUtil {
 
     /**
      * Strip out the message and optionally the stacktrace
+     *
      * @param t
      * @return
      */
-    public static Throwable sanitize(Throwable t, boolean perserveStack) {
+    public static Throwable sanitize(Throwable t, boolean preserveStack) {
         String code;
         if (t instanceof TeiidException) {
-            code = ((TeiidException)t).getCode();
+            code = ((TeiidException) t).getCode();
         } else if (t instanceof TeiidRuntimeException) {
-            code = ((TeiidRuntimeException)t).getCode();
+            code = ((TeiidRuntimeException) t).getCode();
         } else {
             code = t.getClass().getName();
         }
         Throwable child = null;
         if (t.getCause() != null && t.getCause() != t) {
-            child = sanitize(t.getCause(), perserveStack);
+            child = sanitize(t.getCause(), preserveStack);
         }
         Class<?> clazz = t.getClass();
         Throwable result = null;
@@ -108,14 +109,14 @@ public class ExceptionUtil {
             result = new TeiidException(code);
         }
         if (result instanceof TeiidException) {
-            ((TeiidException)result).setCode(code);
+            ((TeiidException) result).setCode(code);
         } else if (result instanceof TeiidRuntimeException) {
-            ((TeiidException)result).setCode(code);
+            ((TeiidException) result).setCode(code);
         }
         if (child != null) {
             result.initCause(child);
         }
-        if (perserveStack) {
+        if (preserveStack) {
             result.setStackTrace(t.getStackTrace());
         } else {
             result.setStackTrace(SourceWarning.EMPTY_STACK_TRACE);

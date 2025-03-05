@@ -36,16 +36,13 @@ import java.net.UnknownHostException;
  */
 public class HostInfo {
     // Host Name and Port Number
-    private String hostName;
-    private int portNumber = 0;
+    private final String hostName;
+    private final int portNumber;
     private InetAddress inetAddress;
     private boolean ssl;
 
     /**
      * Construct a fully resolved {@link HostInfo}.
-     *
-     * @param hostName
-     * @param addr
      */
     public HostInfo(String hostName, InetSocketAddress addr) {
         this.hostName = hostName;
@@ -56,9 +53,6 @@ public class HostInfo {
     /**
      * Construct a {@link HostInfo} that can resolve each
      * time an {@link InetAddress} is asked for.
-     *
-     * @param host
-     * @param port
      */
     public HostInfo(String host, int port) {
         ArgCheck.isNotNull(host);
@@ -87,9 +81,7 @@ public class HostInfo {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(hostName).append(":").append(portNumber);
-        return sb.toString();
+        return hostName + ":" + portNumber;
     }
 
     /**
@@ -100,10 +92,9 @@ public class HostInfo {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof HostInfo)) {
+        if (!(obj instanceof HostInfo hostInfo)) {
             return false;
         }
-        HostInfo hostInfo = (HostInfo) obj;
         if (portNumber != hostInfo.getPortNumber()) {
             return false;
         }

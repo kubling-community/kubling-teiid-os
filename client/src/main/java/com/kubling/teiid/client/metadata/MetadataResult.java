@@ -20,14 +20,13 @@ package com.kubling.teiid.client.metadata;
 
 import com.kubling.teiid.core.util.ExternalizeUtil;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.util.Map;
 
 
 public class MetadataResult implements Externalizable {
+
+    @Serial
     private static final long serialVersionUID = -1520482281079030324L;
     private Map<Integer, Object>[] columnMetadata;
     private Map<Integer, Object>[] parameterMetadata;
@@ -39,11 +38,12 @@ public class MetadataResult implements Externalizable {
         this.columnMetadata = columnMetadata;
         this.parameterMetadata = parameterMetadata;
     }
+
     public Map<Integer, Object>[] getColumnMetadata() {
         return columnMetadata;
     }
 
-    public Map[] getParameterMetadata() {
+    public Map<Integer, Object>[] getParameterMetadata() {
         return parameterMetadata;
     }
 

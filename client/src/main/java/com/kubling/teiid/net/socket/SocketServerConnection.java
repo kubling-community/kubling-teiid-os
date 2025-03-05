@@ -51,21 +51,21 @@ import java.util.logging.Logger;
 public class SocketServerConnection implements ServerConnection {
 
     private static final int FAILOVER_PING_INTERVAL = 1000;
-    private SocketServerInstanceFactory connectionFactory;
-    private UrlServerDiscovery serverDiscovery;
-    private static Logger log = Logger.getLogger("org.teiid.client.sockets");
+    private final SocketServerInstanceFactory connectionFactory;
+    private final UrlServerDiscovery serverDiscovery;
+    private static final Logger log = Logger.getLogger("org.teiid.client.sockets");
 
-    private boolean secure;
-    private Properties connProps;
+    private final boolean secure;
+    private final Properties connProps;
 
     private SocketServerInstance serverInstance;
     private LogonResult logonResult;
-    private ILogon logon;
+    private final ILogon logon;
     private boolean closed;
     private boolean failOver;
     private long lastPing = System.currentTimeMillis();
     private int pingFailOverInterval = FAILOVER_PING_INTERVAL;
-    private String serverVersion;
+    private final String serverVersion;
 
     public SocketServerConnection(
             SocketServerInstanceFactory connectionFactory, boolean secure,
@@ -77,7 +77,7 @@ public class SocketServerConnection implements ServerConnection {
         this.secure = secure;
         //ILogon that is allowed to failover
         this.logon = this.getService(ILogon.class);
-        this.failOver = Boolean.valueOf(connProps.getProperty(TeiidURL.CONNECTION.AUTO_FAILOVER)).booleanValue();
+        this.failOver = Boolean.parseBoolean(connProps.getProperty(TeiidURL.CONNECTION.AUTO_FAILOVER));
         this.serverVersion = selectServerInstance().getServerVersion();
     }
 
@@ -85,12 +85,11 @@ public class SocketServerConnection implements ServerConnection {
      * Implements a sticky random selection policy
      * TODO: make this customizable
      * TODO: put more information on hostinfo as to process response time, last successful connect, etc.
-     * @throws ConnectionException
      */
     public synchronized SocketServerInstance selectServerInstance()
             throws CommunicationException, ConnectionException {
         if (closed) {
-             throw new CommunicationException(JDBCPlugin.Event.TEIID20016, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20016));
+            throw new CommunicationException(JDBCPlugin.Event.TEIID20016, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20016));
         }
         if (this.serverInstance != null && (!failOver || this.serverInstance.isOpen())) {
             return this.serverInstance;
@@ -99,10 +98,10 @@ public class SocketServerConnection implements ServerConnection {
         closeServerInstance();
         List<HostInfo> hostCopy = new ArrayList<>(hostKeys);
         int knownHosts = hostKeys.size();
-        while (hostKeys.size() > 0) {
+        while (!hostKeys.isEmpty()) {
             HostInfo hostInfo = this.serverDiscovery.selectNextInstance(hostKeys);
 
-            Exception ex = null;
+            Exception ex;
             try {
                 if (!hostInfo.isResolved()) {
                     InetAddress inetAddress = hostInfo.getInetAddress();
@@ -116,24 +115,22 @@ public class SocketServerConnection implements ServerConnection {
                 this.serverInstance = connectionFactory.getServerInstance(hostInfo);
                 connectSession();
                 return this.serverInstance;
-            } catch (IOException e) {
-                ex = e;
-            } catch (SingleInstanceCommunicationException e) {
+            } catch (IOException | SingleInstanceCommunicationException e) {
                 ex = e;
             }
             if (knownHosts == 1) { //just a single host, use the exception
                 if (ex instanceof UnknownHostException) {
-                     throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20019, ex, 
-                             JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20019, hostInfo.getHostName()));
+                    throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20019, ex,
+                            JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20019, hostInfo.getHostName()));
                 }
-                 throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20020, ex,
-                         JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20020, hostInfo.getHostName(),
-                                 String.valueOf(hostInfo.getPortNumber()), ex.getMessage()));
+                throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20020, ex,
+                        JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20020, hostInfo.getHostName(),
+                                String.valueOf(hostInfo.getPortNumber()), ex.getMessage()));
             }
             log.log(Level.FINE, "Unable to connect to host", ex);
         }
-         throw new CommunicationException(JDBCPlugin.Event.TEIID20021,
-                 JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20021, hostCopy.toString()));
+        throw new CommunicationException(JDBCPlugin.Event.TEIID20021,
+                JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20021, hostCopy.toString()));
     }
 
     private void logon(ILogon newLogon) throws LogonException, TeiidComponentException, CommunicationException {
@@ -142,7 +139,7 @@ public class SocketServerConnection implements ServerConnection {
 
         updateConnectionProperties(connProps, instance.getLocalAddress(), true, this.connectionFactory);
 
-        LogonResult newResult = null;
+        LogonResult newResult;
 
         // - if gss
         if (connProps.contains(TeiidURL.CONNECTION.JAAS_NAME)) {
@@ -174,7 +171,7 @@ public class SocketServerConnection implements ServerConnection {
         }
         String address = addr.getHostAddress();
         Object old = connectionProperties.put(TeiidURL.CONNECTION.CLIENT_IP_ADDRESS, address);
-        if (old == null || !address.equals(old)) {
+        if (!address.equals(old)) {
             String hostname = null;
             if (resolver != null) {
                 hostname = resolver.resolveHostname(addr);
@@ -219,13 +216,13 @@ public class SocketServerConnection implements ServerConnection {
             } catch (LogonException e) {
                 // Propagate the original message as it contains the message we want
                 // to give to the user
-                 throw new ConnectionException(e);
+                throw new ConnectionException(e);
             } catch (TeiidComponentException e) {
                 if (e.getCause() instanceof CommunicationException) {
-                    throw (CommunicationException)e.getCause();
+                    throw (CommunicationException) e.getCause();
                 }
-                 throw new CommunicationException(JDBCPlugin.Event.TEIID20018, e,
-                         JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20018));
+                throw new CommunicationException(JDBCPlugin.Event.TEIID20018, e,
+                        JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20018));
             }
         }
         return newLogon;
@@ -233,48 +230,48 @@ public class SocketServerConnection implements ServerConnection {
 
     public <T> T getService(Class<T> iface) {
         return iface.cast(Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class[] {iface},
+                new Class[]{iface},
                 new SocketServerInstanceImpl.RemoteInvocationHandler(iface,
                         PropertiesUtils.getBooleanProperty(connProps, TeiidURL.CONNECTION.ENCRYPT_REQUESTS, false)) {
-            @Override
-            protected SocketServerInstance getInstance() throws CommunicationException {
-                if (failOver && System.currentTimeMillis() - lastPing > pingFailOverInterval) {
-                    try {
-                        ResultsFuture<?> future = selectServerInstance().getService(ILogon.class).ping();
-                        future.get();
-                    } catch (SingleInstanceCommunicationException e) {
-                        closeServerInstance();
-                    } catch (CommunicationException e) {
-                        throw e;
-                    } catch (InvalidSessionException e) {
-                        disconnect();
-                        closeServerInstance();
-                    } catch (Exception e) {
-                        closeServerInstance();
+                    @Override
+                    protected SocketServerInstance getInstance() throws CommunicationException {
+                        if (failOver && System.currentTimeMillis() - lastPing > pingFailOverInterval) {
+                            try {
+                                ResultsFuture<?> future = selectServerInstance().getService(ILogon.class).ping();
+                                future.get();
+                            } catch (SingleInstanceCommunicationException e) {
+                                closeServerInstance();
+                            } catch (CommunicationException e) {
+                                throw e;
+                            } catch (InvalidSessionException e) {
+                                disconnect();
+                                closeServerInstance();
+                            } catch (Exception e) {
+                                closeServerInstance();
+                            }
+                        }
+                        lastPing = System.currentTimeMillis();
+                        try {
+                            return selectServerInstance();
+                        } catch (ConnectionException e) {
+                            throw new CommunicationException(e);
+                        }
                     }
-                }
-                lastPing = System.currentTimeMillis();
-                try {
-                    return selectServerInstance();
-                } catch (ConnectionException e) {
-                     throw new CommunicationException(e);
-                }
-            }
 
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args)
-                    throws Throwable {
-                try {
-                    return super.invoke(proxy, method, args);
-                } catch (Exception e) {
-                    if (ExceptionUtil.getExceptionOfType(e, InvalidSessionException.class) != null) {
-                        disconnect();
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args)
+                            throws Throwable {
+                        try {
+                            return super.invoke(proxy, method, args);
+                        } catch (Exception e) {
+                            if (ExceptionUtil.getExceptionOfType(e, InvalidSessionException.class) != null) {
+                                disconnect();
+                            }
+                            throw e;
+                        }
                     }
-                    throw e;
-                }
-            }
 
-        }));
+                }));
     }
 
     public synchronized void close() {
@@ -296,7 +293,7 @@ public class SocketServerConnection implements ServerConnection {
         }
         disconnect();
         try {
-            //make a best effort to send the logoff, and wait a small amount for a response
+            //make the best effort to send the logoff, and wait a small amount for a response
             //this will ensure a "proper" session termination on the server side,
             //rather than implicit closure when the socket is closed
             Future<?> writeFuture = this.serverInstance.getService(ILogon.class).logoff();
@@ -313,7 +310,7 @@ public class SocketServerConnection implements ServerConnection {
     private synchronized ResultsFuture<?> isOpen()
             throws CommunicationException, InvalidSessionException, TeiidComponentException {
         if (this.closed) {
-             throw new CommunicationException(JDBCPlugin.Event.TEIID20023, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20023));
+            throw new CommunicationException(JDBCPlugin.Event.TEIID20023, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20023));
         }
         return logon.ping();
     }
@@ -345,9 +342,9 @@ public class SocketServerConnection implements ServerConnection {
         }
         try {
             return selectServerInstance().getHostInfo()
-                    .equals(((SocketServerConnection)otherService).selectServerInstance().getHostInfo());
+                    .equals(((SocketServerConnection) otherService).selectServerInstance().getHostInfo());
         } catch (ConnectionException e) {
-             throw new CommunicationException(e);
+            throw new CommunicationException(e);
         }
     }
 
@@ -369,9 +366,9 @@ public class SocketServerConnection implements ServerConnection {
             try {
                 this.logon(logonInstance);
             } catch (LogonException e) {
-                 throw new ConnectionException(e);
+                throw new ConnectionException(e);
             } catch (TeiidComponentException e) {
-                 throw new CommunicationException(e);
+                throw new CommunicationException(e);
             }
         }
     }

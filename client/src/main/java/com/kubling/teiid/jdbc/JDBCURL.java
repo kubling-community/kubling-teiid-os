@@ -20,10 +20,10 @@ package com.kubling.teiid.jdbc;
 
 import com.kubling.teiid.net.TeiidURL;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +41,7 @@ public class JDBCURL {
     public static final Map<String, String> EXECUTION_PROPERTIES = Collections.unmodifiableMap(buildProps());
 
     private static Map<String, String> buildProps() {
-        Map<String, String> result = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         Set<String> keys = extractFieldNames(ExecutionProperties.class);
         for (String key : keys) {
             result.put(key, key);
@@ -51,19 +51,20 @@ public class JDBCURL {
     }
 
     private static Set<String> extractFieldNames(Class<?> clazz) throws AssertionError {
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
         Field[] fields = clazz.getDeclaredFields();
-         for (Field field : fields) {
-             if (field.getType() == String.class) {
+        for (Field field : fields) {
+            if (field.getType() == String.class) {
                 try {
-                    if (!result.add((String)field.get(null))) {
+                    if (!result.add((String) field.get(null))) {
                         throw new AssertionError("Duplicate value for " + field.getName());
                     }
                 } catch (Exception e) {
+                    // Ignored
                 }
-             }
-         }
-         return Collections.unmodifiableSet(result);
+            }
+        }
+        return Collections.unmodifiableSet(result);
     }
 
     public static final Map<String, String> KNOWN_PROPERTIES = getKnownProperties();
@@ -96,7 +97,7 @@ public class JDBCURL {
 
     private String vdbName;
     private String connectionURL;
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
     public enum ConnectionType {
         Embedded,
@@ -106,7 +107,7 @@ public class JDBCURL {
     public static ConnectionType acceptsUrl(String url) {
         Matcher m = urlPattern.matcher(url);
         if (m.matches()) {
-            return m.group(2) != null?ConnectionType.Socket:ConnectionType.Embedded;
+            return m.group(2) != null ? ConnectionType.Socket : ConnectionType.Embedded;
         }
         return null;
     }
@@ -118,7 +119,7 @@ public class JDBCURL {
     }
 
     public JDBCURL(String vdbName, String connectionURL, Properties props) {
-        if (vdbName == null || vdbName.trim().length() == 0) {
+        if (vdbName == null || vdbName.trim().isEmpty()) {
             throw new IllegalArgumentException();
         }
         this.vdbName = vdbName;
@@ -149,7 +150,7 @@ public class JDBCURL {
         }
         // Trim extra spaces
         jdbcURL = jdbcURL.trim();
-        if (jdbcURL.length() == 0) {
+        if (jdbcURL.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
@@ -170,29 +171,27 @@ public class JDBCURL {
 
     public static void parseConnectionProperties(String connectionInfo, Properties p) {
         String[] connectionParts = connectionInfo.split(";");
-        if (connectionParts.length != 0) {
-            // The rest should be connection params
-            for (int i = 0; i < connectionParts.length; i++) {
-                parseConnectionProperty(connectionParts[i], p);
-            }
+        // The rest should be connection params
+        for (String connectionPart : connectionParts) {
+            parseConnectionProperty(connectionPart, p);
         }
     }
 
     static void parseConnectionProperty(String connectionProperty, Properties p) {
-        if (connectionProperty.length() == 0) {
+        if (connectionProperty.isEmpty()) {
             // Be tolerant of double-semicolons and dangling semicolons
             return;
-        } else if(connectionProperty.length() < 3) {
+        } else if (connectionProperty.length() < 3) {
             // key=value must have at least 3 characters
             throw new IllegalArgumentException();
         }
         int firstEquals = connectionProperty.indexOf('=');
-        if(firstEquals < 1) {
+        if (firstEquals < 1) {
             throw new IllegalArgumentException();
         }
         String key = connectionProperty.substring(0, firstEquals).trim();
-        String value = connectionProperty.substring(firstEquals+1).trim();
-        if(value.indexOf('=') >= 0) {
+        String value = connectionProperty.substring(firstEquals + 1).trim();
+        if (value.indexOf('=') >= 0) {
             throw new IllegalArgumentException();
         }
         addNormalizedProperty(getValidValue(key), getValidValue(value), p);
@@ -200,22 +199,21 @@ public class JDBCURL {
 
     public String getJDBCURL() {
         if (urlString == null) {
-            StringBuffer buf = new StringBuffer(JDBC_PROTOCOL)
-                .append(safeEncode(vdbName));
-                if (this.connectionURL != null) {
-                    buf.append('@').append(connectionURL);
-                }
-            TreeMap sorted = new TreeMap();
-            sorted.putAll(properties);
+            StringBuilder buf = new StringBuilder(JDBC_PROTOCOL)
+                    .append(safeEncode(vdbName));
+            if (this.connectionURL != null) {
+                buf.append('@').append(connectionURL);
+            }
+            TreeMap sorted = new TreeMap(properties);
 
-            for (Iterator i = sorted.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry)i.next();
+            for (Object o : sorted.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
                 if (entry.getValue() instanceof String) {
                     // get only the string properties, because a non-string property could not have been set on the url.
                     buf.append(';')
-                       .append(entry.getKey())
-                       .append('=')
-                       .append(safeEncode((String)entry.getValue()));
+                            .append(entry.getKey())
+                            .append('=')
+                            .append(safeEncode((String) entry.getValue()));
                 }
             }
             urlString = buf.toString();
@@ -275,8 +273,8 @@ public class JDBCURL {
     }
 
     private static void normalizeProperties(Properties source, Properties target) {
-        for (Enumeration e = source.propertyNames(); e.hasMoreElements();) {
-            String key = (String)e.nextElement();
+        for (Enumeration e = source.propertyNames(); e.hasMoreElements(); ) {
+            String key = (String) e.nextElement();
             addNormalizedProperty(key, source.get(key), target);
         }
     }
@@ -297,22 +295,12 @@ public class JDBCURL {
     }
 
     private static String getValidValue(String value) {
-        try {
-            // Decode the value of the property if incase they were encoded.
-            return URLDecoder.decode(value, UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            // use the original value
-        }
-        return value;
+        // Decode the value of the property if incase they were encoded.
+        return URLDecoder.decode(value, StandardCharsets.UTF_8);
     }
 
     private static String safeEncode(String value) {
-        try {
-            return URLEncoder.encode(value, UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            // use the original value
-        }
-        return value;
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
     public static Properties normalizeProperties(Properties props) {

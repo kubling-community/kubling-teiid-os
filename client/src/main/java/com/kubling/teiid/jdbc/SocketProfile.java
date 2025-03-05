@@ -41,6 +41,7 @@ final class SocketProfile implements ConnectionProfile {
     /**
      * This method tries to make a connection to the given URL. This class
      * will return a null if this is not the right driver to connect to the given URL.
+     *
      * @param url used to establish a connection.
      * @return Connection object created
      * @throws TeiidSQLException if it is unable to establish a connection to the server.

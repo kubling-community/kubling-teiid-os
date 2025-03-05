@@ -30,7 +30,6 @@ import com.kubling.teiid.core.util.PropertiesUtils;
 import com.kubling.teiid.core.util.SqlUtil;
 import com.kubling.teiid.core.util.TimestampWithTimezone;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -45,7 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchResults.BatchFetcher {
-    private static Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
 
     private static final int BEFORE_FIRST_ROW = 0;
 
@@ -57,23 +56,23 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     // This object represents metadata for this result set.
     private ResultSetMetaData rmetadata;
     // Statement that causes this results
-    private StatementImpl statement;
+    private final StatementImpl statement;
 
     // Cursor related state
-    private int cursorType;
+    private final int cursorType;
     private boolean isClosed;
 
     // reuse the original request's state
-    private long requestID;
-    private BatchResults batchResults;
-    private int columnCount;
-    private int resultColumns;
-    private int parameters;
-    private TimeZone serverTimeZone;
+    private final long requestID;
+    private final BatchResults batchResults;
+    private final int columnCount;
+    private final int resultColumns;
+    private final int parameters;
+    private final TimeZone serverTimeZone;
     private PlanNode updatedPlanDescription;
     private int maxFieldSize;
     private int fetchSize;
-    private int maxRows;
+    private final int maxRows;
 
     private Map<String, Integer> columnMap;
 
@@ -83,22 +82,15 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     boolean asynch;
 
     private ResultsFuture<ResultsMessage> prefetch;
-    private boolean usePrefetch;
+    private final boolean usePrefetch;
 
     private int skipTo;
 
-    private static boolean DISABLE_FETCH_SIZE_DEFAULT =
+    private static final boolean DISABLE_FETCH_SIZE_DEFAULT =
             PropertiesUtils.getHierarchicalProperty("org.teiid." + DISABLE_FETCH_SIZE, false, Boolean.class);
 
     private Boolean disableFetchSize;
 
-    /**
-     * Constructor.
-     *
-     * @param resultsMsg
-     * @param statement
-     * @throws SQLException
-     */
     ResultSetImpl(ResultsMessage resultsMsg, StatementImpl statement) throws SQLException {
         this(resultsMsg, statement, null, 0);
     }
@@ -143,14 +135,12 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
 
     public void close() throws SQLException {
         if (!isClosed) {
-            // close the the server's statement object (if necessary)
+            // close the server's statement object (if necessary)
             if (this.requestID >= 0) {
                 this.statement.checkStatement();
                 try {
                     this.statement.getDQP().closeRequest(requestID);
-                } catch (TeiidProcessingException e) {
-                    throw TeiidSQLException.create(e);
-                } catch (TeiidComponentException e) {
+                } catch (TeiidProcessingException | TeiidComponentException e) {
                     throw TeiidSQLException.create(e);
                 }
             }
@@ -227,16 +217,13 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
             return StatementImpl.booleanFuture(next());
         }
         ResultsFuture<ResultsMessage> pendingResult = submitRequestBatch(batchResults.getCurrentRowNumber() + 1);
-        final ResultsFuture<Boolean> result = new ResultsFuture<Boolean>();
-        pendingResult.addCompletionListener(new ResultsFuture.CompletionListener<ResultsMessage>() {
-            @Override
-            public void onCompletion(ResultsFuture<ResultsMessage> future) {
-                try {
-                    batchResults.setBatch(processBatch(future.get()));
-                    result.getResultsReceiver().receiveResults(next());
-                } catch (Throwable t) {
-                    result.getResultsReceiver().exceptionOccurred(t);
-                }
+        final ResultsFuture<Boolean> result = new ResultsFuture<>();
+        pendingResult.addCompletionListener(future -> {
+            try {
+                batchResults.setBatch(processBatch(future.get()));
+                result.getResultsReceiver().receiveResults(next());
+            } catch (Throwable t) {
+                result.getResultsReceiver().exceptionOccurred(t);
             }
         });
         return result;
@@ -301,19 +288,16 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
                 InputStreamFactory isf = createInputStreamFactory((BlobType) currentValue);
                 isf.setLength(((BlobType) currentValue).getLength());
                 return new BlobImpl(isf);
-            } else if (currentValue instanceof XMLType) {
-                XMLType val = (XMLType) currentValue;
+            } else if (currentValue instanceof XMLType val) {
                 SQLXMLImpl impl = new SQLXMLImpl(createInputStreamFactory(val));
                 impl.setEncoding(val.getEncoding());
                 return impl;
             }
         } else if (currentValue instanceof java.util.Date) {
             return TimestampWithTimezone.create((java.util.Date) currentValue, serverTimeZone, getDefaultCalendar(), currentValue.getClass());
-        } else if (maxFieldSize > 0 && currentValue instanceof String) {
-            String val = (String) currentValue;
+        } else if (maxFieldSize > 0 && currentValue instanceof String val) {
             return val.substring(0, Math.min(maxFieldSize / 2, val.length()));
-        } else if (currentValue instanceof BinaryType) {
-            BinaryType val = (BinaryType) currentValue;
+        } else if (currentValue instanceof BinaryType val) {
             return val.getBytesDirect();
         }
         return currentValue;
@@ -322,13 +306,12 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     private InputStreamFactory createInputStreamFactory(Streamable<?> type) {
         final StreamingLobChunckProducer.Factory factory =
                 new StreamingLobChunckProducer.Factory(this.statement.getDQP(), this.requestID, type);
-        InputStreamFactory isf = new InputStreamFactory() {
+        return new InputStreamFactory() {
             @Override
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 return new LobChunkInputStream(factory.getLobChunkProducer());
             }
         };
-        return isf;
     }
 
     /**
@@ -345,7 +328,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     /*
      * @see java.sql.ResultSet#getType()
      */
-    public int getType() throws SQLException {
+    public int getType() {
         return this.cursorType;
     }
 
@@ -368,8 +351,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
                 //to read what we have requested before requesting more (no queuing)
                 ResultsMessage result = getResults(prefetch);
                 prefetch = null;
-                BatchResults.Batch nextBatch = processBatch(result);
-                return nextBatch;
+                return processBatch(result);
             }
             ResultsFuture<ResultsMessage> results = submitRequestBatch(beginRow);
             if (asynch && !results.isDone()) {
@@ -380,11 +362,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
             }
             ResultsMessage currentResultMsg = getResults(results);
             return processBatch(currentResultMsg);
-        } catch (InterruptedException e) {
-            throw TeiidSQLException.create(e);
-        } catch (ExecutionException e) {
-            throw TeiidSQLException.create(e);
-        } catch (TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw TeiidSQLException.create(e);
         }
     }
@@ -433,8 +411,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         if (timeoutSeconds == 0) {
             timeoutSeconds = Integer.MAX_VALUE;
         }
-        ResultsMessage currentResultMsg = results.get(timeoutSeconds, TimeUnit.SECONDS);
-        return currentResultMsg;
+        return results.get(timeoutSeconds, TimeUnit.SECONDS);
     }
 
     private BatchResults.Batch getCurrentBatch(ResultsMessage currentResultMsg) throws TeiidSQLException {
@@ -450,14 +427,14 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         //similar logic to BatchCollector on the server side
         //this is a catch-all in case the server doesn't enforce the max
         //such as currently the case with cached subset results
-        List<?>[] tuples = null;
+        List<?>[] tuples;
         int firstRow = currentResultMsg.getFirstRow();
         int endRow = currentResultMsg.getLastRow();
         int lastRow = currentResultMsg.getFinalRow();
         if (maxRows > 0) {
             if (parameters > 0) {
                 if (currentResultMsg.getLastRow() == currentResultMsg.getFinalRow()) {
-                    lastTuple = resultsList.get(resultsList.size() - 1);
+                    lastTuple = resultsList.getLast();
                 } else if (maxRows < currentResultMsg.getFirstRow()) {
                     //awkward scenario - there are parameters at the end
                     //skip ahead as far as possible
@@ -557,19 +534,14 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     public InputStream getBinaryStream(int columnIndex)
             throws SQLException {
         Object value = getObject(columnIndex);
-        if (value == null) {
-            return null;
-        }
+        return switch (value) {
+            case null -> null;
+            case Blob blob -> blob.getBinaryStream();
+            case SQLXML sqlxml -> sqlxml.getBinaryStream();
+            default ->
+                    throw new TeiidSQLException(JDBCPlugin.Util.getString("MMResultSet.cannot_convert_to_binary_stream"));
+        };
 
-        if (value instanceof Blob) {
-            return ((Blob) value).getBinaryStream();
-        }
-
-        if (value instanceof SQLXML) {
-            return ((SQLXML) value).getBinaryStream();
-        }
-
-        throw new TeiidSQLException(JDBCPlugin.Util.getString("MMResultSet.cannot_convert_to_binary_stream"));
     }
 
     public InputStream getBinaryStream(String columnName)
@@ -618,7 +590,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      *
      * @return The resultSets are not updatable, this method returns
      * CONCUR_READ_ONLY.
-     * @throws SQLException if the there is an error accesing results
+     * @throws SQLException if the there is an error accessing results
      */
     public int getConcurrency() throws SQLException {
 
@@ -677,7 +649,6 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      *
      * @return fetch direction for this ResultSet. This cannot be set and is
      * always FETCH_FORWARD.
-     * @throws SQLException
      */
     public int getFetchDirection() throws SQLException {
         checkClosed(); // check to see if the ResultSet is closed
@@ -807,7 +778,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      * row. This method does not have any effect if the cursor is not on the
      * insert row. ResultSet cannot currently be updated.
      */
-    public void moveToCurrentRow() throws SQLException {
+    public void moveToCurrentRow() {
         // do nothing
     }
 
@@ -817,7 +788,6 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      * return false.
      *
      * @return A boolean value showing if the lastvalue read in was null or not.
-     * @throws SQLException
      */
     public boolean wasNull() throws SQLException {
 
@@ -847,9 +817,8 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      * Retrieves the RequestID for the query that created this ResultSet.
      *
      * @return The requestID for the query that created these results
-     * @throws SQLException
      */
-    public String getCursorName() throws SQLException {
+    public String getCursorName() {
         return null;
     }
 
@@ -858,7 +827,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      * Retrieves the Statement object that produced this ResultSet object.
      *
      * @return a Statement object.
-     * @throws SQLException if the there is an error accesing results
+     * @throws SQLException if the there is an error accessing results
      */
     public StatementImpl getStatement() throws SQLException {
         checkClosed();
@@ -888,7 +857,6 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      * scrollable.
      *
      * @return true if the cursor is after the last row in the resultSet.
-     * @throws SQLException
      */
     public boolean isAfterLast() throws SQLException {
         if (getFinalRowNumber() == -1) {
@@ -908,7 +876,6 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      * @return true if the cursor is before the last row in the resultSet;false
      * if the cursor is at any other position or the result set contains no
      * rows.
-     * @throws SQLException
      */
     public boolean isBeforeFirst() throws SQLException {
         // return true if there are rows and the current row is before first
@@ -1001,7 +968,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
 
     protected int findColumnIndex(String columnName) throws SQLException {
         if (this.columnMap == null) {
-            columnMap = new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER);
+            columnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             int colCount = getMetaData().getColumnCount();
             for (int i = 1; i <= colCount; i++) {
                 columnMap.put(getMetaData().getColumnLabel(i), i);
@@ -1012,7 +979,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
             return index;
         }
         String msg = JDBCPlugin.Util.getString(
-                "MMResultsImpl.Col_doesnt_exist", columnName);
+                "MMResultsImpl.Col_doesn't_exist", columnName);
         throw new TeiidSQLException(msg);
     }
 

@@ -21,39 +21,32 @@ package com.kubling.teiid.net;
 import com.kubling.teiid.core.BundleUtil;
 import com.kubling.teiid.core.TeiidException;
 
+import java.io.Serial;
+
 /**
  * This exception indicates that an error has occurred during connection.  There
  * are many possible reasons for this, but the most likely is a problem with
  * connection parameters.
  */
 public class ConnectionException extends TeiidException {
+    @Serial
     private static final long serialVersionUID = -5647655775983865084L;
 
     /**
      * No-Arg Constructor
      */
-    public ConnectionException(  ) {
-        super( );
+    public ConnectionException() {
+        super();
     }
 
-    /**
-     * @param message
-     */
     public ConnectionException(String message) {
         super(message);
     }
 
-    /**
-     * @param e
-     */
     public ConnectionException(Throwable e) {
         super(e);
     }
 
-    /**
-     * @param e
-     * @param message
-     */
     public ConnectionException(Throwable e, String message) {
         super(e, message);
     }

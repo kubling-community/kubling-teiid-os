@@ -20,6 +20,8 @@ package com.kubling.teiid.client.security;
 
 import com.kubling.teiid.core.BundleUtil;
 
+import java.io.Serial;
+
 
 /**
  * This exception is thrown when an attempt to log in to obtain a session has failed.
@@ -33,27 +35,28 @@ import com.kubling.teiid.core.BundleUtil;
  */
 public class LogonException extends TeiidSecurityException {
 
+    @Serial
     private static final long serialVersionUID = -4407245748107257061L;
 
     /**
      * No-Arg Constructor
      */
-    public LogonException(  ) {
-        super( );
+    public LogonException() {
+        super();
     }
 
     /**
      * Construct an instance with the message and error code specified.
      *
      * @param message A message describing the exception
-     * @param event The error event code
+     * @param event   The error event code
      */
-    public LogonException( BundleUtil.Event event, String message ) {
+    public LogonException(BundleUtil.Event event, String message) {
         super(event, message);
     }
 
-    public LogonException( BundleUtil.Event event, Throwable t, String message ) {
-        super(event, t, message );
+    public LogonException(BundleUtil.Event event, Throwable t, String message) {
+        super(event, t, message);
     }
 
     public LogonException(Throwable t) {

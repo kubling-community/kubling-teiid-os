@@ -31,29 +31,19 @@ public class SingleInstanceCommunicationException extends CommunicationException
     /**
      * No-Arg Constructor
      */
-    public SingleInstanceCommunicationException(  ) {
-        super( );
+    public SingleInstanceCommunicationException() {
+        super();
     }
 
-    /**
-     * @param message
-     */
     public SingleInstanceCommunicationException(String message) {
         super(message);
     }
 
 
-    /**
-     * @param e
-     */
     public SingleInstanceCommunicationException(Throwable e) {
         super(e);
     }
 
-    /**
-     * @param e
-     * @param message
-     */
     public SingleInstanceCommunicationException(Throwable e, String message) {
         super(e, message);
     }

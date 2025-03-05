@@ -1,6 +1,6 @@
 /*-------------------------------------------------------------------------
  *
- * Copyright (c) 2008, PostgreSQL Global Development Group
+ * Copyright (c) 2008, PostgresSQL Global Development Group
  *
  * IDENTIFICATION
  *   $PostgreSQL: pgjdbc/org/postgresql/gss/GSSCallbackHandler.java,v 1.2 2008/11/29 07:43:47 jurka Exp $
@@ -47,32 +47,30 @@ public class GSSCallbackHandler implements CallbackHandler {
 
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         for (Callback callback : callbacks) {
-            if (callback instanceof TextOutputCallback) {
-                TextOutputCallback toc = (TextOutputCallback) callback;
-                switch (toc.getMessageType()) {
-                    case TextOutputCallback.INFORMATION:
-                        logger.info(toc.getMessage());
-                        break;
-                    case TextOutputCallback.ERROR:
-                        logger.severe(toc.getMessage());
-                        break;
-                    case TextOutputCallback.WARNING:
-                        logger.warning(toc.getMessage());
-                        break;
-                    default:
-                        throw new IOException("Unsupported message type: " + toc.getMessageType());
+            switch (callback) {
+                case TextOutputCallback toc -> {
+                    switch (toc.getMessageType()) {
+                        case TextOutputCallback.INFORMATION:
+                            logger.info(toc.getMessage());
+                            break;
+                        case TextOutputCallback.ERROR:
+                            logger.severe(toc.getMessage());
+                            break;
+                        case TextOutputCallback.WARNING:
+                            logger.warning(toc.getMessage());
+                            break;
+                        default:
+                            throw new IOException("Unsupported message type: " + toc.getMessageType());
+                    }
                 }
-            } else if (callback instanceof NameCallback) {
-                NameCallback nc = (NameCallback) callback;
-                nc.setName(user);
-            } else if (callback instanceof PasswordCallback) {
-                PasswordCallback pc = (PasswordCallback) callback;
-                if (password == null) {
-                    throw new IOException(JDBCPlugin.Util.getString("no_krb_ticket"));
+                case NameCallback nc -> nc.setName(user);
+                case PasswordCallback pc -> {
+                    if (password == null) {
+                        throw new IOException(JDBCPlugin.Util.getString("no_krb_ticket"));
+                    }
+                    pc.setPassword(password.toCharArray());
                 }
-                pc.setPassword(password.toCharArray());
-            } else {
-                throw new UnsupportedCallbackException(callback, "Unrecognized Callback");
+                case null, default -> throw new UnsupportedCallbackException(callback, "Unrecognized Callback");
             }
         }
     }

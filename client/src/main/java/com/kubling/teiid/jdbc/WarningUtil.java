@@ -25,7 +25,6 @@ import java.sql.SQLWarning;
 import java.util.List;
 
 
-
 /**
  * Utilities for creating SQLWarnings.
  */
@@ -37,13 +36,13 @@ class WarningUtil {
     /**
      * Used to wrap warnings/exceptions into SQLWarning.
      * The chain of warnings is translated into a chain of SQLWarnings.
+     *
      * @param ex Throwable object which needs to be wrapped.
      */
     static SQLWarning createWarning(Throwable ex) {
         String sourceName = null;
         String modelName = null;
-        if(ex instanceof SourceWarning) {
-            SourceWarning exception = (SourceWarning)ex;
+        if (ex instanceof SourceWarning exception) {
             if (exception.isPartialResultsError()) {
                 PartialResultsWarning warning = new PartialResultsWarning(JDBCPlugin.Util.getString("WarningUtil.Failures_occurred"));
                 warning.addConnectorFailure(exception.getConnectorBindingName(), TeiidSQLException.create(exception));
@@ -55,21 +54,22 @@ class WarningUtil {
         }
         String code = null;
         if (ex instanceof TeiidException) {
-            code = ((TeiidException)ex).getCode();
+            code = ((TeiidException) ex).getCode();
         }
         return new TeiidSQLWarning(ex.getMessage(), code, ex, sourceName, modelName);
     }
 
     /**
      * Convert a List of warnings from the server into a single SQLWarning chain.
+     *
      * @param exceptions List of exceptions from server
      * @return Chain of SQLWarning corresponding to list of exceptions
      */
     static SQLWarning convertWarnings(List<Throwable> exceptions) {
-        if(exceptions == null || exceptions.size() == 0) {
+        if (exceptions == null || exceptions.isEmpty()) {
             return null;
         }
-        SQLWarning root = createWarning(exceptions.get(0));
+        SQLWarning root = createWarning(exceptions.getFirst());
         SQLWarning current = root;
         for (int i = 1; i < exceptions.size(); i++) {
             SQLWarning newWarning = createWarning(exceptions.get(i));

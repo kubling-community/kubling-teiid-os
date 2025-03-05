@@ -40,13 +40,14 @@ public interface ILogon {
             throws LogonException, TeiidComponentException, CommunicationException;
 
     @Secure
-    LogonResult neogitiateGssLogin(Properties connectionProperties, byte[] serviceToken, boolean createSession) throws LogonException;
+    LogonResult neogitiateGssLogin(Properties connectionProperties, byte[] serviceToken, boolean createSession)
+            throws LogonException;
 
     /**
      * Ping the server to see if the client-server connection is alive.
      *
      * @throws InvalidSessionException    if the sessionID is invalid
-     * @throws ComponentNotFoundException if can't find the Session service.
+     * @throws ComponentNotFoundException if it can't find the Session service.
      */
     ResultsFuture<?> ping()
             throws InvalidSessionException, TeiidComponentException, CommunicationException;
@@ -59,7 +60,7 @@ public interface ILogon {
      * Log off the specified session.
      *
      * @throws InvalidSessionException    If session has expired or doesn't exist
-     * @throws ComponentNotFoundException If couldn't find needed service component
+     * @throws ComponentNotFoundException If it couldn't find needed service component
      */
     ResultsFuture<?> logoff() throws InvalidSessionException, TeiidComponentException;
 

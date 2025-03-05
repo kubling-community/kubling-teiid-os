@@ -47,7 +47,7 @@ public class ResultsFuture<T> implements Future<T> {
         void onCompletion(ResultsFuture<T> future);
     }
 
-    private LinkedList<CompletionListener<T>> listeners = new LinkedList<>();
+    private final LinkedList<CompletionListener<T>> listeners = new LinkedList<>();
 
     private T result;
     private Throwable exception;

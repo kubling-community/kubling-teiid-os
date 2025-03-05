@@ -40,17 +40,17 @@ import java.util.logging.Logger;
 
 public final class OioOjbectChannelFactory implements ObjectChannelFactory {
 
-    public static ThreadLocal<Long> TIMEOUTS = new ThreadLocal<Long>();
+    public static ThreadLocal<Long> TIMEOUTS = new ThreadLocal<>();
 
-    private final static int STREAM_BUFFER_SIZE = 1<<15;
+    private final static int STREAM_BUFFER_SIZE = 1 << 15;
     private final static int DEFAULT_MAX_OBJECT_SIZE = 1 << 25;
 
-    private static Logger log = Logger.getLogger("com.kubling.teiid.client.sockets");
+    private static final Logger log = Logger.getLogger("com.kubling.teiid.client.sockets");
 
     final static class OioObjectChannel implements ObjectChannel {
         private final Socket socket;
-        private ObjectOutputStream outputStream;
-        private ObjectInputStream inputStream;
+        private final ObjectOutputStream outputStream;
+        private final ObjectInputStream inputStream;
 
         private OioObjectChannel(Socket socket, int maxObjectSize) throws IOException {
             log.fine("creating new OioObjectChannel");
@@ -110,7 +110,7 @@ public final class OioOjbectChannelFactory implements ObjectChannelFactory {
             } catch (SocketTimeoutException e) {
                 Long timeout = TIMEOUTS.get();
                 if (timeout != null && timeout < System.currentTimeMillis()) {
-                    TIMEOUTS.set(null);
+                    TIMEOUTS.remove();
                     throw new InterruptedIOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20035));
                 }
                 throw e;
@@ -137,7 +137,7 @@ public final class OioOjbectChannelFactory implements ObjectChannelFactory {
         }
     }
 
-    private Properties props;
+    private final Properties props;
     private int receiveBufferSize = 0;
     private int sendBufferSize = 0;
     private boolean conserveBandwidth;
@@ -158,7 +158,7 @@ public final class OioOjbectChannelFactory implements ObjectChannelFactory {
                 try {
                     sslSocketFactory = SocketUtil.getSSLSocketFactory(props);
                 } catch (GeneralSecurityException e) {
-                     throw new CommunicationException(JDBCPlugin.Event.TEIID20027, e, e.getMessage());
+                    throw new CommunicationException(JDBCPlugin.Event.TEIID20027, e, e.getMessage());
                 }
             }
             socket = sslSocketFactory.getSocket(info.getHostName(), info.getPortNumber());

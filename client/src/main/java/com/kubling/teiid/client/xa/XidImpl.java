@@ -19,10 +19,7 @@
 package com.kubling.teiid.client.xa;
 
 import javax.transaction.xa.Xid;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -30,6 +27,8 @@ import java.util.Arrays;
  * Teiid implementation of Xid.
  */
 public class XidImpl implements Xid, Externalizable {
+
+    @Serial
     private static final long serialVersionUID = -7078441828703404308L;
 
     private int formatID;
@@ -46,7 +45,7 @@ public class XidImpl implements Xid, Externalizable {
         this.branchQualifier = xid.getBranchQualifier();
     }
 
-    public XidImpl(int formatID, byte[] globalTransactionId, byte[] branchQualifier){
+    public XidImpl(int formatID, byte[] globalTransactionId, byte[] branchQualifier) {
         this.formatID = formatID;
         this.globalTransactionId = globalTransactionId;
         this.branchQualifier = branchQualifier;
@@ -73,14 +72,13 @@ public class XidImpl implements Xid, Externalizable {
         return branchQualifier;
     }
 
-    public boolean equals(Object obj){
-        if(obj == this) {
+    public boolean equals(Object obj) {
+        if (obj == this) {
             return true;
         }
-        if(!(obj instanceof XidImpl)){
+        if (!(obj instanceof XidImpl that)) {
             return false;
         }
-        XidImpl that = (XidImpl)obj;
         return this.formatID == that.formatID
                 && Arrays.equals(this.globalTransactionId, that.globalTransactionId)
                 && Arrays.equals(this.branchQualifier, that.branchQualifier);
@@ -91,13 +89,12 @@ public class XidImpl implements Xid, Externalizable {
      */
     public String toString() {
         if (toString == null) {
-            String sb = "Teiid-Xid global:" +
+            toString = "Teiid-Xid global:" +
                     getByteArrayString(globalTransactionId) +
                     " branch:" +
                     getByteArrayString(branchQualifier) +
                     " format:" +
                     getFormatId();
-            toString = sb;
         }
         return toString;
     }
@@ -121,8 +118,8 @@ public class XidImpl implements Xid, Externalizable {
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         this.formatID = in.readInt();
-        this.globalTransactionId = (byte[])in.readObject();
-        this.branchQualifier = (byte[])in.readObject();
+        this.globalTransactionId = (byte[]) in.readObject();
+        this.branchQualifier = (byte[]) in.readObject();
     }
 
     @Override

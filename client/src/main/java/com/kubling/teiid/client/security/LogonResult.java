@@ -26,15 +26,15 @@ import java.util.Map;
 import java.util.TimeZone;
 
 
-
 /**
  * Dataholder for the result of <code>ILogon.logon()</code>.
  * Contains a sessionID
- *
+ * <p>
  * Analogous to the server side SessionToken
  */
 public class LogonResult implements Externalizable {
 
+    @Serial
     private static final long serialVersionUID = 4481443514871448269L;
     private TimeZone timeZone = TimeZone.getDefault();
     private String clusterName;
@@ -54,6 +54,7 @@ public class LogonResult implements Externalizable {
 
     /**
      * Get the sessionID.
+     *
      * @return
      * @since 4.3
      */
@@ -95,7 +96,7 @@ public class LogonResult implements Externalizable {
 
     public void addProperty(String key, Object value) {
         if (this.addtionalProperties == null) {
-            this.addtionalProperties = new HashMap<Object, Object>();
+            this.addtionalProperties = new HashMap<>();
         }
         this.addtionalProperties.put(key, value);
     }
@@ -103,23 +104,21 @@ public class LogonResult implements Externalizable {
     @Override
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        vdbName = (String)in.readObject();
-        sessionToken = (SessionToken)in.readObject();
+        vdbName = (String) in.readObject();
+        sessionToken = (SessionToken) in.readObject();
         try {
             timeZone = (TimeZone) in.readObject();
         } catch (Exception e) {
             //could be a sun.util object
         }
-        clusterName = (String)in.readObject();
+        clusterName = (String) in.readObject();
         vdbVersion = in.readInt();
         try {
             addtionalProperties = ExternalizeUtil.readMap(in);
             String tzId = in.readUTF(); //not sent until 8.12.3
             timeZone = TimeZone.getTimeZone(tzId);
-        } catch (EOFException e) {
-
-        } catch (OptionalDataException e) {
-
+        } catch (EOFException | OptionalDataException e) {
+            // Ignore
         }
     }
 

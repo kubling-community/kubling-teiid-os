@@ -18,10 +18,7 @@
 
 package com.kubling.teiid.client.metadata;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 
 /**
  * Describes some parameter info to return when executing a CallableStatement -
@@ -30,34 +27,43 @@ import java.io.ObjectOutput;
  */
 public class ParameterInfo implements Externalizable {
 
-    static final long serialVersionUID = -683851729051138932L;
+    @Serial
+    private static final long serialVersionUID = -683851729051138932L;
 
     private int type;           // used outbound
     private int numColumns;     // if type is a result set - used outbound
 
-    /** Constant identifying an IN parameter */
+    /**
+     * Constant identifying an IN parameter
+     */
     public static final int IN = 1;
 
-    /** Constant identifying an OUT parameter */
+    /**
+     * Constant identifying an OUT parameter
+     */
     public static final int OUT = 2;
 
-    /** Constant identifying an INOUT parameter */
+    /**
+     * Constant identifying an INOUT parameter
+     */
     public static final int INOUT = 3;
 
-    /** Constant identifying a RETURN parameter */
+    /**
+     * Constant identifying a RETURN parameter
+     */
     public static final int RETURN_VALUE = 4;
 
-    /** Constant identifying a RESULT SET parameter */
+    /**
+     * Constant identifying a RESULT SET parameter
+     */
     public static final int RESULT_SET = 5;
 
-    // needed for Externalizable
+    // needed for externalize
     public ParameterInfo() {
     }
 
     /**
      * Create outbound parameter info
-     * @param type
-     * @param numColumns
      */
     public ParameterInfo(int type, int numColumns) {
         this.type = type;
@@ -81,7 +87,6 @@ public class ParameterInfo implements Externalizable {
         type = in.readInt();
         numColumns = in.readInt();
     }
-
 
 
 }

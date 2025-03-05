@@ -26,12 +26,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 
@@ -53,36 +51,40 @@ final class DataTypeTransformer {
      * @return a BigDecimal object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final BigDecimal getBigDecimal(Object value) throws SQLException {
+    static BigDecimal getBigDecimal(Object value) throws SQLException {
         return transform(value, BigDecimal.class);
     }
 
-    static final <T> T transform(Object value, Class<T> targetType) throws SQLException {
+    static <T> T transform(Object value, Class<T> targetType) throws SQLException {
         return transform(value, targetType, getRuntimeType(targetType));
     }
 
-    static final <T> T transform(Object value, Class<T> targetType, Class<?> runtimeType) throws SQLException {
+    static <T> T transform(Object value, Class<T> targetType, Class<?> runtimeType) throws SQLException {
         if (value == null || targetType.isAssignableFrom(value.getClass())) {
             return targetType.cast(value);
         }
         if (targetType == byte[].class) {
-            if (value instanceof Blob) {
-                Blob blob = (Blob) value;
-                long length = blob.length();
-                if (length > Integer.MAX_VALUE) {
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("DataTypeTransformer.blob_too_big"));
+            switch (value) {
+                case Blob blob -> {
+                    long length = blob.length();
+                    if (length > Integer.MAX_VALUE) {
+                        throw new TeiidSQLException(JDBCPlugin.Util.getString("DataTypeTransformer.blob_too_big"));
+                    }
+                    return targetType.cast(blob.getBytes(1, (int) length));
                 }
-                return targetType.cast(blob.getBytes(1, (int) length));
-            } else if (value instanceof String) {
-                return targetType.cast(((String) value).getBytes());
-            } else if (value instanceof BinaryType) {
-                return targetType.cast(((BinaryType) value).getBytesDirect());
+                case String s -> {
+                    return targetType.cast(s.getBytes());
+                }
+                case BinaryType binaryType -> {
+                    return targetType.cast(binaryType.getBytesDirect());
+                }
+                default -> {
+                }
             }
         } else if (targetType == String.class) {
             if (value instanceof SQLXML) {
                 return targetType.cast(((SQLXML) value).getString());
-            } else if (value instanceof Clob) {
-                Clob c = (Clob) value;
+            } else if (value instanceof Clob c) {
                 long length = c.length();
                 if (length == 0) {
                     //there is a bug in SerialClob with 0 length
@@ -103,7 +105,7 @@ final class DataTypeTransformer {
         }
     }
 
-    static final <T> Class<?> getRuntimeType(Class<T> type) {
+    static <T> Class<?> getRuntimeType(Class<T> type) {
         Class<?> runtimeType = type;
         if (!DataTypeManager.getAllDataTypeClasses().contains(type)) {
             if (type == Clob.class) {
@@ -128,7 +130,7 @@ final class DataTypeTransformer {
      * @return a Boolean object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final boolean getBoolean(Object value) throws SQLException {
+    static boolean getBoolean(Object value) throws SQLException {
         if (value == null) {
             return false;
         }
@@ -142,18 +144,18 @@ final class DataTypeTransformer {
      * @return a Byte object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final byte getByte(Object value) throws SQLException {
+    static byte getByte(Object value) throws SQLException {
         if (value == null) {
             return 0;
         }
         return transform(value, Byte.class);
     }
 
-    static final byte[] getBytes(Object value) throws SQLException {
+    static byte[] getBytes(Object value) throws SQLException {
         return transform(value, byte[].class);
     }
 
-    static final Character getCharacter(Object value) throws SQLException {
+    static Character getCharacter(Object value) throws SQLException {
         return transform(value, Character.class);
     }
 
@@ -163,7 +165,7 @@ final class DataTypeTransformer {
      * @param value the object to be transformed
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final Date getDate(Object value) throws SQLException {
+    static Date getDate(Object value) throws SQLException {
         return transform(value, Date.class);
     }
 
@@ -174,7 +176,7 @@ final class DataTypeTransformer {
      * @return a Double object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final double getDouble(Object value) throws SQLException {
+    static double getDouble(Object value) throws SQLException {
         if (value == null) {
             return 0;
         }
@@ -188,7 +190,7 @@ final class DataTypeTransformer {
      * @return a Float object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final float getFloat(Object value) throws SQLException {
+    static float getFloat(Object value) throws SQLException {
         if (value == null) {
             return 0;
         }
@@ -196,13 +198,13 @@ final class DataTypeTransformer {
     }
 
     /**
-     * Gets an object value and transforms it into a integer
+     * Gets an object value and transforms it into an integer
      *
      * @param value the object to be transformed
      * @return a Integer object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final int getInteger(Object value) throws SQLException {
+    static int getInteger(Object value) throws SQLException {
         if (value == null) {
             return 0;
         }
@@ -216,7 +218,7 @@ final class DataTypeTransformer {
      * @return a Long object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final long getLong(Object value) throws SQLException {
+    static long getLong(Object value) throws SQLException {
         if (value == null) {
             return 0;
         }
@@ -230,7 +232,7 @@ final class DataTypeTransformer {
      * @return a Short object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final short getShort(Object value) throws SQLException {
+    static short getShort(Object value) throws SQLException {
         if (value == null) {
             return 0;
         }
@@ -244,7 +246,7 @@ final class DataTypeTransformer {
      * @return a Time object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final Time getTime(Object value) throws SQLException {
+    static Time getTime(Object value) throws SQLException {
         return transform(value, Time.class);
     }
 
@@ -255,11 +257,11 @@ final class DataTypeTransformer {
      * @return a Timestamp object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final Timestamp getTimestamp(Object value) throws SQLException {
+    static Timestamp getTimestamp(Object value) throws SQLException {
         return transform(value, Timestamp.class);
     }
 
-    static final String getString(Object value) throws SQLException {
+    static String getString(Object value) throws SQLException {
         return transform(value, String.class);
     }
 
@@ -270,7 +272,7 @@ final class DataTypeTransformer {
      * @return a Timestamp object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final Blob getBlob(Object value) throws SQLException {
+    static Blob getBlob(Object value) throws SQLException {
         return transform(value, Blob.class);
     }
 
@@ -281,7 +283,7 @@ final class DataTypeTransformer {
      * @return a Timestamp object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final Clob getClob(Object value) throws SQLException {
+    static Clob getClob(Object value) throws SQLException {
         return transform(value, Clob.class);
     }
 
@@ -292,44 +294,33 @@ final class DataTypeTransformer {
      * @return a SQLXML object
      * @throws SQLException if failed to transform to the desired datatype
      */
-    static final SQLXML getSQLXML(Object value) throws SQLException {
+    static SQLXML getSQLXML(Object value) throws SQLException {
         return transform(value, SQLXML.class);
     }
 
-    static final Reader getCharacterStream(Object value) throws SQLException {
-        if (value == null) {
-            return null;
-        }
+    static Reader getCharacterStream(Object value) throws SQLException {
+        return switch (value) {
+            case null -> null;
+            case Clob clob -> clob.getCharacterStream();
+            case SQLXML sqlxml -> sqlxml.getCharacterStream();
+            default -> new StringReader(getString(value));
+        };
 
-        if (value instanceof Clob) {
-            return ((Clob) value).getCharacterStream();
-        }
-
-        if (value instanceof SQLXML) {
-            return ((SQLXML) value).getCharacterStream();
-        }
-
-        return new StringReader(getString(value));
     }
 
-    static final InputStream getAsciiStream(Object value) throws SQLException {
-        if (value == null) {
-            return null;
-        }
+    static InputStream getAsciiStream(Object value) throws SQLException {
+        return switch (value) {
+            case null -> null;
+            case Clob clob -> clob.getAsciiStream();
+            case SQLXML sqlxml ->
+                //TODO: could check the SQLXML encoding
+                    new ReaderInputStream(sqlxml.getCharacterStream(), StandardCharsets.US_ASCII);
+            default -> new ByteArrayInputStream(getString(value).getBytes(StandardCharsets.US_ASCII));
+        };
 
-        if (value instanceof Clob) {
-            return ((Clob) value).getAsciiStream();
-        }
-
-        if (value instanceof SQLXML) {
-            //TODO: could check the SQLXML encoding
-            return new ReaderInputStream(((SQLXML) value).getCharacterStream(), Charset.forName("ASCII"));
-        }
-
-        return new ByteArrayInputStream(getString(value).getBytes(Charset.forName("ASCII")));
     }
 
-    static final NClob getNClob(Object value) throws SQLException {
+    static NClob getNClob(Object value) throws SQLException {
         final Clob clob = getClob(value);
         if (clob == null) {
             return null;
@@ -337,21 +328,16 @@ final class DataTypeTransformer {
         if (clob instanceof NClob) {
             return (NClob) clob;
         }
-        return (NClob) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{NClob.class}, new InvocationHandler() {
-
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args)
-                    throws Throwable {
-                try {
-                    return method.invoke(clob, args);
-                } catch (InvocationTargetException e) {
-                    throw e.getCause();
-                }
+        return (NClob) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{NClob.class}, (proxy, method, args) -> {
+            try {
+                return method.invoke(clob, args);
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
             }
         });
     }
 
-    static final Array getArray(Object obj) throws SQLException {
+    static Array getArray(Object obj) throws SQLException {
         //TODO: type primitive arrays more closely
         return transform(obj, Array.class, Object[].class);
     }

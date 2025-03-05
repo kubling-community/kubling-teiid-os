@@ -26,7 +26,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 
-
 /**
  * This interface provides methods in
  * addition to the standard JDBC methods.
@@ -35,6 +34,7 @@ public interface TeiidStatement extends java.sql.Statement {
 
     /**
      * Get the execution property value.
+     *
      * @param name Execution property name
      * @return Execution property value or null if not set
      * @deprecated use show statement
@@ -43,7 +43,8 @@ public interface TeiidStatement extends java.sql.Statement {
 
     /**
      * Set the execution property value.
-     * @param name Execution property name
+     *
+     * @param name  Execution property name
      * @param value Execution property value
      * @deprecated use set statement
      */
@@ -54,6 +55,7 @@ public interface TeiidStatement extends java.sql.Statement {
      * command executed on this Statement, if a query plan was
      * requested in the command.  If no plan was requested, this
      * method will return null.
+     *
      * @return PlanNode representing the root of the query plan
      */
     PlanNode getPlanDescription();
@@ -63,6 +65,7 @@ public interface TeiidStatement extends java.sql.Statement {
      * executed on this Statement, if it was requested with
      * SHOWPLAN DEBUG.  If no debug output was requested, this
      * method will return null.
+     *
      * @return Debug log or null if no log exists
      * @deprecated use show statement
      */
@@ -71,6 +74,7 @@ public interface TeiidStatement extends java.sql.Statement {
     /**
      * Get collection of annotations from the query planner from
      * the last command executed on the Statement
+     *
      * @return Collection of {@link Annotation}s, may return null
      * @deprecated use show statement
      */
@@ -79,6 +83,7 @@ public interface TeiidStatement extends java.sql.Statement {
     /**
      * Get ID for last execution which can be used for matching up executions
      * on the client side with executions in the server logs.
+     *
      * @return String identifier for the last execution
      */
     String getRequestIdentifier();
@@ -92,7 +97,7 @@ public interface TeiidStatement extends java.sql.Statement {
      * with a <code>null</code> argument.
      *
      * @param payload The payload that is to accompany requests executed
-     * from this statement.
+     *                from this statement.
      * @since 4.2
      */
     void setPayload(Serializable payload);
@@ -100,12 +105,8 @@ public interface TeiidStatement extends java.sql.Statement {
     /**
      * Execute the given statement using a non-blocking callback.
      * This method is only valid for use with embedded connections.
-     *
-     * Note that a single Statement may only have 1 asynch query executing at a time.
-     *
-     * @param callback
-     * @param options
-     * @throws SQLException
+     * <p>
+     * Note that a single Statement may only have 1 async query executing at a time.
      */
     void submitExecute(String sql, StatementCallback callback, RequestOptions options)
             throws SQLException;

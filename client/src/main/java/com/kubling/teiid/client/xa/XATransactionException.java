@@ -22,6 +22,7 @@ import com.kubling.teiid.core.BundleUtil;
 import com.kubling.teiid.core.TeiidProcessingException;
 
 import javax.transaction.xa.XAException;
+import java.io.Serial;
 
 
 /**
@@ -29,6 +30,8 @@ import javax.transaction.xa.XAException;
  * XA transaction-related.
  */
 public class XATransactionException extends TeiidProcessingException {
+
+    @Serial
     private static final long serialVersionUID = 5685144848609237877L;
     private int errorCode = XAException.XAER_RMERR;
 
@@ -37,7 +40,7 @@ public class XATransactionException extends TeiidProcessingException {
     }
 
     public XATransactionException(BundleUtil.Event event, int code, Throwable e) {
-        super( event, e);
+        super(event, e);
         this.errorCode = code;
     }
 
@@ -62,7 +65,7 @@ public class XATransactionException extends TeiidProcessingException {
     public XAException getXAException() {
         Throwable actualException = getCause();
         if (actualException instanceof XAException) {
-            return (XAException)actualException;
+            return (XAException) actualException;
         }
         return new XAException(errorCode);
     }

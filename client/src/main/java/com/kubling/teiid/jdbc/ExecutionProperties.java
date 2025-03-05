@@ -25,18 +25,22 @@ import com.kubling.teiid.client.RequestMessage;
  * be set via the {@link TeiidStatement#setExecutionProperty(String, String)}
  * method.  They affect the subsequent execution of all commands on that Statement
  * instance.
- *
+ * <p>
  * They can also be set using a SET statement via JDBC and take effect for the
  * duration of the session.
  */
 public interface ExecutionProperties {
 
-    public interface Values {
-        /** XML results format:  XML results displayed as a formatted tree */
-        public static final String XML_TREE_FORMAT = "Tree";
+    interface Values {
+        /**
+         * XML results format:  XML results displayed as a formatted tree
+         */
+        String XML_TREE_FORMAT = "Tree";
 
-        /** XML results format:  XML results displayed in compact form */
-        public static final String XML_COMPACT_FORMAT = "Compact";
+        /**
+         * XML results format:  XML results displayed in compact form
+         */
+        String XML_COMPACT_FORMAT = "Compact";
 
         /**
          * Transaction auto wrap constant - checks if a command
@@ -44,61 +48,77 @@ public interface ExecutionProperties {
          */
         String TXN_WRAP_DETECT = RequestMessage.TXN_WRAP_DETECT;
 
-        /** Transaction auto wrap constant - never wrap a command execution in a transaction */
+        /**
+         * Transaction auto wrap constant - never wrap a command execution in a transaction
+         */
         String TXN_WRAP_OFF = RequestMessage.TXN_WRAP_OFF;
 
-        /** Transaction auto wrap constant - always wrap commands in a transaction. */
+        /**
+         * Transaction auto wrap constant - always wrap commands in a transaction.
+         */
         String TXN_WRAP_ON = RequestMessage.TXN_WRAP_ON;
     }
 
-    /** Execution property name for XML format */
-    public static final String PROP_XML_FORMAT = "XMLFormat";
+    /**
+     * Execution property name for XML format
+     */
+    String PROP_XML_FORMAT = "XMLFormat";
 
-    /** Execution property name for XML validation */
-    public static final String PROP_XML_VALIDATION = "XMLValidation";
+    /**
+     * Execution property name for XML validation
+     */
+    String PROP_XML_VALIDATION = "XMLValidation";
 
-    /** Execution property name for transaction auto wrap mode */
-    public static final String PROP_TXN_AUTO_WRAP = "autoCommitTxn";
+    /**
+     * Execution property name for transaction auto wrap mode
+     */
+    String PROP_TXN_AUTO_WRAP = "autoCommitTxn";
 
-    /** Execution property name for partial results mode */
-    public static final String PROP_PARTIAL_RESULTS_MODE = "partialResultsMode";
+    /**
+     * Execution property name for partial results mode
+     */
+    String PROP_PARTIAL_RESULTS_MODE = "partialResultsMode";
 
     /**
      * Whether to use result set cache if it is available
+     *
      * @since 4.2
      */
-    public static final String RESULT_SET_CACHE_MODE = "resultSetCacheMode";
+    String RESULT_SET_CACHE_MODE = "resultSetCacheMode";
 
     /**
      * Default fetch size to use on Statements if the fetch size is not explicitly set.
      * The default is 500.
+     *
      * @since 4.2
      */
-    public static final String PROP_FETCH_SIZE = "fetchSize";  
+    String PROP_FETCH_SIZE = "fetchSize";
 
     /**
      * If true, will ignore autocommit for local transactions.
+     *
      * @since 5.5.2
      */
-    public static final String DISABLE_LOCAL_TRANSACTIONS = "disableLocalTxn"; 
+    String DISABLE_LOCAL_TRANSACTIONS = "disableLocalTxn";
 
     /**
-     * Overrides the handling of double quoted identifiers to allow them to be strings.
+     * Overrides the handling of double-quoted identifiers to allow them to be strings.
+     *
      * @since 4.3
      */
-    public static final String ANSI_QUOTED_IDENTIFIERS = "ansiQuotedIdentifiers";
+    String ANSI_QUOTED_IDENTIFIERS = "ansiQuotedIdentifiers";
 
     /**
      * Can be one of ON|OFF|DEBUG
      */
-    public static final String SQL_OPTION_SHOWPLAN = "SHOWPLAN";
+    String SQL_OPTION_SHOWPLAN = "SHOWPLAN";
 
     /**
      * Can be one of ON|OFF
      */
-    public static final String NOEXEC = "NOEXEC";
+    String NOEXEC = "NOEXEC";
 
-    public static final String QUERYTIMEOUT = "QUERYTIMEOUT";
+    String QUERYTIMEOUT = "QUERYTIMEOUT";
 
     /**
      * TEIID-1651
@@ -106,12 +126,13 @@ public interface ExecutionProperties {
      * now be returned as the label.   Prior to this, it was returned as
      * the name.   Setting this property to <code>false</code> will enable
      * backwards compatibility when JDBC3 and older support is still required.
-     *
+     * <p>
      * Default is <code>true</code>
+     *
      * @since 7.4.1
      */
 
-    public static final String JDBC4COLUMNNAMEANDLABELSEMANTICS = "useJDBC4ColumnNameAndLabelSemantics";
+    String JDBC4COLUMNNAMEANDLABELSEMANTICS = "useJDBC4ColumnNameAndLabelSemantics";
 
 
 }

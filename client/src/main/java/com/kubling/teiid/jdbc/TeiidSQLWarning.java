@@ -18,6 +18,7 @@
 
 package com.kubling.teiid.jdbc;
 
+import java.io.Serial;
 import java.sql.SQLWarning;
 
 
@@ -46,6 +47,7 @@ import java.sql.SQLWarning;
  */
 public class TeiidSQLWarning extends SQLWarning {
 
+    @Serial
     private static final long serialVersionUID = -7080782561220818997L;
 
     private String modelName = "UNKNOWN"; // variable stores the name of the model for the atomic query 

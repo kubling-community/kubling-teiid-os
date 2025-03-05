@@ -47,7 +47,7 @@ public class ObjectDecoderInputStream extends ObjectInputStream {
     private int remaining;
     private boolean foundLength;
 
-    private InputStream subStream = new InputStream() {
+    private final InputStream subStream = new InputStream() {
 
         @Override
         public int read() throws IOException {
@@ -158,7 +158,7 @@ public class ObjectDecoderInputStream extends ObjectInputStream {
             if (skipped == 0) {
                 break;
             }
-            remaining -= skipped;
+            remaining -= (int) skipped;
         }
     }
 

@@ -53,11 +53,11 @@ public class ExceptionHolder implements Externalizable {
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         List<String> classNames = ExternalizeUtil.readList(in, String.class);
-        String message = (String)in.readObject();
-        StackTraceElement[] stackTrace = (StackTraceElement[])in.readObject();
-        String code = (String)in.readObject();
-        ExceptionHolder causeHolder = (ExceptionHolder)in.readObject();
-        byte[] serializedException = (byte[])in.readObject();
+        String message = (String) in.readObject();
+        StackTraceElement[] stackTrace = (StackTraceElement[]) in.readObject();
+        String code = (String) in.readObject();
+        ExceptionHolder causeHolder = (ExceptionHolder) in.readObject();
+        byte[] serializedException = (byte[]) in.readObject();
 
         this.exception = readFromByteArray(serializedException);
 
@@ -72,24 +72,22 @@ public class ExceptionHolder implements Externalizable {
                 try {
                     int count = in.readInt();
                     for (int i = 0; i < count; i++) {
-                        ExceptionHolder next = (ExceptionHolder)in.readObject();
+                        ExceptionHolder next = (ExceptionHolder) in.readObject();
                         if (next.exception instanceof SQLException) {
-                            ((SQLException)this.exception).setNextException((SQLException) next.exception);
+                            ((SQLException) this.exception).setNextException((SQLException) next.exception);
                         }
                     }
                 } catch (EOFException | OptionalDataException e) {
                     // Nothing to do here
                 }
-            } else if (!classNames.isEmpty() && classNames.get(0).equals(SourceWarning.class.getName())) {
+            } else if (!classNames.isEmpty() && classNames.getFirst().equals(SourceWarning.class.getName())) {
                 try {
                     String connectorBindingName = in.readUTF();
                     String modelName = in.readUTF();
                     boolean partial = in.readBoolean();
                     this.exception = new SourceWarning(modelName, connectorBindingName, this.exception.getCause(), partial);
-                } catch (EOFException e) {
-                    //for backwards compatibility
-                } catch (OptionalDataException e) {
-                    //for backwards compatibility
+                } catch (EOFException | OptionalDataException e) {
+                    // for backwards compatibility
                 }
             }
         }
@@ -97,7 +95,7 @@ public class ExceptionHolder implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        List<String> classNames = new ArrayList<String>();
+        List<String> classNames = new ArrayList<>();
         Class<?> clazz = exception.getClass();
         while (clazz != null) {
             if (clazz == Throwable.class || clazz == Exception.class) {
@@ -110,7 +108,7 @@ public class ExceptionHolder implements Externalizable {
         out.writeObject(exception.getMessage());
         out.writeObject(exception.getStackTrace());
         if (exception instanceof TeiidException) {
-            out.writeObject(((TeiidException)exception).getCode());
+            out.writeObject(((TeiidException) exception).getCode());
         } else {
             out.writeObject(null);
         }
@@ -118,16 +116,14 @@ public class ExceptionHolder implements Externalizable {
         // specify that this cause is nested exception; not top level
         if (this.exception.getCause() != null && this.exception.getCause() != this.exception) {
             out.writeObject(new ExceptionHolder(this.exception.getCause(), true));
-        }
-        else {
+        } else {
             out.writeObject(null);
         }
 
         // only for the top level exception write the serialized block for the object
         if (!nested) {
             out.writeObject(writeAsByteArray(this.exception));
-        }
-        else {
+        } else {
             out.writeObject(null);
         }
         // handle SQLException chains
@@ -135,7 +131,7 @@ public class ExceptionHolder implements Externalizable {
             if (nested) {
                 out.writeInt(0);
             } else {
-                SQLException se = (SQLException)exception;
+                SQLException se = (SQLException) exception;
                 SQLException next = se.getNextException();
                 int count = 0;
                 while (next != null) {
@@ -149,8 +145,7 @@ public class ExceptionHolder implements Externalizable {
                     next = next.getNextException();
                 }
             }
-        } else if (exception instanceof SourceWarning) {
-            SourceWarning sw = (SourceWarning)exception;
+        } else if (exception instanceof SourceWarning sw) {
             out.writeUTF(sw.getConnectorBindingName());
             out.writeUTF(sw.getModelName());
             out.writeBoolean(sw.isPartialResultsError());
@@ -166,7 +161,7 @@ public class ExceptionHolder implements Externalizable {
         String originalClass = Exception.class.getName();
 
         if (!classNames.isEmpty()) {
-            originalClass = classNames.get(0);
+            originalClass = classNames.getFirst();
         }
 
         List<String> args = Arrays.asList(
@@ -183,10 +178,10 @@ public class ExceptionHolder implements Externalizable {
         }
 
         if (result == null) {
-            result = new TeiidRuntimeException(args.get(0));
+            result = new TeiidRuntimeException(args.getFirst());
         } else if (result instanceof TeiidException) {
-            ((TeiidException)result).setCode(code);
-            ((TeiidException)result).setOriginalType(classNames.get(0));
+            ((TeiidException) result).setCode(code);
+            ((TeiidException) result).setOriginalType(classNames.getFirst());
         }
 
         result.setStackTrace(stackTrace);
@@ -212,7 +207,7 @@ public class ExceptionHolder implements Externalizable {
             ByteArrayInputStream bais = new ByteArrayInputStream(contents);
             try {
                 ObjectInputStream ois = new ObjectInputStreamWithClassloader(bais, ExceptionHolder.class.getClassLoader());
-                return (Throwable)ois.readObject();
+                return (Throwable) ois.readObject();
             } catch (Exception e) {
                 //
             }
@@ -220,9 +215,9 @@ public class ExceptionHolder implements Externalizable {
         return null;
     }
 
-    public static List<ExceptionHolder> toExceptionHolders(List<? extends Throwable> throwables){
+    public static List<ExceptionHolder> toExceptionHolders(List<? extends Throwable> throwables) {
         List<ExceptionHolder> list = new ArrayList<>();
-        for (Throwable t: throwables) {
+        for (Throwable t : throwables) {
             list.add(new ExceptionHolder(t));
         }
         return list;
@@ -230,7 +225,7 @@ public class ExceptionHolder implements Externalizable {
 
     public static List<Throwable> toThrowables(List<ExceptionHolder> exceptionHolders) {
         List<Throwable> list = new ArrayList<>();
-        for(ExceptionHolder e: exceptionHolders) {
+        for (ExceptionHolder e : exceptionHolders) {
             list.add(e.getException());
         }
         return list;

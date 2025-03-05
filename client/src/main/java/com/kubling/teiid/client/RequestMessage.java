@@ -91,7 +91,7 @@ public class RequestMessage implements Externalizable {
 
     /*
      * Used by embedded connections, could change if we add support
-     * for an asynch socket transport
+     * for an async socket transport
      */
     private boolean sync;
     private RequestOptions requestOptions;
@@ -127,9 +127,6 @@ public class RequestMessage implements Externalizable {
         this.fetchSize = fetchSize;
     }
 
-    /**
-     * @param partial
-     */
     public void setPartialResults(boolean partial) {
         partialResultsFlag = partial;
     }
@@ -162,9 +159,6 @@ public class RequestMessage implements Externalizable {
         return parameterValues;
     }
 
-    /**
-     * @param values
-     */
     public void setParameterValues(List<?> values) {
         parameterValues = values;
     }
@@ -199,7 +193,6 @@ public class RequestMessage implements Externalizable {
      * Sets the txnAutoWrapMode.
      *
      * @param txnAutoWrapMode The txnAutoWrapMode to set
-     * @throws TeiidProcessingException
      */
     public void setTxnAutoWrapMode(String txnAutoWrapMode) throws TeiidProcessingException {
         if (txnAutoWrapMode != null) {
@@ -234,8 +227,8 @@ public class RequestMessage implements Externalizable {
         return useResultSetCache;
     }
 
-    public void setUseResultSetCache(boolean useResultSetCacse) {
-        this.useResultSetCache = useResultSetCacse;
+    public void setUseResultSetCache(boolean useResultSetCache) {
+        this.useResultSetCache = useResultSetCache;
     }
 
     public String getCommandString() {
@@ -372,8 +365,8 @@ public class RequestMessage implements Externalizable {
             //8.4 property
             this.delaySerialization = (options & 2) == 2;
             this.properties = ExternalizeUtil.readMap(in);
-        } catch (OptionalDataException e) {
-        } catch (EOFException e) {
+        } catch (OptionalDataException | EOFException e) {
+            // Ignored
         }
     }
 
@@ -439,7 +432,7 @@ public class RequestMessage implements Externalizable {
 
     public void setSpanContext(String string) {
         if (this.properties == null) {
-            this.properties = new HashMap<String, String>();
+            this.properties = new HashMap<>();
         }
         if (string == null) {
             this.properties.remove(SPAN_CONTEXT);

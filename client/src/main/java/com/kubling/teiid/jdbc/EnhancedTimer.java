@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 public class EnhancedTimer {
 
     private static final Logger LOGGER = Logger.getLogger("org.teiid.jdbc");
-    private static AtomicLong id = new AtomicLong();
+    private static final AtomicLong id = new AtomicLong();
 
     public class Task extends FutureTask<Void> implements Comparable<Task> {
         final long endTime;
@@ -69,15 +69,13 @@ public class EnhancedTimer {
 
     }
 
-    private final ConcurrentSkipListSet<Task> queue = new ConcurrentSkipListSet<Task>();
+    private final ConcurrentSkipListSet<Task> queue = new ConcurrentSkipListSet<>();
     private final Executor taskExecutor;
     private final Executor bossExecutor;
     private boolean running;
 
     /**
      * Constructs a new Timer that directly executes tasks off of a single-thread thread pool.
-     *
-     * @param name
      */
     public EnhancedTimer(final String name) {
         this.taskExecutor = ExecutorUtils.getDirectExecutor();
@@ -90,22 +88,20 @@ public class EnhancedTimer {
     }
 
     private void start() {
-        bossExecutor.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    while (doTasks()) {
-                    }
-                } catch (InterruptedException e) {
+        bossExecutor.execute(() -> {
+            try {
+                while (doTasks()) {
+                    // nothing to do
                 }
+            } catch (InterruptedException e) {
+                // nothing to do
             }
         });
         running = true;
     }
 
     private boolean doTasks() throws InterruptedException {
-        Task task = null;
+        Task task;
         try {
             task = queue.first();
         } catch (NoSuchElementException e) {
@@ -139,7 +135,6 @@ public class EnhancedTimer {
     /**
      * Add a delayed task
      *
-     * @param task
      * @param delay in ms
      * @return a cancellable Task
      */

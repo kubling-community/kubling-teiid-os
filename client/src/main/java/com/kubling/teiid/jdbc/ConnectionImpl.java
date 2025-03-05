@@ -50,7 +50,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     private static final int MAX_OPEN_STATEMENTS =
             PropertiesUtils.getHierarchicalProperty("org.teiid.maxOpenStatements", 1000, Integer.class);
 
-    private static Logger logger = Logger.getLogger("com.kubling.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.teiid.jdbc");
 
     public static final int DEFAULT_ISOLATION = Connection.TRANSACTION_READ_COMMITTED;
 
@@ -62,7 +62,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     private long requestIDGenerator;
 
     // url used to create the connection
-    private String url;
+    private final String url;
 
     // properties object containing the connection properties.
     protected Properties propInfo;
@@ -74,7 +74,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     private boolean inLocalTxn;
 
     // collection of all open statements on this connection
-    private Collection<StatementImpl> statements = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Collection<StatementImpl> statements = Collections.newSetFromMap(new ConcurrentHashMap<>());
     // cached DatabaseMetadata
     private DatabaseMetaDataImpl dbmm;
 
@@ -84,7 +84,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     //  Flag to represent if the connection state needs to be readOnly, default value false.
     private boolean readOnly = false;
 
-    private DQP dqp;
+    private final DQP dqp;
     protected ServerConnection serverConn;
     private int transactionIsolation = DEFAULT_ISOLATION;
 
@@ -94,7 +94,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     private String debugLog;
     // the last query annotations
     private Collection<Annotation> annotations;
-    private Properties connectionProps;
+    private final Properties connectionProps;
     private Properties payload;
 
     //used to mimic transaction level, rather than connection level characteristics
@@ -123,32 +123,24 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         this.propInfo = new Properties();
 
         String defaultFetchSize = info.getProperty(ExecutionProperties.PROP_FETCH_SIZE);
-        if (defaultFetchSize != null) {
-            propInfo.put(ExecutionProperties.PROP_FETCH_SIZE, defaultFetchSize);
-        } else {
-            propInfo.put(ExecutionProperties.PROP_FETCH_SIZE, String.valueOf(BaseDataSource.DEFAULT_FETCH_SIZE));
-        }
+        propInfo.put(
+                ExecutionProperties.PROP_FETCH_SIZE,
+                Objects.requireNonNullElseGet(defaultFetchSize, () -> String.valueOf(BaseDataSource.DEFAULT_FETCH_SIZE)));
 
         String partialResultsMode = info.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE);
-        if (partialResultsMode != null) {
-            propInfo.put(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE, partialResultsMode);
-        } else {
-            propInfo.put(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE, BaseDataSource.DEFAULT_PARTIAL_RESULTS_MODE);
-        }
+        propInfo.put(
+                ExecutionProperties.PROP_PARTIAL_RESULTS_MODE,
+                Objects.requireNonNullElse(partialResultsMode, BaseDataSource.DEFAULT_PARTIAL_RESULTS_MODE));
 
         String resultSetCacheMode = info.getProperty(ExecutionProperties.RESULT_SET_CACHE_MODE);
-        if (resultSetCacheMode != null) {
-            propInfo.put(ExecutionProperties.RESULT_SET_CACHE_MODE, resultSetCacheMode);
-        } else {
-            propInfo.put(ExecutionProperties.RESULT_SET_CACHE_MODE, BaseDataSource.DEFAULT_RESULT_SET_CACHE_MODE);
-        }
+        propInfo.put(
+                ExecutionProperties.RESULT_SET_CACHE_MODE,
+                Objects.requireNonNullElse(resultSetCacheMode, BaseDataSource.DEFAULT_RESULT_SET_CACHE_MODE));
 
         String ansiQuotes = info.getProperty(ExecutionProperties.ANSI_QUOTED_IDENTIFIERS);
-        if (ansiQuotes != null) {
-            propInfo.put(ExecutionProperties.ANSI_QUOTED_IDENTIFIERS, ansiQuotes);
-        } else {
-            propInfo.put(ExecutionProperties.ANSI_QUOTED_IDENTIFIERS, Boolean.TRUE.toString());
-        }
+        propInfo.put(
+                ExecutionProperties.ANSI_QUOTED_IDENTIFIERS,
+                Objects.requireNonNullElseGet(ansiQuotes, Boolean.TRUE::toString));
 
         for (String key : info.stringPropertyNames()) {
             String actualKey = JDBCURL.EXECUTION_PROPERTIES.get(key);
@@ -205,14 +197,14 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * @param info    - properties object supplied
      */
     private void logConnectionProperties(String connUrl, Properties info) {
-        StringBuffer modifiedUrl = new StringBuffer();
+        StringBuilder modifiedUrl = new StringBuilder();
 
         // If we have valid URL
         if (connUrl != null) {
             // We need wipe out the password here, before we write to the log
             int startIndex = connUrl.indexOf("password=");
             if (startIndex != -1) {
-                modifiedUrl.append(connUrl.substring(0, startIndex));
+                modifiedUrl.append(connUrl, 0, startIndex);
                 modifiedUrl.append("password=***");
                 int endIndex = connUrl.indexOf(";", startIndex + 9);
                 if (endIndex != -1) {
@@ -261,20 +253,18 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Cancel the request
-     *
-     * @throws TeiidProcessingException
-     * @throws TeiidComponentException
      */
     public void cancelRequest(String id) throws TeiidProcessingException, TeiidComponentException {
-        this.dqp.cancelRequest(Long.valueOf(id));
+        this.dqp.cancelRequest(Long.parseLong(id));
     }
 
-    public void clearWarnings() throws SQLException {
+    public void clearWarnings() {
         // do nothing
     }
 
     public void close() throws SQLException {
-        Throwable firstException = null;
+
+        SQLException firstException = null;
 
         if (closed) {
             return;
@@ -289,7 +279,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             } finally {
                 this.serverConn.close();
                 if (firstException != null) {
-                    throw (SQLException) firstException;
+                    throw firstException;
                 }
             }
         } catch (SQLException se) {
@@ -313,7 +303,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         // MMConnection.closeStatement() method to be called,
         // which will modify this.statements.  So, we do this iteration
         // in a separate safe copy of the list
-        List<StatementImpl> statementsSafe = new ArrayList<StatementImpl>(this.statements);
+        List<StatementImpl> statementsSafe = new ArrayList<>(this.statements);
         SQLException ex = null;
         for (StatementImpl statement : statementsSafe) {
             try {
@@ -330,8 +320,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * Called by MMStatement to notify the connection that the
      * statement has been closed.
-     *
-     * @param statement
      */
     void closeStatement(Statement statement) {
         this.statements.remove(statement);
@@ -388,7 +376,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     private boolean isDisableLocalTxn() {
         String prop = this.propInfo.getProperty(ExecutionProperties.DISABLE_LOCAL_TRANSACTIONS);
-        return prop != null && Boolean.valueOf(prop);
+        return Boolean.parseBoolean(prop);
     }
 
     public StatementImpl createStatement() throws SQLException {
@@ -401,8 +389,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     /**
-     * @param resultSetType
-     * @throws TeiidSQLException
      * @since 4.3
      */
     private void validateResultSetType(int resultSetType) throws TeiidSQLException {
@@ -414,8 +400,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     /**
-     * @param resultSetConcurrency
-     * @throws TeiidSQLException
      * @since 4.3
      */
     private void validateResultSetConcurrency(int resultSetConcurrency) throws TeiidSQLException {
@@ -458,11 +442,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     @Deprecated
-    /**
-     * Will return 0 for Teiid 9.0+ servers
-     * @return
-     * @throws SQLException
-     */
     public int getVDBVersion() throws SQLException {
         checkConnection();
         return this.serverConn.getLogonResult().getVdbVersion();
@@ -471,7 +450,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * Get's the name of the user who got this connection.
      *
-     * @return Sring object giving the user name
+     * @return Sring object giving the username
      * @throws SQLException if the connection is closed
      */
     String getUserName() throws SQLException {
@@ -503,16 +482,16 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     @Override
-    public int getHoldability() throws SQLException {
+    public int getHoldability() {
         return ResultSet.HOLD_CURSORS_OVER_COMMIT;
     }
 
-    public int getTransactionIsolation() throws SQLException {
+    public int getTransactionIsolation() {
         return this.transactionIsolation;
     }
 
     @Override
-    public Map<String, Class<?>> getTypeMap() throws SQLException {
+    public Map<String, Class<?>> getTypeMap() {
         return Collections.emptyMap();
     }
 
@@ -533,9 +512,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * <p>This method will return whether this connection is closed or not.
      *
      * @return booleanvalue indicating if the connection is closed
-     * @throws SQLException should never occur
      */
-    public boolean isClosed() throws SQLException {
+    public boolean isClosed() {
         return closed;
     }
 
@@ -544,7 +522,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         return readOnly;
     }
 
-    public String nativeSQL(String sql) throws SQLException {
+    public String nativeSQL(String sql) {
         // return the string argument without any modifications.
         // escape syntaxes are directly supported in the server
         return sql;
@@ -572,8 +550,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     /**
-     * @param sql
-     * @throws TeiidSQLException
      * @since 4.3
      */
     private void validateSQL(String sql) throws TeiidSQLException {
@@ -592,15 +568,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         return prepareStatement(sql, resultSetType, resultSetConcurrency, ResultSet.HOLD_CURSORS_OVER_COMMIT);
     }
 
-    /**
-     * @param sql
-     * @param resultSetType
-     * @param resultSetConcurrency
-     * @param resultSetHoldability
-     * @param autoGeneratedKeys
-     * @return
-     * @throws SQLException
-     */
     public PreparedStatementImpl prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
                                                   int resultSetHoldability, int autoGeneratedKeys) throws SQLException {
         //Check to see the connection is open
@@ -628,9 +595,6 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     /**
      * Rollback the current local transaction
-     *
-     * @param startTxn
-     * @throws SQLException
      */
     public void rollback(boolean startTxn) throws SQLException {
 
@@ -710,11 +674,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * <p>Teiid does not allow setting a catalog through a connection. This
      * method silently ignores the request as per the specification.
-     *
-     * @param catalog
-     * @throws SQLException This should never occur.
      */
-    public void setCatalog(String catalog) throws SQLException {
+    public void setCatalog(String catalog) {
         // do nothing, silently ignore the request
     }
 
@@ -825,7 +786,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     }
 
     public boolean isValid(int timeout) throws SQLException {
-        return this.getServerConnection().isOpen(timeout * 1000);
+        return this.getServerConnection().isOpen(timeout * 1000L);
     }
 
     public void recycleConnection() {
@@ -856,12 +817,10 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         return this.serverConn.isSameInstance(conn.serverConn);
     }
 
-    public void setClientInfo(Properties properties)
-            throws SQLClientInfoException {
+    public void setClientInfo(Properties properties) {
     }
 
-    public void setClientInfo(String name, String value)
-            throws SQLClientInfoException {
+    public void setClientInfo(String name, String value) {
     }
 
     public Properties getClientInfo() throws SQLException {
@@ -872,8 +831,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         throw SqlUtil.createFeatureNotSupportedException();
     }
 
-    public Array createArrayOf(String typeName, Object[] elements)
-            throws SQLException {
+    public Array createArrayOf(String typeName, Object[] elements) {
         return new ArrayImpl(elements);
     }
 
@@ -978,7 +936,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         throw SqlUtil.createFeatureNotSupportedException();
     }
 
-    public void setTransactionIsolation(int level) throws SQLException {
+    public void setTransactionIsolation(int level) {
         this.transactionIsolation = level;
     }
 
@@ -1005,8 +963,8 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     public void changeUser(String userName, String newPassword)
             throws SQLException {
         //TODO: recycleConnection();
-        Object oldName = null;
-        Object oldPassword = null;
+        Object oldName;
+        Object oldPassword;
         if (userName != null) {
             oldName = this.connectionProps.put(TeiidURL.CONNECTION.USER_NAME, userName);
         } else {
@@ -1017,9 +975,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         try {
             this.serverConn.authenticate();
             success = true;
-        } catch (ConnectionException e) {
-            throw TeiidSQLException.create(e);
-        } catch (CommunicationException e) {
+        } catch (ConnectionException | CommunicationException e) {
             throw TeiidSQLException.create(e);
         } finally {
             if (!success) {
@@ -1045,7 +1001,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         throw SqlUtil.createFeatureNotSupportedException();
     }
 
-    public String getSchema() throws SQLException {
+    public String getSchema() {
         return null;
     }
 
@@ -1054,7 +1010,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         throw SqlUtil.createFeatureNotSupportedException();
     }
 
-    public void setSchema(String schema) throws SQLException {
+    public void setSchema(String schema) {
 
     }
 

@@ -18,6 +18,7 @@
 
 package com.kubling.teiid.jdbc;
 
+import java.io.Serial;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.util.*;
@@ -30,13 +31,15 @@ import java.util.*;
  */
 public class PartialResultsWarning extends SQLWarning {
 
+    @Serial
     private static final long serialVersionUID = 5301215068719177369L;
     private Map failures;
 
     /**
      * Construct partial results warning.
-     * @param reason Reason for the exception
-     * @param SQLstate SQL state code
+     *
+     * @param reason     Reason for the exception
+     * @param SQLstate   SQL state code
      * @param vendorCode Vendor code
      */
     public PartialResultsWarning(String reason, String SQLstate, int vendorCode) {
@@ -45,7 +48,8 @@ public class PartialResultsWarning extends SQLWarning {
 
     /**
      * Construct partial results warning.
-     * @param reason Reason for the exception
+     *
+     * @param reason   Reason for the exception
      * @param SQLstate SQL state code
      */
     public PartialResultsWarning(String reason, String SQLstate) {
@@ -54,6 +58,7 @@ public class PartialResultsWarning extends SQLWarning {
 
     /**
      * Construct partial results warning.
+     *
      * @param reason Reason for the exception
      */
     public PartialResultsWarning(String reason) {
@@ -69,11 +74,12 @@ public class PartialResultsWarning extends SQLWarning {
 
     /**
      * Add a connector failure to the warning
-     * @param name Connector name
+     *
+     * @param name      Connector name
      * @param exception Connector exception
      */
     public void addConnectorFailure(String name, SQLException exception) {
-        if(this.failures == null) {
+        if (this.failures == null) {
             this.failures = new HashMap();
         }
         this.failures.put(name, exception);
@@ -81,10 +87,11 @@ public class PartialResultsWarning extends SQLWarning {
 
     /**
      * Obtain list of connectors that failed.
+     *
      * @return List of connectors that failed - List contains String names
      */
     public Collection getFailedConnectors() {
-        if(this.failures != null) {
+        if (this.failures != null) {
             return new HashSet(this.failures.keySet());
         }
         return Collections.EMPTY_SET;
@@ -92,12 +99,13 @@ public class PartialResultsWarning extends SQLWarning {
 
     /**
      * Obtain failure for a particular connector.
+     *
      * @param connectorName Connector name
      * @return Exception that occurred for this connector or null if
      * the exception was unknown
      */
     public SQLException getConnectorException(String connectorName) {
-        if(this.failures != null) {
+        if (this.failures != null) {
             return (SQLException) this.failures.get(connectorName);
         }
         return null;

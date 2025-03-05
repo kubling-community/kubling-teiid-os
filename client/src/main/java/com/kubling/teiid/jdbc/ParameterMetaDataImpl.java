@@ -32,7 +32,7 @@ import java.sql.SQLException;
  */
 public class ParameterMetaDataImpl extends WrapperImpl implements ParameterMetaData {
 
-    private ResultSetMetaDataImpl metadata;
+    private final ResultSetMetaDataImpl metadata;
 
     public ParameterMetaDataImpl(ResultSetMetaDataImpl metadata) {
         this.metadata = metadata;
@@ -49,7 +49,7 @@ public class ParameterMetaDataImpl extends WrapperImpl implements ParameterMetaD
     }
 
     @Override
-    public int getParameterMode(int param) throws SQLException {
+    public int getParameterMode(int param) {
         return parameterModeUnknown;
     }
 

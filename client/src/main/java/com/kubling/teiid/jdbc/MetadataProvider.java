@@ -20,25 +20,19 @@ package com.kubling.teiid.jdbc;
 
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Objects;
 
-
-/**
- */
 public class MetadataProvider {
 
     // Map of detail maps -- <columnIndex, Map<propertyName, metadataObject>>
     protected Map[] metadata;
 
     public MetadataProvider(Map[] metadata) {
-        if (metadata == null) {
-            this.metadata = new Map[0];
-        } else {
-            this.metadata = metadata;
-        }
+        this.metadata = Objects.requireNonNullElseGet(metadata, () -> new Map[0]);
     }
 
     public Object getValue(int columnIndex, Integer metadataPropertyKey) throws SQLException {
-        if(columnIndex < 0 || columnIndex >= metadata.length) {
+        if (columnIndex < 0 || columnIndex >= metadata.length) {
             throw new SQLException(JDBCPlugin.Util.getString("StaticMetadataProvider.Invalid_column", columnIndex));
         }
 
@@ -67,7 +61,7 @@ public class MetadataProvider {
     }
 
     public boolean getBooleanValue(int columnIndex, Integer metadataPropertyKey) throws SQLException {
-        return ((Boolean) getValue(columnIndex, metadataPropertyKey)).booleanValue();
+        return (Boolean) getValue(columnIndex, metadataPropertyKey);
     }
 
 }

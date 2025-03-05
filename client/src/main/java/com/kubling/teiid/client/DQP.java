@@ -32,7 +32,7 @@ import javax.transaction.xa.Xid;
 
 public interface DQP {
 
-    @Secure(optional=true)
+    @Secure(optional = true)
     ResultsFuture<ResultsMessage> executeRequest(long reqID, RequestMessage message)
             throws TeiidProcessingException, TeiidComponentException;
 
@@ -69,7 +69,7 @@ public interface DQP {
                            int timeout) throws XATransactionException;
 
     ResultsFuture<?> end(XidImpl xid,
-            int flags) throws XATransactionException;
+                         int flags) throws XATransactionException;
 
     ResultsFuture<Integer> prepare(XidImpl xid) throws XATransactionException;
 
