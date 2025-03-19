@@ -34,6 +34,7 @@ import java.sql.SQLException;
  */
 public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobType> {
 
+    @Serial
     private static final long serialVersionUID = 1294191629070433450L;
 
     public BlobType() {
@@ -160,13 +161,11 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
                 out.write(b);
             }
         };
-        try {
+        try (is) {
             int bytes = ObjectConverterUtil.write(os, is, length, false);
             if (bytes != length) {
                 throw new IOException("Expected length " + length + " but was " + bytes);
             }
-        } finally {
-            is.close();
         }
     }
 
@@ -198,10 +197,9 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof BlobType)) {
+        if (!(obj instanceof BlobType other)) {
             return false;
         }
-        BlobType other = (BlobType) obj;
         if (EquivalenceUtil.areEqual(reference, other.reference)) {
             return true;
         }

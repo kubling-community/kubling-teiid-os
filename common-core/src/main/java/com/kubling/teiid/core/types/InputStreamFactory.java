@@ -64,9 +64,6 @@ public abstract class InputStreamFactory implements Source {
         this.systemId = systemId;
     }
 
-    /**
-     * @throws IOException
-     */
     public void free() throws IOException {
 
     }
@@ -84,9 +81,6 @@ public abstract class InputStreamFactory implements Source {
         this.length = length;
     }
 
-    /**
-     * @throws IOException
-     */
     public Reader getCharacterStream() throws IOException {
         return null;
     }
@@ -253,8 +247,7 @@ public abstract class InputStreamFactory implements Source {
         if (lob instanceof SerialBlob) {
             return StorageMode.MEMORY;
         }
-        if (lob instanceof BaseLob) {
-            BaseLob baseLob = (BaseLob) lob;
+        if (lob instanceof BaseLob baseLob) {
             try {
                 return baseLob.getStreamFactory().getStorageMode();
             } catch (SQLException e) {
@@ -268,8 +261,7 @@ public abstract class InputStreamFactory implements Source {
         if (lob instanceof Streamable<?>) {
             setTemporary(((Streamable<?>) lob).getReference(), temp);
         }
-        if (lob instanceof BaseLob) {
-            BaseLob baseLob = (BaseLob) lob;
+        if (lob instanceof BaseLob baseLob) {
             try {
                 baseLob.getStreamFactory().setTemporary(temp);
             } catch (SQLException e) {

@@ -19,6 +19,8 @@
 package com.kubling.teiid.core;
 
 
+import java.io.Serial;
+
 /**
  * Exception which occurs if an error occurs within the server that is not
  * business-related.  For instance, if a service or bean is not available
@@ -26,6 +28,7 @@ package com.kubling.teiid.core;
  */
 public class TeiidComponentException extends TeiidException {
 
+    @Serial
     private static final long serialVersionUID = 5853804556425201591L;
 
     public TeiidComponentException() {

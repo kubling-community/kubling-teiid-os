@@ -45,6 +45,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
         UNKNOWN, DOCUMENT, CONTENT, ELEMENT, COMMENT, PI, TEXT
     }
 
+    @Serial
     private static final long serialVersionUID = -7922647237095135723L;
     static final boolean SUPPORT_DTD =
             PropertiesUtils.getHierarchicalProperty("org.teiid.supportDTD", false, Boolean.class);
@@ -199,8 +200,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
      */
     public static String getEncoding(SQLXML xml) {
         try {
-            if (xml instanceof XMLType) {
-                XMLType type = (XMLType) xml;
+            if (xml instanceof XMLType type) {
                 if (type.encoding != null) {
                     return type.encoding;
                 }
@@ -236,8 +236,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
 
     @Override
     long computeLength() throws SQLException {
-        if (this.reference instanceof SQLXMLImpl) {
-            SQLXMLImpl impl = (SQLXMLImpl) this.reference;
+        if (this.reference instanceof SQLXMLImpl impl) {
             return impl.length();
         }
         return BaseLob.length(getBinaryStream());

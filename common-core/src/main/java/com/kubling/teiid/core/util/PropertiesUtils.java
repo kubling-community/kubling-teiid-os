@@ -25,6 +25,7 @@ import com.kubling.teiid.core.TeiidRuntimeException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Map;
@@ -39,6 +40,8 @@ import java.util.TreeMap;
 public final class PropertiesUtils {
 
     public static class InvalidPropertyException extends TeiidRuntimeException {
+
+        @Serial
         private static final long serialVersionUID = 1586068295007497776L;
 
         public InvalidPropertyException(
@@ -258,9 +261,6 @@ public final class PropertiesUtils {
 
     /**
      * Return the bytes for a given hex string, or throw an {@link IllegalArgumentException}
-     *
-     * @param hex
-     * @return
      */
     public static byte[] fromHex(String hex) {
         if (hex.length() % 2 != 0) {
@@ -372,10 +372,6 @@ public final class PropertiesUtils {
 
     /**
      * Search for the property first in the environment, then in the system properties
-     *
-     * @param key
-     * @param defaultValue
-     * @return
      */
     public static String getHierarchicalProperty(String key, String defaultValue) {
         return getHierarchicalProperty(key, defaultValue, String.class);
@@ -383,11 +379,6 @@ public final class PropertiesUtils {
 
     /**
      * Search for the property first in the environment, then in the system properties
-     *
-     * @param key
-     * @param defaultValue
-     * @param clazz
-     * @return
      */
     public static <T> T getHierarchicalProperty(String key, T defaultValue, Class<T> clazz) {
         Map sysProps = System.getProperties();

@@ -38,12 +38,9 @@ public final class ApplicationInfo implements Serializable {
     private final Properties props = new Properties();
 
     private ApplicationInfo() {
-        InputStream is = this.getClass().getResourceAsStream("application.properties");
         try {
-            try {
+            try (InputStream is = this.getClass().getResourceAsStream("application.properties")) {
                 props.load(is);
-            } finally {
-                is.close();
             }
         } catch (IOException e) {
             throw new TeiidRuntimeException(CorePlugin.Event.TEIID10045, e);

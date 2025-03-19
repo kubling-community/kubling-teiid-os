@@ -22,6 +22,7 @@ import com.kubling.teiid.core.CorePlugin;
 import com.kubling.teiid.core.util.ObjectConverterUtil;
 import com.kubling.teiid.core.util.ReaderInputStream;
 import com.kubling.teiid.core.util.SqlUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -252,6 +253,7 @@ public class ClobImpl extends BaseLob implements Clob {
     @Override
     public String toString() {
         try {
+            if (this.len == 0) return null;
             return new String(getAsciiStream().readAllBytes());
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);

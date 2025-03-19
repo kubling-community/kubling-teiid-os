@@ -19,6 +19,8 @@
 package com.kubling.teiid.core;
 
 
+import java.io.Serial;
+
 /**
  * A generic runtime exception which contains a reference to another exception
  * and which represents a condition that should never occur during runtime.  This
@@ -28,6 +30,7 @@ package com.kubling.teiid.core;
  * constructors they need. <p>
  */
 public class TeiidRuntimeException extends RuntimeException {
+    @Serial
     private static final long serialVersionUID = -4035276728007979320L;
 
     public static final String CAUSED_BY_STRING = CorePlugin.Util.getString("RuntimeException.Caused_by");

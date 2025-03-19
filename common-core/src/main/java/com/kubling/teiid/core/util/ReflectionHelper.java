@@ -69,7 +69,7 @@ public class ReflectionHelper {
         createMethodMap();
         List<Method> methods = methodMap.get(methodName);
         if (methods != null && methods.size() == 1) {
-            return methods.get(0);
+            return methods.getFirst();
         }
 
         if (arguments == null) {
@@ -242,7 +242,6 @@ public class ReflectionHelper {
      * @param classLoader the class loader to use; may be null if the current
      *                    class loader is to be used
      * @return Class is the instance of the class
-     * @throws ClassNotFoundException
      */
     private static Class<?> loadClass(final String className, final ClassLoader classLoader) throws ClassNotFoundException {
         Class<?> cls;

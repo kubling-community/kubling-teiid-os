@@ -49,8 +49,6 @@ public final class BinaryType implements Comparable<BinaryType> {
 
     /**
      * Get the byte value at a given index
-     *
-     * @param index
      */
     public byte getByte(int index) {
         return bytes[index];
@@ -86,10 +84,9 @@ public final class BinaryType implements Comparable<BinaryType> {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof BinaryType)) {
+        if (!(obj instanceof BinaryType other)) {
             return false;
         }
-        BinaryType other = (BinaryType) obj;
         return Arrays.equals(this.bytes, other.bytes);
     }
 

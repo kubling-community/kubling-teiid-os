@@ -21,8 +21,9 @@ package com.kubling.teiid.core.util;
 import com.kubling.teiid.core.CorePlugin;
 import com.kubling.teiid.core.TeiidException;
 
-import java.io.InputStreamReader;
 import java.io.*;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -32,20 +33,16 @@ public class ObjectConverterUtil {
 
     private static final int DEFAULT_READING_SIZE = 8192;
 
-     protected static byte[] convertBlobToByteArray(final java.sql.Blob data) throws TeiidException {
-          try {
-              // Open a stream to read the BLOB data
-              InputStream l_blobStream = data.getBinaryStream();
-              return convertToByteArray(l_blobStream);
-          } catch (IOException ioe) {
-                final Object[] params = new Object[]{data.getClass().getName()};
-                  throw new TeiidException(CorePlugin.Event.TEIID10030,
-                          ioe,CorePlugin.Util.gs(CorePlugin.Event.TEIID10030,params));
-          } catch (SQLException sqe) {
-                final Object[] params = new Object[]{data.getClass().getName()};
-                  throw new TeiidException(CorePlugin.Event.TEIID10030,
-                          sqe,CorePlugin.Util.gs(CorePlugin.Event.TEIID10030,params));
-          }
+    protected static byte[] convertBlobToByteArray(final java.sql.Blob data) throws TeiidException {
+        try {
+            // Open a stream to read the BLOB data
+            InputStream l_blobStream = data.getBinaryStream();
+            return convertToByteArray(l_blobStream);
+        } catch (IOException | SQLException ioe) {
+            final Object[] params = new Object[]{data.getClass().getName()};
+            throw new TeiidException(CorePlugin.Event.TEIID10030,
+                    ioe, CorePlugin.Util.gs(CorePlugin.Event.TEIID10030, params));
+        }
     }
 
     public static byte[] convertToByteArray(final Object data) throws TeiidException, IOException {
@@ -53,13 +50,13 @@ public class ObjectConverterUtil {
             return convertToByteArray((InputStream) data);
         } else if (data instanceof byte[]) {
             return (byte[]) data;
-        } else if (data instanceof java.sql.Blob)  {
+        } else if (data instanceof java.sql.Blob) {
             return convertBlobToByteArray((java.sql.Blob) data);
         } else if (data instanceof File) {
-            return convertFileToByteArray((File)data);
+            return convertFileToByteArray((File) data);
         }
         final Object[] params = new Object[]{data.getClass().getName()};
-          throw new TeiidException(CorePlugin.Event.TEIID10032, CorePlugin.Util.gs(CorePlugin.Event.TEIID10032,params));
+        throw new TeiidException(CorePlugin.Event.TEIID10032, CorePlugin.Util.gs(CorePlugin.Event.TEIID10032, params));
     }
 
     public static byte[] convertToByteArray(final InputStream is) throws IOException {
@@ -72,6 +69,7 @@ public class ObjectConverterUtil {
      * are returned. Otherwise all bytes in the stream are returned.
      * Note this does close the stream, even if not all bytes are written,
      * because the buffering does not guarantee the end position.
+     *
      * @throws IOException if a problem occurred reading the stream.
      */
     public static byte[] convertToByteArray(final InputStream is, int length) throws IOException {
@@ -115,13 +113,12 @@ public class ObjectConverterUtil {
         }
         int writen = 0;
         try {
-            int l_nbytes = 0;
+            int l_nbytes;
             int count = 0;
-            int readLength = length;
+            int readLength;
             if (length == -1) {
                 readLength = l_buffer.length;
-            }
-            else {
+            } else {
                 readLength = Math.min(length, l_buffer.length);
             }
             while (readLength > 0 && (l_nbytes = is.read(l_buffer, count, readLength)) != -1) {
@@ -148,7 +145,7 @@ public class ObjectConverterUtil {
         } finally {
             try {
                 if (closeInput) {
-                       is.close();
+                    is.close();
                 }
             } finally {
                 if (closeOutput) {
@@ -159,7 +156,7 @@ public class ObjectConverterUtil {
     }
 
     public static int write(final OutputStream out, final InputStream is, int length) throws IOException {
-       return write(out, is, length, true);
+        return write(out, is, length, true);
     }
 
     public static int write(final OutputStream out, final InputStream is, int length, boolean close) throws IOException {
@@ -181,13 +178,12 @@ public class ObjectConverterUtil {
         int writen = 0;
         try {
             char[] l_buffer = new char[DEFAULT_READING_SIZE]; // buffer holding bytes to be transferred
-            int l_nbytes = 0;
+            int l_nbytes;
             int count = 0;
             int readLength;
             if (length == -1) {
                 readLength = l_buffer.length;
-            }
-            else {
+            } else {
                 readLength = Math.min(length, l_buffer.length);
             }
             while (readLength > 0 && (l_nbytes = is.read(l_buffer, count, readLength)) != -1) {
@@ -213,18 +209,15 @@ public class ObjectConverterUtil {
             return writen;
         } finally {
             if (close) {
-                try {
+                try (out) {
                     is.close();
-                } finally {
-                    out.close();
                 }
             }
         }
     }
 
     public static InputStream convertToInputStream(byte[] data) {
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        return bais;
+        return new ByteArrayInputStream(data);
     }
 
     public static void write(final InputStream is, final String fileName) throws IOException {
@@ -255,8 +248,10 @@ public class ObjectConverterUtil {
         return convertToCharArray(new ByteArrayInputStream(bytes), bytes.length, encoding);
 
     }
+
     /**
      * Returns the contents of the given file as a byte array.
+     *
      * @throws IOException if a problem occurred reading the file.
      */
     public static byte[] convertFileToByteArray(File file) throws IOException {
@@ -265,6 +260,7 @@ public class ObjectConverterUtil {
 
     /**
      * Returns the contents of the given file as a string.
+     *
      * @throws IOException if a problem occurred reading the file.
      */
     public static String convertFileToString(final File file) throws IOException {
@@ -275,10 +271,11 @@ public class ObjectConverterUtil {
 
     /**
      * Returns the contents of the given InputStream as a string.
+     *
      * @throws IOException if a problem occurred reading the file.
      */
     public static String convertToString(final InputStream stream) throws IOException {
-        return convertToString(new InputStreamReader(stream, "UTF-8"), -1); 
+        return convertToString(new InputStreamReader(stream, StandardCharsets.UTF_8), -1);
     }
 
     /**
@@ -286,11 +283,12 @@ public class ObjectConverterUtil {
      * If a length is specified (ie. if length != -1), only length chars
      * are returned. Otherwise all chars in the stream are returned.
      * Note this doesn't close the stream.
+     *
      * @throws IOException if a problem occurred reading the stream.
      */
     public static char[] convertToCharArray(InputStream stream, int length, String encoding)
-        throws IOException {
-        Reader r = null;
+            throws IOException {
+        Reader r;
         if (encoding == null) {
             r = new InputStreamReader(stream);
         } else {
@@ -301,10 +299,11 @@ public class ObjectConverterUtil {
 
     /**
      * Returns the contents of the given zip entry as a byte array.
+     *
      * @throws IOException if a problem occurred reading the zip entry.
      */
     public static byte[] convertToByteArray(ZipEntry ze, ZipFile zip)
-        throws IOException {
+            throws IOException {
         return convertToByteArray(zip.getInputStream(ze), (int) ze.getSize());
     }
 

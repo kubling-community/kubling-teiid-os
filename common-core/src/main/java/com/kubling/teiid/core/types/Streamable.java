@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 /**
  * A large value object which can be streamable in chunks of data each time
  *
- * <p>A reference stream id is tuple source id for a Streamble object where the
+ * <p>A reference stream id is tuple source id for a Streamable object where the
  * object is in buffer manager, but the contents will never be written to disk;
  * this is the ID that client needs to reference to get the chunk of data.
  */
@@ -40,6 +40,7 @@ public abstract class Streamable<T> implements Externalizable {
 
     private static final Logger logger = Logger.getLogger(Streamable.class.getName());
 
+    @Serial
     private static final long serialVersionUID = -8252488562134729374L;
 
     private static final AtomicLong counter = new AtomicLong();

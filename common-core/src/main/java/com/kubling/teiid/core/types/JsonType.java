@@ -18,6 +18,7 @@
 
 package com.kubling.teiid.core.types;
 
+import java.io.Serial;
 import java.sql.Clob;
 
 
@@ -26,6 +27,7 @@ import java.sql.Clob;
  */
 public final class JsonType extends BaseClobType {
 
+    @Serial
     private static final long serialVersionUID = 2753412502127824104L;
 
     public JsonType() {

@@ -18,6 +18,7 @@
 
 package com.kubling.teiid.core;
 
+import java.io.Serial;
 import java.sql.SQLException;
 
 
@@ -28,6 +29,7 @@ import java.sql.SQLException;
  */
 public class TeiidException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -3033427629587497938L;
     protected String code;
     private transient String originalType;
@@ -60,8 +62,7 @@ public class TeiidException extends Exception {
 
     private void setCode(BundleUtil.Event code, Throwable t) {
         String codeStr = code.toString();
-        if (t instanceof TeiidException) {
-            TeiidException te = (TeiidException) t;
+        if (t instanceof TeiidException te) {
             if (te.getCode() != null) {
                 codeStr = te.getCode();
             }

@@ -84,8 +84,7 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
         } else if (pos + length > length()) {
             length = (int) (length() - pos);
         }
-        InputStream in = getBinaryStream();
-        try {
+        try (InputStream in = getBinaryStream()) {
             long skipped;
             while (pos > 0) {
                 skipped = in.skip(pos);
@@ -94,13 +93,8 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
             return ObjectConverterUtil.convertToByteArray(in, length);
         } catch (IOException e) {
             throw new SQLException(e);
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                // Ignored
-            }
         }
+        // Ignored
     }
 
     /**
@@ -181,21 +175,19 @@ public class BlobImpl extends BaseLob implements Blob, StreamProvider {
     }
 
     /**
-     * For a given blob try to determine the length without fully reading an inputstream
+     * For a given blob try to determine the length without fully reading an input stream
      *
      * @return the length or -1 if it cannot be determined
      */
     public static long quickLength(Blob b) {
-        if (b instanceof BlobType) {
-            BlobType blob = (BlobType) b;
+        if (b instanceof BlobType blob) {
             long length = blob.getLength();
             if (length != -1) {
                 return length;
             }
             return quickLength(blob.getReference());
         }
-        if (b instanceof BlobImpl) {
-            BlobImpl blob = (BlobImpl) b;
+        if (b instanceof BlobImpl blob) {
             try {
                 return blob.getStreamFactory().getLength();
             } catch (SQLException e) {

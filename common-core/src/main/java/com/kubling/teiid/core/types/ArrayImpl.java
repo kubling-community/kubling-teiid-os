@@ -22,10 +22,7 @@ import com.kubling.teiid.core.TeiidRuntimeException;
 import com.kubling.teiid.core.util.ExternalizeUtil;
 import com.kubling.teiid.core.util.HashCodeUtil;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +35,9 @@ import java.util.Map;
  * Provides a serializable {@link Array} implementation with minimal JDBC functionality.
  */
 public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, Array {
+
     private static final String INVALID = "";
+    @Serial
     private static final long serialVersionUID = 517794153664734815L;
     /**
      * a regrettable hack for pg compatibility since we want to avoid adding a vector type
@@ -131,10 +130,9 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ArrayImpl)) {
+        if (!(obj instanceof ArrayImpl other)) {
             return false;
         }
-        ArrayImpl other = (ArrayImpl) obj;
         try {
             return zeroBased == other.zeroBased && compareTo(other) == 0;
         } catch (ClassCastException e) {

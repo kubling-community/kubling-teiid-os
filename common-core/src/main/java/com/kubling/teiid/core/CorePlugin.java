@@ -31,7 +31,7 @@ public class CorePlugin {
             new BundleUtil(PLUGIN_ID, PLUGIN_ID + ".i18n",
                     ResourceBundle.getBundle(PLUGIN_ID + ".i18n"));  
 
-    public static enum Event implements BundleUtil.Event {
+    public enum Event implements BundleUtil.Event {
         TEIID10000,
         TEIID10001,
         TEIID10002,

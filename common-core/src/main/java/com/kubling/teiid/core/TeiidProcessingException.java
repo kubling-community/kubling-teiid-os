@@ -19,6 +19,8 @@
 package com.kubling.teiid.core;
 
 
+import java.io.Serial;
+
 /**
  * This exception is a superclass for exceptions that are thrown during
  * processing as a result of user input.  This exception is the result
@@ -26,6 +28,7 @@ package com.kubling.teiid.core;
  */
 public class TeiidProcessingException extends TeiidException {
 
+    @Serial
     private static final long serialVersionUID = -4013536109023540872L;
 
     /**

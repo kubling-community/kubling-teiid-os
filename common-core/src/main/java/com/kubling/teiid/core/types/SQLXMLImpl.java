@@ -42,7 +42,7 @@ import java.sql.SQLXML;
 
 /**
  * Default SQLXML impl
- *
+ * <p>
  * NOTE that this representation of XML does not become unreadable after
  * read operations.
  */
@@ -54,12 +54,11 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
 
     /**
      * Constructs a SQLXML from bytes that are already encoded in {@link Streamable#ENCODING}
-     * @param bytes
      */
     public SQLXMLImpl(final byte[] bytes) {
         super(new InputStreamFactory() {
             @Override
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 return new ByteArrayInputStream(bytes);
             }
 
@@ -94,6 +93,7 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
         try {
             enc = XMLType.getEncoding(this.getBinaryStream());
         } catch (SQLException e) {
+            // Ignored
         }
         if (enc != null) {
             setEncoding(enc);
@@ -106,7 +106,7 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
     @SuppressWarnings("unchecked")
     public <T extends Source> T getSource(Class<T> sourceClass) throws SQLException {
         if (sourceClass == null || sourceClass == StreamSource.class) {
-            return (T)new StreamSource(getBinaryStream(), this.getStreamFactory().getSystemId());
+            return (T) new StreamSource(getBinaryStream(), this.getStreamFactory().getSystemId());
         } else if (sourceClass == StAXSource.class) {
             XMLInputFactory factory = XMLType.getXmlInputFactory();
             try {
@@ -121,29 +121,24 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
                 dbf.setNamespaceAware(true);
                 if (!XMLType.SUPPORT_DTD) {
-                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false); 
-                    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false); 
+                    dbf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
                 }
                 DocumentBuilder docBuilder = dbf.newDocumentBuilder();
                 Node doc = docBuilder.parse(new InputSource(getBinaryStream()));
                 return (T) new DOMSource(doc);
-            } catch (ParserConfigurationException e) {
-                throw new SQLException(e);
-            } catch (SAXException e) {
-                throw new SQLException(e);
-            } catch (IOException e) {
+            } catch (ParserConfigurationException | SAXException | IOException e) {
                 throw new SQLException(e);
             }
         }
-        throw new SQLException("Unsupported source type " + sourceClass); 
+        throw new SQLException("Unsupported source type " + sourceClass);
     }
 
     public String getString() throws SQLException {
         try {
             return ObjectConverterUtil.convertToString(getCharacterStream());
         } catch (IOException e) {
-            SQLException ex = new SQLException(e.getMessage(), e);
-            throw ex;
+            throw new SQLException(e.getMessage(), e);
         }
     }
 
@@ -175,19 +170,18 @@ public class SQLXMLImpl extends BaseLob implements SQLXML {
 
     /**
      * For a given blob try to determine the length without fully reading an inputstream
+     *
      * @return the length or -1 if it cannot be determined
      */
     public static long quickLength(SQLXML xml) {
-        if (xml instanceof XMLType) {
-            XMLType x = (XMLType)xml;
+        if (xml instanceof XMLType x) {
             long length = x.getLength();
             if (length != -1) {
                 return length;
             }
             return quickLength(x.getReference());
         }
-        if (xml instanceof SQLXMLImpl) {
-            SQLXMLImpl x = (SQLXMLImpl)xml;
+        if (xml instanceof SQLXMLImpl x) {
             try {
                 return x.getStreamFactory().getLength();
             } catch (SQLException e) {

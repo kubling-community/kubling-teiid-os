@@ -285,7 +285,7 @@ public class ArgCheck {
      */
     public static void isNotZeroLength(String value, String message) {
         isNotNull(value);
-        if (value.length() <= 0) {
+        if (value.isEmpty()) {
             final String msg = message != null ?
                     message :
                     CorePlugin.Util.getString("ArgCheck.isStringNonZeroLength");

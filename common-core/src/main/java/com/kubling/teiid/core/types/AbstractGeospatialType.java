@@ -29,7 +29,7 @@ import java.sql.Blob;
 /**
  * Base type for geography and geometry.
  * <p>
- * Simply a blob reference with an srid.
+ * Simply a blob reference with a srid.
  */
 public abstract class AbstractGeospatialType extends BlobType {
 

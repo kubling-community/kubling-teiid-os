@@ -18,6 +18,7 @@
 
 package com.kubling.teiid.core.util;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -34,6 +35,7 @@ import java.util.*;
  */
 public class CopyOnWriteLinkedHashMap<K, V> implements Map<K, V>, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2690353315316696065L;
 
     @SuppressWarnings("rawtypes")

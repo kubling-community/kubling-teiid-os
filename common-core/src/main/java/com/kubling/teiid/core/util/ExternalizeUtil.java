@@ -39,7 +39,6 @@ public class ExternalizeUtil {
      *
      * @param out   the output instance
      * @param array reference to an array. Can be null.
-     * @throws IOException
      */
     public static void writeArray(ObjectOutput out, Object[] array) throws IOException {
         if (array == null) {
@@ -58,7 +57,6 @@ public class ExternalizeUtil {
      *
      * @param out  the output instance
      * @param coll reference to a Collection. Can be null.
-     * @throws IOException
      */
     public static void writeCollection(ObjectOutput out, Collection<?> coll) throws IOException {
         if (coll == null) {
@@ -83,7 +81,6 @@ public class ExternalizeUtil {
      *
      * @param out the output instance
      * @param map reference to a Map. Can be null.
-     * @throws IOException
      */
     public static void writeMap(ObjectOutput out, Map<?, ?> map) throws IOException {
         if (map == null) {
@@ -100,10 +97,7 @@ public class ExternalizeUtil {
     /**
      * Reads an array of String that was written to the output by this utility class
      *
-     * @param in
      * @return a non-null String[]
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] readArray(ObjectInput in, Class<T> type) throws IOException, ClassNotFoundException {
@@ -122,10 +116,7 @@ public class ExternalizeUtil {
     /**
      * Reads a List that was written by this utility class.
      *
-     * @param in
      * @return a non-null List
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     public static <T> List<T> readList(ObjectInput in, Class<T> type)
             throws IOException, ClassNotFoundException {
@@ -139,10 +130,7 @@ public class ExternalizeUtil {
     /**
      * Reads a Map that was written by this utility class
      *
-     * @param in
      * @return a non-null Map
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> readMap(ObjectInput in) throws IOException, ClassNotFoundException {

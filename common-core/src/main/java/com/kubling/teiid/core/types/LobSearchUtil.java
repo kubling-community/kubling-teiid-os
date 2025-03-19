@@ -65,10 +65,9 @@ public class LobSearchUtil {
          * TODO: optimize for patterns that are small enough to fit in a reasonable buffer
          */
         try {
-            InputStream patternStream = pattern.getBinaryStream();
-            InputStream targetStream = target.getBinaryStream();
-            InputStream laggingTargetStream = target.getBinaryStream();
-            try {
+            try (InputStream patternStream = pattern.getBinaryStream();
+                 InputStream targetStream = target.getBinaryStream();
+                 InputStream laggingTargetStream = target.getBinaryStream()) {
                 int patternHash = computeStreamHash(patternStream, patternLength);
                 int lastMod = 1;
                 for (int i = 0; i < patternLength; i++) {
@@ -92,16 +91,6 @@ public class LobSearchUtil {
                 } while (position + patternLength - 1 <= targetLength);
 
                 return -1;
-            } finally {
-                if (patternStream != null) {
-                    patternStream.close();
-                }
-                if (targetStream != null) {
-                    targetStream.close();
-                }
-                if (laggingTargetStream != null) {
-                    laggingTargetStream.close();
-                }
             }
         } catch (IOException e) {
             throw new SQLException(e);
@@ -112,15 +101,11 @@ public class LobSearchUtil {
      * validate that the pattern matches the given position.
      * <p>
      * TODO: optimize to reuse the same targetstream/buffer for small patterns
-     *
-     * @throws SQLException
      */
     static private boolean validateMatch(StreamProvider pattern, StreamProvider target, long position)
             throws IOException, SQLException {
 
-        InputStream targetStream = target.getBinaryStream();
-        InputStream patternStream = pattern.getBinaryStream();
-        try {
+        try (InputStream targetStream = target.getBinaryStream(); InputStream patternStream = pattern.getBinaryStream()) {
             Assertion.assertTrue(targetStream.skip(position - 1) == position - 1);
             int value;
             while ((value = patternStream.read()) != -1) {
@@ -128,9 +113,6 @@ public class LobSearchUtil {
                     return false;
                 }
             }
-        } finally {
-            targetStream.close();
-            patternStream.close();
         }
         return true;
     }

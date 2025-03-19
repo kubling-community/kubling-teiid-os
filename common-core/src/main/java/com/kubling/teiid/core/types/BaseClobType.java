@@ -36,7 +36,7 @@ import java.sql.SQLException;
  */
 public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable, Comparable<BaseClobType> {
 
-
+    @Serial
     private static final long serialVersionUID = 2753412502127824104L;
 
     private int hash;
@@ -129,12 +129,11 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
     /**
      * Utility method to convert to String
      *
-     * @param clob
      * @return string form of the clob passed.
      */
     public static String getString(Clob clob) throws SQLException, IOException {
-        Reader reader = clob.getCharacterStream();
-        try {
+
+        try (Reader reader = clob.getCharacterStream()) {
             StringWriter writer = new StringWriter();
             int c = reader.read();
             while (c != -1) {
@@ -145,8 +144,6 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
             String data = writer.toString();
             writer.close();
             return data;
-        } finally {
-            reader.close();
         }
     }
 
@@ -294,10 +291,9 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof BaseClobType)) {
+        if (!(obj instanceof BaseClobType other)) {
             return false;
         }
-        BaseClobType other = (BaseClobType) obj;
         if (EquivalenceUtil.areEqual(reference, other.reference)) {
             return true;
         }

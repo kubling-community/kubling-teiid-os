@@ -4,11 +4,10 @@
     <parent>
         <groupId>com.kubling</groupId>
         <artifactId>kubling-teiid</artifactId>
-        <version>25.1</version>
+        <version>25.1.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.kubling</groupId>
     <artifactId>kubling-test-container</artifactId>
     <name>Kubling Test Container</name>
     <description>Kubling Test Container for testing applications in Java</description>

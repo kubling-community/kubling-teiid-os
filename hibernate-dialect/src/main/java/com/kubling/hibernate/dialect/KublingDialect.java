@@ -29,13 +29,35 @@ import org.hibernate.dialect.sequence.SequenceSupport;
 import org.hibernate.dialect.temptable.TemporaryTableExporter;
 import org.hibernate.dialect.temptable.TemporaryTableKind;
 import org.hibernate.engine.jdbc.env.spi.NameQualifierSupport;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.util.collections.Stack;
+import org.hibernate.query.spi.QueryOptions;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
+import org.hibernate.sql.ast.Clause;
+import org.hibernate.sql.ast.SqlAstTranslator;
+import org.hibernate.sql.ast.SqlAstTranslatorFactory;
+import org.hibernate.sql.ast.spi.AbstractSqlAstTranslator;
+import org.hibernate.sql.ast.tree.MutationStatement;
+import org.hibernate.sql.ast.tree.Statement;
+import org.hibernate.sql.ast.tree.expression.Expression;
+import org.hibernate.sql.ast.tree.expression.SqlTuple;
+import org.hibernate.sql.ast.tree.predicate.InListPredicate;
+import org.hibernate.sql.ast.tree.select.SelectStatement;
+import org.hibernate.sql.exec.spi.JdbcOperation;
+import org.hibernate.sql.exec.spi.JdbcOperationQueryMutation;
+import org.hibernate.sql.exec.spi.JdbcOperationQuerySelect;
+import org.hibernate.sql.exec.spi.JdbcParameterBindings;
+import org.hibernate.sql.model.ast.TableMutation;
+import org.hibernate.sql.model.jdbc.JdbcMutationOperation;
 import org.hibernate.type.SqlTypes;
 import org.hibernate.type.StandardBasicTypes;
 
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import static org.hibernate.type.SqlTypes.*;
 
@@ -135,58 +157,30 @@ public class KublingDialect extends Dialect {
     @Override
     protected String columnType(int sqlTypeCode) {
 
-        switch (sqlTypeCode) {
-            case BIT:
-                return "boolean";
-            case TINYINT:
-                return "byte";
-            case SMALLINT:
-                return "short";
-            case SqlTypes.INTEGER:
-                return "integer";
-            case CHAR:
-                return "char";
-            case NCHAR:
-                return columnType(CHAR);
-            case NVARCHAR:
-                return columnType(VARCHAR);
-            case LONG32VARCHAR:
-            case LONG32NVARCHAR:
-            case VARCHAR:
-                return "string";
-            case SqlTypes.BLOB:
-            case BINARY:
-            case LONG32VARBINARY:
-                return "blob";
-            case SqlTypes.CLOB:
-            case NCLOB:
-                return "clob";
+        return switch (sqlTypeCode) {
+            case BIT -> "boolean";
+            case TINYINT -> "byte";
+            case SMALLINT -> "short";
+            case SqlTypes.INTEGER -> "integer";
+            case CHAR -> "char";
+            case NCHAR -> columnType(CHAR);
+            case NVARCHAR -> columnType(VARCHAR);
+            case LONG32VARCHAR, LONG32NVARCHAR, VARCHAR -> "string";
+            case SqlTypes.BLOB, BINARY, LONG32VARBINARY -> "blob";
+            case SqlTypes.CLOB, NCLOB -> "clob";
             // use bytea as the "long" binary type (that there is no
             // real VARBINARY type in Postgres, so we always use this)
-            case VARBINARY:
-                return "varbinary";
-
-            case BIGINT:
-                return "long";
-
-            case TIMESTAMP_UTC:
-            case TIMESTAMP:
-                return "timestamp";
-            case SqlTypes.TIME:
-                return "time";
-            case SqlTypes.DATE:
-                return "date";
-            case JAVA_OBJECT:
-                return "object";
-            case REAL:
-            case SqlTypes.FLOAT:
-                return "float";
-            case SqlTypes.DOUBLE:
-                return "double";
-            case NUMERIC:
-                return "bigdecimal";
-        }
-        return super.columnType(sqlTypeCode);
+            case VARBINARY -> "varbinary";
+            case BIGINT -> "long";
+            case TIMESTAMP_UTC, TIMESTAMP -> "timestamp";
+            case SqlTypes.TIME -> "time";
+            case SqlTypes.DATE -> "date";
+            case JAVA_OBJECT -> "object";
+            case REAL, SqlTypes.FLOAT -> "float";
+            case SqlTypes.DOUBLE -> "double";
+            case NUMERIC -> "bigdecimal";
+            default -> super.columnType(sqlTypeCode);
+        };
     }
 
     public boolean dropConstraints() {
@@ -316,15 +310,11 @@ public class KublingDialect extends Dialect {
     @Override
     public String getTemporaryTableCreateCommand() {
         final TemporaryTableKind kind = getSupportedTemporaryTableKind();
-        switch (kind) {
-            case PERSISTENT:
-                return "create temporary table";
-            case LOCAL:
-                return "create local temporary table";
-            case GLOBAL:
-                return "create global temporary table";
-        }
-        throw new UnsupportedOperationException("Unsupported kind: " + kind);
+        return switch (kind) {
+            case PERSISTENT -> "create temporary table";
+            case LOCAL -> "create local temporary table";
+            case GLOBAL -> "create global temporary table";
+        };
     }
 
     @Override
@@ -335,6 +325,84 @@ public class KublingDialect extends Dialect {
     @Override
     public NameQualifierSupport getNameQualifierSupport() {
         return NameQualifierSupport.SCHEMA;
+    }
+
+    @Override
+    public SqlAstTranslatorFactory getSqlAstTranslatorFactory() {
+        return new SqlAstTranslatorFactory() {
+            @Override
+            public SqlAstTranslator<JdbcOperationQuerySelect> buildSelectTranslator(
+                    SessionFactoryImplementor sessionFactory, SelectStatement statement) {
+                return new KublingSqlAstTranslator<>(sessionFactory, statement);
+            }
+
+            @Override
+            public SqlAstTranslator<? extends JdbcOperationQueryMutation> buildMutationTranslator(
+                    SessionFactoryImplementor sessionFactory, MutationStatement statement) {
+                return new KublingSqlAstTranslator<>(sessionFactory, statement);
+            }
+
+            @Override
+            public <O extends JdbcMutationOperation> SqlAstTranslator<O> buildModelMutationTranslator(
+                    TableMutation<O> mutation, SessionFactoryImplementor sessionFactory) {
+                return new KublingSqlAstTranslator<>(sessionFactory, mutation);
+            }
+        };
+    }
+
+    private static class KublingSqlAstTranslator<T extends JdbcOperation> extends AbstractSqlAstTranslator<T> {
+
+        public KublingSqlAstTranslator(SessionFactoryImplementor sessionFactory, Statement statement) {
+            super(sessionFactory, statement);
+        }
+
+        @Override
+        public void visitInListPredicate(InListPredicate predicate) {
+
+            if (predicate.getTestExpression() instanceof SqlTuple) {
+                List<? extends Expression> expressions = ((SqlTuple) predicate.getTestExpression()).getExpressions();
+                List<Expression> values = predicate.getListExpressions();
+
+                appendSql("(");
+                for (int i = 0; i < values.size(); i++) {
+                    if (i > 0) {
+                        appendSql(" OR ");
+                    }
+                    appendSql("(");
+                    Iterator<? extends Expression> columnIterator = expressions.iterator();
+                    Iterator<? extends Expression> valueIterator = ((SqlTuple) values.get(i)).getExpressions().iterator();
+                    while (columnIterator.hasNext() && valueIterator.hasNext()) {
+                        columnIterator.next().accept(this);
+                        appendSql(" = ");
+                        valueIterator.next().accept(this);
+                        if (columnIterator.hasNext()) {
+                            appendSql(" AND ");
+                        }
+                    }
+                    appendSql(")");
+                }
+                appendSql(")");
+            } else {
+                // ✅ Fallback for simple IN clauses
+                super.visitInListPredicate(predicate);
+            }
+        }
+
+        @Override
+        public Stack<Clause> getCurrentClauseStack() {
+            return super.getCurrentClauseStack();
+        }
+
+
+        @Override
+        public Set<String> getAffectedTableNames() {
+            return Set.of();
+        }
+
+        @Override
+        public T translate(JdbcParameterBindings jdbcParameterBindings, QueryOptions queryOptions) {
+            return super.translate(jdbcParameterBindings, queryOptions);
+        }
     }
 }
 

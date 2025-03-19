@@ -27,6 +27,7 @@ import java.sql.SQLException;
 
 public class BaseLob implements Externalizable, StreamFactoryReference {
 
+    @Serial
     private static final long serialVersionUID = -1586959324208959519L;
     private InputStreamFactory streamFactory;
     private Charset charset;

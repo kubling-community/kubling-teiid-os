@@ -29,28 +29,23 @@ import java.util.TimeZone;
 
 /**
  * Utility methods for SQL Timestamps, Time, and Dates with time zones as UTC
- *
+ * <p>
  * This is intended to take incoming Strings or Dates that have accurate
  * Calendar fields and give the UTC time by interpretting those fields
  * in the target time zone.
- *
+ * <p>
  * Use of the Calendar object passed in will not be thread safe, but
  * it will not alter the contents of the Calendar.
- *
+ * <p>
  * Note that normalization occurs only for the transition from one type to another.
- *
  */
 public class TimestampWithTimezone {
 
-    public static final String ISO8601_WEEK_PROP = "org.teiid.iso8601Week"; 
+    public static final String ISO8601_WEEK_PROP = "org.teiid.iso8601Week";
     public static final boolean ISO8601_WEEK =
             PropertiesUtils.getHierarchicalProperty(ISO8601_WEEK_PROP, true, Boolean.class);
 
-    private static ThreadLocal<Calendar> CALENDAR = new ThreadLocal<Calendar>() {
-        protected Calendar initialValue() {
-            return initialCalendar();
-        }
-    };
+    private static final ThreadLocal<Calendar> CALENDAR = ThreadLocal.withInitial(TimestampWithTimezone::initialCalendar);
 
     public static Calendar getCalendar() {
         return CALENDAR.get();
@@ -93,8 +88,8 @@ public class TimestampWithTimezone {
 
         Timestamp tsInTz = new Timestamp(target.getTimeInMillis());
 
-        if(date instanceof Timestamp) {
-            tsInTz.setNanos(((Timestamp)date).getNanos());
+        if (date instanceof Timestamp) {
+            tsInTz.setNanos(((Timestamp) date).getNanos());
         }
 
         target.setTimeInMillis(time);
@@ -139,7 +134,7 @@ public class TimestampWithTimezone {
      */
     public static Time createTime(java.util.Date date) {
         if (date instanceof Time) {
-            return (Time)date;
+            return (Time) date;
         }
         Calendar cal = getCalendar();
         cal.setTime(date);
@@ -154,7 +149,7 @@ public class TimestampWithTimezone {
      */
     public static Date createDate(java.util.Date date) {
         if (date instanceof Date) {
-            return (Date)date;
+            return (Date) date;
         }
         Calendar cal = getCalendar();
         cal.setTime(date);
@@ -163,7 +158,7 @@ public class TimestampWithTimezone {
 
     public static Timestamp createTimestamp(java.util.Date date) {
         if (date instanceof Timestamp) {
-            return (Timestamp)date;
+            return (Timestamp) date;
         }
         return new Timestamp(date.getTime());
     }
@@ -175,8 +170,7 @@ public class TimestampWithTimezone {
             target.set(Calendar.SECOND, 0);
             target.set(Calendar.MILLISECOND, 0);
         }
-        Date result = new Date(target.getTimeInMillis());
-        return result;
+        return new Date(target.getTimeInMillis());
     }
 
     private static Time normalizeTime(java.util.Date date, Calendar target) {
@@ -186,8 +180,7 @@ public class TimestampWithTimezone {
             target.set(Calendar.DAY_OF_MONTH, 1);
             target.set(Calendar.MILLISECOND, 0);
         }
-        Time result = new Time(target.getTimeInMillis());
-        return result;
+        return new Time(target.getTimeInMillis());
     }
 
     private static void adjustCalendar(java.util.Date date,
