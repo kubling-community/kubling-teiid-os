@@ -155,9 +155,6 @@ public class TestTransforms {
 
     private static boolean isException(String src, String tgt, Object source) {
         return (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.XML))
-                || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.TIME))
-//                || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.TIMESTAMP))
-                || (src.equals(DefaultDataTypes.STRING) && tgt.equals(DefaultDataTypes.DATE))
                 || (src.equals(DefaultDataTypes.CLOB) && tgt.equals(DefaultDataTypes.XML));
     }
 
@@ -200,15 +197,11 @@ public class TestTransforms {
     }
 
     @Test
-    public void testObjectToAnyTransformFailure() {
+    public void testInvalidTimeInputFails() {
         Transform transform = DataTypeManager.getTransform(DefaultDataClasses.OBJECT, DefaultDataClasses.TIME);
-        try {
-            transform.transform("1", DefaultDataClasses.TIME);
-            fail("expected exception");
-        } catch (TransformationException e) {
-            assertEquals("TEIID10076 Invalid conversion from type class java.lang.Object with " +
-                    "value '1' to type class java.sql.Time", e.getMessage());
-        }
+        assertThrows(TransformationException.class, () ->
+                transform.transform("not-a-time", DefaultDataClasses.TIME)
+        );
     }
 
     @Test
