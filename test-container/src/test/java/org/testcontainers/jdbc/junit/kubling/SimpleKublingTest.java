@@ -14,8 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleKublingTest extends AbstractKublingDatabaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SimpleKublingTest.class);
-
     @Test
     public void testSimple() throws SQLException {
         try (KublingContainer<?> kubling = new KublingContainer<>()) {

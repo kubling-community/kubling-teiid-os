@@ -122,7 +122,18 @@ public class SocketUtil {
         //    all the certificates into one single certificate
         // 3) else = javax properties; this is default way to define the SSL anywhere.
         if (keystore != null || truststore != null || trustAll || checkExpired) {
-            result = getSSLContext(keystore, keystorePassword, truststore, truststorePassword, keystoreAlgorithm, keystoreType, keystoreProtocol, keyAlias, keyPassword, trustAll, checkExpired);
+            result = getSSLContext(
+                    keystore,
+                    keystorePassword,
+                    truststore,
+                    truststorePassword,
+                    keystoreAlgorithm,
+                    keystoreType,
+                    keystoreProtocol,
+                    keyAlias,
+                    keyPassword,
+                    trustAll,
+                    checkExpired);
         } else {
             result = SSLContext.getDefault();
         }
@@ -347,25 +358,22 @@ public class SocketUtil {
         KeyManager[] keyManagers = null;
         if (keystore != null) {
             KeyStore ks = loadKeyStore(keystore, password, keystoreType);
-            if (ks != null) {
-
-                KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
-                if (keyPassword == null) {
-                    keyPassword = password;
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(algorithm);
+            if (keyPassword == null) {
+                keyPassword = password;
+            }
+            kmf.init(ks, keyPassword != null ? keyPassword.toCharArray() : null);
+            keyManagers = kmf.getKeyManagers();
+            if (keyAlias != null) {
+                if (!ks.isKeyEntry(keyAlias)) {
+                    throw new GeneralSecurityException(JDBCPlugin.Util.getString("alias_no_key_entry", keyAlias));
                 }
-                kmf.init(ks, keyPassword != null ? keyPassword.toCharArray() : null);
-                keyManagers = kmf.getKeyManagers();
-                if (keyAlias != null) {
-                    if (!ks.isKeyEntry(keyAlias)) {
-                        throw new GeneralSecurityException(JDBCPlugin.Util.getString("alias_no_key_entry", keyAlias));
-                    }
-                    if (DEFAULT_KEYSTORE_TYPE.equals(keystoreType)) {
-                        keyAlias = keyAlias.toLowerCase(Locale.ENGLISH);
-                    }
-                    for (int i = 0; i < keyManagers.length; i++) {
-                        if (keyManagers[i] instanceof X509KeyManager) {
-                            keyManagers[i] = new AliasAwareKeyManager((X509KeyManager) keyManagers[i], keyAlias);
-                        }
+                if (DEFAULT_KEYSTORE_TYPE.equals(keystoreType)) {
+                    keyAlias = keyAlias.toLowerCase(Locale.ENGLISH);
+                }
+                for (int i = 0; i < keyManagers.length; i++) {
+                    if (keyManagers[i] instanceof X509KeyManager) {
+                        keyManagers[i] = new AliasAwareKeyManager((X509KeyManager) keyManagers[i], keyAlias);
                     }
                 }
             }
@@ -383,11 +391,9 @@ public class SocketUtil {
         TrustManager[] trustManagers = null;
         if (truststore != null) {
             KeyStore ks = loadKeyStore(truststore, truststorePassword, keystoreType);
-            if (ks != null) {
-                TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
-                tmf.init(ks);
-                trustManagers = tmf.getTrustManagers();
-            }
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
+            tmf.init(ks);
+            trustManagers = tmf.getTrustManagers();
         }
 
         if (checkExpired) {

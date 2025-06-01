@@ -1,4 +1,4 @@
-<!--This script builds a JAR for the JDBC Client -->
+<!-- This script builds a JAR for the JDBC Client -->
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
@@ -14,16 +14,17 @@
 
     <dependencySets>
         <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <unpack>true</unpack>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
             <includes>
                 <include>com.kubling:kubling-client</include>
                 <include>com.kubling:kubling-common-core</include>
                 <include>org.apache.commons:commons-vfs2</include>
                 <include>org.apache.commons:commons-lang3</include>
+                <include>commons-io:commons-io</include>
             </includes>
-            <unpack>true</unpack>
-            <outputDirectory></outputDirectory>
-            <useTransitiveDependencies>true</useTransitiveDependencies>
-            <useProjectArtifact>true</useProjectArtifact>
         </dependencySet>
     </dependencySets>
 

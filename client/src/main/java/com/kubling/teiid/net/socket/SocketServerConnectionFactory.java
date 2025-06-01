@@ -47,9 +47,8 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
     private static final Logger log = Logger.getLogger("org.teiid.net.sockets");
 
     static final String PROPERTIES_FILENAME = "connectionPropsFilePath";
-    static final String BACK_COMPAT_PROPERTIES_FILENAME = "org.teiid.client.properties.file";
 
-    private static SocketServerConnectionFactory INSTANCE;
+    private static volatile SocketServerConnectionFactory INSTANCE;
 
     private ObjectChannelFactory channelFactory;
 
@@ -58,6 +57,8 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
     //config properties
     private long synchronousTtl = 240000L;
 
+    private SocketServerConnectionFactory() {}
+
     public static synchronized SocketServerConnectionFactory getInstance(Properties props) {
 
         if (INSTANCE == null) {
@@ -65,7 +66,6 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
             InputStream is = getConnectionClientSettings(
                     ObjectUtils.firstNonNull(
                             props.getProperty(PROPERTIES_FILENAME),
-                            props.getProperty(BACK_COMPAT_PROPERTIES_FILENAME),
                             StringUtils.EMPTY));
             if (is != null) {
                 Properties newProps = new Properties();
@@ -86,10 +86,6 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
             INSTANCE.initialize(props);
         }
         return INSTANCE;
-    }
-
-    public SocketServerConnectionFactory() {
-
     }
 
     public void initialize(Properties info) {
@@ -142,23 +138,24 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
     private static InputStream getConnectionClientSettings(String location) {
 
         location = StringUtils.defaultIfEmpty(location, "/teiid-client-settings.properties");
-        InputStream is = SocketServerConnectionFactory.class
-                .getResourceAsStream(location);
 
-        if (Objects.nonNull(is)) return is;
-
-        try {
-            final var fo = FilesystemHelper.getManager().resolveFile(location);
-            if (fo.exists()) {
-                return fo.getContent().getInputStream();
-            } else {
-                log.warning(JDBCPlugin.Util.getString("SocketServerConnectionFactory.invalid_config_file", location));
-                return null;
-            }
-        } catch (FileSystemException e) {
-            log.severe(ExceptionUtils.getRootCauseMessage(e));
-            return null;
+        InputStream is = SocketServerConnectionFactory.class.getResourceAsStream(location);
+        if (is != null) {
+            return is;
         }
 
+        try {
+            var fileObject = FilesystemHelper.getManager().resolveFile(location);
+            if (Objects.nonNull(fileObject) && fileObject.exists()) {
+                return fileObject.getContent().getInputStream();
+            } else {
+                log.warning(JDBCPlugin.Util.getString("SocketServerConnectionFactory.invalid_config_file", location));
+            }
+        } catch (FileSystemException e) {
+            log.severe("Failed to load client settings from file system: " + ExceptionUtils.getRootCauseMessage(e));
+        }
+
+        return null;
     }
+
 }
