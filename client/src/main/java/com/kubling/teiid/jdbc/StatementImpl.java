@@ -781,7 +781,6 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
 
         //throw an exception unless this represents a batch update exception
         if (resultsMsg.getException() != null && (!resultsMsg.isUpdateResult() || resultsMsg.getResultsList() == null)) {
-            resultsMsg.getException().printStackTrace();
             throw TeiidSQLException.create(resultsMsg.getException());
         }
 
