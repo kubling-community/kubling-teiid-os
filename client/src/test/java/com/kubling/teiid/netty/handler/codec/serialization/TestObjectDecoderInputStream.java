@@ -60,7 +60,7 @@ public class TestObjectDecoderInputStream {
         do {
             try {
                 result = odis.readObject();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
 
             }
         } while (result == null);

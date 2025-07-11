@@ -91,7 +91,6 @@ public class ObjectDecoderInputStream extends ObjectInputStream {
             if (!foundLength) {
                 clearRemaining();
                 remaining = dis.readInt();
-                foundLength = true;
                 if (remaining <= 0) {
                     throw new StreamCorruptedException("invalid data length: " + remaining);
                 }

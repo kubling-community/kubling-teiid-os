@@ -249,7 +249,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
                 holder = (ExceptionHolder) messageKey;
                 messageKey = (Serializable) messagePacket.getContents();
                 if (log.isLoggable(Level.FINE)) {
-                    log.log(Level.FINE, "read asynch message:" + messageKey);
+                    log.log(Level.FINE, "read async message:" + messageKey);
                 }
                 if (messageKey == null) {
                     if (log.isLoggable(Level.FINE)) {
@@ -263,7 +263,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
                 }
             }
             if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE, "read asynch message:" + messageKey);
+                log.log(Level.FINE, "read async message:" + messageKey);
             }
             ResultsReceiver<Object> listener = asynchronousListeners.remove(messageKey);
             if (listener != null) {

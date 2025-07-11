@@ -20,7 +20,7 @@ package com.kubling.teiid.jdbc;
 
 import com.kubling.teiid.core.TeiidException;
 import com.kubling.teiid.net.TeiidURL;
-import com.kubling.teiid.net.socket.OioOjbectChannelFactory;
+import com.kubling.teiid.net.socket.OioObjectChannelFactory;
 import com.kubling.teiid.net.socket.SocketServerConnection;
 import com.kubling.teiid.net.socket.SocketServerConnectionFactory;
 
@@ -57,7 +57,7 @@ final class SocketProfile implements ConnectionProfile {
             }
 
             if (loginTimeoutSeconds > 0) {
-                OioOjbectChannelFactory.TIMEOUTS.set(System.currentTimeMillis() +
+                OioObjectChannelFactory.TIMEOUTS.set(System.currentTimeMillis() +
                         Integer.valueOf(loginTimeoutSeconds * 1000).longValue());
             }
             serverConn = SocketServerConnectionFactory.getInstance(info).getConnection(info);
@@ -65,7 +65,7 @@ final class SocketProfile implements ConnectionProfile {
             throw TeiidSQLException.create(e);
         } finally {
             if (loginTimeoutSeconds > 0) {
-                OioOjbectChannelFactory.TIMEOUTS.remove();
+                OioObjectChannelFactory.TIMEOUTS.remove();
             }
         }
 

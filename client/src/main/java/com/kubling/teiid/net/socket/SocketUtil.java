@@ -100,7 +100,9 @@ public class SocketUtil {
         }
     }
 
-    public static SSLSocketFactory getSSLSocketFactory(Properties props) throws IOException, GeneralSecurityException {
+    public static SSLSocketFactory getSSLSocketFactory(Properties props)
+            throws IOException, GeneralSecurityException {
+
         String keystore = props.getProperty(KEYSTORE_FILENAME);
         String keystorePassword = props.getProperty(KEYSTORE_PASSWORD);
         String keystoreType = props.getProperty(KEYSTORE_TYPE, DEFAULT_KEYSTORE_TYPE);
@@ -197,9 +199,11 @@ public class SocketUtil {
         return sslc;
     }
 
-    private static TrustManager[] getCheckExpiredTrustManager(String algorithm,
-                                                              TrustManager[] trustManagers) throws NoSuchAlgorithmException,
-            KeyStoreException {
+    private static TrustManager[] getCheckExpiredTrustManager(
+            String algorithm,
+            TrustManager[] trustManagers)
+            throws NoSuchAlgorithmException, KeyStoreException {
+
         if (trustManagers == null) {
             //use the default
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(algorithm);
@@ -344,13 +348,14 @@ public class SocketUtil {
         }
     }
 
-    public static KeyManager[] getKeyManagers(String keystore,
-                                              String password,
-                                              String algorithm,
-                                              String keystoreType,
-                                              String keyAlias,
-                                              String keyPassword
-    ) throws IOException, GeneralSecurityException {
+    public static KeyManager[] getKeyManagers(
+            String keystore,
+            String password,
+            String algorithm,
+            String keystoreType,
+            String keyAlias,
+            String keyPassword) throws IOException, GeneralSecurityException {
+
         if (algorithm == null) {
             algorithm = KeyManagerFactory.getDefaultAlgorithm();
         }
@@ -381,8 +386,13 @@ public class SocketUtil {
         return keyManagers;
     }
 
-    public static TrustManager[] getTrustManagers(String truststore, String truststorePassword, String algorithm,
-                                                  String keystoreType, boolean checkExpired) throws IOException, GeneralSecurityException {
+    public static TrustManager[] getTrustManagers(
+            String truststore,
+            String truststorePassword,
+            String algorithm,
+            String keystoreType,
+            boolean checkExpired)
+            throws IOException, GeneralSecurityException {
 
         if (algorithm == null) {
             algorithm = KeyManagerFactory.getDefaultAlgorithm();

@@ -38,7 +38,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 
-public final class OioOjbectChannelFactory implements ObjectChannelFactory {
+public final class OioObjectChannelFactory implements ObjectChannelFactory {
 
     public static ThreadLocal<Long> TIMEOUTS = new ThreadLocal<>();
 
@@ -145,7 +145,7 @@ public final class OioOjbectChannelFactory implements ObjectChannelFactory {
     private volatile SocketUtil.SSLSocketFactory sslSocketFactory;
     private int maxObjectSize = DEFAULT_MAX_OBJECT_SIZE;
 
-    public OioOjbectChannelFactory(Properties props) {
+    public OioObjectChannelFactory(Properties props) {
         this.props = props;
         PropertiesUtils.setBeanProperties(this, props, "org.teiid.sockets", true);
     }
@@ -164,6 +164,7 @@ public final class OioOjbectChannelFactory implements ObjectChannelFactory {
             socket = sslSocketFactory.getSocket(info.getHostName(), info.getPortNumber());
         } else {
             socket = new Socket(info.getInetAddress(), info.getPortNumber());
+
         }
         if (receiveBufferSize > 0) {
             socket.setReceiveBufferSize(receiveBufferSize);

@@ -6,7 +6,7 @@
 
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
-    <version>25.1.4</version>
+    <version>25.2</version>
     <name>Parent</name>
     <packaging>pom</packaging>
 

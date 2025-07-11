@@ -21,6 +21,7 @@ package com.kubling.teiid.core.types;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.net.URI;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,16 +30,16 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("nls")
+@SuppressWarnings("nls" )
 public class TestDataTypeManager {
 
     private void helpDetermineDataType(Object value, Class<?> expectedClass) {
         Class<?> actualClass = DataTypeManager.determineDataTypeClass(value);
-        assertEquals(expectedClass, actualClass, "Mismatch in expected and actual MetaMatrix type class for [" + value + "]: ");
+        assertEquals(expectedClass, actualClass, "Mismatch in expected and actual MetaMatrix type class for [" + value + "]: " );
     }
 
-    public static String[] dataTypes = {"string", "char", "boolean", "byte", "short", "integer", "long", "biginteger",     //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
-            "float", "double", "bigdecimal", "date", "time", "timestamp", "object", "blob", "clob", "xml"};     //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+    public static String[] dataTypes = {"string", "char", "boolean", "byte", "short", "integer", "long", "biginteger",
+            "float", "double", "bigdecimal", "date", "time", "timestamp", "object", "blob", "clob", "xml"};
 
     /**
      * I - Implicitly Converted
@@ -99,25 +100,25 @@ public class TestDataTypeManager {
 
                 if (c == 'I') {
                     assertTrue(DataTypeManager.isImplicitConversion(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should be Implicit");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should be Implicit" );
                     assertFalse(DataTypeManager.isExplicitConversion(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should be not be Explicit");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should be not be Explicit" );
                     assertTrue(DataTypeManager.isTransformable(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " transform should be avaialble");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " transform should be avaialble" );
                 } else if (c == 'C') {
                     assertFalse(DataTypeManager.isImplicitConversion(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should not be Implicit");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should not be Implicit" );
                     assertTrue(DataTypeManager.isExplicitConversion(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should be Explicit");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should be Explicit" );
                     assertTrue(DataTypeManager.isTransformable(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " transform should be avaialble");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " transform should be avaialble" );
                 } else if (c == 'O' || c == 'N') {
                     assertFalse(DataTypeManager.isImplicitConversion(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should not be Implicit");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should not be Implicit" );
                     assertFalse(DataTypeManager.isExplicitConversion(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should not be Explicit");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " should not be Explicit" );
                     assertFalse(DataTypeManager.isTransformable(dataTypes[src], dataTypes[tgt]),
-                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " No transform should be avaialble");
+                            "src=" + dataTypes[src] + " target=" + dataTypes[tgt] + " No transform should be avaialble" );
                 }
             }
         }
@@ -144,7 +145,7 @@ public class TestDataTypeManager {
      */
     @Test
     public void testDetermineDataType3() throws Exception {
-        java.net.URL url = new java.net.URL("http://fake");
+        java.net.URL url = new URI("http://fake" ).toURL();
         helpDetermineDataType(url, DataTypeManager.DefaultDataClasses.OBJECT);
     }
 
@@ -185,7 +186,7 @@ public class TestDataTypeManager {
                     JDBCSQLTypeInfo.getSQLTypeFromRuntimeType(DataTypeManager.getDataTypeClass(type)),
                     "Didn't get match for " + type);
 
-            //the classnames will not match the runtime types for xml, clob, blob
+            //the class names will not match the runtime types for xml, clob, blob
             if (!type.equalsIgnoreCase(DataTypeManager.DefaultDataTypes.NULL)
                     && !type.equalsIgnoreCase(DataTypeManager.DefaultDataTypes.VARBINARY)
                     && !type.equalsIgnoreCase(DataTypeManager.DefaultDataTypes.XML)
@@ -199,12 +200,17 @@ public class TestDataTypeManager {
             }
         }
 
-        assertEquals(Types.TIMESTAMP, JDBCSQLTypeInfo.getSQLTypeFromRuntimeType(DataTypeManager.DefaultDataClasses.TIMESTAMP));
+        assertEquals(
+                Types.TIMESTAMP,
+                JDBCSQLTypeInfo.getSQLTypeFromRuntimeType(DataTypeManager.DefaultDataClasses.TIMESTAMP));
         assertEquals(Types.SQLXML, JDBCSQLTypeInfo.getSQLTypeFromRuntimeType(DataTypeManager.DefaultDataClasses.XML));
         assertEquals(DataTypeManager.DefaultDataTypes.STRING, JDBCSQLTypeInfo.getTypeName(Types.CHAR));
         assertEquals(Types.CHAR, JDBCSQLTypeInfo.getSQLTypeFromRuntimeType(DataTypeManager.DefaultDataClasses.CHAR));
 
-        assertEquals(Types.ARRAY, JDBCSQLTypeInfo.getSQLType(DataTypeManager.getDataTypeName(DataTypeManager.getArrayType(DataTypeManager.DefaultDataClasses.BIG_DECIMAL))));
+        assertEquals(
+                Types.ARRAY,
+                JDBCSQLTypeInfo.getSQLType(
+                        DataTypeManager.getDataTypeName(DataTypeManager.getArrayType(DataTypeManager.DefaultDataClasses.BIG_DECIMAL))));
     }
 
     @Test
@@ -224,7 +230,7 @@ public class TestDataTypeManager {
 
     @Test
     public void testObjectType() {
-        assertEquals(DataTypeManager.DefaultDataClasses.OBJECT, DataTypeManager.getDataTypeClass("foo"));
+        assertEquals(DataTypeManager.DefaultDataClasses.OBJECT, DataTypeManager.getDataTypeClass("foo" ));
 
         assertEquals(DataTypeManager.DefaultDataTypes.OBJECT, DataTypeManager.getDataTypeName(TestDataTypeManager.class));
     }
@@ -281,7 +287,7 @@ public class TestDataTypeManager {
     @Test
     public void isHashable() {
         assertFalse(DataTypeManager.isHashable(DataTypeManager.DefaultDataClasses.STRING, true, null));
-        assertFalse(DataTypeManager.isHashable(String[].class, false, "Something"));
+        assertFalse(DataTypeManager.isHashable(String[].class, false, "Something" ));
     }
 
     @Test

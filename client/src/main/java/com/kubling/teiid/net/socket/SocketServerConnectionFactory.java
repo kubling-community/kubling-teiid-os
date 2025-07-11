@@ -90,7 +90,7 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
 
     public void initialize(Properties info) {
         PropertiesUtils.setBeanProperties(this, info, "org.teiid.sockets", true);
-        this.channelFactory = new OioOjbectChannelFactory(info);
+        this.channelFactory = new OioObjectChannelFactory(info);
     }
 
     @Override

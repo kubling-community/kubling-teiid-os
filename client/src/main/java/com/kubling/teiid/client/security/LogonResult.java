@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 
 /**
- * Dataholder for the result of <code>ILogon.logon()</code>.
+ * Data holder for the result of <code>ILogon.logon()</code>.
  * Contains a sessionID
  * <p>
  * Analogous to the server side SessionToken
@@ -55,7 +55,6 @@ public class LogonResult implements Externalizable {
     /**
      * Get the sessionID.
      *
-     * @return
      * @since 4.3
      */
     public String getSessionID() {

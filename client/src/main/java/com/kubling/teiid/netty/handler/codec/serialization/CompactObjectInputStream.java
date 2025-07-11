@@ -58,12 +58,12 @@ public class CompactObjectInputStream extends ObjectInputStream {
         if (type < 0) {
             throw new EOFException();
         }
+        Class<?> clazz;
         switch (type) {
             case CompactObjectOutputStream.TYPE_PRIMITIVE:
                 return super.readClassDescriptor();
             case CompactObjectOutputStream.TYPE_NON_PRIMITIVE:
                 String className = readUTF();
-                Class<?> clazz;
                 if (classLoader == null) {
                     clazz = Class.forName(
                             className, true,

@@ -45,7 +45,6 @@ public class ReaderInputStream extends InputStream {
 
     /**
      * Creates a new inputstream that will replace any malformed/unmappable input
-     *
      * @param reader
      * @param charset
      */
