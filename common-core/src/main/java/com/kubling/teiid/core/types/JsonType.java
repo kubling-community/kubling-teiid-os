@@ -18,14 +18,29 @@
 
 package com.kubling.teiid.core.types;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.kubling.teiid.core.CorePlugin;
+import com.kubling.teiid.core.TeiidRuntimeException;
+
+import java.io.IOException;
+import java.io.Reader;
 import java.io.Serial;
 import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Objects;
 
 
 /**
  * This is wrapper on top of clob functionality
  */
-public final class JsonType extends BaseClobType {
+public final class JsonType extends BaseClobType implements Comparable<BaseClobType> {
+
+    private static final ObjectMapper MAPPER = new ObjectMapper()
+            .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+
+    private JsonNode jsonNode;  // cache
 
     @Serial
     private static final long serialVersionUID = 2753412502127824104L;
@@ -37,4 +52,50 @@ public final class JsonType extends BaseClobType {
         super(clob);
     }
 
+    @Override
+    public int compareTo(BaseClobType o) {
+        if (!(o instanceof JsonType)) {
+            return super.compareTo(o);
+        }
+        return this.normalizedJsonString().compareTo(((JsonType) o).normalizedJsonString());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof JsonType jsonType) {
+            return Objects.equals(this.getParsedNode(), jsonType.getParsedNode());
+        } else if (obj instanceof ClobType clobType) {
+            return Objects.equals(this.getParsedNode(), new JsonType(clobType).getParsedNode());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return normalizedJsonString().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return normalizedJsonString();
+    }
+
+    private JsonNode getParsedNode() {
+        if (jsonNode != null) return jsonNode;
+        try (final Reader r = getCharacterStream()) {
+            jsonNode = MAPPER.readTree(r);
+            return jsonNode;
+        } catch (IOException | SQLException e) {
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10085, e);
+        }
+    }
+
+    private String normalizedJsonString() {
+        try {
+            return MAPPER.writeValueAsString(MAPPER.treeToValue(getParsedNode(), Object.class));
+        } catch (IOException e) {
+            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10085, e);
+        }
+    }
 }

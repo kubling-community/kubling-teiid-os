@@ -22,7 +22,6 @@ import com.kubling.teiid.core.CorePlugin;
 import com.kubling.teiid.core.util.ObjectConverterUtil;
 import com.kubling.teiid.core.util.ReaderInputStream;
 import com.kubling.teiid.core.util.SqlUtil;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -102,9 +101,6 @@ public class ClobImpl extends BaseLob implements Clob {
     /**
      * Creates a new ClobImpl.  Note that the length is not taken from the {@link InputStreamFactory} since
      * it refers to bytes and not chars.
-     *
-     * @param streamFactory
-     * @param length
      */
     public ClobImpl(InputStreamFactory streamFactory, long length) {
         super(streamFactory);
@@ -254,9 +250,20 @@ public class ClobImpl extends BaseLob implements Clob {
     public String toString() {
         try {
             if (this.len == 0) return null;
-            return new String(getAsciiStream().readAllBytes());
+
+            InputStream in = getAsciiStream();
+            byte[] data = in.readAllBytes();
+
+            if (data.length == 0) {
+                throw new IOException("Ascii stream returned zero bytes; possibly reused, closed, or pointing to invalid storage");
+            }
+
+            return new String(data, StandardCharsets.US_ASCII);
+
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to read Clob content", e);
         }
     }
+
+
 }

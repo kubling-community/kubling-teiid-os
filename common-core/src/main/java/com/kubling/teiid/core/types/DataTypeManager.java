@@ -29,8 +29,8 @@ import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
-import java.util.Date;
 import java.util.*;
+import java.util.Date;
 
 /**
  * <p>
@@ -115,6 +115,7 @@ public class DataTypeManager {
             super(size);
         }
 
+        @SuppressWarnings("unused")
         public T getByHash(Object obj) {
             int index = hash(obj.hashCode()) & (cache.length - 1);
             return get(index);
@@ -630,7 +631,6 @@ public class DataTypeManager {
     /**
      * Is the supplied class type a LOB based data type?
      *
-     * @param type
      * @return true if yes; false otherwise
      */
     public static boolean isLOB(Class<?> type) {
@@ -892,6 +892,7 @@ public class DataTypeManager {
         return value; // "object type"
     }
 
+    @SuppressWarnings("unused")
     public static Class<?> getRuntimeType(Class<?> c) {
         if (c == null) {
             return DefaultDataClasses.NULL;
@@ -928,9 +929,7 @@ public class DataTypeManager {
 
     public static Object transformValue(Object value, Class<?> targetClass)
             throws TransformationException {
-        if (value == null) {
-            return value;
-        }
+        if (value == null) return null;
         return transformValue(value, value.getClass(), targetClass);
     }
 
@@ -953,7 +952,6 @@ public class DataTypeManager {
         return (!COMPARABLE_OBJECT && DefaultDataTypes.OBJECT.equals(type))
                 || (!COMPARABLE_LOBS && DefaultDataTypes.BLOB.equals(type))
                 || (!COMPARABLE_LOBS && DefaultDataTypes.CLOB.equals(type))
-                || DefaultDataTypes.JSON.equals(type)
                 || DefaultDataTypes.GEOMETRY.equals(type)
                 || DefaultDataTypes.GEOGRAPHY.equals(type)
                 || DefaultDataTypes.XML.equals(type);

@@ -45,8 +45,6 @@ public class ReaderInputStream extends InputStream {
 
     /**
      * Creates a new inputstream that will replace any malformed/unmappable input
-     * @param reader
-     * @param charset
      */
     public ReaderInputStream(Reader reader, Charset charset) {
         this(reader, charset.newEncoder()
@@ -105,9 +103,22 @@ public class ReaderInputStream extends InputStream {
             bb.flip();
         }
         len = Math.min(len, bb.remaining());
-        if (len == 0 && done) {
-            return -1;
+
+        if (len == 0) {
+            if (done) {
+                return -1;
+            } else {
+                // Not done, but no data: we must try again, or block
+                // Returning 0 is illegal in InputStream, and it was causing issues when the instance was restarted
+                int b = read(); // recursive call to read one byte
+                if (b == -1) {
+                    return -1;
+                }
+                bbuf[off] = (byte) b;
+                return 1;
+            }
         }
+
         bb.get(bbuf, off, len);
         return len;
     }
