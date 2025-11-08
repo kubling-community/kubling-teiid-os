@@ -29,5 +29,6 @@ public class KublingConnectionURLTest {
         public Integer getMappedPort(int originalPort) {
             return 35482;
         }
+
     }
 }

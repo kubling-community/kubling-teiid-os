@@ -23,7 +23,7 @@ public class AbstractKublingDatabaseTest extends AbstractContainerDatabaseTest {
                     "APP_CONFIG", DEFAULT_CONTAINER_APP_CONFIG,
                     "DESCRIPTOR_BUNDLE", DEFAULT_CONTAINER_BUNDLE);
 
-    protected KublingContainer copyDefaultFiles(KublingContainer mutable) {
+    protected KublingContainer<?> copyDefaultFiles(KublingContainer<?> mutable) {
         mutable.withCopyFileToContainer(
                 MountableFile.forHostPath(String.format("%s/vdb/%s", USER_DIR, DEFAULT_APP_CONFIG)),
                 DEFAULT_CONTAINER_APP_CONFIG);

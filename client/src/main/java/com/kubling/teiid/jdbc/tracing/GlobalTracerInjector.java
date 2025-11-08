@@ -14,26 +14,33 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * =====================================================================
+ *
+ *  Modifications:
+ *    This file has been modified by Bluelone Cloud Platforms
+ *    as part of the Kubling project, starting in 2024.
+ *    For details of modifications, see the Git commit history.
+ * =====================================================================
  */
 
 package com.kubling.teiid.jdbc.tracing;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.opentracing.propagation.Format.Builtin;
-import io.opentracing.propagation.TextMapAdapter;
-import io.opentracing.util.GlobalTracer;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Uses the opentracing library to create a json string representation of the span context
- * and provides a way to manipulate a static tracer without using the GlobalTracer registration
+ * Uses the OpenTelemetry API to create a JSON string representation of the span context
+ * and allows setting a static tracer.
  */
 public class GlobalTracerInjector implements TracingHelper.Injector {
 
-    private static Tracer TRACER = GlobalTracer.get();
+    private static Tracer TRACER = GlobalOpenTelemetry.getTracer("com.kubling.teiid.jdbc");
 
     @Override
     public String getSpanContext() {
@@ -41,34 +48,29 @@ public class GlobalTracerInjector implements TracingHelper.Injector {
     }
 
     protected static String getSpanContext(Tracer tracer) {
-        Span span = tracer.activeSpan();
-        if (span == null) {
+        Span span = Span.current();
+        if (!span.getSpanContext().isValid()) {
             return null;
         }
-        Map<String, String> spanMap = new HashMap<>();
-        tracer.inject(span.context(), Builtin.TEXT_MAP, new TextMapAdapter(spanMap));
 
-        //simple json creation
-        StringBuilder json = new StringBuilder();
-        json.append('{');
+        Map<String, String> carrier = new HashMap<>();
+        TextMapPropagator propagator = GlobalOpenTelemetry.getPropagators().getTextMapPropagator();
+        propagator.inject(Context.current(), carrier, Map::put);
+
+        // Simple JSON serialization
+        StringBuilder json = new StringBuilder("{");
         boolean first = true;
-        for (Map.Entry<String, String> entry : spanMap.entrySet()) {
-            if (!first) {
-                json.append(',');
-            } else {
-                first = false;
-            }
+        for (Map.Entry<String, String> entry : carrier.entrySet()) {
+            if (!first) json.append(',');
+            else first = false;
             json.append('"').append(entry.getKey().replace("\"", "\\\""))
                     .append("\":\"")
-                    .append(entry.getValue().replace("\"", "\\\"")).append('"');
+                    .append(entry.getValue().replace("\"", "\\\""))
+                    .append('"');
         }
         json.append('}');
         return json.toString();
     }
-
-    /*
-     * Used to work around that the GlobalTracer can only be registered once.
-     */
 
     public static Tracer getTracer() {
         return TRACER;
@@ -77,5 +79,5 @@ public class GlobalTracerInjector implements TracingHelper.Injector {
     public static void setTracer(Tracer tracer) {
         TRACER = tracer;
     }
-
 }
+

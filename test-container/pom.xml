@@ -4,13 +4,15 @@
     <parent>
         <groupId>com.kubling</groupId>
         <artifactId>kubling-teiid</artifactId>
-        <version>25.2.1</version>
+        <version>25.3.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>kubling-test-container</artifactId>
     <name>Kubling Test Container</name>
     <description>Kubling Test Container for testing applications in Java</description>
+
+    <version>${test-container-version}</version>
 
     <scm>
         <connection>scm:git:git://github.com/kubling-community/kubling-teiid-os.git</connection>
@@ -68,6 +70,17 @@
         <dependency>
             <groupId>com.kubling</groupId>
             <artifactId>kubling-client</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.kubling</groupId>
+                    <artifactId>kubling-common-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.kubling</groupId>
+            <artifactId>kubling-common-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

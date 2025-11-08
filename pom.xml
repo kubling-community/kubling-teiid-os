@@ -6,7 +6,7 @@
 
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
-    <version>25.2.1</version>
+    <version>25.3.1</version>
     <name>Parent</name>
     <packaging>pom</packaging>
 
@@ -47,6 +47,12 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <client-version>25.3.1</client-version>
+        <common-core-version>25.3.1</common-core-version>
+        <hibernate-dialect-version>25.3.1</hibernate-dialect-version>
+        <test-container-version>25.3.1</test-container-version>
+        <build-version>25.3.1</build-version>
+
         <gpg.keyname>${env.GPG_KEY}</gpg.keyname>
 
         <version.org.hibernate.core>6.6.3.Final</version.org.hibernate.core>
@@ -60,8 +66,7 @@
         <version.jackson.core>2.19.0</version.jackson.core>
         <version.google.guava>33.4.7-jre</version.google.guava>
         <version.google.gson>2.10.1</version.google.gson>
-        <version.opentracing>0.33.0</version.opentracing>
-        <version.opentracing.concurrent>0.4.0</version.opentracing.concurrent>
+        <version.opentelemetry>1.38.0</version.opentelemetry>
         <version.jcip-annotations>1.0-1</version.jcip-annotations>
         <version.hikaricp>6.2.1</version.hikaricp>
         <version.slf4j>2.0.7</version.slf4j>
@@ -262,24 +267,24 @@
             </dependency>
 
             <dependency>
-                <groupId>io.opentracing.contrib</groupId>
-                <artifactId>opentracing-concurrent</artifactId>
-                <version>${version.opentracing.concurrent}</version>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-api</artifactId>
+                <version>${version.opentelemetry}</version>
             </dependency>
             <dependency>
-                <groupId>io.opentracing</groupId>
-                <artifactId>opentracing-api</artifactId>
-                <version>${version.opentracing}</version>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-context</artifactId>
+                <version>${version.opentelemetry}</version>
             </dependency>
             <dependency>
-                <groupId>io.opentracing</groupId>
-                <artifactId>opentracing-noop</artifactId>
-                <version>${version.opentracing}</version>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-sdk</artifactId>
+                <version>${version.opentelemetry}</version>
             </dependency>
             <dependency>
-                <groupId>io.opentracing</groupId>
-                <artifactId>opentracing-util</artifactId>
-                <version>${version.opentracing}</version>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-sdk-testing</artifactId>
+                <version>${version.opentelemetry}</version>
             </dependency>
 
             <dependency>
@@ -329,12 +334,7 @@
                 <version>${version.hamcrest}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>io.opentracing</groupId>
-                <artifactId>opentracing-mock</artifactId>
-                <version>${version.opentracing}</version>
-                <scope>test</scope>
-            </dependency>
+
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>

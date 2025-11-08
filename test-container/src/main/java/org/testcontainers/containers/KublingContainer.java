@@ -8,21 +8,19 @@ import java.util.Set;
 
 public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
-    public static final String NAME = "kubling";
-    public static final String IMAGE = "kubling-ce";
     public static final String DEFAULT_TAG = "latest";
-    private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("kubling/kubling-ce");
+    private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("kubling/kubling");
     public static final Integer DEFAULT_NATIVE_PORT = 35482;
     public static final Integer DEFAULT_HTTP_PORT = 8282;
     static final String DEFAULT_USER = "test";
     static final String DEFAULT_PASSWORD = "test";
 
-    private int nativePort = DEFAULT_NATIVE_PORT;
-    private int httpPort = DEFAULT_HTTP_PORT;
+    private final int nativePort = DEFAULT_NATIVE_PORT;
+    private final int httpPort = DEFAULT_HTTP_PORT;
     private String databaseName = "TestVDB";
     private String username = DEFAULT_USER;
     private String password = DEFAULT_PASSWORD;
-
+    private Boolean isSecured = Boolean.FALSE;
 
     public KublingContainer() {
         this(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG));
@@ -53,7 +51,7 @@ public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcD
     public String getJdbcUrl() {
         String additionalUrlParams = constructUrlParameters("?", "&");
         return (
-                "jdbc:teiid:" + databaseName + "@mm://" +
+                "jdbc:teiid:" + databaseName + "@mm" + (isSecured ? "s" : "") + "://" +
                         getHost() +
                         ":" +
                         getMappedPort(nativePort) +
@@ -84,6 +82,14 @@ public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcD
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public Boolean isSecured() {
+        return isSecured;
+    }
+
+    public void setSecured(Boolean secured) {
+        isSecured = secured;
     }
 
     @Override
