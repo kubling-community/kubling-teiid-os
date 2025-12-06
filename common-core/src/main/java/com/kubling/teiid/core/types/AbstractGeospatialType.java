@@ -78,7 +78,7 @@ public abstract class AbstractGeospatialType extends BlobType {
         }
         Object result = geoCache.get();
         if (result != null && geoCache instanceof WeakReference) {
-            geoCache = new SoftReference(result);
+            geoCache = new SoftReference<>(result);
         }
         return result;
     }
@@ -90,7 +90,7 @@ public abstract class AbstractGeospatialType extends BlobType {
         if (objectReference == null) {
             this.geoCache = null;
         } else {
-            this.geoCache = new WeakReference(objectReference);
+            this.geoCache = new WeakReference<>(objectReference);
         }
     }
 

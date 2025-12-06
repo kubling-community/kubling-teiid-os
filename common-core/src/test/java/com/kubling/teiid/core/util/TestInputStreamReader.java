@@ -30,7 +30,7 @@ public class TestInputStreamReader {
     }
 
     @Test
-    public void testError() throws Exception {
+    public void testError() {
         InputStreamReader isr = new InputStreamReader(
                 new ByteArrayInputStream(new byte[]{(byte) 80, (byte) -61, (byte) -70, (byte) -61, (byte) -70, (byte) 80, (byte) -61, (byte) -70}),
                 StandardCharsets.US_ASCII.newDecoder(), 4);

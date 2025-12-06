@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TestBlobValue {
 
+    @Test
     public void testBlobValue() throws Exception {
         String testString = "this is test blob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
@@ -39,6 +40,7 @@ public class TestBlobValue {
         assertEquals(testString, new String(bv.getBytes(1L, (int) bv.length())));
     }
 
+    @Test
     public void testBlobValuePersistence() throws Exception {
         String testString = "this is test clob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
@@ -71,6 +73,7 @@ public class TestBlobValue {
         assertEquals(testString, new String(read.getBytes(1, (int) blob.length())));
     }
 
+    @Test
     public void testBlobCompare() throws Exception {
         String testString = "this is test clob";
         SerialBlob blob = new SerialBlob(testString.getBytes());
@@ -81,6 +84,7 @@ public class TestBlobValue {
         assertEquals(0, bv1.compareTo(bv));
     }
 
+    @Test
     public void testBlobImplGetBytes() throws Exception {
         BlobImpl b = new BlobImpl(new InputStreamFactory() {
 

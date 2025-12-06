@@ -37,8 +37,8 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.sql.Date;
 import java.sql.*;
+import java.sql.Date;
 import java.util.*;
 import java.util.regex.Matcher;
 
@@ -51,7 +51,7 @@ import java.util.regex.Matcher;
  * for each IN parameter.
  * <p> The PreparedStatementImpl object wraps the server's PreparedStatement object.
  * The methods in this class are used to set the IN parameters on a server's
- * preparedstatement object.
+ * prepared statement object.
  */
 
 public class PreparedStatementImpl extends StatementImpl implements TeiidPreparedStatement {

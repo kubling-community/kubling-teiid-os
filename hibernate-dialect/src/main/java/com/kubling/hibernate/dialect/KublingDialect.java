@@ -21,6 +21,7 @@ package com.kubling.hibernate.dialect;
 import org.hibernate.LockMode;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.FunctionContributions;
+import org.hibernate.dialect.DatabaseVersion;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.dialect.pagination.AbstractSimpleLimitHandler;
@@ -28,6 +29,7 @@ import org.hibernate.dialect.pagination.LimitHandler;
 import org.hibernate.dialect.sequence.SequenceSupport;
 import org.hibernate.dialect.temptable.TemporaryTableExporter;
 import org.hibernate.dialect.temptable.TemporaryTableKind;
+import org.hibernate.engine.jdbc.dialect.spi.DialectResolutionInfo;
 import org.hibernate.engine.jdbc.env.spi.NameQualifierSupport;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.internal.util.collections.Stack;
@@ -64,7 +66,15 @@ import static org.hibernate.type.SqlTypes.*;
 public class KublingDialect extends Dialect {
 
     public KublingDialect() {
-        super();
+        super(DatabaseVersion.make(26, 1));
+    }
+
+    public KublingDialect(DatabaseVersion version) {
+        super(version);
+    }
+
+    public KublingDialect(DialectResolutionInfo info) {
+        super(info);
     }
 
     @Override

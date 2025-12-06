@@ -339,15 +339,6 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     private final String QUERY_TABLES;
 
-//    private static final String QUERY_UDT =
-//      new StringBuffer("SELECT NULL AS TYPE_CAT, v.Name AS TYPE_SCHEM, TypeName AS TYPE_NAME")
-//        .append(", JavaClass AS CLASS_NAME, decodeString(JavaClass, '").append(UDT_NAME_MAPPING).append("', ',') AS DATA_TYPE")
-//        .append(", Description AS REMARKS")
-//        .append(", decodeString(BaseType, '").append(UDT_NAME_MAPPING).append("', ',') AS BASE_TYPE ")
-//        .append(" FROM ").append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".DataTypes CROSS JOIN ")
-//        .append(RUNTIME_MODEL.VIRTUAL_MODEL_NAME).append(".VirtualDatabases v") 
-//        .append(" WHERE UCASE(v.Name)").append(LIKE_ESCAPE).append("AND UCASE(TypeName)").append(LIKE_ESCAPE).append("ORDER BY DATA_TYPE, TYPE_SCHEM, TYPE_NAME ").toString();
-
     /**
      * ATTRIBUTES
      */
@@ -1278,10 +1269,8 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         List records = new ArrayList();
         ResultSetMetaData rmetadata;
         ResultSetImpl results;
-        PreparedStatement prepareQuery = null;
 
-        try {
-            prepareQuery = driverConnection.prepareStatement(QUERY_PROCEDURES);
+        try (PreparedStatement prepareQuery = driverConnection.prepareStatement(QUERY_PROCEDURES)) {
             prepareQuery.setObject(1, catalog.toUpperCase());
             prepareQuery.setObject(2, schemaPattern.toUpperCase());
             prepareQuery.setObject(3, procedureNamePattern.toUpperCase());
@@ -1315,10 +1304,6 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         } catch (Exception e) {
             throw TeiidSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getProc_error", procedureNamePattern, e.getMessage()));
-        } finally {
-            if (prepareQuery != null) {
-                prepareQuery.close();
-            }
         }
     }
 
@@ -1356,7 +1341,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
      */
     public int getSQLStateType() {
         //return sqlStateSQL99;
-        return 2;
+        return DatabaseMetaData.sqlStateSQL;
     }
 
     public String getStringFunctions() {
@@ -1524,10 +1509,8 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
         ResultSetMetaData rmetadata;
         ResultSetImpl results;
-        PreparedStatement prepareQuery = null;
 
-        try {
-            prepareQuery = driverConnection.prepareStatement(sqlQuery.toString());
+        try (PreparedStatement prepareQuery = driverConnection.prepareStatement(sqlQuery.toString())) {
             int columnIndex = 0;
             prepareQuery.setObject(++columnIndex, catalog.toUpperCase());
             prepareQuery.setObject(++columnIndex, schemaPattern.toUpperCase());
@@ -1569,10 +1552,6 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         } catch (Exception e) {
             throw TeiidSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getTable_error", tableNamePattern, e.getMessage()));
-        } finally {
-            if (prepareQuery != null) {
-                prepareQuery.close();
-            }
         }
     }
 
@@ -1614,11 +1593,9 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             //use the system table
             ResultSetMetaData rmetadata;
             ResultSetImpl results;
-            PreparedStatement prepareQuery = null;
-            List<List<?>> records = new ArrayList<>();
 
-            try {
-                prepareQuery = driverConnection.prepareStatement(QUERY_TYPEINFO);
+            List<List<?>> records = new ArrayList<>();
+            try (PreparedStatement prepareQuery = driverConnection.prepareStatement(QUERY_TYPEINFO)) {
 
                 results = (ResultSetImpl) prepareQuery.executeQuery();
 
@@ -1637,10 +1614,6 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             } catch (Exception e) {
                 throw TeiidSQLException.create(e,
                         JDBCPlugin.Util.getString("MMDatabaseMetadata.getTypeInfo_error", e.getMessage()));
-            } finally {
-                if (prepareQuery != null) {
-                    prepareQuery.close();
-                }
             }
         }
         return getStaticTypeInfo();
@@ -2181,9 +2154,6 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         String toName = JDBCSQLTypeInfo.getTypeName(toType);
 
         if (fromName.equals(toName)) {
-            if (fromName.equals(DataTypeManager.DefaultDataTypes.OBJECT) && !fromName.equals(toName)) {
-                return false;
-            }
             return true;
         }
         return DataTypeManager.isTransformable(fromName, toName);
@@ -2334,10 +2304,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
      */
     public boolean supportsResultSetType(int type) {
 
-        if (type == ResultSet.TYPE_FORWARD_ONLY || type == ResultSet.TYPE_SCROLL_INSENSITIVE) {
-            return true;
-        }
-        return false;
+        return type == ResultSet.TYPE_FORWARD_ONLY || type == ResultSet.TYPE_SCROLL_INSENSITIVE;
     }
 
     public boolean supportsSavepoints() {

@@ -19,14 +19,12 @@ import com.github.wnameless.json.base.GsonJsonCore;
 import com.github.wnameless.json.base.JacksonJsonCore;
 import com.github.wnameless.json.base.JsonCore;
 import com.github.wnameless.json.base.JsonPrinter;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import com.kubling.teiid.query.unittest.ResourcesUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -48,8 +46,7 @@ public class JsonFlattenerFactoryTest {
 
     @Test
     public void testBuildWithJSONString() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonFlattener jf = jsonFlattenerFactory.build(json);
         assertEquals(
@@ -67,8 +64,7 @@ public class JsonFlattenerFactoryTest {
 
     @Test
     public void testBuildWithJsonValueBase() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonFlattener jf = jsonFlattenerFactory.build(jsonCore.parse(json));
         assertEquals(
@@ -86,8 +82,7 @@ public class JsonFlattenerFactoryTest {
 
     @Test
     public void testBuildWithJsonReader() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonFlattener jf = jsonFlattenerFactory.build(new StringReader(json));
         assertEquals(
@@ -118,7 +113,6 @@ public class JsonFlattenerFactoryTest {
 
     @Test
     public void testEquals() {
-        assertEquals(jsonFlattenerFactory, jsonFlattenerFactory);
 
         JsonFlattenerFactory otherJsonFlattenerFactory = new JsonFlattenerFactory(configurer, jsonCore);
         assertEquals(jsonFlattenerFactory, otherJsonFlattenerFactory);
@@ -134,7 +128,7 @@ public class JsonFlattenerFactoryTest {
         otherJsonFlattenerFactory = new JsonFlattenerFactory(configurer, jsonCore);
         assertNotEquals(jsonFlattenerFactory, otherJsonFlattenerFactory);
 
-        assertNotEquals(jsonFlattenerFactory, null);
+        assertNotEquals(null, jsonFlattenerFactory);
     }
 
     @Test

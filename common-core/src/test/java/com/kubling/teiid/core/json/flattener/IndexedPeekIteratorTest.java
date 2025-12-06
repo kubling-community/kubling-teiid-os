@@ -15,7 +15,6 @@
  */
 package com.kubling.teiid.core.json.flattener;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IndexedPeekIteratorTest {
 
-    IndexedPeekIterator<Integer> pIterater;
-    IndexedPeekIterator<Integer> emptyIterater;
+    IndexedPeekIterator<Integer> pIterator;
+    IndexedPeekIterator<Integer> emptyIterator;
 
     @BeforeEach
     public void setUp() {
-        pIterater =
+        pIterator =
                 new IndexedPeekIterator<>(new ArrayList<>(Arrays.asList(1, 2, 3, 4)).iterator());
-        emptyIterater = new IndexedPeekIterator<>(Collections.emptyIterator());
+        emptyIterator = new IndexedPeekIterator<>(Collections.emptyIterator());
     }
 
     @Test
@@ -41,100 +40,100 @@ public class IndexedPeekIteratorTest {
     }
 
     @Test
-    public void testIterface() {
-        assertInstanceOf(Iterator.class, pIterater);
+    public void testInterface() {
+        assertInstanceOf(Iterator.class, pIterator);
     }
 
     @Test
     public void testRemove() {
         List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
-        pIterater = new IndexedPeekIterator<>(list.iterator());
-        pIterater.next();
-        pIterater.remove();
+        pIterator = new IndexedPeekIterator<>(list.iterator());
+        pIterator.next();
+        pIterator.remove();
         assertEquals(new ArrayList<>(Arrays.asList(2, 3, 4)), list);
     }
 
     @Test
     public void testHasNext() {
-        assertTrue(pIterater.hasNext());
-        assertFalse(emptyIterater.hasNext());
+        assertTrue(pIterator.hasNext());
+        assertFalse(emptyIterator.hasNext());
     }
 
     @Test
     public void testNext() {
-        assertEquals(Integer.valueOf(1), pIterater.next());
-        pIterater.next();
-        pIterater.next();
-        assertEquals(Integer.valueOf(4), pIterater.next());
+        assertEquals(Integer.valueOf(1), pIterator.next());
+        pIterator.next();
+        pIterator.next();
+        assertEquals(Integer.valueOf(4), pIterator.next());
     }
 
     @Test
     public void testNextException() {
-        assertThrows(NoSuchElementException.class, () -> emptyIterater.next());
+        assertThrows(NoSuchElementException.class, () -> emptyIterator.next());
     }
 
     @Test
     public void testPeek() {
-        assertEquals(Integer.valueOf(1), pIterater.peek());
-        assertEquals(Integer.valueOf(1), pIterater.peek());
-        pIterater.next();
-        assertEquals(Integer.valueOf(2), pIterater.peek());
+        assertEquals(Integer.valueOf(1), pIterator.peek());
+        assertEquals(Integer.valueOf(1), pIterator.peek());
+        pIterator.next();
+        assertEquals(Integer.valueOf(2), pIterator.peek());
 
     }
 
     @Test
     public void testPeekException() {
-        assertThrows(NoSuchElementException.class, () -> emptyIterater.peek());
+        assertThrows(NoSuchElementException.class, () -> emptyIterator.peek());
     }
 
     @Test
     public void testRemoveException() {
         assertThrows(IllegalStateException.class, () -> {
-            pIterater.peek();
-            pIterater.remove();
+            pIterator.peek();
+            pIterator.remove();
         });
     }
 
     @Test
     public void testGetIndex() {
-        assertEquals(-1, pIterater.getIndex());
-        pIterater.peek();
-        assertEquals(-1, pIterater.getIndex());
-        pIterater.next();
-        assertEquals(0, pIterater.getIndex());
-        pIterater.peek();
-        assertEquals(0, pIterater.getIndex());
-        pIterater.next();
-        assertEquals(1, pIterater.getIndex());
-        pIterater.peek();
-        assertEquals(1, pIterater.getIndex());
-        pIterater.next();
-        assertEquals(2, pIterater.getIndex());
-        pIterater.peek();
-        assertEquals(2, pIterater.getIndex());
-        pIterater.next();
-        assertEquals(3, pIterater.getIndex());
+        assertEquals(-1, pIterator.getIndex());
+        pIterator.peek();
+        assertEquals(-1, pIterator.getIndex());
+        pIterator.next();
+        assertEquals(0, pIterator.getIndex());
+        pIterator.peek();
+        assertEquals(0, pIterator.getIndex());
+        pIterator.next();
+        assertEquals(1, pIterator.getIndex());
+        pIterator.peek();
+        assertEquals(1, pIterator.getIndex());
+        pIterator.next();
+        assertEquals(2, pIterator.getIndex());
+        pIterator.peek();
+        assertEquals(2, pIterator.getIndex());
+        pIterator.next();
+        assertEquals(3, pIterator.getIndex());
     }
 
     @Test
     public void testGetCurrent() {
-        assertNull(pIterater.getCurrent());
-        pIterater.peek();
-        assertNull(pIterater.getCurrent());
-        pIterater.next();
-        assertEquals(Integer.valueOf(1), pIterater.getCurrent());
-        pIterater.peek();
-        assertEquals(Integer.valueOf(1), pIterater.getCurrent());
-        pIterater.next();
-        assertEquals(Integer.valueOf(2), pIterater.getCurrent());
-        pIterater.peek();
-        assertEquals(Integer.valueOf(2), pIterater.getCurrent());
-        pIterater.next();
-        assertEquals(Integer.valueOf(3), pIterater.getCurrent());
-        pIterater.peek();
-        assertEquals(Integer.valueOf(3), pIterater.getCurrent());
-        pIterater.next();
-        assertEquals(Integer.valueOf(4), pIterater.getCurrent());
+        assertNull(pIterator.getCurrent());
+        pIterator.peek();
+        assertNull(pIterator.getCurrent());
+        pIterator.next();
+        assertEquals(Integer.valueOf(1), pIterator.getCurrent());
+        pIterator.peek();
+        assertEquals(Integer.valueOf(1), pIterator.getCurrent());
+        pIterator.next();
+        assertEquals(Integer.valueOf(2), pIterator.getCurrent());
+        pIterator.peek();
+        assertEquals(Integer.valueOf(2), pIterator.getCurrent());
+        pIterator.next();
+        assertEquals(Integer.valueOf(3), pIterator.getCurrent());
+        pIterator.peek();
+        assertEquals(Integer.valueOf(3), pIterator.getCurrent());
+        pIterator.next();
+        assertEquals(Integer.valueOf(4), pIterator.getCurrent());
     }
 
 }

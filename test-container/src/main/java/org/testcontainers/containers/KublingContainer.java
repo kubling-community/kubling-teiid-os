@@ -1,6 +1,6 @@
 package org.testcontainers.containers;
 
-import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
@@ -9,38 +9,85 @@ import java.util.Set;
 public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
     public static final String DEFAULT_TAG = "latest";
-    private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("kubling/kubling");
-    public static final Integer DEFAULT_NATIVE_PORT = 35482;
-    public static final Integer DEFAULT_HTTP_PORT = 8282;
-    static final String DEFAULT_USER = "test";
-    static final String DEFAULT_PASSWORD = "test";
+    public static final int DEFAULT_NATIVE_PORT = 35482;
+    public static final int DEFAULT_PG_PORT = 35432;
+    public static final int DEFAULT_HTTP_PORT = 8282;
 
-    private final int nativePort = DEFAULT_NATIVE_PORT;
-    private final int httpPort = DEFAULT_HTTP_PORT;
+    private static final DockerImageName DEFAULT_IMAGE_NAME =
+            DockerImageName.parse("kubling/kubling").withTag(DEFAULT_TAG);
+
+    private int nativePort = DEFAULT_NATIVE_PORT;
+    private int pgPort = DEFAULT_PG_PORT;
+    private int httpPort = DEFAULT_HTTP_PORT;
+
     private String databaseName = "TestVDB";
-    private String username = DEFAULT_USER;
-    private String password = DEFAULT_PASSWORD;
-    private Boolean isSecured = Boolean.FALSE;
+    private String username = "test";
+    private String password = "test";
+    private boolean isSecured = false;
 
     public KublingContainer() {
-        this(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG));
+        this(DEFAULT_IMAGE_NAME);
     }
 
-    public KublingContainer(final String dockerImageName) {
-        this(DockerImageName.parse(dockerImageName));
+    public KublingContainer(String image) {
+        this(DockerImageName.parse(image));
     }
 
-    public KublingContainer(final DockerImageName dockerImageName) {
+    public KublingContainer(DockerImageName dockerImageName) {
         super(dockerImageName);
-        addFixedExposedPort(nativePort, nativePort);
-        addFixedExposedPort(httpPort, httpPort);
+
+        withExposedPorts(nativePort, pgPort, httpPort);
+
+        // Default env vars
+        withEnv("ENABLE_WEB_CONSOLE", "FALSE");
+        withEnv("SCRIPT_LOG_LEVEL", "DEBUG");
+    }
+
+    // ============
+    // Configuration
+    // ============
+
+    public SELF withNativePort(int port) {
+        this.nativePort = port;
+        return self();
+    }
+
+    public SELF withPgPort(int port) {
+        this.pgPort = port;
+        return self();
+    }
+
+    public SELF withHttpPort(int port) {
+        this.httpPort = port;
+        return self();
+    }
+
+    public SELF withSecured(boolean secured) {
+        this.isSecured = secured;
+        return self();
     }
 
     @Override
-    protected void configure() {
-        addEnv("ENABLE_WEB_CONSOLE", "FALSE");
-        addEnv("SCRIPT_LOG_LEVEL", "DEBUG");
+    public SELF withDatabaseName(String dbName) {
+        this.databaseName = dbName;
+        return self();
     }
+
+    @Override
+    public SELF withUsername(String username) {
+        this.username = username;
+        return self();
+    }
+
+    @Override
+    public SELF withPassword(String password) {
+        this.password = password;
+        return self();
+    }
+
+    // ============
+    // Testcontainers Overrides
+    // ============
 
     @Override
     public String getDriverClassName() {
@@ -49,24 +96,31 @@ public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcD
 
     @Override
     public String getJdbcUrl() {
-        String additionalUrlParams = constructUrlParameters("?", "&");
-        return (
-                "jdbc:teiid:" + databaseName + "@mm" + (isSecured ? "s" : "") + "://" +
-                        getHost() +
-                        ":" +
-                        getMappedPort(nativePort) +
-                        ";" +
-                        additionalUrlParams
-        );
+        String params = constructUrlParameters("?", "&");
+
+        return "jdbc:teiid:" + databaseName +
+                "@mm" + (isSecured ? "s" : "") + "://" +
+                getHost() +
+                ":" + getMappedPort(nativePort) +
+                ";" + params;
     }
 
     @Override
     protected WaitStrategy getWaitStrategy() {
-        return new HttpWaitStrategy()
+        return Wait.forHttp("/observe/health")
+                .forStatusCode(200)
                 .allowInsecure()
-                .forPort(getMappedPort(httpPort))
-                .forPath("/observe/health")
-                .forResponsePredicate(r -> r.equals("{\"status\":\"UP\"}"));
+                .forPort(httpPort);
+    }
+
+    @Override
+    protected void waitUntilContainerStarted() {
+        getWaitStrategy().waitUntilReady(this);
+    }
+
+    @Override
+    public Set<Integer> getLivenessCheckPortNumbers() {
+        return Set.of(getMappedPort(httpPort));
     }
 
     @Override
@@ -84,44 +138,8 @@ public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcD
         return password;
     }
 
-    public Boolean isSecured() {
-        return isSecured;
-    }
-
-    public void setSecured(Boolean secured) {
-        isSecured = secured;
-    }
-
     @Override
     public String getTestQueryString() {
         return "SELECT 1";
-    }
-
-    @Override
-    public SELF withDatabaseName(final String databaseName) {
-        this.databaseName = databaseName;
-        return self();
-    }
-
-    @Override
-    public SELF withUsername(final String username) {
-        this.username = username;
-        return self();
-    }
-
-    @Override
-    public SELF withPassword(final String password) {
-        this.password = password;
-        return self();
-    }
-
-    @Override
-    protected void waitUntilContainerStarted() {
-        getWaitStrategy().waitUntilReady(this);
-    }
-
-    @Override
-    public Set<Integer> getLivenessCheckPortNumbers() {
-        return Set.of(httpPort);
     }
 }

@@ -4,15 +4,13 @@
     <parent>
         <groupId>com.kubling</groupId>
         <artifactId>kubling-teiid</artifactId>
-        <version>25.3.1</version>
+        <version>25.3.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>kubling-test-container</artifactId>
     <name>Kubling Test Container</name>
     <description>Kubling Test Container for testing applications in Java</description>
-
-    <version>${test-container-version}</version>
 
     <scm>
         <connection>scm:git:git://github.com/kubling-community/kubling-teiid-os.git</connection>

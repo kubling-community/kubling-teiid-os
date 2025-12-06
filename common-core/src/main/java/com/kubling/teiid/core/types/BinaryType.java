@@ -21,9 +21,10 @@ package com.kubling.teiid.core.types;
 import com.kubling.teiid.core.util.Assertion;
 import com.kubling.teiid.core.util.PropertiesUtils;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public final class BinaryType implements Comparable<BinaryType> {
+public final class BinaryType implements Comparable<BinaryType>, Serializable {
 
     private final byte[] bytes;
 

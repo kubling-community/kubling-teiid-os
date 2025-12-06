@@ -118,7 +118,6 @@ public final class TestFileUtils {
      * Test whether it's possible to read and write files in the specified directory.
      *
      * @param dirPath Name of the directory to test
-     * @throws TeiidException
      * @since 4.3
      */
     public static void testDirectoryPermissions(String dirPath) throws TeiidException {

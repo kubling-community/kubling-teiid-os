@@ -25,7 +25,6 @@ public class KublingDialectTest extends BaseDialectTest {
 
             List<Application> results = query.getResultList();
             assertEquals(1, results.size());
-
         }
     }
 

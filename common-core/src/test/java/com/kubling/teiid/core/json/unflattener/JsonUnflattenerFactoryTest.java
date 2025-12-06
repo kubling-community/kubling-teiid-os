@@ -20,17 +20,15 @@ import com.github.wnameless.json.base.GsonJsonCore;
 import com.github.wnameless.json.base.JacksonJsonCore;
 import com.github.wnameless.json.base.JsonCore;
 import com.github.wnameless.json.base.JsonPrinter;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.kubling.teiid.core.json.flattener.FlattenMode;
 import com.kubling.teiid.core.json.flattener.PrintMode;
+import com.kubling.teiid.query.unittest.ResourcesUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -48,14 +46,13 @@ public class JsonUnflattenerFactoryTest {
 
     @BeforeAll
     public static void init() throws IOException {
-        URL url = Resources.getResource("test_mongo.json");
-        expectedJson = JsonPrinter.prettyPrint(Resources.toString(url, Charsets.UTF_8));
+        expectedJson = JsonPrinter.prettyPrint(ResourcesUtil.getClassPathResource("test_mongo.json"));
     }
 
     @BeforeEach
     public void setUp() {
         configurer = ju -> {
-            ju.withFlattenMode(FlattenMode.MONGODB.MONGODB);
+            ju.withFlattenMode(FlattenMode.MONGODB);
             ju.withPrintMode(PrintMode.PRETTY);
         };
         jsonCore = new GsonJsonCore();
@@ -64,8 +61,7 @@ public class JsonUnflattenerFactoryTest {
 
     @Test
     public void testBuildWithJSONString() throws IOException {
-        URL url = Resources.getResource("test_mongo_flattened.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test_mongo_flattened.json");
 
         JsonUnflattener ju = jsonUnflattenerFactory.build(json);
         assertEquals(expectedJson, ju.unflatten());
@@ -78,8 +74,7 @@ public class JsonUnflattenerFactoryTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testBuildWithMap() throws IOException {
-        URL url = Resources.getResource("test_mongo_flattened.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test_mongo_flattened.json");
 
         JsonUnflattener ju = jsonUnflattenerFactory
                 .build((Map<String, ?>) new ObjectMapper().readValue(json, Map.class));
@@ -93,8 +88,7 @@ public class JsonUnflattenerFactoryTest {
 
     @Test
     public void testBuildWithJsonReader() throws IOException {
-        URL url = Resources.getResource("test_mongo_flattened.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test_mongo_flattened.json");
 
         JsonUnflattener ju = jsonUnflattenerFactory.build(new StringReader(json));
         assertEquals(expectedJson, ju.unflatten());
@@ -119,7 +113,6 @@ public class JsonUnflattenerFactoryTest {
 
     @Test
     public void testEquals() {
-        assertEquals(jsonUnflattenerFactory, jsonUnflattenerFactory);
 
         JsonUnflattenerFactory otherJsonUnflattenerFactory =
                 new JsonUnflattenerFactory(configurer, jsonCore);
@@ -136,7 +129,7 @@ public class JsonUnflattenerFactoryTest {
         otherJsonUnflattenerFactory = new JsonUnflattenerFactory(configurer, jsonCore);
         assertNotEquals(jsonUnflattenerFactory, otherJsonUnflattenerFactory);
 
-        assertNotEquals(jsonUnflattenerFactory, null);
+        assertNotEquals(null, jsonUnflattenerFactory);
     }
 
     @Test

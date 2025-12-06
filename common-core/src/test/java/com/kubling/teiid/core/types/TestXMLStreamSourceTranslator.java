@@ -33,45 +33,46 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TestXMLStreamSourceTranslator {
 
     private static final String sourceXML =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                    "<Books:bookCollection xmlns:Books=\"http://www.metamatrix.com/XMLSchema/DataSets/Books\">\r\n" +
-                    "   <book isbn=\"0-7356-0877-6\">\r\n" +
-                    "      <title>After the Gold Rush</title>\r\n" +
-                    "      <subtitle>Creating a True Profession of Software Engineering</subtitle>\r\n" +
-                    "      <edition>1</edition>\r\n" +
-                    "      <authors>\r\n" +
-                    "         <author>McConnell</author>\r\n" +
-                    "      </authors>\r\n" +
-                    "      <publishingInformation>\r\n" +
-                    "         <publisher>Microsoft Press</publisher>\r\n" +
-                    "         <publishDate>1999</publishDate>\r\n" +
-                    "      </publishingInformation>\r\n" +
-                    "   </book>\r\n" +
-                    "   <book isbn=\"1-55615-484-4\">\r\n" +
-                    "      <title>Code Complete</title>\r\n" +
-                    "      <subtitle>A Practical Handbook of Software Construction</subtitle>\r\n" +
-                    "      <edition>1</edition>\r\n" +
-                    "      <authors>\r\n" +
-                    "         <author>McConnell</author>\r\n" +
-                    "      </authors>\r\n" +
-                    "      <publishingInformation>\r\n" +
-                    "         <publisher>Microsoft Press</publisher>\r\n" +
-                    "         <publishDate>1993</publishDate>\r\n" +
-                    "      </publishingInformation>\r\n" +
-                    "   </book>\r\n" +
-                    "   <book isbn=\"1-556-15900-5\">\r\n" +
-                    "      <title>Rapid Development</title>\r\n" +
-                    "      <subtitle>Taming Wild Software Schedules</subtitle>\r\n" +
-                    "      <edition>1</edition>\r\n" +
-                    "      <authors>\r\n" +
-                    "         <author>McConnell</author>\r\n" +
-                    "      </authors>\r\n" +
-                    "      <publishingInformation>\r\n" +
-                    "         <publisher>Microsoft Press</publisher>\r\n" +
-                    "         <publishDate>1996</publishDate>\r\n" +
-                    "      </publishingInformation>\r\n" +
-                    "   </book>\r\n" +
-                    "</Books:bookCollection>";
+            """
+                    <?xml version="1.0" encoding="UTF-8"?>\
+                    <Books:bookCollection xmlns:Books="http://www.metamatrix.com/XMLSchema/DataSets/Books">\r
+                       <book isbn="0-7356-0877-6">\r
+                          <title>After the Gold Rush</title>\r
+                          <subtitle>Creating a True Profession of Software Engineering</subtitle>\r
+                          <edition>1</edition>\r
+                          <authors>\r
+                             <author>McConnell</author>\r
+                          </authors>\r
+                          <publishingInformation>\r
+                             <publisher>Microsoft Press</publisher>\r
+                             <publishDate>1999</publishDate>\r
+                          </publishingInformation>\r
+                       </book>\r
+                       <book isbn="1-55615-484-4">\r
+                          <title>Code Complete</title>\r
+                          <subtitle>A Practical Handbook of Software Construction</subtitle>\r
+                          <edition>1</edition>\r
+                          <authors>\r
+                             <author>McConnell</author>\r
+                          </authors>\r
+                          <publishingInformation>\r
+                             <publisher>Microsoft Press</publisher>\r
+                             <publishDate>1993</publishDate>\r
+                          </publishingInformation>\r
+                       </book>\r
+                       <book isbn="1-556-15900-5">\r
+                          <title>Rapid Development</title>\r
+                          <subtitle>Taming Wild Software Schedules</subtitle>\r
+                          <edition>1</edition>\r
+                          <authors>\r
+                             <author>McConnell</author>\r
+                          </authors>\r
+                          <publishingInformation>\r
+                             <publisher>Microsoft Press</publisher>\r
+                             <publishDate>1996</publishDate>\r
+                          </publishingInformation>\r
+                       </book>\r
+                    </Books:bookCollection>""";
 
     @Test
     public void testStreamSourceWithStream() throws Exception {

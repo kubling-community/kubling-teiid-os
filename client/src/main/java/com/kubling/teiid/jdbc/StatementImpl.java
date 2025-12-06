@@ -714,8 +714,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         return booleanFuture(true);
     }
 
-    private ResultsFuture<ResultsMessage> execute(final RequestMessage reqMsg, boolean synch) throws SQLException,
-            TeiidSQLException {
+    private ResultsFuture<ResultsMessage> execute(final RequestMessage reqMsg, boolean synch) throws SQLException {
         this.getConnection().beginLocalTxnIfNeeded();
         this.currentRequestID = this.driverConnection.nextRequestID();
         // Create a request message

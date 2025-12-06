@@ -20,7 +20,7 @@ public class TestJsonType {
     }
 
     @Test
-    public void testJsonCompare() throws Exception {
+    public void testJsonCompare() {
         String json1 = "{ \"a\": 1, \"b\": 2 }";
         String json2 = "{ \"b\": 2, \"a\": 1 }";
 
@@ -31,7 +31,7 @@ public class TestJsonType {
     }
 
     @Test
-    public void testJsonHashCode() throws Exception {
+    public void testJsonHashCode() {
         String json1 = "{ \"a\": 1, \"b\": 2 }";
         String json2 = "{ \"b\": 2, \"a\": 1 }";
 
@@ -72,7 +72,7 @@ public class TestJsonType {
     }
 
     @Test
-    public void testCompareWithNonJsonType() throws Exception {
+    public void testCompareWithNonJsonType() {
         JsonType jt = new JsonType(new ClobImpl("{\"a\": 1}"));
         ClobType ct = new ClobType(new ClobImpl("other text"));
 

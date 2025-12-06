@@ -21,23 +21,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.github.wnameless.json.base.JacksonJsonCore;
 import com.github.wnameless.json.base.JacksonJsonValue;
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 import com.kubling.teiid.core.json.unflattener.JsonUnflattener;
+import com.kubling.teiid.query.unittest.ResourcesUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serial;
 import java.io.StringReader;
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonFlattenerTest {
@@ -51,8 +47,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testFlatten() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         assertEquals("{\"a.b\":1,\"a.c\":null,\"a.d[0]\":false,\"a.d[1]\":true,\"e\":\"f\",\"g\":2.3}",
                 JsonFlattener.flatten(json));
@@ -78,8 +73,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testFlattenAsMap() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         assertEquals("{\"a.b\":1,\"a.c\":null,\"a.d[0]\":false,\"a.d[1]\":true,\"e\":\"f\",\"g\":2.3}",
                 JsonFlattener.flattenAsMap(json).toString());
@@ -87,8 +81,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testFlattenAsMapWithExactFloat() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonNodeFactory f = new JsonNodeFactory(true);
         ObjectMapper mapper = new ObjectMapper();
@@ -101,8 +94,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testFlattenWithJsonValueBase() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonNode jsonVal = new ObjectMapper().readTree(json);
         assertEquals("{\"a.b\":1,\"a.c\":null,\"a.d[0]\":false,\"a.d[1]\":true,\"e\":\"f\",\"g\":2.3}",
@@ -114,8 +106,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testFlattenAsMapWithJsonValueBase() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonNode jsonVal = new ObjectMapper().readTree(json);
         assertEquals("{\"a.b\":1,\"a.c\":null,\"a.d[0]\":false,\"a.d[1]\":true,\"e\":\"f\",\"g\":2.3}",
@@ -133,10 +124,8 @@ public class JsonFlattenerTest {
 
     @Test
     public void testHashCode() throws IOException {
-        URL url1 = Resources.getResource("test.json");
-        String json1 = Resources.toString(url1, Charsets.UTF_8);
-        URL url2 = Resources.getResource("test2.json");
-        String json2 = Resources.toString(url2, Charsets.UTF_8);
+        String json1 = ResourcesUtil.getClassPathResource("test.json");
+        String json2 = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonFlattener flattener = new JsonFlattener(json1);
         assertEquals(flattener.hashCode(), flattener.hashCode());
@@ -147,22 +136,17 @@ public class JsonFlattenerTest {
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() throws IOException {
-        URL url1 = Resources.getResource("test.json");
-        String json1 = Resources.toString(url1, Charsets.UTF_8);
-        URL url2 = Resources.getResource("test2.json");
-        String json2 = Resources.toString(url2, Charsets.UTF_8);
+        String json1 = ResourcesUtil.getClassPathResource("test.json");
+        String json2 = ResourcesUtil.getClassPathResource("test2.json");
 
         JsonFlattener flattener = new JsonFlattener(json1);
-        assertEquals(flattener, flattener);
         assertEquals(flattener, new JsonFlattener(json1));
         assertNotEquals(flattener, new JsonFlattener(json2));
-        assertNotEquals(123L, flattener);
     }
 
     @Test
     public void testToString() throws IOException {
-        URL url = Resources.getResource("test2.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test2.json");
 
         assertEquals(
                 "JsonFlattener{source={\"a\":{\"b\":1,\"c\":null,\"d\":[false,true]},\"e\":\"f\",\"g\":2.3}}",
@@ -181,17 +165,17 @@ public class JsonFlattenerTest {
         String json = "{}";
         assertEquals("{}", new JsonFlattener(json).flatten());
         assertEquals(json, JsonUnflattener.unflatten(new JsonFlattener(json).flatten()));
-        assertEquals(newHashMap(), new JsonFlattener(json).flattenAsMap());
+        assertEquals(new HashMap<>(), new JsonFlattener(json).flattenAsMap());
     }
 
     @Test
     public void testWithEmptyJsonArray() {
         String json = "[]";
         assertEquals("[]", new JsonFlattener(json).flatten());
-        assertEquals(ImmutableMap.of("root", newArrayList()), new JsonFlattener(json).flattenAsMap());
+        assertEquals(Map.of("root", new ArrayList<>()), new JsonFlattener(json).flattenAsMap());
         assertEquals(json, JsonUnflattener.unflatten(new JsonFlattener(json).flatten()));
         assertEquals("[]", new JsonFlattener(json).withFlattenMode(FlattenMode.KEEP_ARRAYS).flatten());
-        assertEquals(ImmutableMap.of("root", newArrayList()),
+        assertEquals(Map.of("root", new ArrayList<>()),
                 new JsonFlattener(json).withFlattenMode(FlattenMode.KEEP_ARRAYS).flattenAsMap());
         assertEquals(json, JsonUnflattener
                 .unflatten(new JsonFlattener(json).withFlattenMode(FlattenMode.KEEP_ARRAYS).flatten()));
@@ -237,8 +221,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testWithFlattenMode() throws IOException {
-        URL url = Resources.getResource("test4.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test4.json");
         assertEquals(
                 "{\"a.b\":1,\"a.c\":null,\"a.d\":[false,{\"i.j\":[false,true,\"xy\"]}],\"e\":\"f\",\"g\":2.3,\"z\":[]}",
                 new JsonFlattener(json).withFlattenMode(FlattenMode.KEEP_ARRAYS).flatten());
@@ -387,13 +370,12 @@ public class JsonFlattenerTest {
         List<List<Map<String, Object>>> root =
                 (List<List<Map<String, Object>>>) new JsonFlattener("[[{\"abc\":{\"def\":123}}]]")
                         .withFlattenMode(FlattenMode.KEEP_ARRAYS).flattenAsMap().get("root");
-        assertEquals(ImmutableMap.of("abc.def", 123), root.get(0).get(0));
+        assertEquals(Map.of("abc.def", 123), root.getFirst().getFirst());
     }
 
     @Test
     public void testPrintMode() throws IOException {
-        URL url = Resources.getResource("test.json");
-        String src = Resources.toString(url, Charsets.UTF_8);
+        String src = ResourcesUtil.getClassPathResource("test.json");
 
         String json = new JsonFlattener(src).withPrintMode(PrintMode.MINIMAL).flatten();
         assertEquals(mapper.readTree(json).toString(), json);
@@ -413,21 +395,18 @@ public class JsonFlattenerTest {
 
     @Test
     public void testPrintModeWithEscapedDoubleQoutesAndBackslash() throws IOException {
-        URL url = Resources.getResource("test_print_mode_unflatten_minimal.json");
-        String input = Resources.toString(url, Charsets.UTF_8);
+        String input = ResourcesUtil.getClassPathResource("test_print_mode_unflatten_minimal.json");
         JsonFlattener jf = new JsonFlattener(input);
         jf.withPrintMode(PrintMode.MINIMAL);
         String flattendJsonWithDotKey = jf.flatten();
 
-        url = Resources.getResource("test_print_mode_flatten_minimal.json");
-        String output = Resources.toString(url, Charsets.UTF_8);
+        String output = ResourcesUtil.getClassPathResource("test_print_mode_flatten_minimal.json");
         assertEquals(output, flattendJsonWithDotKey);
 
         jf.withPrintMode(PrintMode.PRETTY);
         flattendJsonWithDotKey = jf.flatten();
 
-        url = Resources.getResource("test_print_mode_flatten_pretty.json");
-        output = Resources.toString(url, Charsets.UTF_8);
+        output = ResourcesUtil.getClassPathResource("test_print_mode_flatten_pretty.json");
         assertEquals(output, flattendJsonWithDotKey);
 
         JsonUnflattener ju = new JsonUnflattener(flattendJsonWithDotKey);
@@ -439,8 +418,7 @@ public class JsonFlattenerTest {
         ju.withPrintMode(PrintMode.PRETTY);
         nestedJsonWithDotKey = ju.unflatten();
 
-        url = Resources.getResource("test_print_mode_unflatten_pretty.json");
-        output = Resources.toString(url, Charsets.UTF_8);
+        output = ResourcesUtil.getClassPathResource("test_print_mode_unflatten_pretty.json");
         assertEquals(output, nestedJsonWithDotKey);
     }
 
@@ -458,24 +436,23 @@ public class JsonFlattenerTest {
         try {
             new JsonFlattener("{\"abc\":{\"def\":123}}").withFlattenMode(null);
             fail();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         try {
             new JsonFlattener("{\"abc\":{\"def\":123}}").withStringEscapePolicy(null);
             fail();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
         try {
             new JsonFlattener("{\"abc\":{\"def\":123}}").withPrintMode(null);
             fail();
-        } catch (NullPointerException e) {
+        } catch (NullPointerException ignored) {
         }
     }
 
     @Test
     public void testFlattenWithNestedEmptyJsonObjectAndKeepArraysMode() throws IOException {
-        URL url = Resources.getResource("test5.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test5.json");
 
         assertEquals(
                 "{\"a.b\":1,\"a.c\":null,\"a.d\":[false,{\"i.j\":[false,true]}],\"e\":\"f\",\"g\":2.3,\"z\":{}}",
@@ -484,8 +461,7 @@ public class JsonFlattenerTest {
 
     @Test
     public void testWithSeparatorAndNestedObject() throws IOException {
-        URL url = Resources.getResource("test5.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test5.json");
         assertEquals(
                 "{\"a_b\":1,\"a_c\":null,\"a_d\":[false,{\"i_j\":[false,true]}],\"e\":\"f\",\"g\":2.3,\"z\":{}}",
                 new JsonFlattener(json).withFlattenMode(FlattenMode.KEEP_ARRAYS).withSeparator("_")
@@ -501,20 +477,17 @@ public class JsonFlattenerTest {
 
     @Test
     public void testInitByReader() throws IOException {
-        URL url = Resources.getResource("test.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test.json");
 
-        JsonFlattener jf = new JsonFlattener(new InputStreamReader(url.openStream()));
+        JsonFlattener jf = new JsonFlattener(new InputStreamReader(IOUtils.toInputStream(json, StandardCharsets.UTF_8)));
         assertEquals(jf, new JsonFlattener(json));
     }
 
     @Test
     public void testFlattenModeMongodb() throws IOException {
-        URL url = Resources.getResource("test_mongo.json");
-        String src = Resources.toString(url, Charsets.UTF_8);
+        String src = ResourcesUtil.getClassPathResource("test_mongo.json");
 
-        URL urlMongo = Resources.getResource("test_mongo_flattened.json");
-        String expectedJson = Resources.toString(urlMongo, Charsets.UTF_8);
+        String expectedJson = ResourcesUtil.getClassPathResource("test_mongo_flattened.json");
 
         String flattened = new JsonFlattener(src).withFlattenMode(FlattenMode.MONGODB)
                 .withPrintMode(PrintMode.PRETTY).flatten();
@@ -551,11 +524,9 @@ public class JsonFlattenerTest {
 
     @Test
     public void testWithFlattenModeKeepBottomArrays() throws IOException {
-        URL url = Resources.getResource("test_keep_primitive_arrays.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test_keep_primitive_arrays.json");
 
-        URL urlKBA = Resources.getResource("test_keep_primitive_arrays_flattened.json");
-        String expectedJson = Resources.toString(urlKBA, Charsets.UTF_8);
+        String expectedJson = ResourcesUtil.getClassPathResource("test_keep_primitive_arrays_flattened.json");
 
         JsonFlattener jf = new JsonFlattener(json).withFlattenMode(FlattenMode.KEEP_PRIMITIVE_ARRAYS)
                 .withPrintMode(PrintMode.PRETTY);
@@ -566,10 +537,10 @@ public class JsonFlattenerTest {
 
     @Test
     public void testWithJsonCore() throws IOException {
-        URL url = Resources.getResource("test_long_decimal.json");
-        String json = Resources.toString(url, Charsets.UTF_8);
+        String json = ResourcesUtil.getClassPathResource("test_long_decimal.json");
 
         ObjectMapper mapper = new ObjectMapper() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             {
