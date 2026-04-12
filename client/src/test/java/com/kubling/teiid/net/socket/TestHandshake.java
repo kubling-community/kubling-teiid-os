@@ -29,16 +29,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SuppressWarnings("nls")
 public class TestHandshake {
 
-//    @Test
+    //    @Test
     // TODO replace the SER file
     public void testCompatibility() throws Exception {
         ObjectInputStream ois = new ObjectInputStream(
                 new FileInputStream(UnitTestUtil.getTestDataFile("handshake.ser")));
-        Handshake hs = (Handshake)ois.readObject();
+        Handshake hs = (Handshake) ois.readObject();
         assertEquals(AuthenticationType.USERPASSWORD, hs.getAuthType());
     }
 
-    @Test public void testVersionNormalization() throws Exception {
+    @Test
+    public void testVersionNormalization() throws Exception {
         Handshake hs = new Handshake("11.2.3.a");
         assertEquals("11.02.03.a", hs.getVersion());
     }

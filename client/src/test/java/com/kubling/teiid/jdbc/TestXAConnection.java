@@ -20,7 +20,6 @@ package com.kubling.teiid.jdbc;
 
 import com.kubling.teiid.client.security.InvalidSessionException;
 import com.kubling.teiid.client.xa.XidImpl;
-import com.kubling.teiid.net.ServerConnection;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -43,17 +42,17 @@ public class TestXAConnection {
         XAConnectionImpl xaConn = new XAConnectionImpl(mmConn);
 
         Connection conn = xaConn.getConnection();
-        StatementImpl stmt = (StatementImpl)conn.createStatement();
+        StatementImpl stmt = (StatementImpl) conn.createStatement();
         conn.setAutoCommit(false);
         conn.close();
 
-        ServerConnection sc = xaConn.getConnectionImpl().getServerConnection();
+        xaConn.getConnectionImpl().getServerConnection();
 
         assertTrue(stmt.isClosed());
         assertTrue(conn.getAutoCommit());
 
         conn = xaConn.getConnection();
-        stmt = (StatementImpl)conn.createStatement();
+        stmt = (StatementImpl) conn.createStatement();
         XAResource resource = xaConn.getXAResource();
         resource.start(new XidImpl(1, new byte[0], new byte[0]), XAResource.TMNOFLAGS);
         conn.close();
@@ -62,7 +61,8 @@ public class TestXAConnection {
         assertTrue(conn.getAutoCommit());
     }
 
-    @Test public void testNotification() throws Exception {
+    @Test
+    public void testNotification() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Mockito.doThrow(new SQLException(new InvalidSessionException())).when(conn).commit();
         XAConnectionImpl xaConn = new XAConnectionImpl(conn);
@@ -77,7 +77,8 @@ public class TestXAConnection {
         Mockito.verify(cel).connectionErrorOccurred(Mockito.any());
     }
 
-    @Test public void testStartFailure() throws Exception {
+    @Test
+    public void testStartFailure() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         XidImpl xid = new XidImpl();
         Mockito.doThrow(new SQLException(new InvalidSessionException()))

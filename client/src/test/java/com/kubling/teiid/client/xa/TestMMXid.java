@@ -23,20 +23,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMMXid {
-    private static final XidImpl XID1 = new XidImpl(0, new byte[] {
-        1
+    private static final XidImpl XID1 = new XidImpl(0, new byte[]{
+            1
     }, new byte[0]);
-    private static final XidImpl XID2 = new XidImpl(0, new byte[] {
-        2
-    }, new byte[] {3});
-    private static final XidImpl XID1Copy = new XidImpl(0, new byte[] {
-        1
+    private static final XidImpl XID2 = new XidImpl(0, new byte[]{
+            2
+    }, new byte[]{3});
+    private static final XidImpl XID1Copy = new XidImpl(0, new byte[]{
+            1
     }, new byte[0]);
 
     @Test
     public void testEquals() {
         assertEquals(XID1, XID1Copy);
-        assertFalse(XID1.equals(XID2));
+        assertNotEquals(XID1, XID2);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class TestMMXid {
     @Test
     public void testHashCode() {
         assertEquals(XID1.hashCode(), XID1Copy.hashCode());
-        assertFalse(XID1.hashCode() == XID2.hashCode());
+        assertNotEquals(XID1.hashCode(), XID2.hashCode());
     }
 
     @Test

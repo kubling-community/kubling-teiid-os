@@ -16,12 +16,11 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package com.kubling.teiid.net.socket;
 
-import com.kubling.teiid.client.security.*;
+import com.kubling.teiid.client.security.ILogon;
+import com.kubling.teiid.client.security.LogonResult;
+import com.kubling.teiid.client.security.SessionToken;
 import com.kubling.teiid.client.util.ResultsFuture;
 import com.kubling.teiid.core.TeiidComponentException;
 import com.kubling.teiid.core.crypto.NullCryptor;
@@ -31,19 +30,17 @@ import com.kubling.teiid.net.HostInfo;
 import com.kubling.teiid.net.TeiidURL;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 /**
  * <code>TestCase</case> for <code>SocketServerConnection</code>
+ *
  * @see SocketServerConnection
  */
 @SuppressWarnings("nls")
@@ -58,24 +55,20 @@ public class TestSocketServerConnection {
         }
 
         @Override
-        public void assertIdentity(SessionToken sessionId)
-                throws InvalidSessionException, TeiidComponentException {
+        public void assertIdentity(SessionToken sessionId) {
 
         }
 
         @Override
-        public ResultsFuture<?> logoff()
-                throws InvalidSessionException {
+        public ResultsFuture<?> logoff() {
             return null;
         }
 
         @Override
         public LogonResult logon(
-                Properties connectionProperties)
-                throws LogonException,
-                TeiidComponentException {
-            return new LogonResult(new SessionToken(1, 
-                    connectionProperties.getProperty(TeiidURL.CONNECTION.USER_NAME, "fooUser")), 
+                Properties connectionProperties) {
+            return new LogonResult(new SessionToken(1,
+                    connectionProperties.getProperty(TeiidURL.CONNECTION.USER_NAME, "fooUser")),
                     "foo", "fake");
         }
 
@@ -83,8 +76,7 @@ public class TestSocketServerConnection {
         public ResultsFuture<?> ping()
                 throws TeiidComponentException, CommunicationException {
             if (t != null) {
-                if (t instanceof CommunicationException) {
-                    CommunicationException ce = (CommunicationException)t;
+                if (t instanceof CommunicationException ce) {
                     t = null;
                     throw ce;
                 }
@@ -103,7 +95,7 @@ public class TestSocketServerConnection {
 
         @Override
         public LogonResult neogitiateGssLogin(Properties connectionProperties,
-                byte[] serviceToken, boolean createSession) throws LogonException {
+                                              byte[] serviceToken, boolean createSession) {
             return null;
         }
     }
@@ -119,7 +111,6 @@ public class TestSocketServerConnection {
      * and it is up to <code>SocketServerConnection</code> to place
      * the values into the connection properties object during the
      * connection process.
-     * @throws Throwable
      *
      * @since Westport
      */
@@ -133,7 +124,8 @@ public class TestSocketServerConnection {
         assertTrue(p.containsKey(TeiidURL.CONNECTION.CLIENT_IP_ADDRESS));
     }
 
-    @Test public void testLogonFailsWithMultipleHosts() throws Exception {
+    @Test
+    public void testLogonFailsWithMultipleHosts() throws Exception {
         Properties p = new Properties();
         SocketServerInstanceFactory instanceFactory = Mockito.mock(SocketServerInstanceFactory.class);
         Mockito.when(instanceFactory.getServerInstance(Mockito.any()))
@@ -148,12 +140,14 @@ public class TestSocketServerConnection {
         }
     }
 
-    @Test public void testLogon() throws Exception {
+    @Test
+    public void testLogon() throws Exception {
         SocketServerConnection connection = createConnection(null);
         assertEquals(String.valueOf(1), connection.getLogonResult().getSessionID());
     }
 
-    @Test public void testChangeUser() throws Exception {
+    @Test
+    public void testChangeUser() throws Exception {
         Properties p = new Properties();
         SocketServerConnection connection = createConnection(null, p);
         assertEquals("fooUser", connection.getLogonResult().getUserName());
@@ -165,7 +159,8 @@ public class TestSocketServerConnection {
     /**
      * Since the original instance is still open, this will be a transparent retry
      */
-    @Test public void testRetry() throws Exception {
+    @Test
+    public void testRetry() throws Exception {
         SocketServerConnection connection = createConnection(new SingleInstanceCommunicationException());
         connection.setFailOver(true);
         connection.setFailOverPingInterval(50);
@@ -174,17 +169,19 @@ public class TestSocketServerConnection {
         logon.ping();
     }
 
-    @Test public void testImmediateFail() throws Exception {
+    @Test
+    public void testImmediateFail() throws Exception {
         SocketServerConnection connection = createConnection(new CommunicationException());
         ILogon logon = connection.getService(ILogon.class);
-        assertThrows(CommunicationException.class, () -> logon.ping());
+        assertThrows(CommunicationException.class, logon::ping);
     }
 
-    @Test public void testImmediateFail1() throws Exception {
+    @Test
+    public void testImmediateFail1() throws Exception {
         SocketServerConnection connection = createConnection(new CommunicationException());
         connection.setFailOver(true);
         ILogon logon = connection.getService(ILogon.class);
-        assertThrows(CommunicationException.class, () -> logon.ping());
+        assertThrows(CommunicationException.class, logon::ping);
     }
 
     private SocketServerConnection createConnection(final Throwable throwException)
@@ -202,11 +199,10 @@ public class TestSocketServerConnection {
         UrlServerDiscovery discovery =
                 new UrlServerDiscovery(new TeiidURL(hostInfo.getHostName(), hostInfo.getPortNumber(), false));
         SocketServerInstanceFactory instanceFactory = new SocketServerInstanceFactory() {
-            FakeILogon logon = new FakeILogon(t);
+            final FakeILogon logon = new FakeILogon(t);
 
             @Override
-            public SocketServerInstance getServerInstance(HostInfo info)
-                    throws CommunicationException, IOException {
+            public SocketServerInstance getServerInstance(HostInfo info) {
                 SocketServerInstance instance = Mockito.mock(SocketServerInstance.class);
                 Mockito.when(instance.getCryptor()).thenReturn(new NullCryptor());
                 Mockito.when(instance.getHostInfo()).thenReturn(hostInfo);
@@ -214,15 +210,11 @@ public class TestSocketServerConnection {
                 Mockito.when(instance.getServerVersion()).thenReturn("07.03");
                 if (t != null) {
                     try {
-                        Mockito.doAnswer(new Answer<Void>() {
-                            @Override
-                            public Void answer(InvocationOnMock invocation)
-                                    throws Throwable {
-                                if (logon.t == null) {
-                                    return null;
-                                }
-                                throw logon.t;
+                        Mockito.doAnswer((Answer<Void>) invocation -> {
+                            if (logon.t == null) {
+                                return null;
                             }
+                            throw logon.t;
                         }).when(instance).send(Mockito.any(), Mockito.any(), Mockito.any());
                     } catch (Exception e) {
 
@@ -238,11 +230,11 @@ public class TestSocketServerConnection {
             }
 
         };
-        SocketServerConnection connection = new SocketServerConnection(instanceFactory, false, discovery, p);
-        return connection;
+        return new SocketServerConnection(instanceFactory, false, discovery, p);
     }
 
-    @Test public void testIsSameInstance() throws Exception {
+    @Test
+    public void testIsSameInstance() throws Exception {
         SocketServerConnection conn = createConnection(null, new HostInfo("0.0.0.0", 1), new Properties());
         SocketServerConnection conn1 = createConnection(null, new HostInfo("0.0.0.1", 1), new Properties());
 

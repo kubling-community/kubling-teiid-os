@@ -26,7 +26,6 @@
  */
 
 
-
 package com.kubling.teiid.jdbc.tracing;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;

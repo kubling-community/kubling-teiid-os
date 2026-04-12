@@ -6,7 +6,7 @@
 
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
-    <version>25.3.2</version>
+    <version>26.1</version>
     <name>Parent</name>
     <packaging>pom</packaging>
 
@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.basepom</groupId>
         <artifactId>basepom-foundation</artifactId>
-        <version>62</version>
+        <version>68</version>
     </parent>
 
     <scm>
@@ -47,11 +47,11 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <client-version>25.3.2</client-version>
-        <common-core-version>25.3.2</common-core-version>
-        <hibernate-dialect-version>25.3.2</hibernate-dialect-version>
-        <test-container-version>25.3.2</test-container-version>
-        <build-version>25.3.2</build-version>
+        <client-version>26.1</client-version>
+        <common-core-version>26.1</common-core-version>
+        <hibernate-dialect-version>26.1</hibernate-dialect-version>
+        <test-container-version>26.1</test-container-version>
+        <build-version>26.1</build-version>
 
         <gpg.keyname>${env.GPG_KEY}</gpg.keyname>
 
@@ -61,22 +61,25 @@
         <version.commons-lang3>3.18.0</version.commons-lang3>
         <version.commons-vfs2>2.10.0</version.commons-vfs2>
         <version.commons-logging>1.3.4</version.commons-logging>
-        <version.commons-compress>1.27.1</version.commons-compress>
-        <version.commons-io>2.18.0</version.commons-io>
+        <version.commons-compress>1.28.0</version.commons-compress>
+        <version.commons-io>2.21.0</version.commons-io>
         <version.jackson.core>2.19.0</version.jackson.core>
-        <version.google.guava>33.4.7-jre</version.google.guava>
+        <version.google.guava>33.5.0-jre</version.google.guava>
         <version.google.gson>2.10.1</version.google.gson>
-        <version.opentelemetry>1.38.0</version.opentelemetry>
+        <version.opentelemetry>1.49.0</version.opentelemetry>
         <version.jcip-annotations>1.0-1</version.jcip-annotations>
-        <version.hikaricp>6.2.1</version.hikaricp>
-        <version.slf4j>2.0.7</version.slf4j>
-        <version.logback>1.5.21</version.logback>
+        <version.hikaricp>6.3.3</version.hikaricp>
+        <version.slf4j>2.0.17</version.slf4j>
+        <version.logback>1.5.32</version.logback>
 
-        <version.junit>5.12.1</version.junit>
-        <version.org.mockito>5.15.2</version.org.mockito>
+        <version.junit>5.12.2</version.junit>
+        <version.org.mockito>5.21.0</version.org.mockito>
         <version.hamcrest>2.2</version.hamcrest>
-        <version.testcontainers>1.20.6</version.testcontainers>
-        <version.assertj>3.26.3</version.assertj>
+
+        <version.testcontainers>2.0.3</version.testcontainers>
+        <version.testcontainers-jdbc>1.21.4</version.testcontainers-jdbc>
+
+        <version.assertj>3.27.7</version.assertj>
     </properties>
 
     <profiles>
@@ -288,12 +291,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.stephenc.jcip</groupId>
-                <artifactId>jcip-annotations</artifactId>
-                <version>${version.jcip-annotations}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
                 <version>${version.hikaricp}</version>
@@ -343,7 +340,7 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>jdbc</artifactId>
-                <version>${version.testcontainers}</version>
+                <version>${version.testcontainers-jdbc}</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>

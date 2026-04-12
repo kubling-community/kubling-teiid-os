@@ -74,7 +74,7 @@ public class TestObjectDecoderInputStream {
 
         ClobImpl clob = new ClobImpl(new InputStreamFactory() {
             @Override
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 return new ReaderInputStream(new StringReader("Clob contents"), Charset.forName(Streamable.ENCODING));
             }
 

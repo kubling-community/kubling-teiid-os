@@ -18,6 +18,8 @@
 
 package com.kubling.teiid.jdbc;
 
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.sql.SQLException;
@@ -42,21 +44,22 @@ public class TestWrapperImpl {
 
     }
 
+    @Test
     public void testProxy() throws SQLException {
 
         final FooImpl fooImpl = new FooImpl();
 
-        Foo proxy = (Foo)Proxy.newProxyInstance(TestWrapperImpl.class.getClassLoader(),
-                new Class[] {Foo.class}, (arg0, arg1, arg2) -> {
-            if (arg1.getName().equals("callMe")) {
-                return null;
-            }
-            try {
-                return arg1.invoke(fooImpl, arg2);
-            } catch (InvocationTargetException e) {
-                throw e.getTargetException();
-            }
-        });
+        Foo proxy = (Foo) Proxy.newProxyInstance(TestWrapperImpl.class.getClassLoader(),
+                new Class[]{Foo.class}, (arg0, arg1, arg2) -> {
+                    if (arg1.getName().equals("callMe")) {
+                        return null;
+                    }
+                    try {
+                        return arg1.invoke(fooImpl, arg2);
+                    } catch (InvocationTargetException e) {
+                        throw e.getTargetException();
+                    }
+                });
 
         proxy.callMe();
 

@@ -21,8 +21,6 @@ package com.kubling.teiid.net.socket;
 import com.kubling.teiid.core.util.UnitTestUtil;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("nls")
@@ -30,14 +28,14 @@ public class TestServiceInvocationStruct {
 
     @Test
     public void testSerialize() throws Exception {
-        ServiceInvocationStruct struct = new ServiceInvocationStruct(new Object[] {Integer.valueOf(1), "hello"}, "doSomething", TestServiceInvocationStruct.class);
+        ServiceInvocationStruct struct =
+                new ServiceInvocationStruct(new Object[]{1, "hello"}, "doSomething", TestServiceInvocationStruct.class);
 
-        Object serialized = UnitTestUtil.helpSerialize(struct);
+        ServiceInvocationStruct serialized = UnitTestUtil.helpSerialize(struct);
         assertNotNull(serialized);
-        assertTrue(serialized instanceof ServiceInvocationStruct);
-        ServiceInvocationStruct copy = (ServiceInvocationStruct)serialized;
-        assertTrue(Arrays.equals(struct.args, copy.args));
-        assertEquals(struct.methodName, copy.methodName);
-        assertEquals(struct.targetClass, copy.targetClass);
+        assertInstanceOf(ServiceInvocationStruct.class, serialized);
+        assertArrayEquals(struct.args, serialized.args);
+        assertEquals(struct.methodName, serialized.methodName);
+        assertEquals(struct.targetClass, serialized.targetClass);
     }
 }

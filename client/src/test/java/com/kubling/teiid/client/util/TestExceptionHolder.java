@@ -33,8 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("nls")
 public class TestExceptionHolder {
@@ -60,14 +59,19 @@ public class TestExceptionHolder {
     @SuppressWarnings("all")
     public static class BadException extends TeiidProcessingException {
         private Object obj;
-        public BadException(String msg) {super(msg);}
+
+        public BadException(String msg) {
+            super(msg);
+        }
+
         public BadException(Object obj) {
             this.obj = obj;
         }
     }
 
-    @Test public void testDeserializationUnknownException() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[] {UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
+    @Test
+    public void testDeserializationUnknownException() throws Exception {
+        ClassLoader cl = new URLClassLoader(new URL[]{UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
         Object obj = ReflectionHelper.create("test.Test", null, cl);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -76,8 +80,8 @@ public class TestExceptionHolder {
         oos.flush();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ExceptionHolder holder = (ExceptionHolder)ois.readObject();
-        assertTrue(holder.getException() instanceof BadException);
+        ExceptionHolder holder = (ExceptionHolder) ois.readObject();
+        assertInstanceOf(BadException.class, holder.getException());
         assertEquals("Remote com.kubling.teiid.client.util.TestExceptionHolder$BadException: null",
                 holder.getException().getMessage());
     }
@@ -88,14 +92,16 @@ public class TestExceptionHolder {
         public BadException2(String msg) {
             super(msg);
         }
+
         public BadException2(Throwable e, String msg) {
             super(e, msg);
         }
     }
 
-    @Test public void testDeserializationUnknownChildException() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[] {UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
-        Exception obj = (Exception)ReflectionHelper.create("test.UnknownException", null, cl);
+    @Test
+    public void testDeserializationUnknownChildException() throws Exception {
+        ClassLoader cl = new URLClassLoader(new URL[]{UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
+        Exception obj = (Exception) ReflectionHelper.create("test.UnknownException", null, cl);
         obj.initCause(new SQLException("something bad happended"));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -104,24 +110,25 @@ public class TestExceptionHolder {
         oos.flush();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ExceptionHolder holder = (ExceptionHolder)ois.readObject();
+        ExceptionHolder holder = (ExceptionHolder) ois.readObject();
         Throwable e = holder.getException();
-        assertTrue(e instanceof BadException2);
-        assertEquals(e.getMessage(),
-                "Remote com.kubling.teiid.client.util.TestExceptionHolder$BadException2: I have foreign exception embedded in me");
+        assertInstanceOf(BadException2.class, e);
+        assertEquals("Remote com.kubling.teiid.client.util.TestExceptionHolder$BadException2: I have foreign exception embedded in me",
+                e.getMessage());
 
         e = e.getCause();
-        assertTrue(e instanceof TeiidRuntimeException);
+        assertInstanceOf(TeiidRuntimeException.class, e);
 
         e = e.getCause();
-        assertTrue(e instanceof SQLException);
+        assertInstanceOf(SQLException.class, e);
 
         assertEquals("Remote java.sql.SQLException: something bad happended", e.getMessage());
     }
 
-    @Test public void testSQLExceptionChain() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[] {UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
-        Exception obj = (Exception)ReflectionHelper.create("test.UnknownException", null, cl);
+    @Test
+    public void testSQLExceptionChain() throws Exception {
+        ClassLoader cl = new URLClassLoader(new URL[]{UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
+        Exception obj = (Exception) ReflectionHelper.create("test.UnknownException", null, cl);
         SQLException se = new SQLException("something bad happened", obj);
 
         SQLException next = se;
@@ -139,30 +146,31 @@ public class TestExceptionHolder {
         assertEquals(22, oos.count.get());
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ExceptionHolder holder = (ExceptionHolder)ois.readObject();
+        ExceptionHolder holder = (ExceptionHolder) ois.readObject();
         Throwable e = holder.getException();
-        assertTrue(e instanceof SQLException);
+        assertInstanceOf(SQLException.class, e);
         assertEquals("Remote java.sql.SQLException: something bad happened", e.getMessage());
 
-        assertTrue(e.getCause() instanceof TeiidRuntimeException);
+        assertInstanceOf(TeiidRuntimeException.class, e.getCause());
 
-        e = ((SQLException)e).getNextException();
-        assertTrue(e instanceof SQLException);
+        e = ((SQLException) e).getNextException();
+        assertInstanceOf(SQLException.class, e);
 
         assertEquals("Remote java.sql.SQLException: something else bad happened", e.getMessage());
 
         int count = 0;
-        while ((e = ((SQLException)e).getNextException()) != null) {
+        while ((e = ((SQLException) e).getNextException()) != null) {
             count++;
         }
         assertEquals(9, count);
     }
 
-    @Test public void testDeserializationUnknownChildException2() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[] {UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
-        ArrayList<String> args = new ArrayList<String>();
+    @Test
+    public void testDeserializationUnknownChildException2() throws Exception {
+        ClassLoader cl = new URLClassLoader(new URL[]{UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
+        ArrayList<String> args = new ArrayList<>();
         args.add("Unknown Exception");
-        Exception obj = (Exception)ReflectionHelper.create("test.UnknownException", args, cl);
+        Exception obj = (Exception) ReflectionHelper.create("test.UnknownException", args, cl);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -170,19 +178,15 @@ public class TestExceptionHolder {
         oos.flush();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ExceptionHolder holder = (ExceptionHolder)ois.readObject();
+        ExceptionHolder holder = (ExceptionHolder) ois.readObject();
         Throwable e = holder.getException();
-        assertTrue(e instanceof TeiidRuntimeException);
+        assertInstanceOf(TeiidRuntimeException.class, e);
         assertEquals("Remote test.UnknownException: Unknown Exception", e.getMessage());
     }
 
-    private static class NotSerializable {
-
-    }
-
-    @Test public void testDeserializationNotSerializable() throws Exception {
+    @Test
+    public void testDeserializationNotSerializable() throws Exception {
         Exception ex = new TeiidException() {
-            NotSerializable ns = new NotSerializable();
         };
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -191,17 +195,17 @@ public class TestExceptionHolder {
         oos.flush();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ExceptionHolder holder = (ExceptionHolder)ois.readObject();
+        ExceptionHolder holder = (ExceptionHolder) ois.readObject();
         Throwable e = holder.getException();
-        assertTrue(e instanceof TeiidException);
+        assertInstanceOf(TeiidException.class, e);
     }
 
     // TODO replace the SER file
     public void testSourceWarning() throws Exception {
-        ClassLoader cl = new URLClassLoader(new URL[] {UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
-        ArrayList<String> args = new ArrayList<String>();
+        ClassLoader cl = new URLClassLoader(new URL[]{UnitTestUtil.getTestDataFile("test.jar").toURI().toURL()});
+        ArrayList<String> args = new ArrayList<>();
         args.add("Unknown Exception");
-        Exception obj = (Exception)ReflectionHelper.create("test.UnknownException", args, cl);
+        Exception obj = (Exception) ReflectionHelper.create("test.UnknownException", args, cl);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -209,16 +213,16 @@ public class TestExceptionHolder {
         oos.flush();
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ExceptionHolder holder = (ExceptionHolder)ois.readObject();
-        SourceWarning sw = (SourceWarning)holder.getException();
-        assertEquals(sw.getConnectorBindingName(), "y");
-        assertEquals(sw.getModelName(), "x");
+        ExceptionHolder holder = (ExceptionHolder) ois.readObject();
+        SourceWarning sw = (SourceWarning) holder.getException();
+        assertEquals("y", sw.getConnectorBindingName());
+        assertEquals("x", sw.getModelName());
         assertTrue(sw.isPartialResultsError());
 
         try {
             ois = new ObjectInputStream(new FileInputStream(UnitTestUtil.getTestDataFile("old-exceptionholder.ser")));
-            holder = (ExceptionHolder)ois.readObject();
-            assertTrue(holder.getException() instanceof TeiidException);
+            holder = (ExceptionHolder) ois.readObject();
+            assertInstanceOf(TeiidException.class, holder.getException());
         } finally {
             ois.close();
         }

@@ -43,19 +43,19 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("nls")
 public class TestConnection {
 
-    protected static final String STD_DATABASE_NAME         = "QT_Ora9DS";
-    protected static final int STD_DATABASE_VERSION      = 1;
+    protected static final String STD_DATABASE_NAME = "QT_Ora9DS";
 
     static String serverUrl = "jdbc:teiid:QT_Ora9DS@mm://localhost:7001;version=1;user=metamatrixadmin;password=mm";
 
-    static class  InnerDriver extends TeiidDriver {
-        String iurl = null;
+    static class InnerDriver extends TeiidDriver {
+        String iurl;
+
         public InnerDriver(String url) {
             iurl = url;
         }
 
         public void parseUrl(Properties props) throws SQLException {
-                 super.parseURL(iurl, props);
+            super.parseURL(iurl, props);
         }
     }
 
@@ -96,7 +96,8 @@ public class TestConnection {
         assertNotNull(getMMConnection().getMetaData());
     }
 
-    @Test public void testNullSorts() throws Exception {
+    @Test
+    public void testNullSorts() throws Exception {
         DatabaseMetaData metadata = getMMConnection("jdbc:teiid:QT_Ora9DS@mm://localhost:7001;version=1;NullsAreSorted=AtEnd").getMetaData();
         assertTrue(metadata.nullsAreSortedAtEnd());
         assertFalse(metadata.nullsAreSortedLow());
@@ -104,37 +105,51 @@ public class TestConnection {
         assertFalse(metadata.nullsAreSortedAtEnd());
     }
 
-    @Test public void testGetSchema() throws Exception {
+    @Test
+    public void testGetSchema() throws Exception {
         assertEquals(STD_DATABASE_NAME, getMMConnection().getVDBName(),
                 "Actual schema is not equal to the expected one. ");
     }
 
-    @Test public void testNativeSql() throws Exception {
+    @Test
+    public void testNativeSql() {
         String sql = "SELECT * FROM BQT1.SmallA";
         assertEquals(sql, getMMConnection().nativeSQL(sql),
                 "Actual schema is not equal to the expected one. ");
     }
 
-    /** test getUserName() through DriverManager */
-    @Test public void testGetUserName2() throws Exception {
+    /**
+     * test getUserName() through DriverManager
+     */
+    @Test
+    public void testGetUserName2() throws Exception {
         assertEquals("admin", getMMConnection().getUserName(),
                 "Actual userName is not equal to the expected one. ");
     }
 
-    /** test isReadOnly default value on Connection */
-    @Test public void testIsReadOnly() throws Exception {
-        assertEquals(false, getMMConnection().isReadOnly());
+    /**
+     * test isReadOnly default value on Connection
+     */
+    @Test
+    public void testIsReadOnly() throws Exception {
+        assertFalse(getMMConnection().isReadOnly());
     }
 
-    /** test setReadOnly on Connection */
-    @Test public void testSetReadOnly1() throws Exception {
+    /**
+     * test setReadOnly on Connection
+     */
+    @Test
+    public void testSetReadOnly1() throws Exception {
         ConnectionImpl conn = getMMConnection();
         conn.setReadOnly(true);
-        assertEquals(true, conn.isReadOnly());
+        assertTrue(conn.isReadOnly());
     }
 
-    /** test setReadOnly on Connection during a transaction */
-    @Test public void testSetReadOnly2() throws Exception {
+    /**
+     * test setReadOnly on Connection during a transaction
+     */
+    @Test
+    public void testSetReadOnly2() throws Exception {
         ConnectionImpl conn = getMMConnection();
         conn.setAutoCommit(false);
         conn.setReadOnly(true);
@@ -150,7 +165,8 @@ public class TestConnection {
     /**
      * Test the default of the JDBC4 spec semantics is true
      */
-    @Test public void testDefaultSpec() throws Exception {
+    @Test
+    public void testDefaultSpec() {
         assertEquals("true",
                 (getMMConnection().getExecutionProperties()
                         .getProperty(ExecutionProperties.JDBC4COLUMNNAMEANDLABELSEMANTICS) == null ? "true" : "false"));
@@ -159,7 +175,8 @@ public class TestConnection {
     /**
      * Test turning off the JDBC 4 semantics
      */
-    @Test public void testTurnOnSpec() throws Exception {
+    @Test
+    public void testTurnOnSpec() {
         assertEquals("true",
                 getMMConnection(serverUrl + ";useJDBC4ColumnNameAndLabelSemantics=true")
                         .getExecutionProperties().getProperty(ExecutionProperties.JDBC4COLUMNNAMEANDLABELSEMANTICS));
@@ -168,18 +185,21 @@ public class TestConnection {
     /**
      * Test turning off the JDBC 4 semantics
      */
-    @Test public void testTurnOffSpec() throws Exception {
+    @Test
+    public void testTurnOffSpec() {
         assertEquals("false",
                 getMMConnection(serverUrl + ";useJDBC4ColumnNameAndLabelSemantics=false")
                         .getExecutionProperties().getProperty(ExecutionProperties.JDBC4COLUMNNAMEANDLABELSEMANTICS));
     }
 
-    @Test public void testCreateArray() throws SQLException {
-        Array array = getMMConnection().createArrayOf("integer[]", new Integer[] {3, 4});
+    @Test
+    public void testCreateArray() throws SQLException {
+        Array array = getMMConnection().createArrayOf("integer[]", new Integer[]{3, 4});
         assertEquals(3, java.lang.reflect.Array.get(array.getArray(), 0));
     }
 
-    @Test public void testXACommit() throws Exception {
+    @Test
+    public void testXACommit() throws Exception {
         ConnectionImpl conn = getMMConnection();
         conn.setAutoCommit(false);
         conn.setTransactionXid(Mockito.mock(XidImpl.class));
@@ -191,15 +211,16 @@ public class TestConnection {
         }
     }
 
-    @Test public void testMaxOpenStatements() throws SQLException {
+    @Test
+    public void testMaxOpenStatements() throws SQLException {
         ConnectionImpl conn = getMMConnection();
-        for(int i = 0; i < 1000; i++){
+        for (int i = 0; i < 1000; i++) {
             conn.createStatement();
         }
-        try{
+        try {
             conn.createStatement();
             fail("MaxOpenStatements not limited to required number.");
-        } catch (TeiidSQLException ex){
+        } catch (TeiidSQLException ex) {
             MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString(JDBCPlugin.Event.TEIID20036.name()));
         }
     }

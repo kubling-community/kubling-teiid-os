@@ -24,6 +24,9 @@
                 <include>org.apache.commons:commons-vfs2</include>
                 <include>org.apache.commons:commons-lang3</include>
                 <include>commons-io:commons-io</include>
+                <include>com.fasterxml.jackson.core:jackson-core</include>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
             </includes>
         </dependencySet>
     </dependencySets>

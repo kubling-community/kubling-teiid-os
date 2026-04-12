@@ -21,8 +21,6 @@ package com.kubling.teiid.client.lob;
 import com.kubling.teiid.core.util.UnitTestUtil;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -42,7 +40,7 @@ public class TestByteLobChunk {
         LobChunk chunk = new LobChunk(testString.getBytes(), true);
 
         LobChunk result = UnitTestUtil.helpSerialize(chunk);
-        assertTrue(Arrays.equals(chunk.getBytes(), result.getBytes()));
+        assertArrayEquals(chunk.getBytes(), result.getBytes());
         assertTrue(result.isLast());
     }
 

@@ -35,18 +35,18 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @SuppressWarnings("nls")
 public class TestSocketServerInstanceImpl {
 
     private static class FakeObjectChannel implements ObjectChannel, ObjectChannelFactory {
-        List<Object> msgs = new ArrayList<Object>();
-        List<? extends Object> readMsgs;
+        List<Object> msgs = new ArrayList<>();
+        List<?> readMsgs;
         int readCount;
 
-        public FakeObjectChannel(List<? extends Object> readMsgs) {
+        public FakeObjectChannel(List<?> readMsgs) {
             this.readMsgs = readMsgs;
         }
 
@@ -69,10 +69,9 @@ public class TestSocketServerInstanceImpl {
         }
 
         @Override
-        public Object read() throws IOException,
-                ClassNotFoundException {
+        public Object read() throws IOException {
             if (readCount >= readMsgs.size()) {
-            return "";
+                return "";
             }
 
             Object msg = readMsgs.get(readCount++);
@@ -83,7 +82,7 @@ public class TestSocketServerInstanceImpl {
                     } catch (InterruptedException e) {
                     }
                 }
-                throw (IOException)msg;
+                throw (IOException) msg;
             }
             return msg;
         }
@@ -94,8 +93,7 @@ public class TestSocketServerInstanceImpl {
         }
 
         @Override
-        public ObjectChannel createObjectChannel(HostInfo info)
-                throws CommunicationException, IOException {
+        public ObjectChannel createObjectChannel(HostInfo info) {
             return this;
         }
 
@@ -134,8 +132,9 @@ public class TestSocketServerInstanceImpl {
         return ssii;
     }
 
-    @Test public void testSuccessfulHandshake() throws Exception {
-        final FakeObjectChannel channel = 
+    @Test
+    public void testSuccessfulHandshake() throws Exception {
+        final FakeObjectChannel channel =
                 new FakeObjectChannel(Arrays.asList(new Handshake(), new SocketTimeoutException()));
 
         SocketServerInstanceImpl instance = createInstance(channel);
@@ -146,7 +145,7 @@ public class TestSocketServerInstanceImpl {
             logon.logon(new Properties());
             fail("Exception expected");
         } catch (SingleInstanceCommunicationException e) {
-            assertTrue(e.getCause() instanceof TimeoutException);
+            assertInstanceOf(TimeoutException.class, e.getCause());
         }
     }
 

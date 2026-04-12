@@ -48,7 +48,6 @@ public class TestPreparedStatement {
      * are being set in the request message that would normally be sent to the
      * server.
      *
-     * @throws Exception
      */
     @Test
     public void testBatchedUpdateExecution() throws Exception {
@@ -65,7 +64,7 @@ public class TestPreparedStatement {
         Mockito.when(logonResult.getTimeZone()).thenReturn(TimeZone.getDefault());
 
         // a dummy result message that is specific to this test case
-        final ResultsFuture<ResultsMessage> results = new ResultsFuture<ResultsMessage>();
+        final ResultsFuture<ResultsMessage> results = new ResultsFuture<>();
         final int[] count = new int[1];
         final ResultsMessage rm = new ResultsMessage();
         Mockito.when(dqp.executeRequest(ArgumentMatchers.anyLong(), ArgumentMatchers.any()))
@@ -74,10 +73,10 @@ public class TestPreparedStatement {
                     count[0] += requestMessage.getParameterValues().size();
                     if (count[0] == 100000) {
                         rm.setException(new TeiidException());
-                        rm.setResults(new List<?>[] {Arrays.asList(Statement.EXECUTE_FAILED)});
+                        rm.setResults(new List<?>[]{List.of(Statement.EXECUTE_FAILED)});
                     } else {
                         List<?>[] vals = new List<?>[requestMessage.getParameterValues().size()];
-                        Arrays.fill(vals, Arrays.asList(0));
+                        Arrays.fill(vals, List.of(0));
                         rm.setResults(Arrays.asList(vals));
                     }
                     return results;
@@ -90,21 +89,21 @@ public class TestPreparedStatement {
         String sqlCommand = "delete from table where col=?";
         TestableMMPreparedStatement statement = (TestableMMPreparedStatement) getMMPreparedStatement(conn, sqlCommand);
 
-        ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<ArrayList<Object>>(3);
+        ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<>(3);
         // Add some batches and their parameter values
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList( new Object[] { Integer.valueOf(1) } ) ) );
-        statement.setInt(1, Integer.valueOf(1));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(1)));
+        statement.setInt(1, 1);
         statement.addBatch();
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList( new Object[] { Integer.valueOf(2) } ) ) );
-        statement.setInt(1, Integer.valueOf(2));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(2)));
+        statement.setInt(1, 2);
         statement.addBatch();
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList( new Object[] { Integer.valueOf(3) } ) ) );
-        statement.setInt(1, Integer.valueOf(3));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(3)));
+        statement.setInt(1, 3);
         statement.addBatch();
 
         // execute the batch and verify that it matches our dummy results
         // message set earlier
-        assertTrue(Arrays.equals(new int[] {0, 0, 0}, statement.executeBatch()));
+        assertArrayEquals(new int[]{0, 0, 0}, statement.executeBatch());
 
         // Now verify the statement's RequestMessage is what we expect
         assertEquals(sqlCommand, statement.requestMessage.getCommandString());
@@ -116,7 +115,7 @@ public class TestPreparedStatement {
         count[0] = 0;
         //large batch handling - should split into 5
         for (int i = 0; i < 100000; i++) {
-            statement.setInt(1, Integer.valueOf(1));
+            statement.setInt(1, 1);
             statement.addBatch();
         }
         try {
@@ -137,20 +136,20 @@ public class TestPreparedStatement {
      * This is done by first adding command parameter values to the batch and
      * then invoking the <code>clearBatch()</code> method.
      *
-     * @throws Exception
      */
-    @Test public void testClearBatch() throws Exception {
+    @Test
+    public void testClearBatch() throws Exception {
         PreparedStatementImpl statement = getMMPreparedStatement("delete from table where col=?");
         // Add some stuff
-        statement.setInt(1, Integer.valueOf(1));
+        statement.setInt(1, 1);
         statement.addBatch();
-        statement.setInt(1, Integer.valueOf(2));
+        statement.setInt(1, 2);
         statement.addBatch();
         // Make sure something is really there
-        assertTrue(statement.getParameterValuesList().size() > 0);
+        assertFalse(statement.getParameterValuesList().isEmpty());
         // Now clear it
         statement.clearBatch();
-        assertTrue(statement.getParameterValuesList().size() == 0);
+        assertEquals(0, statement.getParameterValuesList().size());
     }
 
     /**
@@ -164,27 +163,27 @@ public class TestPreparedStatement {
      * The expected result is the command parameter list for the batches will
      * only reflect what was added after <code>clearBatch()</code> was invoked.
      *
-     * @throws Exception
      */
-    @Test public void testClearBatchAddBatch() throws Exception {
+    @Test
+    public void testClearBatchAddBatch() throws Exception {
         PreparedStatementImpl statement = getMMPreparedStatement("delete from table where col=?");
 
-        statement.setInt(1, Integer.valueOf(1));
+        statement.setInt(1, 1);
         statement.addBatch();
-        statement.setInt(1, Integer.valueOf(2));
+        statement.setInt(1, 2);
         statement.addBatch();
         // Make sure something is really there
-        assertTrue(statement.getParameterValuesList().size() > 0);
+        assertFalse(statement.getParameterValuesList().isEmpty());
         // Now clear it
         statement.clearBatch();
         // Make sure it is empty now
-        assertTrue(statement.getParameterValuesList().size() == 0);
+        assertEquals(0, statement.getParameterValuesList().size());
 
-        ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<ArrayList<Object>>(1);
+        ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<>(1);
 
         // Now add something for validation
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList( new Object[] { Integer.valueOf(5) } ) ) );
-        statement.setInt(1, Integer.valueOf(5));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(5)));
+        statement.setInt(1, 5);
         statement.addBatch();
         assertEquals(expectedParameterValues, statement.getParameterValuesList());
     }
@@ -194,37 +193,39 @@ public class TestPreparedStatement {
      * to verify that the command parameter values of the batch are added to the
      * command parameter values list.
      *
-     * @throws Exception
      */
-    @Test public void testAddBatch() throws Exception {
+    @Test
+    public void testAddBatch() throws Exception {
         PreparedStatementImpl statement = getMMPreparedStatement("delete from table where col=?");
 
         ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<>(1);
 
         // First we add a single batch
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList(Integer.valueOf(1)) ) );
-        statement.setInt(1, Integer.valueOf(1));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(1)));
+        statement.setInt(1, 1);
         statement.addBatch();
         assertEquals(expectedParameterValues, statement.getParameterValuesList());
 
         // Now add some more batches just for sanity’s sake
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList(Integer.valueOf(3)) ) );
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList(Integer.valueOf(5)) ) );
-        statement.setInt(1, Integer.valueOf(3));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(3)));
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(5)));
+        statement.setInt(1, 3);
         statement.addBatch();
-        statement.setInt(1, Integer.valueOf(5));
+        statement.setInt(1, 5);
         statement.addBatch();
         assertEquals(expectedParameterValues, statement.getParameterValuesList());
 
-        assertEquals(Arrays.asList(5), statement.getParameterValues());
+        assertEquals(List.of(5), statement.getParameterValues());
     }
 
-    @Test public void testSetBlob() throws Exception {
+    @Test
+    public void testSetBlob() throws Exception {
         PreparedStatementImpl stmt = getMMPreparedStatement("delete from table where col=?");
-        stmt.setBlob(1, (Blob)null);
+        stmt.setBlob(1, (Blob) null);
     }
 
-    @Test public void testShowParameterMetadata() throws Exception {
+    @Test
+    public void testShowParameterMetadata() throws Exception {
         PreparedStatementImpl stmt = getMMPreparedStatement("show plan");
         assertEquals(0, stmt.getParameterMetaData().getParameterCount());
     }
@@ -240,30 +241,30 @@ public class TestPreparedStatement {
      * For example:
      * <p>
      * <code>PreparedStatement stmt = conn.prepareStatement(sql);<br \>
-     *  stmt.addBatch();<br \>
-     *  stmt.addBatch();<br \>
-     *  stmt.executeBatch();</code>
+     * stmt.addBatch();<br \>
+     * stmt.addBatch();<br \>
+     * stmt.executeBatch();</code>
      *
-     * @throws Exception
      */
-    @Test public void testAddBatchNoParameterValues() throws Exception {
+    @Test
+    public void testAddBatchNoParameterValues() throws Exception {
         PreparedStatementImpl statement = getMMPreparedStatement("delete from table where col=?");
 
         // This will hold our expected values list
-        ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<ArrayList<Object>>(1);
+        ArrayList<ArrayList<Object>> expectedParameterValues = new ArrayList<>(1);
 
         // First batch has an empty parameter value list
-        expectedParameterValues.add( new ArrayList<Object>(Collections.emptyList()) );
+        expectedParameterValues.add(new ArrayList<>(Collections.emptyList()));
 
         // No values have been set  so we are adding a batch with an empty
         // parameter value list
         statement.addBatch();
 
         // Second batch contains a parameter value list
-        expectedParameterValues.add( new ArrayList<Object>( Arrays.asList( new Object[] { Integer.valueOf(1) } ) ) );
+        expectedParameterValues.add(new ArrayList<>(Collections.singletonList(1)));
 
         // We now are adding a batch that does have parameter values
-        statement.setInt(1, Integer.valueOf(1));
+        statement.setInt(1, 1);
         statement.addBatch();
 
         // Check to see if our statement contains our expected parameter value list
@@ -282,7 +283,6 @@ public class TestPreparedStatement {
      *
      * @param sql the query for the prepared statement
      * @return an instance of TestableMMPreparedStatement
-     * @throws SQLException
      */
     protected PreparedStatementImpl getMMPreparedStatement(final String sql) throws SQLException {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
@@ -306,9 +306,8 @@ public class TestPreparedStatement {
      * or this method will fail.
      *
      * @param conn an instance of <code>MMConnection</code>
-     * @param sql the query for the prepared statement
+     * @param sql  the query for the prepared statement
      * @return an instance of TestableMMPreparedStatement
-     * @throws SQLException
      */
     protected PreparedStatementImpl getMMPreparedStatement(final ConnectionImpl conn, final String sql)
             throws SQLException {
@@ -316,8 +315,8 @@ public class TestPreparedStatement {
                 new TestableMMPreparedStatement(conn, sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
         // Make sure everything is empty on start
-        assertTrue(statement.getParameterValuesList().size() == 0);
-        assertTrue(statement.getParameterValues().size() == 0);
+        assertEquals(0, statement.getParameterValuesList().size());
+        assertEquals(0, statement.getParameterValues().size());
 
         return statement;
     }
@@ -332,11 +331,11 @@ public class TestPreparedStatement {
      * method <code>createRequestMessage()</code> is called.
      * <p>
      * This extension also overrides <code>RequestMessage createRequestMessage(String[] commands,
-     *            boolean isBatchedCommand, Boolean requiresResultSet)</code> so that
+     * boolean isBatchedCommand, Boolean requiresResultSet)</code> so that
      * reference to the created <code>RequestMessage</code> can be retained in
      * the field <code>requestMessage</code>.
      */
-    class TestableMMPreparedStatement extends PreparedStatementImpl {
+    static class TestableMMPreparedStatement extends PreparedStatementImpl {
         /**
          * Contains a reference to the <code>RequestMessage</code> created by
          * a call to <code>createRequestMessage(String[] commands,
@@ -345,16 +344,17 @@ public class TestPreparedStatement {
          * generated by a call to one of the statement's execute methods.
          */
         public RequestMessage requestMessage;
+
         @Override
         protected RequestMessage createRequestMessage(String[] commands,
-                boolean isBatchedCommand, RequestMessage.ResultsMode resultsMode) {
+                                                      boolean isBatchedCommand, RequestMessage.ResultsMode resultsMode) {
             this.requestMessage = super
                     .createRequestMessage(commands, isBatchedCommand, resultsMode);
             return this.requestMessage;
         }
 
         public TestableMMPreparedStatement(ConnectionImpl connection,
-                String sql, int resultSetType, int resultSetConcurrency)
+                                           String sql, int resultSetType, int resultSetConcurrency)
                 throws SQLException {
             super(connection, sql, resultSetType, resultSetConcurrency);
         }

@@ -24,15 +24,13 @@ import org.junit.jupiter.api.Test;
 import java.sql.DriverPropertyInfo;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTeiidDriver {
     TeiidDriver drv = new TeiidDriver();
-    public String localhost = "localhost";
 
     @Test
-    public void testAccepts() throws Exception {
+    public void testAccepts() {
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:12345"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:12345;user=foo;password=bar"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb"));
@@ -50,8 +48,11 @@ public class TestTeiidDriver {
         assertTrue(drv.acceptsURL("jdbc:teiid:test_vdb.10@mm://local_host:12345"));
     }
 
-    /** Valid format of urls*/
-    @Test public void testAcceptsURL1()  throws Exception   {
+    /**
+     * Valid format of urls
+     */
+    @Test
+    public void testAcceptsURL1() {
         assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@mm://localhost:1234"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234"));
@@ -59,7 +60,7 @@ public class TestTeiidDriver {
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mms://localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
         assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@mms://localhost:1234"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
@@ -79,70 +80,77 @@ public class TestTeiidDriver {
 
         assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@mm://localhost:port"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@localhost:port;version=x"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertTrue(!drv.acceptsURL("jdbc:teiid:@localhost:1234;stickyConnections=false;socketsPerVM=4"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;stickyConnections=false;socketsPerVM=4"));
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://my_host.mydomain.com:53535,127.0.0.1:1234"));
 
         assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;version=x;useJDBC4ColumnNameAndLabelSemantics=false"));
 
     }
 
-    /** Invalid format of urls*/
-    @Test public void testAcceptsURL2() throws Exception    {
-        assertTrue(!drv.acceptsURL("jdbc:matamatrix:test"));
-        assertTrue(!drv.acceptsURL("metamatrix:test"));
-        assertTrue(!drv.acceptsURL("jdbc&matamatrix:test"));
-        assertTrue(!drv.acceptsURL("jdbc;metamatrix:test"));
+    /**
+     * Invalid format of urls
+     */
+    @Test
+    public void testAcceptsURL2() {
+        assertFalse(drv.acceptsURL("jdbc:matamatrix:test"));
+        assertFalse(drv.acceptsURL("metamatrix:test"));
+        assertFalse(drv.acceptsURL("jdbc&matamatrix:test"));
+        assertFalse(drv.acceptsURL("jdbc;metamatrix:test"));
     }
 
-    @Test public void testParseURL() throws Exception{
+    @Test
+    public void testParseURL() throws Exception {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mm://slwxp157:1234"));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("mm://slwxp157:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
         assertEquals(3, p.size());
     }
 
-    @Test public void testParseURL2() throws Exception {
+    @Test
+    public void testParseURL2() throws Exception {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mms://slwxp157:1234;version=3", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(BaseDataSource.VDB_VERSION).equals("3"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mms://slwxp157:1234"));
-        assertTrue(p.getProperty(BaseDataSource.VERSION).equals("3"));
-        assertTrue(p.getProperty(BaseDataSource.APP_NAME).equals(BaseDataSource.DEFAULT_APP_NAME));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
+        assertEquals("mms://slwxp157:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("3", p.getProperty(BaseDataSource.VERSION));
+        assertEquals(BaseDataSource.DEFAULT_APP_NAME, p.getProperty(BaseDataSource.APP_NAME));
         assertEquals(5, p.size());
     }
 
-    @Test public void testParseURL3() throws Exception{
+    @Test
+    public void testParseURL3() throws Exception {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(BaseDataSource.VDB_VERSION).equals("4"));        
-        assertTrue(p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP).equals("ON"));
-        assertTrue(p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE).equals("YES"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302"));
-        assertTrue(p.getProperty(BaseDataSource.VERSION).equals("4"));
-        assertTrue(p.getProperty(BaseDataSource.APP_NAME).equals("Client"));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("4", p.getProperty(BaseDataSource.VDB_VERSION));
+        assertEquals("ON", p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP));
+        assertEquals("YES", p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE));
+        assertEquals("mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("4", p.getProperty(BaseDataSource.VERSION));
+        assertEquals("Client", p.getProperty(BaseDataSource.APP_NAME));
         assertEquals(7, p.size());
     }
 
-    @Test public void testGetPropertyInfo1() throws Exception {
-        DriverPropertyInfo info[] = drv.getPropertyInfo("jdbc:teiid:vdb@mm://localhost:12345;applicationName=x", null);
+    @Test
+    public void testGetPropertyInfo1() throws Exception {
+        DriverPropertyInfo[] info = drv.getPropertyInfo("jdbc:teiid:vdb@mm://localhost:12345;applicationName=x", null);
 
         assertEquals(29, info.length);
-        assertEquals(false, info[1].required);
+        assertFalse(info[1].required);
         assertEquals("ApplicationName", info[1].name);
         assertEquals("x", info[1].value);
 
         for (DriverPropertyInfo dpi : info) {
-            assertTrue(!dpi.description.startsWith("<Missing message"), dpi.name);
+            assertFalse(dpi.description.startsWith("<Missing message"), dpi.name);
         }
     }
 

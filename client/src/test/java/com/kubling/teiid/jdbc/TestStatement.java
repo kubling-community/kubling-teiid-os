@@ -28,7 +28,6 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
 import java.sql.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -45,10 +44,10 @@ public class TestStatement {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Mockito.when(conn.getConnectionProps()).thenReturn(new Properties());
         DQP dqp = Mockito.mock(DQP.class);
-        ResultsFuture<ResultsMessage> results = new ResultsFuture<ResultsMessage>();
+        ResultsFuture<ResultsMessage> results = new ResultsFuture<>();
         Mockito.when(dqp.executeRequest(Mockito.anyLong(), Mockito.any())).thenReturn(results);
         ResultsMessage rm = new ResultsMessage();
-        rm.setResults(new List<?>[] {Arrays.asList(1), Arrays.asList(2)});
+        rm.setResults(new List<?>[]{List.of(1), List.of(2)});
         rm.setUpdateResult(true);
         results.getResultsReceiver().receiveResults(rm);
         Mockito.when(conn.getDQP()).thenReturn(dqp);
@@ -56,25 +55,26 @@ public class TestStatement {
         statement.clearBatch(); //previously caused npe
         statement.addBatch("delete from table");
         statement.addBatch("delete from table1");
-        assertTrue(Arrays.equals(new int[] {1, 2}, statement.executeBatch()));
+        assertArrayEquals(new int[]{1, 2}, statement.executeBatch());
     }
 
-    @Test public void testWarnings() throws Exception {
+    @Test
+    public void testWarnings() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Mockito.when(conn.getConnectionProps()).thenReturn(new Properties());
         DQP dqp = Mockito.mock(DQP.class);
         ResultsFuture<ResultsMessage> results = new ResultsFuture<>();
         Mockito.when(dqp.executeRequest(Mockito.anyLong(), Mockito.any())).thenReturn(results);
         ResultsMessage rm = new ResultsMessage();
-        rm.setResults(new List<?>[] {Arrays.asList(1)});
-        rm.setWarnings(Arrays.asList(new Throwable()));
-        rm.setColumnNames(new String[] {"expr1"});
-        rm.setDataTypes(new String[] {"string"});
+        rm.setResults(new List<?>[]{List.of(1)});
+        rm.setWarnings(List.of(new Throwable()));
+        rm.setColumnNames(new String[]{"expr1"});
+        rm.setDataTypes(new String[]{"string"});
         results.getResultsReceiver().receiveResults(rm);
         Mockito.when(conn.getDQP()).thenReturn(dqp);
         StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY) {
             @Override
-            protected TimeZone getServerTimeZone() throws SQLException {
+            protected TimeZone getServerTimeZone() {
                 return null;
             }
         };
@@ -85,22 +85,23 @@ public class TestStatement {
         assertNull(warning.getNextWarning());
     }
 
-    @Test public void testGetMoreResults() throws Exception {
+    @Test
+    public void testGetMoreResults() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Mockito.when(conn.getConnectionProps()).thenReturn(new Properties());
         DQP dqp = Mockito.mock(DQP.class);
-        ResultsFuture<ResultsMessage> results = new ResultsFuture<ResultsMessage>();
-        Mockito.when(dqp.executeRequest(Mockito.anyLong(), (RequestMessage)Mockito.any())).thenReturn(results);
+        ResultsFuture<ResultsMessage> results = new ResultsFuture<>();
+        Mockito.when(dqp.executeRequest(Mockito.anyLong(), (RequestMessage) Mockito.any())).thenReturn(results);
         ResultsMessage rm = new ResultsMessage();
         rm.setUpdateResult(true);
-        rm.setColumnNames(new String[] {"expr1"});
-        rm.setDataTypes(new String[] {"integer"});
-        rm.setResults(new List<?>[] {Arrays.asList(1)});
+        rm.setColumnNames(new String[]{"expr1"});
+        rm.setDataTypes(new String[]{"integer"});
+        rm.setResults(new List<?>[]{List.of(1)});
         results.getResultsReceiver().receiveResults(rm);
         Mockito.when(conn.getDQP()).thenReturn(dqp);
         StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY) {
             @Override
-            protected TimeZone getServerTimeZone() throws SQLException {
+            protected TimeZone getServerTimeZone() {
                 return null;
             }
         };
@@ -111,7 +112,7 @@ public class TestStatement {
 
         statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY) {
             @Override
-            protected TimeZone getServerTimeZone() throws SQLException {
+            protected TimeZone getServerTimeZone() {
                 return null;
             }
         };
@@ -121,7 +122,8 @@ public class TestStatement {
         assertEquals(-1, statement.getUpdateCount());
     }
 
-    @Test public void testSetStatement() throws Exception {
+    @Test
+    public void testSetStatement() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         assertFalse(statement.execute("set foo bar"));
@@ -137,7 +139,8 @@ public class TestStatement {
         Mockito.verify(conn).setExecutionProperty("foo", "bar");
     }
 
-    @Test public void testSetPayloadStatement() throws Exception {
+    @Test
+    public void testSetPayloadStatement() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Properties p = new Properties();
         Mockito.when(conn.getExecutionProperties()).thenReturn(p);
@@ -145,7 +148,8 @@ public class TestStatement {
         assertFalse(statement.execute("set payload foo bar"));
     }
 
-    @Test public void testSetAuthorizationStatement() throws Exception {
+    @Test
+    public void testSetAuthorizationStatement() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Properties p = new Properties();
         Mockito.when(conn.getExecutionProperties()).thenReturn(p);
@@ -154,7 +158,8 @@ public class TestStatement {
         Mockito.verify(conn).changeUser("bar", null);
     }
 
-    @Test public void testPropertiesOverride() throws Exception {
+    @Test
+    public void testPropertiesOverride() {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Properties p = new Properties();
         p.setProperty(ExecutionProperties.ANSI_QUOTED_IDENTIFIERS, Boolean.TRUE.toString());
@@ -166,7 +171,8 @@ public class TestStatement {
         assertEquals(Boolean.TRUE.toString(), p.getProperty(ExecutionProperties.ANSI_QUOTED_IDENTIFIERS));
     }
 
-    @Test public void testTransactionStatements() throws Exception {
+    @Test
+    public void testTransactionStatements() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Properties p = new Properties();
         Mockito.when(conn.getExecutionProperties()).thenReturn(p);
@@ -187,7 +193,8 @@ public class TestStatement {
         Mockito.verify(conn).setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
     }
 
-    @Test public void testDisableLocalTransations() throws Exception {
+    @Test
+    public void testDisableLocalTransations() throws Exception {
         ServerConnection mock = Mockito.mock(ServerConnection.class);
         DQP dqp = Mockito.mock(DQP.class);
         Mockito.when(mock.getService(DQP.class)).thenReturn(dqp);
@@ -206,10 +213,11 @@ public class TestStatement {
     }
 
     @SuppressWarnings("unchecked")
-    @Test public void testTransactionStatementsAsynch() throws Exception {
+    @Test
+    public void testTransactionStatementsAsynch() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Mockito.when(conn.submitSetAutoCommitTrue(Mockito.anyBoolean()))
-                .thenReturn((ResultsFuture)ResultsFuture.NULL_FUTURE);
+                .thenReturn((ResultsFuture) ResultsFuture.NULL_FUTURE);
         Properties p = new Properties();
         Mockito.when(conn.getExecutionProperties()).thenReturn(p);
         StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -222,7 +230,8 @@ public class TestStatement {
         Mockito.verify(conn).submitSetAutoCommitTrue(false);
     }
 
-    @Test public void testAsynchTimeout() throws Exception {
+    @Test
+    public void testAsynchTimeout() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Mockito.when(conn.getConnectionProps()).thenReturn(new Properties());
         final StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -254,7 +263,8 @@ public class TestStatement {
         }
     }
 
-    @Test public void testTimeoutProperty() throws Exception {
+    @Test
+    public void testTimeoutProperty() throws Exception {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Properties p = new Properties();
         p.setProperty(ExecutionProperties.QUERYTIMEOUT, "2");
@@ -263,7 +273,8 @@ public class TestStatement {
         assertEquals(2, statement.getQueryTimeout());
     }
 
-    @Test public void testUseJDBC4ColumnNameAndLabelSemantics() throws Exception {
+    @Test
+    public void testUseJDBC4ColumnNameAndLabelSemantics() {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         Properties p = new Properties();
         p.setProperty(ExecutionProperties.JDBC4COLUMNNAMEANDLABELSEMANTICS, "false");
@@ -275,12 +286,14 @@ public class TestStatement {
 
     }
 
-    @Test public void testSet() {
+    @Test
+    public void testSet() {
         Matcher m = StatementImpl.SET_STATEMENT.matcher("set foo to 1");
         assertTrue(m.matches());
     }
 
-    @Test public void testQuotedSet() {
+    @Test
+    public void testQuotedSet() {
         Matcher m = StatementImpl.SET_STATEMENT.matcher("set \"foo\"\"\" to 1");
         assertTrue(m.matches());
         assertEquals("\"foo\"\"\"", m.group(2));
@@ -288,7 +301,8 @@ public class TestStatement {
         assertTrue(m.matches());
     }
 
-    @Test public void testSetTxnIsolationLevel() throws SQLException {
+    @Test
+    public void testSetTxnIsolationLevel() throws SQLException {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         assertFalse(statement.execute("set session characteristics as transaction isolation level read committed"));
@@ -301,11 +315,12 @@ public class TestStatement {
         Mockito.verify(conn).setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
     }
 
-    @Test public void testShowTxnIsolationLevel() throws SQLException {
+    @Test
+    public void testShowTxnIsolationLevel() throws SQLException {
         ConnectionImpl conn = Mockito.mock(ConnectionImpl.class);
         StatementImpl statement = new StatementImpl(conn, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY) {
             @Override
-            protected TimeZone getServerTimeZone() throws SQLException {
+            protected TimeZone getServerTimeZone() {
                 return TimeZone.getDefault();
             }
         };

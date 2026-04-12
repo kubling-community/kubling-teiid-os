@@ -38,33 +38,39 @@ public class TestDataTypeTransformer {
         assertEquals("foo", value);
     }
 
-    @Test public void testInvalidTransformation() throws Exception {
+    @Test
+    public void testInvalidTransformation() {
         try {
-            DataTypeTransformer.getDate(Integer.valueOf(1));
+            DataTypeTransformer.getDate(1);
             fail("exception expected");
         } catch (SQLException e) {
             assertEquals("Unable to transform the column value 1 to a Date.", e.getMessage());
         }
     }
 
-    @Test public void testGetDefaultShort() throws Exception {
+    @Test
+    public void testGetDefaultShort() throws Exception {
         assertEquals(0, DataTypeTransformer.getShort(null));
     }
 
-    @Test public void testGetDefaultByte() throws Exception {
+    @Test
+    public void testGetDefaultByte() throws Exception {
         assertEquals(0, DataTypeTransformer.getByte(null));
     }
 
-    @Test public void testGetString() throws Exception {
+    @Test
+    public void testGetString() throws Exception {
         assertEquals("", DataTypeTransformer.getString(new SerialClob(new char[0])));
     }
 
-    @Test public void testGetArray() throws Exception {
-        assertEquals(new ArrayImpl(new Object[] {1, 2}), DataTypeTransformer.getArray(new int[] {1,2}));
+    @Test
+    public void testGetArray() throws Exception {
+        assertEquals(new ArrayImpl(1, 2), DataTypeTransformer.getArray(new int[]{1, 2}));
     }
 
-    @Test public void testGetArray1() throws Exception {
-        assertEquals(new ArrayImpl(new Object[] {1, 2}), DataTypeTransformer.getArray(new Integer[] {1,2}));
+    @Test
+    public void testGetArray1() throws Exception {
+        assertEquals(new ArrayImpl(1, 2), DataTypeTransformer.getArray(new Integer[]{1, 2}));
     }
 
 }

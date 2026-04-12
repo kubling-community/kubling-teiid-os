@@ -24,7 +24,6 @@ import com.kubling.teiid.netty.handler.codec.serialization.CompactObjectInputStr
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +37,11 @@ public class TestRequestMessage {
         RequestMessage message = new RequestMessage();
         message.setStatementType(RequestMessage.StatementType.CALLABLE);
         message.setFetchSize(100);
-        List<Integer> params = new ArrayList<Integer>();
-        params.add(Integer.valueOf(100));
-        params.add(Integer.valueOf(200));
-        params.add(Integer.valueOf(300));
-        params.add(Integer.valueOf(400));
+        List<Integer> params = new ArrayList<>();
+        params.add(100);
+        params.add(200);
+        params.add(300);
+        params.add(400);
         message.setParameterValues(params);
 
         message.setPartialResults(true);
@@ -70,10 +69,10 @@ public class TestRequestMessage {
         assertEquals(100, copy.getFetchSize());
         assertNotNull(copy.getParameterValues());
         assertEquals(4, copy.getParameterValues().size());
-        assertEquals(Integer.valueOf(100), copy.getParameterValues().get(0));
-        assertEquals(Integer.valueOf(200), copy.getParameterValues().get(1));
-        assertEquals(Integer.valueOf(300), copy.getParameterValues().get(2));
-        assertEquals(Integer.valueOf(400), copy.getParameterValues().get(3));
+        assertEquals(100, copy.getParameterValues().get(0));
+        assertEquals(200, copy.getParameterValues().get(1));
+        assertEquals(300, copy.getParameterValues().get(2));
+        assertEquals(400, copy.getParameterValues().get(3));
 
         assertFalse(copy.isPreparedStatement());
         assertEquals("myStyleSheet", copy.getStyleSheet());
@@ -86,7 +85,8 @@ public class TestRequestMessage {
         assertEquals("foo", copy.getSpanContext());
     }
 
-    @Test public void testInvalidTxnAutoWrap() {
+    @Test
+    public void testInvalidTxnAutoWrap() {
         RequestMessage rm = new RequestMessage();
         try {
             rm.setTxnAutoWrapMode("foo");
@@ -96,7 +96,8 @@ public class TestRequestMessage {
         }
     }
 
-    @Test public void test83() throws FileNotFoundException, IOException, ClassNotFoundException {
+    @Test
+    public void test83() throws IOException, ClassNotFoundException {
         CompactObjectInputStream ois =
                 new CompactObjectInputStream(new FileInputStream(UnitTestUtil.getTestDataFile("req.ser")),
                         RequestMessage.class.getClassLoader());

@@ -48,24 +48,20 @@ public class TestSQLException {
         Throwable nestedException = e.getCause();
         SQLException nextException = e.getNextException();
 
-        assertTrue(sqlState == null,
-                "Expected MMSQLException.getSQLState() to return <null> but got \""
-                        + sqlState + "\" instead.");
-        assertTrue(cause == null,
-                "Expected MMSQLException.getCause() to return <null> but got ["
-                        + (cause != null ? cause.getClass().getName()
-                        : "<unknown>") + "] instead.");
-        assertTrue(errorCode == 0,
-                "Expected MMSQLException.getErrorCode() to return [0] but got ["
-                        + errorCode + "] instead.");
-        assertTrue(nestedException == null,
-                "Expected MMSQLException.getNestedException() to return <null> but got ["
-                        + (nestedException != null ? nestedException.getClass()
-                        .getName() : "<unknown>") + "] instead.");
-        assertTrue(nextException == null,
-                "Expected MMSQLException.getNextException() to return <null> but got a SQLException with message \""
-                        + (nextException != null ? nextException.getMessage()
-                        : "") + "\" instead.");
+        assertNull(sqlState, "Expected MMSQLException.getSQLState() to return <null> but got \""
+                + sqlState + "\" instead.");
+        assertNull(cause, "Expected MMSQLException.getCause() to return <null> but got ["
+                + (cause != null ? cause.getClass().getName()
+                : "<unknown>") + "] instead.");
+        assertEquals(0, errorCode, "Expected MMSQLException.getErrorCode() to return [0] but got ["
+                + errorCode + "] instead.");
+        assertNull(nestedException, "Expected MMSQLException.getNestedException() to return <null> but got ["
+                + (nestedException != null ? nestedException.getClass()
+                .getName() : "<unknown>") + "] instead.");
+        assertNull(nextException, "Expected MMSQLException.getNextException() to return <null> " +
+                "but got a SQLException with message \""
+                + (nextException != null ? nextException.getMessage()
+                : "") + "\" instead.");
     }
 
     /*
@@ -74,9 +70,10 @@ public class TestSQLException {
      * Tests various simple exceptions to see if the expected SQLState is
      * returend.
      */
-    @Test public void testCreateThrowable_01() {
+    @Test
+    public void testCreateThrowable_01() {
         testCreateThrowable(new CommunicationException(
-                "A test MM Communication Exception"),
+                        "A test MM Communication Exception"),
                 SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
         testCreateThrowable(
                 new ConnectException("A test connection attempt exception"),
@@ -85,7 +82,7 @@ public class TestSQLException {
                 new ConnectionException("A test MM Connection Exception"),
                 SQLStates.CONNECTION_EXCEPTION_SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION);
         testCreateThrowable(new IOException(
-                "A test Generic java.io.IOException"),
+                        "A test Generic java.io.IOException"),
                 SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
         testCreateThrowable(
                 new MalformedURLException(
@@ -96,7 +93,7 @@ public class TestSQLException {
         testCreateThrowable(new TeiidException("A test MM Exception"),
                 SQLStates.DEFAULT);
         testCreateThrowable(new TeiidProcessingException(
-                "A test Generic MM Query Processing Exception"),
+                        "A test Generic MM Query Processing Exception"),
                 SQLStates.USAGE_ERROR);
         testCreateThrowable(new TeiidRuntimeException(
                 "A test MM Runtime Exception"), SQLStates.DEFAULT);
@@ -109,10 +106,10 @@ public class TestSQLException {
         testCreateThrowable(new NullPointerException("A test NPE"),
                 SQLStates.DEFAULT);
         testCreateThrowable(new ProcedureErrorInstructionException(
-                "A test SQL Procedure Error exception"),
+                        "A test SQL Procedure Error exception"),
                 SQLStates.VIRTUAL_PROCEDURE_ERROR);
         testCreateThrowable(new SocketTimeoutException(
-                "A test socket timeout exception"),
+                        "A test socket timeout exception"),
                 SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
         testCreateThrowable(
                 new UnknownHostException("A test connection attempt exception"),
@@ -120,46 +117,9 @@ public class TestSQLException {
     }
 
     /*
-     * Test method for 'com.metamatrix.jdbc.MMSQLException.create(Throwable)'
-     *
-     * Tests various nested exceptions to see if the expected SQLState is
-     * returend.
-     */
-//    @Test public void testCreateThrowable_02() {
-//        testCreateThrowable(
-//                new CommunicationException(new ConnectException(
-//                        "A test java.net.ConnectException"),
-//                        "Test Communication Exception with a ConnectException in it"),
-//                SQLStates.CONNECTION_EXCEPTION_SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION);
-//        testCreateThrowable(new CommunicationException(new SocketException(
-//                "A test java.net.SocketException"),
-//                "Test Communication Exception with a SocketException in it"),
-//                SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
-//        testCreateThrowable(
-//                new TeiidException(new SocketTimeoutException(
-//                        "A test java.net.SocketTimeoutException"),
-//                        "Test MetaMatrixException with a SocketTimeoutException in it"),
-//                SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
-//    }
-
-//    @Test public void testCreateThrowable3() {
-//        TeiidSQLException e = testCreateThrowable(
-//                            new TeiidException(
-//                                            new SocketTimeoutException(
-//                                                    "A test MM Invalid Session Exception"),
-//                                            "Test MetaMatrixRuntimeException with a InvalidSessionException in it"),
-//                            SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
-//
-//        //test to ensure that wrapping mmsqlexceptions works
-//        TeiidSQLException e1 = TeiidSQLException.create(e, "new message");
-//        assertEquals("new message", e1.getMessage());
-//        testCreateThrowable(((TeiidSQLException)e1.getCause()).getCause(), SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION);
-//    }
-
-    /*
      * Helper method to test SQLState and general MMSQLException validation
      */
-    private TeiidSQLException testCreateThrowable(Throwable ecause, String esqlState) {
+    private void testCreateThrowable(Throwable ecause, String esqlState) {
         TeiidSQLException e = TeiidSQLException.create(ecause);
         if (ecause.getClass() == TeiidSQLException.class) {
             ecause = null;
@@ -175,20 +135,21 @@ public class TestSQLException {
         assertEquals(0, errorCode);
         assertEquals(nestedException, ecause);
         assertNull(nextException);
-        return e;
     }
 
-    @Test public void testCreate() {
+    @Test
+    public void testCreate() {
         TeiidSQLException exception = TeiidSQLException.create(new Exception());
 
         assertEquals(exception.getMessage(), Exception.class.getName());
         assertNotNull(exception.getSQLState());
-        assertEquals(exception.getSQLState(), "38000");
+        assertEquals("38000", exception.getSQLState());
 
         assertEquals(exception, TeiidSQLException.create(exception));
     }
 
-    @Test public void testCreateFromSQLException() {
+    @Test
+    public void testCreateFromSQLException() {
         SQLException sqlexception = new SQLException("foo", "21");
 
         SQLException nested = new SQLException("bar");
@@ -200,13 +161,16 @@ public class TestSQLException {
         TeiidSQLException exception = TeiidSQLException.create(sqlexception, message);
         exception.printStackTrace();
         assertEquals(sqlexception, exception.getCause());
-        assertEquals(exception.getMessage(), message);
+        assertEquals(message, exception.getMessage());
         assertEquals(exception.getSQLState(), sqlexception.getSQLState());
     }
-    public static enum Event implements BundleUtil.Event {
+
+    public enum Event implements BundleUtil.Event {
         TEIID21,
     }
-    @Test public void testCodeAsVendorCode() {
+
+    @Test
+    public void testCodeAsVendorCode() {
 
         TeiidException sqlexception = new TeiidException(Event.TEIID21, "foo");
 

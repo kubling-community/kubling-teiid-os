@@ -19,8 +19,8 @@
 package com.kubling.teiid.client.lob;
 
 import com.kubling.teiid.core.util.ObjectConverterUtil;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -28,19 +28,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestLobChunkInputStream {
 
+    @Test
     public void testReadByteArray() throws Exception {
         LobChunkProducer chunkProducer = new LobChunkProducer() {
 
-            Iterator<LobChunk> chuncks = 
-                    Arrays.asList(new LobChunk("hello ".getBytes(), false), new LobChunk("world".getBytes(), true)).iterator();
+            final Iterator<LobChunk> chuncks =
+                    Arrays.asList(
+                            new LobChunk("hello ".getBytes(), false),
+                            new LobChunk("world".getBytes(), true)).iterator();
 
             @Override
-            public LobChunk getNextChunk() throws IOException {
+            public LobChunk getNextChunk() {
                 return chuncks.next();
             }
 
             @Override
-            public void close() throws IOException {
+            public void close() {
 
             }
         };

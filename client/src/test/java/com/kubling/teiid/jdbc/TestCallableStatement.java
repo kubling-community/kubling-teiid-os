@@ -44,10 +44,10 @@ public class TestCallableStatement {
     public void testWasNull() throws Exception {
         CallableStatementImpl mmcs = getCallableStatement();
 
-        Map<Integer, Integer> params = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> params = new HashMap<>();
         mmcs.outParamIndexMap = params;
-        params.put(Integer.valueOf(1), Integer.valueOf(1));
-        params.put(Integer.valueOf(2), Integer.valueOf(2));
+        params.put(1, 1);
+        params.put(2, 2);
         ResultSetImpl rs = Mockito.mock(ResultSetImpl.class);
         mmcs.resultSet = rs;
         Mockito.when(rs.getOutputParamValue(1)).thenReturn(null);
@@ -87,7 +87,7 @@ public class TestCallableStatement {
     public void testUnknownIndex() throws Exception {
         CallableStatementImpl mmcs = getCallableStatement();
 
-        mmcs.outParamIndexMap = new HashMap<Integer, Integer>();
+        mmcs.outParamIndexMap = new HashMap<>();
 
         try {
             mmcs.getBoolean(0);
@@ -100,7 +100,7 @@ public class TestCallableStatement {
     @Test
     public void testSetLobs() throws Exception {
         CallableStatementImpl mmcs = getCallableStatement();
-        mmcs.paramsByName = new TreeMap<String, Integer>();
+        mmcs.paramsByName = new TreeMap<>();
         mmcs.paramsByName.put("foo", 2);
         mmcs.paramsByName.put("bar", 4);
 
@@ -111,11 +111,11 @@ public class TestCallableStatement {
         mmcs.setClob(5, Mockito.mock(Reader.class));
 
         List<Object> params = mmcs.getParameterValues();
-        assertTrue(params.get(0) instanceof Blob);
-        assertTrue(params.get(1) instanceof Blob);
-        assertTrue(params.get(2) instanceof Clob);
-        assertTrue(params.get(3) instanceof Blob);
-        assertTrue(params.get(4) instanceof Clob);
+        assertInstanceOf(Blob.class, params.get(0));
+        assertInstanceOf(Blob.class, params.get(1));
+        assertInstanceOf(Clob.class, params.get(2));
+        assertInstanceOf(Blob.class, params.get(3));
+        assertInstanceOf(Clob.class, params.get(4));
     }
 
     private CallableStatementImpl getCallableStatement() throws SQLException {
@@ -125,9 +125,8 @@ public class TestCallableStatement {
         Mockito.when(sc.getLogonResult()).thenReturn(new LogonResult());
         Mockito.when(conn.getServerConnection()).thenReturn(sc);
 
-        CallableStatementImpl mmcs = new CallableStatementImpl(conn, "{?=call x(?)}",
+        return new CallableStatementImpl(conn, "{?=call x(?)}",
                 ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-        return mmcs;
     }
 
 }

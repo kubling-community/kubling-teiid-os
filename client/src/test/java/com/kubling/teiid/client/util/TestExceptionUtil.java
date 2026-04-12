@@ -27,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("nls")
 public class TestExceptionUtil {
 
-    @Test public void testSanitize() {
+    @Test
+    public void testSanitize() {
         TeiidException te = new TeiidException(JDBCPlugin.Event.TEIID20000, "you don't want to see this");
         te.initCause(new Exception("or this"));
 

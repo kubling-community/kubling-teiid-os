@@ -34,7 +34,7 @@ public class TestTeiidURL {
         assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
 
         TeiidURL url = new TeiidURL(SERVER_URL);
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
     }
@@ -48,12 +48,12 @@ public class TestTeiidURL {
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "TeiidURL should have 1 Host");
         assertEquals(1, hosts.size());
-        assertEquals("3ffe:ffff:0100:f101::1", hosts.get(0).getHostName());
-        assertEquals(31000, hosts.get(0).getPortNumber());
+        assertEquals("3ffe:ffff:0100:f101::1", hosts.getFirst().getHostName());
+        assertEquals(31000, hosts.getFirst().getPortNumber());
     }
 
     @Test
-    public final void testBogusProtocol() throws Exception {
+    public final void testBogusProtocol() {
         String SERVER_URL = "foo://localhost:31000";
         assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
     }
@@ -70,7 +70,7 @@ public class TestTeiidURL {
         assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
 
         TeiidURL url = new TeiidURL(SERVER_URL);
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
     }
@@ -94,7 +94,7 @@ public class TestTeiidURL {
     }
 
     @Test
-    public final void testTeiidURLNoHost() throws Exception {
+    public final void testTeiidURLNoHost() {
         String SERVER_URL = "mm://:31000";
         assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
 
@@ -102,7 +102,7 @@ public class TestTeiidURL {
     }
 
     @Test
-    public final void testTeiidURLNoHostAndPort() throws Exception {
+    public final void testTeiidURLNoHostAndPort() {
         String SERVER_URL = "mm://:";
         assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
 
@@ -127,7 +127,7 @@ public class TestTeiidURL {
         assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
 
         TeiidURL url = new TeiidURL(SERVER_URL);
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 2 Host");
         assertEquals(2, hosts.size());
     }
@@ -153,7 +153,7 @@ public class TestTeiidURL {
         assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
 
         TeiidURL url = new TeiidURL(SERVER_URL);
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 3 Host");
         assertEquals(3, hosts.size());
     }
@@ -191,7 +191,7 @@ public class TestTeiidURL {
     public final void testHostInfoEquals() throws Exception {
         HostInfo expectedResults = new HostInfo("localhost", 31000);
         TeiidURL url = new TeiidURL("mm://localhost:31000");
-        HostInfo actualResults = url.getHostInfo().get(0);
+        HostInfo actualResults = url.getHostInfo().getFirst();
         assertEquals(expectedResults, actualResults);
     }
 
@@ -200,10 +200,10 @@ public class TestTeiidURL {
         HostInfo expectedResults = new HostInfo("localhost", 12345);
 
         TeiidURL url = new TeiidURL("mm://localhost : 12345");
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
-        HostInfo actualResults = url.getHostInfo().get(0);
+        HostInfo actualResults = url.getHostInfo().getFirst();
         assertEquals(expectedResults, actualResults);
     }
 
@@ -212,10 +212,10 @@ public class TestTeiidURL {
         HostInfo expectedResults = new HostInfo("myhost", 12345);
 
         TeiidURL url = new TeiidURL("myhost", 12345, false);
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
-        HostInfo actualResults = url.getHostInfo().get(0);
+        HostInfo actualResults = url.getHostInfo().getFirst();
         assertEquals(expectedResults, actualResults);
         assertEquals("mm://myhost:12345", url.getAppServerURL());
     }
@@ -225,10 +225,10 @@ public class TestTeiidURL {
         HostInfo expectedResults = new HostInfo("myhost", 12345);
 
         TeiidURL url = new TeiidURL("myhost", 12345, true);
-        List hosts = url.getHostInfo();
+        List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
-        HostInfo actualResults = url.getHostInfo().get(0);
+        HostInfo actualResults = url.getHostInfo().getFirst();
         assertEquals(expectedResults, actualResults);
         assertEquals("mms://myhost:12345", url.getAppServerURL());
     }

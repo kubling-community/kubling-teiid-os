@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("nls")
 public class TestEnhancedTimer {
 
-    private final class SimpleCancelTask implements Runnable {
+    private static final class SimpleCancelTask implements Runnable {
         @Override
         public void run() {
         }

@@ -219,6 +219,7 @@ public class TestTransforms {
         String expected = "";
         expected += xml.substring(0, DataTypeManager.MAX_STRING_LENGTH);
 
+        System.setProperty("jdk.xml.maxElementDepth", "1000");
         helpTestTransform(new StringToSQLXMLTransform().transformDirect(xml.toString()), expected);
     }
 

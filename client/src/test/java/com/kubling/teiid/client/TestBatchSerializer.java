@@ -124,7 +124,7 @@ public class TestBatchSerializer {
 
     @Test
     public void testSerializeLargeStrings() throws Exception {
-        List<?> row = Arrays.asList(new Object[]{sampleString(66666)});
+        List<?> row = List.of(sampleString(66666));
         helpTestSerialization(new String[]{DataTypeManager.DefaultDataTypes.STRING}, new List[]{row}, BatchSerializer.CURRENT_VERSION);
     }
 

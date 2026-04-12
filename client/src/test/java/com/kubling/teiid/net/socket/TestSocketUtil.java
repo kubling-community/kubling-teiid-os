@@ -19,6 +19,7 @@
 package com.kubling.teiid.net.socket;
 
 import com.kubling.teiid.core.util.UnitTestUtil;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -28,17 +29,20 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestSocketUtil {
 
+    @Test
     public void testNoPassword() throws Exception {
         SocketUtil.loadKeyStore(UnitTestUtil
                 .getTestDataFile("metamatrix.keystore").getAbsolutePath(), null, "JKS");
     }
 
+    @Test
     public void testNoPasswordZipped() throws Exception {
         SocketUtil.loadKeyStore(String.format(
                 "zip:%s!metamatrix.keystore",
                 UnitTestUtil.getTestDataFile("metamatrix.zip").getAbsoluteFile()), null, "JKS");
     }
 
+    @Test
     public void testMissingKeyStore() throws Exception {
         try {
             SocketUtil.loadKeyStore("metamatrix.keystorefoo", null, "JKS");

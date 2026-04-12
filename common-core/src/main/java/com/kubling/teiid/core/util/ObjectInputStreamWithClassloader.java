@@ -67,6 +67,8 @@ public final class ObjectInputStreamWithClassloader extends
         safeClasses.add("com.kubling.teiid.client.xa.XidImpl");
         safeClasses.add("com.kubling.teiid.client.xa.XATransactionException");
 
+        safeClasses.add("com.kubling.teiid.client.lob.LobChunk");
+
         safeClasses.addAll(
                 DataTypeManager.getAllDataTypeClasses().stream()
                         .map(Class::getName)
@@ -100,8 +102,9 @@ public final class ObjectInputStreamWithClassloader extends
 
     }
 
-    public ObjectInputStreamWithClassloader(InputStream in,
-                                            ClassLoader cl) throws IOException {
+    public ObjectInputStreamWithClassloader(
+            InputStream in,
+            ClassLoader cl) throws IOException {
         super(in);
         this.cl = cl;
     }

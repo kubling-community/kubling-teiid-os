@@ -28,11 +28,12 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSocketProfile {
-    public String localhost = "localhost";
 
-    /** Valid format of urls*/
+    /**
+     * Valid format of urls
+     */
     @Test
-    public void testAcceptsURL1()  throws Exception   {
+    public void testAcceptsURL1() {
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@mm://localhost:1234"));
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@mm://localhost:1234"));
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
@@ -74,66 +75,72 @@ public class TestSocketProfile {
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://my_host.mydomain.com:53535,127.0.0.1:1234"));
     }
 
-    /** Invalid format of urls*/
-    @Test public void testAcceptsURL2() throws Exception    {
-        assertTrue(!TeiidDriver.getInstance().acceptsURL("jdbc:matamatrix:test"));
-        assertTrue(!TeiidDriver.getInstance().acceptsURL("metamatrix:test"));
-        assertTrue(!TeiidDriver.getInstance().acceptsURL("jdbc&matamatrix:test"));
-        assertTrue(!TeiidDriver.getInstance().acceptsURL("jdbc;metamatrix:test"));
+    /**
+     * Invalid format of urls
+     */
+    @Test
+    public void testAcceptsURL2() {
+        assertFalse(TeiidDriver.getInstance().acceptsURL("jdbc:matamatrix:test"));
+        assertFalse(TeiidDriver.getInstance().acceptsURL("metamatrix:test"));
+        assertFalse(TeiidDriver.getInstance().acceptsURL("jdbc&matamatrix:test"));
+        assertFalse(TeiidDriver.getInstance().acceptsURL("jdbc;metamatrix:test"));
     }
 
-    @Test public void testParseURL() throws SQLException{
+    @Test
+    public void testParseURL() throws SQLException {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mm://slwxp157:1234"));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("mm://slwxp157:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
         assertEquals(3, p.size());
     }
 
-    @Test public void testParseURL2() throws SQLException {
+    @Test
+    public void testParseURL2() throws SQLException {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mms://slwxp157:1234;version=3", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(BaseDataSource.VDB_VERSION).equals("3"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mms://slwxp157:1234"));
-        assertTrue(p.getProperty(BaseDataSource.VERSION).equals("3"));
-        assertTrue(p.getProperty(BaseDataSource.APP_NAME).equals(BaseDataSource.DEFAULT_APP_NAME));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
+        assertEquals("mms://slwxp157:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("3", p.getProperty(BaseDataSource.VERSION));
+        assertEquals(BaseDataSource.DEFAULT_APP_NAME, p.getProperty(BaseDataSource.APP_NAME));
         assertEquals(5, p.size());
     }
 
-    @Test public void testParseURL3() throws SQLException{
+    @Test
+    public void testParseURL3() throws SQLException {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(BaseDataSource.VDB_VERSION).equals("4"));        
-        assertTrue(p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP).equals("ON"));
-        assertTrue(p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE).equals("YES"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302"));
-        assertTrue(p.getProperty(BaseDataSource.VERSION).equals("4"));
-        assertTrue(p.getProperty(BaseDataSource.APP_NAME).equals("Client"));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("4", p.getProperty(BaseDataSource.VDB_VERSION));
+        assertEquals("ON", p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP));
+        assertEquals("YES", p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE));
+        assertEquals("mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("4", p.getProperty(BaseDataSource.VERSION));
+        assertEquals("Client", p.getProperty(BaseDataSource.APP_NAME));
         assertEquals(7, p.size());
     }
 
     @Test
-    public void testIPV6() throws SQLException{
+    public void testIPV6() throws SQLException {
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://[::1]:53535,127.0.0.1:1234"));
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://[3ffe:ffff:0100:f101::1]:53535,127.0.0.1:1234"));
 
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234;version=3", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(BaseDataSource.VDB_VERSION).equals("3"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mms://[3ffe:ffff:0100:f101::1]:1234"));
-        assertTrue(p.getProperty(BaseDataSource.VERSION).equals("3"));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
+        assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("3", p.getProperty(BaseDataSource.VERSION));
     }
 
     @Test
-    public void testIPV6MultipleHosts() throws SQLException{
+    public void testIPV6MultipleHosts() throws SQLException {
         Properties p = new Properties();
         TeiidDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134;version=3", p);
-        assertTrue(p.getProperty(BaseDataSource.VDB_NAME).equals("BQT"));
-        assertTrue(p.getProperty(BaseDataSource.VDB_VERSION).equals("3"));
-        assertTrue(p.getProperty(TeiidURL.CONNECTION.SERVER_URL).equals("mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134"));
-        assertTrue(p.getProperty(BaseDataSource.VERSION).equals("3"));
+        assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
+        assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
+        assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("3", p.getProperty(BaseDataSource.VERSION));
     }
 }

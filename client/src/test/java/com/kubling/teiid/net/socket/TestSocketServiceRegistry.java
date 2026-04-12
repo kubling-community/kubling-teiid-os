@@ -28,23 +28,23 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 @SuppressWarnings("nls")
 public class TestSocketServiceRegistry {
 
-    interface Foo{
-        void somemethod();
+    interface Foo {
+        void someMethod();
     }
 
     @Test
     public void testExceptionConversionNoException() throws Exception {
 
-        Method m = Foo.class.getMethod("somemethod");
+        Method m = Foo.class.getMethod("someMethod");
 
         Throwable t = ExceptionUtil.convertException(m, new TeiidComponentException());
 
-        assertTrue(t instanceof TeiidRuntimeException);
+        assertInstanceOf(TeiidRuntimeException.class, t);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestSocketServiceRegistry {
 
         Throwable t = ExceptionUtil.convertException(m, new NullPointerException());
 
-        assertTrue(t instanceof TeiidComponentException);
+        assertInstanceOf(TeiidComponentException.class, t);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TestSocketServiceRegistry {
 
         Throwable t = ExceptionUtil.convertException(m, new TeiidComponentException());
 
-        assertTrue(t instanceof XATransactionException);
+        assertInstanceOf(XATransactionException.class, t);
     }
 
     @Test
@@ -74,6 +74,6 @@ public class TestSocketServiceRegistry {
 
         Throwable t = ExceptionUtil.convertException(m, new InvalidSessionException());
 
-        assertTrue(t instanceof InvalidSessionException);
+        assertInstanceOf(InvalidSessionException.class, t);
     }
 }

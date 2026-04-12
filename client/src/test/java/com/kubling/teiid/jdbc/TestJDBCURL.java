@@ -22,10 +22,10 @@ import com.kubling.teiid.net.TeiidURL;
 import org.junit.jupiter.api.Test;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 
 /**
@@ -35,14 +35,19 @@ public class TestJDBCURL {
 
     // Need to allow embedded spaces and ='s within optional properties
     @Test
-    public final void testCredentials() throws Exception {
-        String credentials = URLEncoder.encode("defaultToLogon,(system=BQT1 SQL Server 2000 Simple Cap,user=xyz,password=xyz)", "UTF-8");
-        JDBCURL url = new JDBCURL("jdbc:teiid:QT_sqls2kds@mm://slwxp136:43100;credentials="+credentials);
+    public final void testCredentials() {
+        String credentials =
+                URLEncoder.encode("defaultToLogon,(system=BQT1 SQL Server 2000 Simple Cap,user=xyz,password=xyz)",
+                        StandardCharsets.UTF_8);
+        JDBCURL url =
+                new JDBCURL("jdbc:teiid:QT_sqls2kds@mm://slwxp136:43100;credentials=" + credentials);
         Properties p = url.getProperties();
-        assertEquals("defaultToLogon,(system=BQT1 SQL Server 2000 Simple Cap,user=xyz,password=xyz)", p.getProperty("credentials"));
+        assertEquals("defaultToLogon,(system=BQT1 SQL Server 2000 Simple Cap,user=xyz,password=xyz)",
+                p.getProperty("credentials"));
     }
 
-    @Test public void testJDBCURLWithProperties() {
+    @Test
+    public void testJDBCURLWithProperties() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=%25xyz;password=***;logLevel=1;configFile=testdata/bqt/dqp_stmt_e2e.xmi;disableLocalTxn=true;autoFailover=false";
 
         Properties expectedProperties = new Properties();
@@ -60,7 +65,8 @@ public class TestJDBCURL {
         assertTrue(url.getJDBCURL().contains("user=%25xyz"));
     }
 
-    @Test public void testJDBCURLWithoutProperties() {
+    @Test
+    public void testJDBCURLWithoutProperties() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345";
 
         JDBCURL url = new JDBCURL(URL);
@@ -69,7 +75,8 @@ public class TestJDBCURL {
         assertEquals(new Properties(), url.getProperties());
     }
 
-    @Test public void testCaseConversion() {
+    @Test
+    public void testCaseConversion() {
         // Different case ------------------------------------HERE -v  ----------------and HERE  -v
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;VERSION=1;user=xyz;password=***;configFile=testdata/bqt/dqp_stmt_e2e.xmi";
 
@@ -84,7 +91,8 @@ public class TestJDBCURL {
         assertEquals(expectedProperties, url.getProperties());
     }
 
-    @Test public void testWithExtraSemicolons() {
+    @Test
+    public void testWithExtraSemicolons() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=xyz;password=***;logLevel=1;;;configFile=testdata/bqt/dqp_stmt_e2e.xmi;;";
 
         Properties expectedProperties = new Properties();
@@ -99,7 +107,8 @@ public class TestJDBCURL {
         assertEquals(expectedProperties, url.getProperties());
     }
 
-    @Test public void testWithWhitespace() {
+    @Test
+    public void testWithWhitespace() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345; version =1;user= xyz ;password=***; logLevel = 1 ; configFile=testdata/bqt/dqp_stmt_e2e.xmi ;";
 
         Properties expectedProperties = new Properties();
@@ -114,7 +123,8 @@ public class TestJDBCURL {
         assertEquals(expectedProperties, url.getProperties());
     }
 
-    @Test public void testNoPropertyValue() {
+    @Test
+    public void testNoPropertyValue() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=xyz;password=***;logLevel=;configFile=";
 
         Properties expectedProperties = new Properties();
@@ -129,7 +139,8 @@ public class TestJDBCURL {
         assertEquals(expectedProperties, url.getProperties());
     }
 
-    @Test public void testInvalidProtocol() {
+    @Test
+    public void testInvalidProtocol() {
         String URL = "jdbc:monkeymatrix:bqt@mm://localhost:12345;version=1;user=xyz;password=***;logLevel=1";
         try {
             new JDBCURL(URL);
@@ -139,7 +150,8 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testNoVDBName() {
+    @Test
+    public void testNoVDBName() {
         String URL = "jdbc:teiid:@mm://localhost:12345;version=1;user=xyz;password=***;logLevel=1";
         try {
             new JDBCURL(URL);
@@ -149,7 +161,8 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testNoAtSignInURL() {
+    @Test
+    public void testNoAtSignInURL() {
         String URL = "jdbc:teiid:bqt!mm://localhost:12345;version=1;user=xyz;password=***;logLevel=1";
         try {
             new JDBCURL(URL);
@@ -161,7 +174,8 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testMoreThanOneAtSign() {
+    @Test
+    public void testMoreThanOneAtSign() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=xy@;password=***;logLevel=1";
         try {
             // this allowed as customer properties can have @ in their properties
@@ -171,7 +185,8 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testNoEqualsInProperty() {
+    @Test
+    public void testNoEqualsInProperty() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=xyz;password***;logLevel=1";
         try {
             new JDBCURL(URL);
@@ -181,7 +196,8 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testMoreThanOneEqualsInProperty() {
+    @Test
+    public void testMoreThanOneEqualsInProperty() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=xyz;password==***;logLevel=1";
         try {
             new JDBCURL(URL);
@@ -205,7 +221,8 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testNoKeyInProperty() {
+    @Test
+    public void testNoKeyInProperty() {
         String URL = "jdbc:teiid:bqt@mm://localhost:12345;version=1;user=xyz;=***;logLevel=1";
         try {
             new JDBCURL(URL);
@@ -215,19 +232,21 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testConstructor() {
-        JDBCURL url = new JDBCURL("myVDB", "mm://myhost:12345",null);
+    @Test
+    public void testConstructor() {
+        JDBCURL url = new JDBCURL("myVDB", "mm://myhost:12345", null);
         assertEquals("jdbc:teiid:myVDB@mm://myhost:12345", url.getJDBCURL());
 
         Properties props = new Properties();
         props.setProperty(BaseDataSource.USER_NAME, "myuser");
         props.setProperty(BaseDataSource.PASSWORD, "mypassword");
-        props.put("ClieNTtOKeN", Integer.valueOf(1));
+        props.put("ClieNTtOKeN", 1);
         url = new JDBCURL("myVDB", "mm://myhost:12345", props);
         assertEquals("jdbc:teiid:myVDB@mm://myhost:12345;password=mypassword;user=myuser", url.getJDBCURL());
     }
 
-    @Test public void testConstructor_Exception() {
+    @Test
+    public void testConstructor_Exception() {
         try {
             new JDBCURL(null, "myhost", null);
             fail("Should have failed.");
@@ -249,44 +268,49 @@ public class TestJDBCURL {
         }
     }
 
-    @Test public void testNormalize() {
+    @Test
+    public void testNormalize() {
         Properties props = new Properties();
         props.setProperty("UsEr", "myuser");
         props.setProperty("pAssWOrD", "mypassword");
-        props.put("ClieNTtOKeN", Integer.valueOf(1));
+        props.put("ClieNTtOKeN", 1);
         JDBCURL.normalizeProperties(props);
         assertEquals("myuser", props.getProperty(BaseDataSource.USER_NAME));
         assertEquals("mypassword", props.getProperty(BaseDataSource.PASSWORD));
     }
 
-    @Test public final void testEncodedPropertyProperties() throws Exception {
+    @Test
+    public final void testEncodedPropertyProperties() {
         String password = "=@#^&*()+!%$^%@#_-)_~{}||\\`':;,./<>?password has = & %";
         Properties props = new Properties();
         props.setProperty("UsEr", "foo");
         props.setProperty("PASswoRd", password);
         JDBCURL.normalizeProperties(props);
 
-        assertEquals(password, props.getProperty("password")); 
+        assertEquals(password, props.getProperty("password"));
         assertEquals("foo", props.getProperty("user"));
     }
 
-    @Test public final void testEncodedPropertyInURL() throws Exception {
+    @Test
+    public final void testEncodedPropertyInURL() {
         String password = "=@#^&*()+!%$^%@#_-)_~{}||\\`':;,./<>?password has = & %";
-        String encPassword = URLEncoder.encode(password, "UTF-8");
-        JDBCURL url = new JDBCURL("jdbc:teiid:QT_sqls2kds@mm://slwxp136:43100;PASswoRd="+encPassword);
+        String encPassword = URLEncoder.encode(password, StandardCharsets.UTF_8);
+        JDBCURL url = new JDBCURL("jdbc:teiid:QT_sqls2kds@mm://slwxp136:43100;PASswoRd=" + encPassword);
         Properties p = url.getProperties();
-        assertEquals(password, p.getProperty("password")); 
+        assertEquals(password, p.getProperty("password"));
     }
 
 
-    @Test public void testGetServerURL_NoProperties() {
+    @Test
+    public void testGetServerURL_NoProperties() {
         String result = new JDBCURL("jdbc:teiid:designtimecatalog@mm://slwxp172:44401;user=ddifranco;password=mm").getConnectionURL();
-        assertEquals("mm://slwxp172:44401", result);        
+        assertEquals("mm://slwxp172:44401", result);
     }
 
-    @Test public void testGetServerURL_Properties() {
+    @Test
+    public void testGetServerURL_Properties() {
         String result = new JDBCURL("jdbc:teiid:designtimecatalog@mm://slwxp172:44401;user=ddifranco;password=mm").getConnectionURL();
-        assertEquals("mm://slwxp172:44401", result);        
+        assertEquals("mm://slwxp172:44401", result);
     }
 
     /**
@@ -295,32 +319,35 @@ public class TestJDBCURL {
      *
      * @since 5.0.2
      */
-    @Test public void testGetServerURL_PasswordProperties() throws Exception {
-        String result = null;
+    @Test
+    public void testGetServerURL_PasswordProperties() {
+        String result;
         String srcURL = "jdbc:teiid:designtimecatalog@mm://slwxp172:44401;user=ddifranco;password=";
-        String password = null;
+        String password;
         String tgtURL = "mm://slwxp172:44401";
 
 
-        for ( char ch = 32; ch <= 126; ch++ ) {
+        for (char ch = 32; ch <= 126; ch++) {
             //exclude URL reserved characters
-            if ( ch != ';' && ch != '=' && ch != '%') {
-                password = ch+"mm";
-                result = new JDBCURL(srcURL+URLEncoder.encode(password, "UTF-8")).getConnectionURL();
+            if (ch != ';' && ch != '=' && ch != '%') {
+                password = ch + "mm";
+                result = new JDBCURL(srcURL + URLEncoder.encode(password, StandardCharsets.UTF_8)).getConnectionURL();
                 assertEquals(tgtURL, result,
-                        "Failed to obtain correct ServerURL when using password "+password);
+                        "Failed to obtain correct ServerURL when using password " + password);
             }
         }
 
     }
 
-    @Test public void testGetServerURL_2Servers() {
+    @Test
+    public void testGetServerURL_2Servers() {
         String result = new JDBCURL("jdbc:teiid:designtimecatalog@mm://slwxp172:44401,slabc123:12345;user=ddifranco;password=mm")
                 .getConnectionURL();
-        assertEquals("mm://slwxp172:44401,slabc123:12345", result);        
+        assertEquals("mm://slwxp172:44401,slabc123:12345", result);
     }
 
-    @Test public void testBuildEmbeedURL() {
+    @Test
+    public void testBuildEmbeedURL() {
         JDBCURL url = new JDBCURL("vdb", "/home/foo/deploy.properties", new Properties());
         assertEquals("jdbc:teiid:vdb@/home/foo/deploy.properties", url.getJDBCURL());
 
@@ -332,24 +359,26 @@ public class TestJDBCURL {
 
         url = new JDBCURL("vdb", "/home/foo/deploy.properties", p);
         assertTrue(url.getJDBCURL().startsWith("jdbc:teiid:vdb@/home/foo/deploy.properties;"));
-        assertTrue(url.getJDBCURL().indexOf("any=thing")!=-1);
-        assertTrue(url.getJDBCURL().indexOf("password=pass")!=-1);
-        assertTrue(url.getJDBCURL().indexOf("autoFailover=true")!=-1);
+        assertTrue(url.getJDBCURL().contains("any=thing"));
+        assertTrue(url.getJDBCURL().contains("password=pass"));
+        assertTrue(url.getJDBCURL().contains("autoFailover=true"));
 
     }
 
-    @Test public void testUnicodeName() {
+    @Test
+    public void testUnicodeName() {
         String result = new JDBCURL("jdbc:teiid:%E4%BD%A0%E5%A5%BD").getVDBName();
-        assertEquals("你好", result);        
+        assertEquals("你好", result);
         result = new JDBCURL("jdbc:teiid:你好").getVDBName();
-        assertEquals("你好", result);        
+        assertEquals("你好", result);
     }
 
-    @Test public void testEncoding() {
+    @Test
+    public void testEncoding() {
         JDBCURL url = new JDBCURL("jdbc:teiid:a%40b@mm://%50;%55=a");
-        assertEquals("a@b", url.getVDBName());        
-        assertEquals("mm://P", url.getConnectionURL());        
-        assertEquals("U", url.getProperties().entrySet().iterator().next().getKey());        
+        assertEquals("a@b", url.getVDBName());
+        assertEquals("mm://P", url.getConnectionURL());
+        assertEquals("U", url.getProperties().entrySet().iterator().next().getKey());
     }
 
 }
