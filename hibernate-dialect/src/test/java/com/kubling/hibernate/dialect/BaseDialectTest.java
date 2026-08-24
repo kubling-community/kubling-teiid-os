@@ -79,7 +79,7 @@ public abstract class BaseDialectTest {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "com.kubling.hibernate.dialect.KublingDialect");
         properties.setProperty("hibernate.hbm2ddl.auto", "none");
-        properties.setProperty("hibernate.connection.driver_class", "com.kubling.teiid.jdbc.TeiidDriver");
+        properties.setProperty("hibernate.connection.driver_class", "com.kubling.jdbc.TeiidDriver");
         properties.setProperty("hibernate.connection.url", "jdbc:teiid:TestVDB@mm://localhost:" + getKublingPort());
         properties.setProperty("hibernate.connection.username", "sa");
         properties.setProperty("hibernate.connection.password", "sa");

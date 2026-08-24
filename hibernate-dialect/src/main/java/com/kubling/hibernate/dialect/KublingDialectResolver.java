@@ -18,7 +18,7 @@ public class KublingDialectResolver implements DialectResolver {
 //        int major = info.getDatabaseMajorVersion();
 //        int minor = info.getDatabaseMinorVersion();
 
-        // Defined in com.kubling.teiid.jdbc.ConnectionImpl
+        // Defined in com.kubling.jdbc.ConnectionImpl
         if (dbName != null && dbName.startsWith("Kubling DBVirt Server")) {
             return new KublingDialect();
         }
