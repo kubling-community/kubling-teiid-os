@@ -646,7 +646,7 @@ public class TestKublingDataSource {
         final String partialMode = "true";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, 500, false, secure,
-                "jdbc:teiid:vdbName@mm://hostname:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1.2.3;partialResultsMode=true;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://hostname:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1.2.3;partialResultsMode=true;VirtualDatabaseName=vdbName");
     }
 
     @Test
@@ -659,7 +659,7 @@ public class TestKublingDataSource {
         final String partialMode = "true";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, 500, false, secure,
-                "jdbc:teiid:vdbName@mm://[3ffe:ffff:0100:f101::1]:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1;partialResultsMode=true;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://[3ffe:ffff:0100:f101::1]:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1;partialResultsMode=true;VirtualDatabaseName=vdbName");
     }
 
     @Test
@@ -672,7 +672,7 @@ public class TestKublingDataSource {
         final String partialMode = "true";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, 500, false, secure,
-                "jdbc:teiid:vdbName@mm://[3ffe:ffff:0100:f101::1]:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1;partialResultsMode=true;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://[3ffe:ffff:0100:f101::1]:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1;partialResultsMode=true;VirtualDatabaseName=vdbName");
     }
 
     @Test
@@ -686,7 +686,7 @@ public class TestKublingDataSource {
         final boolean secure = false;
         final String alternates = "[::1],127.0.0.1:1234";
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternates, transactionAutoWrap, partialMode, 500, false, secure,
-                "jdbc:teiid:vdbName@mm://[3ffe:ffff:0100:f101::1]:7001,[::1]:7001,127.0.0.1:1234;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1;partialResultsMode=true;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://[3ffe:ffff:0100:f101::1]:7001,[::1]:7001,127.0.0.1:1234;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1;partialResultsMode=true;VirtualDatabaseName=vdbName");
     }
 
     @Test
@@ -699,7 +699,7 @@ public class TestKublingDataSource {
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, -1, false, secure,
-                "jdbc:teiid:vdbName@mm://hostname:7001;ApplicationName=JDBC;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://hostname:7001;ApplicationName=JDBC;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
     }
 
     @Test
@@ -712,7 +712,7 @@ public class TestKublingDataSource {
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, -1, true, secure,
-                "jdbc:teiid:vdbName@mm://hostname:7001;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://hostname:7001;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
     }
 
     // Test secure protocol
@@ -726,7 +726,7 @@ public class TestKublingDataSource {
         final String partialMode = "false";
         final boolean secure = true;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, -1, true, secure,
-                "jdbc:teiid:vdbName@mms://hostname:7001;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mms://hostname:7001;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
     }
 
     /*
@@ -745,7 +745,7 @@ public class TestKublingDataSource {
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternateServers, transactionAutoWrap, partialMode, -1, true, secure,
-                "jdbc:teiid:vdbName@mm://hostName:7001,hostName:7002,hostName2:7001,hostName2:7002;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://hostName:7001,hostName:7002,hostName2:7001,hostName2:7002;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
     }
 
     /*
@@ -764,7 +764,7 @@ public class TestKublingDataSource {
         final String partialMode = "false";
         final boolean secure = true;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternateServers, transactionAutoWrap, partialMode, -1, true, secure,
-                "jdbc:teiid:vdbName@mms://hostName:7001,hostName:7002,hostName2:7001,hostName2:7002;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mms://hostName:7001,hostName:7002,hostName2:7001,hostName2:7002;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
     }
 
     /*
@@ -784,7 +784,7 @@ public class TestKublingDataSource {
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternateServers, transactionAutoWrap, partialMode, -1, true, secure,
-                "jdbc:teiid:vdbName@mm://hostName:7001,hostName:7002,hostName2:7001,hostName2:7002;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://hostName:7001,hostName:7002,hostName2:7001,hostName2:7002;ApplicationName=JDBC;SHOWPLAN=ON;partialResultsMode=false;autoCommitTxn=DETECT;VirtualDatabaseName=vdbName");
     }
 
     /**
@@ -800,7 +800,7 @@ public class TestKublingDataSource {
         final String partialMode = "true";
         final boolean secure = false;
         helpTestBuildingURL2(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, 500, false, secure, false,
-                "jdbc:teiid:vdbName@mm://hostname:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1.2.3;partialResultsMode=true;useJDBC4ColumnNameAndLabelSemantics=false;VirtualDatabaseName=vdbName");
+                "jdbc:kubling:vdbName@mm://hostname:7001;fetchSize=500;ApplicationName=JDBC;VirtualDatabaseVersion=1.2.3;partialResultsMode=true;useJDBC4ColumnNameAndLabelSemantics=false;VirtualDatabaseName=vdbName");
     }
 
     @Test
@@ -810,7 +810,7 @@ public class TestKublingDataSource {
         ds.setServerName("hostName");
         ds.setDatabaseName("vdbName");
         ds.setPortNumber(1);
-        assertEquals("jdbc:teiid:vdbName@mm://hostname:1;ApplicationName=JDBC;VirtualDatabaseName=vdbName;a=b;fetchSize=2048;foo=bar", ds.buildURL().getJDBCURL());
+        assertEquals("jdbc:kubling:vdbName@mm://hostname:1;ApplicationName=JDBC;VirtualDatabaseName=vdbName;a=b;fetchSize=2048;foo=bar", ds.buildURL().getJDBCURL());
     }
 
     @Test
@@ -819,7 +819,7 @@ public class TestKublingDataSource {
         ds.setServerName("hostName");
         ds.setDatabaseName("vdbName");
         ds.setEncryptRequests(true);
-        compareUrls("jdbc:teiid:vdbName@mm://hostname:0;fetchSize=2048;ApplicationName=JDBC;encryptRequests=true;VirtualDatabaseName=vdbName", ds.buildURL().getJDBCURL());
+        compareUrls("jdbc:kubling:vdbName@mm://hostname:0;fetchSize=2048;ApplicationName=JDBC;encryptRequests=true;VirtualDatabaseName=vdbName", ds.buildURL().getJDBCURL());
     }
 
     @Test
@@ -872,7 +872,7 @@ public class TestKublingDataSource {
         tds.getConnection();
 
         ArgumentCaptor<Properties> argument = ArgumentCaptor.forClass(Properties.class);
-        Mockito.verify(td).connect(Mockito.eq("jdbc:teiid:y@mm://x:0"), argument.capture());
+        Mockito.verify(td).connect(Mockito.eq("jdbc:kubling:y@mm://x:0"), argument.capture());
         Properties p = argument.getValue();
         assertEquals("%25user", p.getProperty(BaseDataSource.USER_NAME));
     }
@@ -887,7 +887,7 @@ public class TestKublingDataSource {
         tds.getConnection();
 
         ArgumentCaptor<Properties> argument = ArgumentCaptor.forClass(Properties.class);
-        Mockito.verify(td).connect(Mockito.eq("jdbc:teiid:y@mm://x:0"), argument.capture());
+        Mockito.verify(td).connect(Mockito.eq("jdbc:kubling:y@mm://x:0"), argument.capture());
         Properties p = argument.getValue();
         assertEquals("2", p.getProperty(KublingURL.CONNECTION.LOGIN_TIMEOUT));
     }
@@ -902,7 +902,7 @@ public class TestKublingDataSource {
         tds.getConnection("user", "password");
 
         ArgumentCaptor<Properties> argument = ArgumentCaptor.forClass(Properties.class);
-        Mockito.verify(td).connect(Mockito.eq("jdbc:teiid:y@mm://x:0"), argument.capture());
+        Mockito.verify(td).connect(Mockito.eq("jdbc:kubling:y@mm://x:0"), argument.capture());
         Properties p = argument.getValue();
         assertEquals("user", p.getProperty(BaseDataSource.USER_NAME));
     }
@@ -915,7 +915,7 @@ public class TestKublingDataSource {
         tds.setJaasName("x");
         tds.setKerberosServicePrincipleName("z");
         tds.setServerName("t");
-        compareUrls("jdbc:teiid:y@mm://t:0;fetchSize=2048;ApplicationName=JDBC;user=%2525user;jaasName=x;VirtualDatabaseName=y;kerberosServicePrincipleName=z", tds.buildURL().getJDBCURL());
+        compareUrls("jdbc:kubling:y@mm://t:0;fetchSize=2048;ApplicationName=JDBC;user=%2525user;jaasName=x;VirtualDatabaseName=y;kerberosServicePrincipleName=z", tds.buildURL().getJDBCURL());
 
     }
 

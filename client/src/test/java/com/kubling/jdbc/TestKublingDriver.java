@@ -31,21 +31,21 @@ public class TestKublingDriver {
 
     @Test
     public void testAccepts() {
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:12345"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:12345;user=foo;password=bar"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@/foo/blah/deploy.properties"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:12345;user=foo;password=bar"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@/foo/blah/deploy.properties"));
 
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:12345"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:12345;user=foo;password=bar"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@/foo/blah/deploy.properties"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:8294601c-9fe9-4244-9499-4a012c5e1476_vdb"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:8294601c-9fe9-4244-9499-4a012c5e1476_vdb@mm://localhost:12345"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:test_vdb@mm://local-host:12345"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:test_vdb@mm://local_host:12345"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:test_vdb.1@mm://local_host:12345"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:test_vdb.10@mm://local_host:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:12345;user=foo;password=bar"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@/foo/blah/deploy.properties"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:8294601c-9fe9-4244-9499-4a012c5e1476_vdb"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:8294601c-9fe9-4244-9499-4a012c5e1476_vdb@mm://localhost:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:test_vdb@mm://local-host:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:test_vdb@mm://local_host:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:test_vdb.1@mm://local_host:12345"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:test_vdb.10@mm://local_host:12345"));
     }
 
     /**
@@ -53,44 +53,44 @@ public class TestKublingDriver {
      */
     @Test
     public void testAcceptsURL1() {
-        assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@mm://localhost:1234"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mms://localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@mms://localhost:1234"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mms://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mms://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://127.0.0.1:1234;logLevel=2"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mms://127.0.0.1:1234"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://127.0.0.1:1234,localhost.mydomain.com:63636;logLevel=2"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://my-host.mydomain.com:53535,127.0.0.1:1234"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://123.123.123.123:53535,127.0.0.1:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:jvdb@mm://localhost:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234;version=x"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mms://localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:jvdb@mms://localhost:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234;version=x"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mms://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mms://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://127.0.0.1:1234;logLevel=2"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mms://127.0.0.1:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://127.0.0.1:1234,localhost.mydomain.com:63636;logLevel=2"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://my-host.mydomain.com:53535,127.0.0.1:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://123.123.123.123:53535,127.0.0.1:1234"));
 
         //DQP type
-        assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@c:/dqp.properties;version=1"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@/foo/dqp.properties;version=1"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@../foo/dqp.properties;version=1"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:jvdb@c:/dqp.properties;version=1"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:jvdb@/foo/dqp.properties;version=1"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:jvdb@../foo/dqp.properties;version=1"));
 
-        assertTrue(drv.acceptsURL("jdbc:teiid:jvdb@mm://localhost:port"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@localhost:port;version=x"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertFalse(drv.acceptsURL("jdbc:teiid:@localhost:1234;stickyConnections=false;socketsPerVM=4"));
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://my_host.mydomain.com:53535,127.0.0.1:1234"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:jvdb@mm://localhost:port"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@localhost:port;version=x"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234,localhost2:12342,localhost3:12343"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertFalse(drv.acceptsURL("jdbc:kubling:@localhost:1234;stickyConnections=false;socketsPerVM=4"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://my_host.mydomain.com:53535,127.0.0.1:1234"));
 
-        assertTrue(drv.acceptsURL("jdbc:teiid:vdb@mm://localhost:1234;version=x;useJDBC4ColumnNameAndLabelSemantics=false"));
+        assertTrue(drv.acceptsURL("jdbc:kubling:vdb@mm://localhost:1234;version=x;useJDBC4ColumnNameAndLabelSemantics=false"));
 
     }
 
@@ -108,7 +108,7 @@ public class TestKublingDriver {
     @Test
     public void testParseURL() throws Exception {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mm://slwxp157:1234", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("mm://slwxp157:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals(3, p.size());
@@ -117,7 +117,7 @@ public class TestKublingDriver {
     @Test
     public void testParseURL2() throws Exception {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mms://slwxp157:1234;version=3", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mms://slwxp157:1234;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("mms://slwxp157:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
@@ -129,7 +129,7 @@ public class TestKublingDriver {
     @Test
     public void testParseURL3() throws Exception {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("4", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("ON", p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP));
@@ -142,7 +142,7 @@ public class TestKublingDriver {
 
     @Test
     public void testGetPropertyInfo1() throws Exception {
-        DriverPropertyInfo[] info = drv.getPropertyInfo("jdbc:teiid:vdb@mm://localhost:12345;applicationName=x", null);
+        DriverPropertyInfo[] info = drv.getPropertyInfo("jdbc:kubling:vdb@mm://localhost:12345;applicationName=x", null);
 
         assertEquals(29, info.length);
         assertFalse(info[1].required);

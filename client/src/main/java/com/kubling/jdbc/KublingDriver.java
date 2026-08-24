@@ -42,8 +42,8 @@ import java.util.logging.Logger;
  * <p>
  * The accepted URL format for the connection
  * <ul>
- *     <li> Server/socket connection:<b> jdbc:teiid:&lt;vdb-name&gt;@mm[s]://&lt;server-name&gt;:&lt;port&gt;;[user=&lt;user-name&gt;][password=&lt;user-password&gt;][other-properties]*</b>
- *     <li> Embedded  connection:<b> jdbc:teiid:&lt;vdb-name&gt;@&lt;file-path-to-deploy.properties&gt;;[user=&lt;user-name&gt;][password=&lt;user-password&gt;][other-properties]*</b>
+ *     <li> Server/socket connection:<b> jdbc:kubling:&lt;vdb-name&gt;@mm[s]://&lt;server-name&gt;:&lt;port&gt;;[user=&lt;user-name&gt;][password=&lt;user-password&gt;][other-properties]*</b>
+ *     <li> Embedded  connection:<b> jdbc:kubling:&lt;vdb-name&gt;@&lt;file-path-to-deploy.properties&gt;;[user=&lt;user-name&gt;][password=&lt;user-password&gt;][other-properties]*</b>
  * </ul>
  * The user, password properties are needed if the user authentication is turned on. All the "other-properties" are simple name value pairs.
  * Look at {@link JDBCURL} KNOWN_PROPERTIES for list of known properties allowed.
@@ -127,7 +127,7 @@ public class KublingDriver implements Driver {
     /**
      * Returns true if the driver thinks that it can open a connection to the given URL.
      * Expected URL format for server mode is
-     * jdbc:teiid::VDB{@literal @}mm://server:port;version=1;user=username;password=password
+     * jdbc:kubling::VDB{@literal @}mm://server:port;version=1;user=username;password=password
      *
      * @param url used to establish a connection.
      * @return A boolean value indicating whether the driver understands the subprotocol.

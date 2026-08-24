@@ -98,7 +98,7 @@ public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcD
     public String getJdbcUrl() {
         String params = constructUrlParameters("?", "&");
 
-        return "jdbc:teiid:" + databaseName +
+        return "jdbc:kubling:" + databaseName +
                 "@mm" + (isSecured ? "s" : "") + "://" +
                 getHost() +
                 ":" + getMappedPort(nativePort) +

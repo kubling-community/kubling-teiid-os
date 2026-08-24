@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class JDBCURL {
     private static final String UTF_8 = "UTF-8";
-    public static final String JDBC_PROTOCOL = "jdbc:teiid:";
+    public static final String JDBC_PROTOCOL = "jdbc:kubling:";
 
     static final String URL_PATTERN = JDBC_PROTOCOL + "([^@^;]+)(?:@([^;]*))?(;.*)?";
     static Pattern urlPattern = Pattern.compile(URL_PATTERN);

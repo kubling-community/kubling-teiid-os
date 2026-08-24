@@ -45,7 +45,7 @@ public class TestConnection {
 
     protected static final String STD_DATABASE_NAME = "QT_Ora9DS";
 
-    static String serverUrl = "jdbc:teiid:QT_Ora9DS@mm://localhost:7001;version=1;user=metamatrixadmin;password=mm";
+    static String serverUrl = "jdbc:kubling:QT_Ora9DS@mm://localhost:7001;version=1;user=metamatrixadmin;password=mm";
 
     static class InnerDriver extends KublingDriver {
         String iurl;
@@ -98,10 +98,10 @@ public class TestConnection {
 
     @Test
     public void testNullSorts() throws Exception {
-        DatabaseMetaData metadata = getMMConnection("jdbc:teiid:QT_Ora9DS@mm://localhost:7001;version=1;NullsAreSorted=AtEnd").getMetaData();
+        DatabaseMetaData metadata = getMMConnection("jdbc:kubling:QT_Ora9DS@mm://localhost:7001;version=1;NullsAreSorted=AtEnd").getMetaData();
         assertTrue(metadata.nullsAreSortedAtEnd());
         assertFalse(metadata.nullsAreSortedLow());
-        metadata = getMMConnection("jdbc:teiid:QT_Ora9DS@mm://localhost:7001;version=1").getMetaData();
+        metadata = getMMConnection("jdbc:kubling:QT_Ora9DS@mm://localhost:7001;version=1").getMetaData();
         assertFalse(metadata.nullsAreSortedAtEnd());
     }
 

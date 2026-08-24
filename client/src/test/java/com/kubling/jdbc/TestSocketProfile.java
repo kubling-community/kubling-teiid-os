@@ -34,45 +34,45 @@ public class TestSocketProfile {
      */
     @Test
     public void testAcceptsURL1() {
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@mm://localhost:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@mm://localhost:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mms://localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@mms://localhost:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234;version=x"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mms://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mms://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://127.0.0.1:1234;logLevel=2"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mms://127.0.0.1:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://127.0.0.1:1234,localhost.mydomain.com:63636;logLevel=2"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://my-host.mydomain.com:53535,127.0.0.1:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://123.123.123.123:53535,127.0.0.1:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@mm://localhost:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@mm://localhost:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234;version=x"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mms://localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@mms://localhost:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234;version=x"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://localhost:1234,localhost2:12342,localhost3:12343"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mms://localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mms://localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://127.0.0.1:1234;logLevel=2"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mms://127.0.0.1:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://127.0.0.1:1234,localhost.mydomain.com:63636;logLevel=2"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://my-host.mydomain.com:53535,127.0.0.1:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://123.123.123.123:53535,127.0.0.1:1234"));
 
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@localhost:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@localhost:1234"));
 
         //DQP type
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@c:/dqp.properties;version=1"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@/foo/dqp.properties;version=1"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@../foo/dqp.properties;version=1"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@c:/dqp.properties;version=1"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@/foo/dqp.properties;version=1"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@../foo/dqp.properties;version=1"));
 
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:jvdb@mm://localhost:port"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@localhost:port;version=x"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
-        assertNull(JDBCURL.acceptsUrl("jdbc:teiid:@localhost:1234;stickyConnections=false;socketsPerVM=4"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://my_host.mydomain.com:53535,127.0.0.1:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:jvdb@mm://localhost:port"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@localhost:port;version=x"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234,localhost2:12342,localhost3:12343"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234,localhost2:12342,localhost3:12343;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234;logLevel=1;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234;logLevel=2;logFile=D:\\metamatrix\\work\\DQP\\log\\jdbcLogFile.log;autoCommitTxn=OFF;paritalResultsMode=true"));
+        assertNull(JDBCURL.acceptsUrl("jdbc:kubling:@localhost:1234;stickyConnections=false;socketsPerVM=4"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://my_host.mydomain.com:53535,127.0.0.1:1234"));
     }
 
     /**
@@ -89,7 +89,7 @@ public class TestSocketProfile {
     @Test
     public void testParseURL() throws SQLException {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mm://slwxp157:1234", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("mm://slwxp157:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals(3, p.size());
@@ -98,7 +98,7 @@ public class TestSocketProfile {
     @Test
     public void testParseURL2() throws SQLException {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mms://slwxp157:1234;version=3", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mms://slwxp157:1234;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("mms://slwxp157:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
@@ -110,7 +110,7 @@ public class TestSocketProfile {
     @Test
     public void testParseURL3() throws SQLException {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("4", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("ON", p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP));
@@ -123,11 +123,11 @@ public class TestSocketProfile {
 
     @Test
     public void testIPV6() throws SQLException {
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://[::1]:53535,127.0.0.1:1234"));
-        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://[3ffe:ffff:0100:f101::1]:53535,127.0.0.1:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://[::1]:53535,127.0.0.1:1234"));
+        assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:kubling:vdb@mm://[3ffe:ffff:0100:f101::1]:53535,127.0.0.1:1234"));
 
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234;version=3", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mms://[3ffe:ffff:0100:f101::1]:1234;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
@@ -137,7 +137,7 @@ public class TestSocketProfile {
     @Test
     public void testIPV6MultipleHosts() throws SQLException {
         Properties p = new Properties();
-        KublingDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134;version=3", p);
+        KublingDriver.parseURL("jdbc:kubling:BQT@mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
