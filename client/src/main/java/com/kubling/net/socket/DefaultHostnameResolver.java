@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.net.socket;
 
 import com.kubling.core.util.ExecutorUtils;

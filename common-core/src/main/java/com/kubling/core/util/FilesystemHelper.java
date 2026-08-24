@@ -1,3 +1,7 @@
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.core.util;
 
 import org.apache.commons.lang3.StringUtils;

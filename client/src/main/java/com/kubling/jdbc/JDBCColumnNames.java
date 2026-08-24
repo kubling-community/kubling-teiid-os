@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.jdbc;
 
 /* <p> This class contains constants indicating names of the columns in the

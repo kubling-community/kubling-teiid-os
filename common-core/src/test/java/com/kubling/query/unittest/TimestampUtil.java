@@ -20,6 +20,10 @@
  * Date: Jun 16, 2004
  * Time: 1:47:51 PM
  */
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.query.unittest;
 
 import java.sql.Date;

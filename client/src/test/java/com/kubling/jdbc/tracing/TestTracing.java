@@ -16,13 +16,8 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- * =====================================================================
  *
- *  Modifications:
- *    This file has been modified by Bluelone Cloud Platforms
- *    as part of the Kubling project, starting in 2024.
- *    For details of modifications, see the Git commit history.
- * =====================================================================
+ * This file was modified as part of the Kubling project.
  */
 
 

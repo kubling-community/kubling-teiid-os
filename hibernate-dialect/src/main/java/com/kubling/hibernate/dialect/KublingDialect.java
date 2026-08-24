@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.hibernate.dialect;
 
 import org.hibernate.LockMode;

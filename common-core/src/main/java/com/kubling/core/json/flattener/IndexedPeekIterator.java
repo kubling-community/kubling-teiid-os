@@ -14,6 +14,10 @@
  *
  */
 
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.core.json.flattener;
 
 import java.util.Iterator;

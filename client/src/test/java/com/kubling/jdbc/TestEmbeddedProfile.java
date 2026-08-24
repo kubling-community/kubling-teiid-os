@@ -15,6 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/*
+ * This file was modified as part of the Kubling project.
+ */
+
 package com.kubling.jdbc;
 
 import com.kubling.jdbc.JDBCURL.ConnectionType;
