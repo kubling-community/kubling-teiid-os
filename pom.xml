@@ -19,9 +19,9 @@
     </parent>
 
     <scm>
-        <connection>scm:git:git://github.com/kubling-community/kubling-teiid-os.git</connection>
-        <developerConnection>scm:git:ssh://github.com:kubling-community/kubling-teiid-os.git</developerConnection>
-        <url>https://github.com/kubling-community/kubling-teiid-os/tree/master</url>
+        <connection>scm:git:git://github.com/kubling-community/kubling-core.git</connection>
+        <developerConnection>scm:git:ssh://github.com:kubling-community/kubling-core.git</developerConnection>
+        <url>https://github.com/kubling-community/kubling-core/tree/master</url>
     </scm>
 
     <url>https://kubling.com</url>
