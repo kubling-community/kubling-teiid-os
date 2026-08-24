@@ -111,7 +111,7 @@ public final class OioObjectChannelFactory implements ObjectChannelFactory {
                 Long timeout = TIMEOUTS.get();
                 if (timeout != null && timeout < System.currentTimeMillis()) {
                     TIMEOUTS.remove();
-                    throw new InterruptedIOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20035));
+                    throw new InterruptedIOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20035));
                 }
                 throw e;
             } catch (IOException e) {
@@ -158,7 +158,7 @@ public final class OioObjectChannelFactory implements ObjectChannelFactory {
                 try {
                     sslSocketFactory = SocketUtil.getSSLSocketFactory(props);
                 } catch (GeneralSecurityException e) {
-                    throw new CommunicationException(JDBCPlugin.Event.TEIID20027, e, e.getMessage());
+                    throw new CommunicationException(JDBCPlugin.Event.KBL20027, e, e.getMessage());
                 }
             }
             socket = sslSocketFactory.getSocket(info.getHostName(), info.getPortNumber());

@@ -45,7 +45,7 @@ public class KublingSQLException extends SQLException {
 
     @Serial
     private static final long serialVersionUID = 3672305321346173922L;
-    private String teiidCode;
+    private String kublingCode;
 
     /**
      * No-arg constructor required by Externalizable semantics.
@@ -113,8 +113,8 @@ public class KublingSQLException extends SQLException {
             code = te.getCode();
             if (errorCode == 0) {
                 String intPart = code;
-                if (code.startsWith("TEIID")) {
-                    intPart = code.substring(5);
+                if (code.startsWith("KBL")) {
+                    intPart = code.substring(3);
                 }
                 try {
                     errorCode = Integer.parseInt(intPart);
@@ -131,7 +131,7 @@ public class KublingSQLException extends SQLException {
             sqlState = SQLStates.DEFAULT;
         }
         KublingSQLException tse = new KublingSQLException(origException, message, sqlState, errorCode);
-        tse.teiidCode = code;
+        tse.kublingCode = code;
         return tse;
     }
 
@@ -216,7 +216,7 @@ public class KublingSQLException extends SQLException {
         return SQLStates.isUsageErrorState(getSQLState());
     }
 
-    public String getTeiidCode() {
-        return teiidCode;
+    public String getKublingCode() {
+        return kublingCode;
     }
 }

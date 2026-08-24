@@ -56,7 +56,7 @@ public class DhKeyGenerator {
             is = DhKeyGenerator.class.getResourceAsStream(propsFile);
             props.load(is);
         } catch (IOException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10000, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10000, e);
         } finally {
             try {
                 if (is != null) {
@@ -95,9 +95,9 @@ public class DhKeyGenerator {
 
             return publicKey.getEncoded();
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10001, e);
+            throw new CryptoException(CorePlugin.Event.KBL10001, e);
         } catch (InvalidAlgorithmParameterException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10002, e);
+            throw new CryptoException(CorePlugin.Event.KBL10002, e);
         }
     }
 
@@ -143,11 +143,11 @@ public class DhKeyGenerator {
             sc.setClassLoader(classLoader);
             return sc;
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10003, e);
+            throw new CryptoException(CorePlugin.Event.KBL10003, e);
         } catch (InvalidKeySpecException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10004, e);
+            throw new CryptoException(CorePlugin.Event.KBL10004, e);
         } catch (InvalidKeyException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10005, e);
+            throw new CryptoException(CorePlugin.Event.KBL10005, e);
         }
     }
 

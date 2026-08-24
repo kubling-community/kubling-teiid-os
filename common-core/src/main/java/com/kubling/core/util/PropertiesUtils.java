@@ -156,7 +156,7 @@ public final class PropertiesUtils {
         try {
             return Integer.parseInt(stringVal);
         } catch (NumberFormatException e) {
-            throw new InvalidPropertyException(CorePlugin.Event.TEIID10037, propName, stringVal, Integer.class, e);
+            throw new InvalidPropertyException(CorePlugin.Event.KBL10037, propName, stringVal, Integer.class, e);
         }
     }
 
@@ -172,7 +172,7 @@ public final class PropertiesUtils {
         try {
             return Long.parseLong(stringVal);
         } catch (NumberFormatException e) {
-            throw new InvalidPropertyException(CorePlugin.Event.TEIID10038, propName, stringVal, Long.class, e);
+            throw new InvalidPropertyException(CorePlugin.Event.KBL10038, propName, stringVal, Long.class, e);
         }
     }
 
@@ -188,7 +188,7 @@ public final class PropertiesUtils {
         try {
             return Float.parseFloat(stringVal);
         } catch (NumberFormatException e) {
-            throw new InvalidPropertyException(CorePlugin.Event.TEIID10039, propName, stringVal, Float.class, e);
+            throw new InvalidPropertyException(CorePlugin.Event.KBL10039, propName, stringVal, Float.class, e);
         }
     }
 
@@ -204,7 +204,7 @@ public final class PropertiesUtils {
         try {
             return Double.parseDouble(stringVal);
         } catch (NumberFormatException e) {
-            throw new InvalidPropertyException(CorePlugin.Event.TEIID10040, propName, stringVal, Double.class, e);
+            throw new InvalidPropertyException(CorePlugin.Event.KBL10040, propName, stringVal, Double.class, e);
         }
     }
 
@@ -354,7 +354,7 @@ public final class PropertiesUtils {
             }
             method.invoke(bean, params);
         } catch (Throwable e) {
-            throw new InvalidPropertyException(CorePlugin.Event.TEIID10044, propertyName, value, argType, e);
+            throw new InvalidPropertyException(CorePlugin.Event.KBL10044, propertyName, value, argType, e);
         }
         return argType;
     }

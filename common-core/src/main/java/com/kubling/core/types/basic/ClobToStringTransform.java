@@ -62,8 +62,8 @@ public class ClobToStringTransform extends AnyToStringTransform {
             }
             return contents.toString();
         } catch (SQLException | IOException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
+            throw new TransformationException(CorePlugin.Event.KBL10080, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10080, getSourceType().getName(), getTargetType().getName()));
         } finally {
             if (reader != null) {
                 try {

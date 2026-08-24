@@ -166,19 +166,19 @@ public class TestSQLException {
     }
 
     public enum Event implements BundleUtil.Event {
-        TEIID21,
+        KBL21,
     }
 
     @Test
     public void testCodeAsVendorCode() {
 
-        KublingException sqlexception = new KublingException(Event.TEIID21, "foo");
+        KublingException sqlexception = new KublingException(Event.KBL21, "foo");
 
         String message = "top level message";
 
         KublingSQLException exception = KublingSQLException.create(sqlexception, message);
 
-        assertEquals(sqlexception.getCode(), exception.getTeiidCode());
+        assertEquals(sqlexception.getCode(), exception.getKublingCode());
         assertEquals(21, exception.getErrorCode());
     }
 

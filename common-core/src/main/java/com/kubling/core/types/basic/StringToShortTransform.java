@@ -37,8 +37,8 @@ public class StringToShortTransform extends Transform {
         try {
             return Short.valueOf(((String) value).trim());
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10071,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10071, value));
+            throw new TransformationException(CorePlugin.Event.KBL10071,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10071, value));
         }
     }
 

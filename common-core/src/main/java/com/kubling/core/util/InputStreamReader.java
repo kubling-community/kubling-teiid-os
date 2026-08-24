@@ -105,7 +105,7 @@ public class InputStreamReader extends Reader {
                 try {
                     cr.throwException();
                 } catch (CharacterCodingException e) {
-                    throw new IOException(CorePlugin.Util.gs(CorePlugin.Event.TEIID10082, cd.charset().displayName(), bytesProcessed + bb.position() + 1), e);
+                    throw new IOException(CorePlugin.Util.gs(CorePlugin.Event.KBL10082, cd.charset().displayName(), bytesProcessed + bb.position() + 1), e);
                 }
             }
             cr.throwException();

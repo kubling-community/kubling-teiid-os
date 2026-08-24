@@ -29,18 +29,18 @@ public class TestExceptionUtil {
 
     @Test
     public void testSanitize() {
-        KublingException te = new KublingException(JDBCPlugin.Event.TEIID20000, "you don't want to see this");
+        KublingException te = new KublingException(JDBCPlugin.Event.KBL20000, "you don't want to see this");
         te.initCause(new Exception("or this"));
 
         Throwable t = ExceptionUtil.sanitize(te, true);
         assertTrue(t.getStackTrace().length != 0);
         assertNotNull(t.getCause());
-        assertEquals("TEIID20000", t.getMessage());
+        assertEquals("KBL20000", t.getMessage());
         assertEquals("java.lang.Exception", t.getCause().getMessage());
 
         t = ExceptionUtil.sanitize(te, false);
         assertEquals(0, t.getStackTrace().length);
-        assertEquals("TEIID20000", t.getMessage());
+        assertEquals("KBL20000", t.getMessage());
     }
 
 }

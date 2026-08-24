@@ -897,7 +897,7 @@ public class BatchSerializer {
                 throws IOException {
             long time = ((java.sql.Date) obj).getTime();
             if (time < MIN_DATE_32 || time > MAX_DATE_32) {
-                throw new IOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20029, obj.getClass().getName()));
+                throw new IOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20029, obj.getClass().getName()));
             }
             out.writeInt((int) (time / 60000) + DATE_NORMALIZER);
         }
@@ -914,7 +914,7 @@ public class BatchSerializer {
                 throws IOException {
             long time = ((Time) obj).getTime();
             if (time < MIN_TIME_32 || time > MAX_TIME_32) {
-                throw new IOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20029, obj.getClass().getName()));
+                throw new IOException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20029, obj.getClass().getName()));
             }
             out.writeInt((int) (time / 1000));
         }
@@ -994,8 +994,8 @@ public class BatchSerializer {
                                 break;
                             }
                         }
-                        throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20001, e,
-                                JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20001, types[i],
+                        throw new KublingRuntimeException(JDBCPlugin.Event.KBL20001, e,
+                                JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20001, types[i],
                                         i, objectClass));
                     }
                 }

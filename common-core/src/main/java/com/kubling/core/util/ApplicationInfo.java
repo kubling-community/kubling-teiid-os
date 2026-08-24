@@ -43,7 +43,7 @@ public final class ApplicationInfo implements Serializable {
                 props.load(is);
             }
         } catch (IOException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10045, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10045, e);
         }
     }
 

@@ -89,7 +89,7 @@ public class SocketServerConnection implements ServerConnection {
     public synchronized SocketServerInstance selectServerInstance()
             throws CommunicationException, ConnectionException {
         if (closed) {
-            throw new CommunicationException(JDBCPlugin.Event.TEIID20016, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20016));
+            throw new CommunicationException(JDBCPlugin.Event.KBL20016, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20016));
         }
         if (this.serverInstance != null && (!failOver || this.serverInstance.isOpen())) {
             return this.serverInstance;
@@ -120,17 +120,17 @@ public class SocketServerConnection implements ServerConnection {
             }
             if (knownHosts == 1) { //just a single host, use the exception
                 if (ex instanceof UnknownHostException) {
-                    throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20019, ex,
-                            JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20019, hostInfo.getHostName()));
+                    throw new SingleInstanceCommunicationException(JDBCPlugin.Event.KBL20019, ex,
+                            JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20019, hostInfo.getHostName()));
                 }
-                throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20020, ex,
-                        JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20020, hostInfo.getHostName(),
+                throw new SingleInstanceCommunicationException(JDBCPlugin.Event.KBL20020, ex,
+                        JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20020, hostInfo.getHostName(),
                                 String.valueOf(hostInfo.getPortNumber()), ex.getMessage()));
             }
             log.log(Level.FINE, "Unable to connect to host", ex);
         }
-        throw new CommunicationException(JDBCPlugin.Event.TEIID20021,
-                JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20021, hostCopy.toString()));
+        throw new CommunicationException(JDBCPlugin.Event.KBL20021,
+                JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20021, hostCopy.toString()));
     }
 
     private void logon(ILogon newLogon) throws LogonException, KublingComponentException, CommunicationException {
@@ -155,7 +155,7 @@ public class SocketServerConnection implements ServerConnection {
             if (type == AuthenticationType.GSS) {
                 newResult = MakeGSS.authenticate(newLogon, connProps);
             } else {
-                throw new LogonException(JDBCPlugin.Event.TEIID20034, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20034, type));
+                throw new LogonException(JDBCPlugin.Event.KBL20034, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20034, type));
             }
         }
 
@@ -221,8 +221,8 @@ public class SocketServerConnection implements ServerConnection {
                 if (e.getCause() instanceof CommunicationException) {
                     throw (CommunicationException) e.getCause();
                 }
-                throw new CommunicationException(JDBCPlugin.Event.TEIID20018, e,
-                        JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20018));
+                throw new CommunicationException(JDBCPlugin.Event.KBL20018, e,
+                        JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20018));
             }
         }
         return newLogon;
@@ -310,7 +310,7 @@ public class SocketServerConnection implements ServerConnection {
     private synchronized ResultsFuture<?> isOpen()
             throws CommunicationException, InvalidSessionException, KublingComponentException {
         if (this.closed) {
-            throw new CommunicationException(JDBCPlugin.Event.TEIID20023, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20023));
+            throw new CommunicationException(JDBCPlugin.Event.KBL20023, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20023));
         }
         return logon.ping();
     }

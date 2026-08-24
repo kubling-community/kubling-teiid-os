@@ -200,8 +200,8 @@ public class RequestMessage implements Externalizable {
             if (!(txnAutoWrapMode.equals(TXN_WRAP_OFF)
                     || txnAutoWrapMode.equals(TXN_WRAP_ON)
                     || txnAutoWrapMode.equals(TXN_WRAP_DETECT))) {
-                throw new KublingProcessingException(JDBCPlugin.Event.TEIID20000,
-                        JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20000, txnAutoWrapMode));
+                throw new KublingProcessingException(JDBCPlugin.Event.KBL20000,
+                        JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20000, txnAutoWrapMode));
             }
         }
         this.txnAutoWrapMode = txnAutoWrapMode;

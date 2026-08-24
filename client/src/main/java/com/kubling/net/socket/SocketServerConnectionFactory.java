@@ -111,7 +111,7 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
         try {
             url = new KublingURL(connectionProperties.getProperty(KublingURL.CONNECTION.SERVER_URL));
         } catch (MalformedURLException e1) {
-            throw new ConnectionException(JDBCPlugin.Event.TEIID20014, e1, e1.getMessage());
+            throw new ConnectionException(JDBCPlugin.Event.KBL20014, e1, e1.getMessage());
         }
 
         UrlServerDiscovery discovery = new UrlServerDiscovery();

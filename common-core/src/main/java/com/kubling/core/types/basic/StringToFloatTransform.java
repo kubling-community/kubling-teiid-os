@@ -37,8 +37,8 @@ public class StringToFloatTransform extends Transform {
         try {
             return Float.valueOf((String) value);
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10077,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10077, value));
+            throw new TransformationException(CorePlugin.Event.KBL10077,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10077, value));
         }
     }
 

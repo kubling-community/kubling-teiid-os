@@ -134,7 +134,7 @@ public class MakeGSS {
 
             if (performAuthentication) {
                 if (!errors.isEmpty()) {
-                    throw new LogonException(JDBCPlugin.Event.TEIID20005, errors.toString());
+                    throw new LogonException(JDBCPlugin.Event.KBL20005, errors.toString());
                 }
 
                 LoginContext lc = new LoginContext(jaasApplicationName, new GSSCallbackHandler(user, password));
@@ -146,7 +146,7 @@ public class MakeGSS {
             PrivilegedAction action = new GssAction(logon, kerberosPrincipalName, props, user, gssCredential);
             result = Subject.doAs(sub, action);
         } catch (Exception e) {
-            throw new LogonException(JDBCPlugin.Event.TEIID20005, e, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
+            throw new LogonException(JDBCPlugin.Event.KBL20005, e, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20005));
         }
 
         if (result instanceof LogonException) {
@@ -156,8 +156,8 @@ public class MakeGSS {
         } else if (result instanceof CommunicationException) {
             throw (CommunicationException) result;
         } else if (result instanceof Exception) {
-            throw new LogonException(JDBCPlugin.Event.TEIID20005, (Exception) result,
-                    JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
+            throw new LogonException(JDBCPlugin.Event.KBL20005, (Exception) result,
+                    JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20005));
         }
 
         return (LogonResult) result;
@@ -236,7 +236,7 @@ class GssAction implements PrivilegedAction {
             }
             return result;
         } catch (GSSException gsse) {
-            return KublingSQLException.create(gsse, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
+            return KublingSQLException.create(gsse, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20005));
         } catch (Exception e) {
             return e;
         }

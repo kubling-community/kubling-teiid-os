@@ -69,7 +69,7 @@ public class SymmetricCryptor extends BasicCryptor {
                 return keyGen.generateKey();
             }
         } catch (GeneralSecurityException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10021, e);
+            throw new CryptoException(CorePlugin.Event.KBL10021, e);
         }
     }
 
@@ -91,7 +91,7 @@ public class SymmetricCryptor extends BasicCryptor {
             Key key = store.getKey(DEFAULT_ALIAS, DEFAULT_STORE_PASSWORD.toCharArray());
             return new SymmetricCryptor(key, true);
         } catch (GeneralSecurityException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10022, e);
+            throw new CryptoException(CorePlugin.Event.KBL10022, e);
         } finally {
             stream.close();
         }
@@ -132,7 +132,7 @@ public class SymmetricCryptor extends BasicCryptor {
             store.setKeyEntry(DEFAULT_ALIAS, key, DEFAULT_STORE_PASSWORD.toCharArray(), null);
             store.store(fos, DEFAULT_STORE_PASSWORD.toCharArray());
         } catch (GeneralSecurityException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10023, e);
+            throw new CryptoException(CorePlugin.Event.KBL10023, e);
         } finally {
             fos.close();
         }

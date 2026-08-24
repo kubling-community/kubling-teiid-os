@@ -41,8 +41,8 @@ public class StringToBigDecimalTransform extends Transform {
         try {
             return new BigDecimal(((String) value).trim());
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10063,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10063, value));
+            throw new TransformationException(CorePlugin.Event.KBL10063,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10063, value));
         }
     }
 

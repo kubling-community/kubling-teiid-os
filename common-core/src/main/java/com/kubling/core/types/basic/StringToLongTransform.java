@@ -37,8 +37,8 @@ public class StringToLongTransform extends Transform {
         try {
             return Long.valueOf(((String) value).trim());
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10073,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10073, value));
+            throw new TransformationException(CorePlugin.Event.KBL10073,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10073, value));
         }
     }
 

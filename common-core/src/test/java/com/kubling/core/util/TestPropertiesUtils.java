@@ -351,7 +351,7 @@ public class TestPropertiesUtils {
             PropertiesUtils.getIntProperty(p, "x", 1);
             fail("expected exception");
         } catch (PropertiesUtils.InvalidPropertyException e) {
-            assertEquals("TEIID10037 Property 'x' with value 'y' is not a valid Integer.", e.getMessage());
+            assertEquals("KBL10037 Property 'x' with value 'y' is not a valid Integer.", e.getMessage());
         }
     }
 

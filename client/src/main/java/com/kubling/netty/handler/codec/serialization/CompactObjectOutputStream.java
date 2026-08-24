@@ -68,7 +68,7 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
     public static void addKnownClass(Class<?> clazz, byte code) {
         KNOWN_CLASSES.put(clazz, (int) code);
         if (KNOWN_CODES.put((int) code, clazz) != null) {
-            throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20007, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20007));
+            throw new KublingRuntimeException(JDBCPlugin.Event.KBL20007, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20007));
         }
     }
 

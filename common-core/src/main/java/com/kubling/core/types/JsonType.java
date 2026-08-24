@@ -87,7 +87,7 @@ public final class JsonType extends BaseClobType implements Comparable<BaseClobT
             jsonNode = MAPPER.readTree(r);
             return jsonNode;
         } catch (IOException | SQLException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10085, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10085, e);
         }
     }
 
@@ -95,7 +95,7 @@ public final class JsonType extends BaseClobType implements Comparable<BaseClobT
         try {
             return MAPPER.writeValueAsString(MAPPER.treeToValue(getParsedNode(), Object.class));
         } catch (IOException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10085, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10085, e);
         }
     }
 }

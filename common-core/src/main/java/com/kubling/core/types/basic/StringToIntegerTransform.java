@@ -37,8 +37,8 @@ public class StringToIntegerTransform extends Transform {
         try {
             return Integer.valueOf(((String) value).trim());
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10072,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10072, value));
+            throw new TransformationException(CorePlugin.Event.KBL10072,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10072, value));
         }
     }
 

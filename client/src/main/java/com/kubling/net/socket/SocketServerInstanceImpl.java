@@ -118,12 +118,12 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
 
                 if (!(obj instanceof Handshake)) {
                     throw new SingleInstanceCommunicationException(
-                            JDBCPlugin.Event.TEIID20009, null, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20009));
+                            JDBCPlugin.Event.KBL20009, null, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20009));
                 }
                 handshake = (Handshake) obj;
                 break;
             } catch (ClassNotFoundException e1) {
-                throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20010, e1, e1.getMessage());
+                throw new SingleInstanceCommunicationException(JDBCPlugin.Event.KBL20010, e1, e1.getMessage());
             } catch (SocketTimeoutException e) {
                 if (!sentInit && !this.info.isSsl()) {
                     //write a dummy initialization value - if the server is actually ssl, this can cause the server side handshake to fail, otherwise it's ignored
@@ -136,8 +136,8 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
                 }
             } catch (IOException e) {
                 if (sentInit && !this.info.isSsl()) {
-                    throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20032, e,
-                            JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20032));
+                    throw new SingleInstanceCommunicationException(JDBCPlugin.Event.KBL20032, e,
+                            JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20032));
                 }
                 throw e;
             }
@@ -178,7 +178,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
 
             this.socketChannel.write(handshake);
         } catch (CryptoException e) {
-            throw new CommunicationException(JDBCPlugin.Event.TEIID20012, e, e.getMessage());
+            throw new CommunicationException(JDBCPlugin.Event.KBL20012, e, e.getMessage());
         }
     }
 
@@ -203,7 +203,7 @@ public class SocketServerInstanceImpl implements SocketServerInstance {
             writeFuture.get(); //client writes are blocking to ensure proper failure handling
             success = true;
         } catch (ExecutionException e) {
-            throw new SingleInstanceCommunicationException(JDBCPlugin.Event.TEIID20013, e, e.getMessage());
+            throw new SingleInstanceCommunicationException(JDBCPlugin.Event.KBL20013, e, e.getMessage());
         } finally {
             if (!success) {
                 asynchronousListeners.remove(messageKey);

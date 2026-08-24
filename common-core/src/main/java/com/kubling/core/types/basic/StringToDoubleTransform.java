@@ -37,8 +37,8 @@ public class StringToDoubleTransform extends Transform {
         try {
             return Double.valueOf((String) value);
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10078,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10078, value));
+            throw new TransformationException(CorePlugin.Event.KBL10078,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10078, value));
         }
     }
 

@@ -139,7 +139,7 @@ public class TestBatchSerializer {
             helpTestSerialization(new String[]{DataTypeManager.DefaultDataTypes.DOUBLE},
                     new List[]{List.of("Hello!")}, BatchSerializer.CURRENT_VERSION);
         } catch (RuntimeException e) {
-            assertEquals("TEIID20001 The modeled datatype double for column 0 doesn't match the runtime " +
+            assertEquals("KBL20001 The modeled datatype double for column 0 doesn't match the runtime " +
                     "type \"java.lang.String\". Please ensure that the column's modeled datatype matches the expected data.", e.getMessage());
         }
     }

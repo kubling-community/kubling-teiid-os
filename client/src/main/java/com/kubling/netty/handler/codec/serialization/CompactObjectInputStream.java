@@ -89,7 +89,7 @@ public class CompactObjectInputStream extends ObjectInputStream {
         try {
             ObjectInputStreamWithClassloader.checkClass(name);
         } catch (ClassNotFoundException e) {
-            Logger.getLogger("com.kubling").log(Level.SEVERE, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20037, name));
+            Logger.getLogger("com.kubling").log(Level.SEVERE, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20037, name));
             throw e;
         }
 

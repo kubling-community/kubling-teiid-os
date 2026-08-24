@@ -92,7 +92,7 @@ public class TestRequestMessage {
             rm.setTxnAutoWrapMode("foo");
             fail("exception expected");
         } catch (KublingProcessingException e) {
-            assertEquals("TEIID20000 'FOO' is an invalid transaction autowrap mode.", e.getMessage());
+            assertEquals("KBL20000 'FOO' is an invalid transaction autowrap mode.", e.getMessage());
         }
     }
 

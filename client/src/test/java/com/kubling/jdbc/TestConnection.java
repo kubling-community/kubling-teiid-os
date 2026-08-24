@@ -221,7 +221,7 @@ public class TestConnection {
             conn.createStatement();
             fail("MaxOpenStatements not limited to required number.");
         } catch (KublingSQLException ex) {
-            MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString(JDBCPlugin.Event.TEIID20036.name()));
+            MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString(JDBCPlugin.Event.KBL20036.name()));
         }
     }
 }

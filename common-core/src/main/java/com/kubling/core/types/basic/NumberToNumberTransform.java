@@ -60,8 +60,8 @@ public abstract class NumberToNumberTransform extends Transform {
     protected void checkValueRange(Object value)
             throws TransformationException {
         if (((Comparable)value).compareTo(min) < 0 || ((Comparable)value).compareTo(max) > 0) {
-              throw new TransformationException(CorePlugin.Event.TEIID10058,
-                      CorePlugin.Util.gs(CorePlugin.Event.TEIID10058, value, getSourceType().getSimpleName(),
+              throw new TransformationException(CorePlugin.Event.KBL10058,
+                      CorePlugin.Util.gs(CorePlugin.Event.KBL10058, value, getSourceType().getSimpleName(),
                               getTargetType().getSimpleName()));
         }
     }

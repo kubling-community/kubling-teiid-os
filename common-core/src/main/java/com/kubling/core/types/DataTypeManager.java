@@ -942,7 +942,7 @@ public class DataTypeManager {
                 targetClass);
         if (transform == null) {
             Object[] params = new Object[]{sourceType, targetClass, value};
-            throw new TransformationException(CorePlugin.Event.TEIID10076, CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
+            throw new TransformationException(CorePlugin.Event.KBL10076, CorePlugin.Util.gs(CorePlugin.Event.KBL10076, params));
         }
         Object result = transform.transform(value, targetClass);
         return getCanonicalValue(result);

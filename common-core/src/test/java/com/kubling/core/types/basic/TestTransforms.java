@@ -237,7 +237,7 @@ public class TestTransforms {
     @Test
     public void testStringToTimestampFails() {
         helpTransformException("2005-12-01 11:88:60", Timestamp.class,
-                "TEIID10060 The string representation '2005-12-01 11:88:60' of a Timestamp value is not valid.");
+                "KBL10060 The string representation '2005-12-01 11:88:60' of a Timestamp value is not valid.");
     }
 
     @Test
@@ -264,14 +264,14 @@ public class TestTransforms {
 
     @Test
     public void testRangeCheck() {
-        helpTransformException(300, DefaultDataClasses.BYTE, "TEIID10058 The Integer value '300' is outside the of range for Byte");
+        helpTransformException(300, DefaultDataClasses.BYTE, "KBL10058 The Integer value '300' is outside the of range for Byte");
     }
 
     @Test
     public void testRangeCheck1() {
         Double value = Double.valueOf("1E11");
         helpTransformException(value, DefaultDataClasses.INTEGER,
-                CorePlugin.Util.gs(CorePlugin.Event.TEIID10058, value,
+                CorePlugin.Util.gs(CorePlugin.Event.KBL10058, value,
                         Double.class.getSimpleName(), Integer.class.getSimpleName()));
     }
 

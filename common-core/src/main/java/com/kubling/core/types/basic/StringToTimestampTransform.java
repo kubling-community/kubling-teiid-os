@@ -39,8 +39,8 @@ public class StringToTimestampTransform extends BaseDatetimeTransform {
         try {
             return normalizeToTimestamp(((String) value).trim());
         } catch (Exception e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10060,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10060, value, getTargetType().getSimpleName()));
+            throw new TransformationException(CorePlugin.Event.KBL10060,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10060, value, getTargetType().getSimpleName()));
         }
     }
 

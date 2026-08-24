@@ -40,8 +40,8 @@ public class StringToBigIntegerTransform extends Transform {
         try {
             return new BigInteger(((String) value).trim());
         } catch (NumberFormatException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10081,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10081, value));
+            throw new TransformationException(CorePlugin.Event.KBL10081,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10081, value));
         }
     }
 

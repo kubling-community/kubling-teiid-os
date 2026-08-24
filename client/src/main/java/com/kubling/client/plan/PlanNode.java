@@ -160,9 +160,9 @@ public class PlanNode implements Externalizable {
             writer.writeEndDocument();
             return stringWriter.toString();
         } catch (FactoryConfigurationError e) {
-            throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20002, e);
+            throw new KublingRuntimeException(JDBCPlugin.Event.KBL20002, e);
         } catch (XMLStreamException e) {
-            throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20003, e);
+            throw new KublingRuntimeException(JDBCPlugin.Event.KBL20003, e);
         }
     }
 

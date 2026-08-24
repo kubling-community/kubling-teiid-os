@@ -871,7 +871,7 @@ public class ConnectionImpl extends WrapperImpl implements KublingConnection {
     private void addStatement(StatementImpl newStatement) throws SQLException {
         if (statements.size() >= MAX_OPEN_STATEMENTS) {
             this.close();
-            throw new KublingSQLException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20036, MAX_OPEN_STATEMENTS));
+            throw new KublingSQLException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20036, MAX_OPEN_STATEMENTS));
         }
         statements.add(newStatement);
     }

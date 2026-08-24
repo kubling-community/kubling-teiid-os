@@ -40,8 +40,8 @@ public class ObjectConverterUtil {
             return convertToByteArray(l_blobStream);
         } catch (IOException | SQLException ioe) {
             final Object[] params = new Object[]{data.getClass().getName()};
-            throw new KublingException(CorePlugin.Event.TEIID10030,
-                    ioe, CorePlugin.Util.gs(CorePlugin.Event.TEIID10030, params));
+            throw new KublingException(CorePlugin.Event.KBL10030,
+                    ioe, CorePlugin.Util.gs(CorePlugin.Event.KBL10030, params));
         }
     }
 
@@ -56,7 +56,7 @@ public class ObjectConverterUtil {
             return convertFileToByteArray((File) data);
         }
         final Object[] params = new Object[]{data.getClass().getName()};
-        throw new KublingException(CorePlugin.Event.TEIID10032, CorePlugin.Util.gs(CorePlugin.Event.TEIID10032, params));
+        throw new KublingException(CorePlugin.Event.KBL10032, CorePlugin.Util.gs(CorePlugin.Event.KBL10032, params));
     }
 
     public static byte[] convertToByteArray(final InputStream is) throws IOException {

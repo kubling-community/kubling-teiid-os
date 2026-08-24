@@ -106,7 +106,7 @@ public class BasicCryptor implements Cryptor {
             } catch (CryptoException err) {
                 //shouldn't happen
             }
-            throw new CryptoException(CorePlugin.Event.TEIID10006, CorePlugin.Util.gs(CorePlugin.Event.TEIID10006, e.getClass().getName(), e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10006, CorePlugin.Util.gs(CorePlugin.Event.KBL10006, e.getClass().getName(), e.getMessage()));
         }
     }
 
@@ -122,20 +122,20 @@ public class BasicCryptor implements Cryptor {
             decryptCipher = Cipher.getInstance(cipherAlgorithm);
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, iv);
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10009, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10009, cipherAlgorithm));
+            throw new CryptoException(CorePlugin.Event.KBL10009, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10009, cipherAlgorithm));
 
         } catch (NoSuchPaddingException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10010,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10010, cipherAlgorithm, e.getClass().getName(), e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10010,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10010, cipherAlgorithm, e.getClass().getName(), e.getMessage()));
 
         } catch (InvalidKeyException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10011, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10011, e.getClass().getName(), e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10011, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10011, e.getClass().getName(), e.getMessage()));
 
         } catch (InvalidAlgorithmParameterException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10009, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10009, cipherAlgorithm));
+            throw new CryptoException(CorePlugin.Event.KBL10009, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10009, cipherAlgorithm));
         }
     }
 
@@ -159,8 +159,8 @@ public class BasicCryptor implements Cryptor {
                 } catch (CryptoException err) {
                     //shouldn't happen?
                 }
-                throw new CryptoException(CorePlugin.Event.TEIID10006,
-                        CorePlugin.Util.gs(CorePlugin.Event.TEIID10006, e.getClass().getName(), e.getMessage()));
+                throw new CryptoException(CorePlugin.Event.KBL10006,
+                        CorePlugin.Util.gs(CorePlugin.Event.KBL10006, e.getClass().getName(), e.getMessage()));
             } finally {
                 Thread.currentThread().setContextClassLoader(cl);
             }
@@ -174,8 +174,8 @@ public class BasicCryptor implements Cryptor {
             ObjectInputStream ois = new ObjectInputStreamWithClassloader(new ByteArrayInputStream(bytes), classLoader);
             return ois.readObject();
         } catch (Exception e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10006,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10006, e.getClass().getName(), e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10006,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10006, e.getClass().getName(), e.getMessage()));
         }
     }
 
@@ -210,8 +210,8 @@ public class BasicCryptor implements Cryptor {
             } catch (CryptoException err) {
                 //shouldn't happen
             }
-            throw new CryptoException(CorePlugin.Event.TEIID10013,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10013, e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10013,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10013, e.getMessage()));
         }
     }
 
@@ -227,20 +227,20 @@ public class BasicCryptor implements Cryptor {
             encryptCipher = Cipher.getInstance(cipherAlgorithm);
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, iv);
         } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10016, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10016, cipherAlgorithm));
+            throw new CryptoException(CorePlugin.Event.KBL10016, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10016, cipherAlgorithm));
 
         } catch (NoSuchPaddingException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10017, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10017, cipherAlgorithm, e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10017, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10017, cipherAlgorithm, e.getMessage()));
 
         } catch (InvalidKeyException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10018, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10018, e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10018, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10018, e.getMessage()));
 
         } catch (InvalidAlgorithmParameterException e) {
-            throw new CryptoException(CorePlugin.Event.TEIID10016, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10016, cipherAlgorithm));
+            throw new CryptoException(CorePlugin.Event.KBL10016, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10016, cipherAlgorithm));
         }
     }
 
@@ -261,8 +261,8 @@ public class BasicCryptor implements Cryptor {
             } catch (CryptoException err) {
                 //shouldn't happen?
             }
-            throw new CryptoException(CorePlugin.Event.TEIID10013,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10013, e.getMessage()));
+            throw new CryptoException(CorePlugin.Event.KBL10013,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10013, e.getMessage()));
         }
     }
 

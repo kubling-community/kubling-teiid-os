@@ -135,7 +135,7 @@ public class TestSocketServerConnection {
             new SocketServerConnection(instanceFactory, false, discovery, p);
             fail("exception expected");
         } catch (CommunicationException e) {
-            assertEquals("TEIID20021 No valid host available. " +
+            assertEquals("KBL20021 No valid host available. " +
                     "Attempted connections to: [host1:1, host2:2]", e.getMessage());
         }
     }

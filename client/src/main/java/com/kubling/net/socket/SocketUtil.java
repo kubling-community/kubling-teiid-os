@@ -226,7 +226,7 @@ public class SocketUtil {
                     Date date = new Date();
                     for (X509Certificate cert : chain) {
                         if (cert.getNotBefore().after(date) || cert.getNotAfter().before(date)) {
-                            throw new CertificateException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20038));
+                            throw new CertificateException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20038));
                         }
                     }
                 }
@@ -238,7 +238,7 @@ public class SocketUtil {
                     Date date = new Date();
                     for (X509Certificate cert : chain) {
                         if (cert.getNotBefore().after(date) || cert.getNotAfter().before(date)) {
-                            throw new CertificateException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20038));
+                            throw new CertificateException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20038));
                         }
                     }
                 }

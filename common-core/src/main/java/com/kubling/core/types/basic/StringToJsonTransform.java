@@ -45,7 +45,7 @@ public class StringToJsonTransform extends Transform {
                 Class<?> clazz = Class.forName("org.teiid.query.function.JSONFunctionMethods");
                 METHOD = clazz.getMethod("jsonParse", ClobType.class, boolean.class);
             } catch (Exception e) {
-                throw new TransformationException(e, CorePlugin.Util.gs(CorePlugin.Event.TEIID10084));
+                throw new TransformationException(e, CorePlugin.Util.gs(CorePlugin.Event.KBL10084));
             }
         }
         try {

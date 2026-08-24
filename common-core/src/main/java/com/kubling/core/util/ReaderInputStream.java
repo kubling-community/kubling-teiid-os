@@ -131,7 +131,7 @@ public class ReaderInputStream extends InputStream {
             try {
                 cr.throwException();
             } catch (CharacterCodingException e) {
-                throw new IOException(CorePlugin.Util.gs(CorePlugin.Event.TEIID10083, encoder.charset().displayName()), e);
+                throw new IOException(CorePlugin.Util.gs(CorePlugin.Event.KBL10083, encoder.charset().displayName()), e);
             }
         } else {
             wasOverflow = false;

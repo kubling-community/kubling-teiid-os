@@ -162,10 +162,10 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                 try {
                     result = BaseClobType.this.length();
                 } catch (SQLException err) {
-                    throw new KublingRuntimeException(CorePlugin.Event.TEIID10051, err);
+                    throw new KublingRuntimeException(CorePlugin.Event.KBL10051, err);
                 }
                 if (((int) result) != result) {
-                    throw new KublingRuntimeException(CorePlugin.Event.TEIID10052, CorePlugin.Util.gs(CorePlugin.Event.TEIID10052));
+                    throw new KublingRuntimeException(CorePlugin.Event.KBL10052, CorePlugin.Util.gs(CorePlugin.Event.KBL10052));
                 }
                 return (int) result;
             }
@@ -191,7 +191,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                     }
                     return buffer[index - beginPosition];
                 } catch (IOException | SQLException err) {
-                    throw new KublingRuntimeException(CorePlugin.Event.TEIID10053, err);
+                    throw new KublingRuntimeException(CorePlugin.Event.KBL10053, err);
                 }
             }
 
@@ -200,7 +200,7 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
                 try {
                     return BaseClobType.this.getSubString(start + 1, end - start);
                 } catch (SQLException err) {
-                    throw new KublingRuntimeException(CorePlugin.Event.TEIID10054, err);
+                    throw new KublingRuntimeException(CorePlugin.Event.KBL10054, err);
                 }
             }
 
@@ -280,9 +280,9 @@ public class BaseClobType extends Streamable<Clob> implements NClob, Sequencable
             }
             return Long.signum(len1 - len2);
         } catch (SQLException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10056, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10056, e);
         } catch (IOException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10057, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10057, e);
         }
     }
 

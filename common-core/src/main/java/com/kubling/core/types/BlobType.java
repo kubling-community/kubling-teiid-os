@@ -129,7 +129,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         try {
             return new SerialBlob(bytes);
         } catch (SQLException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10047, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10047, e);
         }
     }
 
@@ -186,9 +186,9 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
             }
             return Long.signum(len1 - len2);
         } catch (SQLException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10048, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10048, e);
         } catch (IOException e) {
-            throw new KublingRuntimeException(CorePlugin.Event.TEIID10049, e);
+            throw new KublingRuntimeException(CorePlugin.Event.KBL10049, e);
         }
     }
 

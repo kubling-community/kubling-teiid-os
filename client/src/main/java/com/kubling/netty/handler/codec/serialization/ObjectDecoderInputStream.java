@@ -95,7 +95,7 @@ public class ObjectDecoderInputStream extends ObjectInputStream {
                     throw new StreamCorruptedException("invalid data length: " + remaining);
                 }
                 if (remaining > maxObjectSize) {
-                    throw new StreamCorruptedException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20028, remaining, maxObjectSize));
+                    throw new StreamCorruptedException(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20028, remaining, maxObjectSize));
                 }
             }
             foundLength = false;

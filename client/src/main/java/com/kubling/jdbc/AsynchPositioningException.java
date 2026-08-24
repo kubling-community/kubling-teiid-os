@@ -26,7 +26,7 @@ public class AsynchPositioningException extends KublingSQLException {
     private static final long serialVersionUID = 4965087364648306848L;
 
     public AsynchPositioningException() {
-        super(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20030));
+        super(JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20030));
     }
 
 }

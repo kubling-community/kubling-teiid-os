@@ -284,7 +284,7 @@ public class ReflectionHelper {
             }
             return create(className, objArray, names, classLoader);
         } catch (Exception e) {
-            throw new KublingException(CorePlugin.Event.TEIID10033, e);
+            throw new KublingException(CorePlugin.Event.KBL10033, e);
         }
     }
 
@@ -294,7 +294,7 @@ public class ReflectionHelper {
         try {
             cls = loadClass(className, classLoader);
         } catch (Exception e) {
-            throw new KublingException(CorePlugin.Event.TEIID10034, e);
+            throw new KublingException(CorePlugin.Event.KBL10034, e);
         }
         Constructor<?> ctor = null;
         try {
@@ -314,15 +314,15 @@ public class ReflectionHelper {
         }
 
         if (ctor == null) {
-            throw new KublingException(CorePlugin.Event.TEIID10035, className + CorePlugin.Event.TEIID10035 + Arrays.toString(argTypes));
+            throw new KublingException(CorePlugin.Event.KBL10035, className + CorePlugin.Event.KBL10035 + Arrays.toString(argTypes));
         }
 
         try {
             return ctor.newInstance(ctorObjs);
         } catch (InvocationTargetException e) {
-            throw new KublingException(CorePlugin.Event.TEIID10036, e.getTargetException());
+            throw new KublingException(CorePlugin.Event.KBL10036, e.getTargetException());
         } catch (Exception e) {
-            throw new KublingException(CorePlugin.Event.TEIID10036, e);
+            throw new KublingException(CorePlugin.Event.KBL10036, e);
         }
     }
 

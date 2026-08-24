@@ -62,8 +62,8 @@ public class StringToSQLXMLTransform extends Transform {
                 xmlReader.next();
             }
         } catch (Exception e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10070, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10070));
+            throw new TransformationException(CorePlugin.Event.KBL10070, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10070));
         } finally {
             try {
                 reader.close();

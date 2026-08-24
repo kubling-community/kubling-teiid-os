@@ -69,7 +69,7 @@ public class ObjectToAnyTransform extends Transform {
                     return transform(v1, targetType);
                 } catch (TransformationException e) {
                     throw new TransformationException(
-                            CorePlugin.Event.TEIID10076, e, CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, getSourceType(),
+                            CorePlugin.Event.KBL10076, e, CorePlugin.Util.gs(CorePlugin.Event.KBL10076, getSourceType(),
                             targetClass, value));
                 }
             }
@@ -127,16 +127,16 @@ public class ObjectToAnyTransform extends Transform {
 
         if (transform == null || !valid) {
             Object[] params = new Object[]{getSourceType(), targetType, value};
-            throw new TransformationException(CorePlugin.Event.TEIID10076,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
+            throw new TransformationException(CorePlugin.Event.KBL10076,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10076, params));
         }
 
         try {
             return transform.transform(value, targetType);
         } catch (TransformationException e) {
             Object[] params = new Object[]{getSourceType(), targetType, value};
-            throw new TransformationException(CorePlugin.Event.TEIID10076, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10076, params));
+            throw new TransformationException(CorePlugin.Event.KBL10076, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10076, params));
         }
     }
 

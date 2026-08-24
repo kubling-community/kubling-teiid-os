@@ -132,7 +132,7 @@ public class ResultsFuture<T> implements Future<T> {
                 try {
                     completionListener.onCompletion(this);
                 } catch (Throwable t) {
-                    logger.log(Level.SEVERE, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20031), t);
+                    logger.log(Level.SEVERE, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20031), t);
                 }
             }
             this.listeners.clear();
@@ -145,7 +145,7 @@ public class ResultsFuture<T> implements Future<T> {
                 try {
                     listener.onCompletion(this);
                 } catch (Throwable t) {
-                    logger.log(Level.SEVERE, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20031), t);
+                    logger.log(Level.SEVERE, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20031), t);
                 }
                 return;
             }

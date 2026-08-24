@@ -53,8 +53,8 @@ public class SQLXMLToStringTransform extends AnyToStringTransform {
             int read = reader.read(result);
             return new String(result, 0, read);
         } catch (SQLException | IOException e) {
-            throw new TransformationException(CorePlugin.Event.TEIID10080, e,
-                    CorePlugin.Util.gs(CorePlugin.Event.TEIID10080, getSourceType().getName(), getTargetType().getName()));
+            throw new TransformationException(CorePlugin.Event.KBL10080, e,
+                    CorePlugin.Util.gs(CorePlugin.Event.KBL10080, getSourceType().getName(), getTargetType().getName()));
         } finally {
             try {
                 if (reader != null) {
