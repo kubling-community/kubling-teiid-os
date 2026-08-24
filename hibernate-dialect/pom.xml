@@ -3,7 +3,7 @@
 
     <parent>
         <groupId>com.kubling</groupId>
-        <artifactId>kubling-teiid</artifactId>
+        <artifactId>kubling-core-parent</artifactId>
         <version>26.1</version>
     </parent>
 

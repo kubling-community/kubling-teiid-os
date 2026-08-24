@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.kubling</groupId>
-    <artifactId>kubling-teiid</artifactId>
+    <artifactId>kubling-core-parent</artifactId>
     <version>26.1</version>
     <name>Kubling Core and Client</name>
     <packaging>pom</packaging>
