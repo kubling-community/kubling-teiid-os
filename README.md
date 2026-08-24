@@ -33,6 +33,19 @@ Distribution assemblies are enabled explicitly:
 ./mvnw -Pdriver-release package
 ```
 
+## Publishing
+
+Maven Central releases are published by the `Publish to Maven Central` GitHub Actions workflow. Publishing starts
+automatically when a GitHub Release is published, or manually with a required version input. In both cases, the
+release version must match the Maven project version and snapshots are rejected.
+
+Configure these GitHub Actions secrets before the first publication:
+
+- `MAVEN_CENTRAL_USERNAME`: username generated with a Central Portal user token.
+- `MAVEN_CENTRAL_PASSWORD`: password generated with the same Central Portal user token.
+- `MAVEN_GPG_PRIVATE_KEY`: ASCII-armored private key used to sign the artifacts.
+- `MAVEN_GPG_PASSPHRASE`: passphrase for the private key.
+
 ## Versioning
 
 This repository has its own release cycle. Artifact versions do not need to match the Kubling server version; each
