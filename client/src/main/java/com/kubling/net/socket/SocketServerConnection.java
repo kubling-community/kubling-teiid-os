@@ -27,7 +27,6 @@ import com.kubling.client.util.ResultsFuture;
 import com.kubling.core.KublingComponentException;
 import com.kubling.core.KublingException;
 import com.kubling.core.util.PropertiesUtils;
-import com.kubling.gss.MakeGSS;
 import com.kubling.jdbc.JDBCPlugin;
 import com.kubling.net.*;
 
@@ -139,24 +138,13 @@ public class SocketServerConnection implements ServerConnection {
 
         updateConnectionProperties(connProps, instance.getLocalAddress(), true, this.connectionFactory);
 
-        LogonResult newResult;
-
-        // - if gss
-        if (connProps.contains(KublingURL.CONNECTION.JAAS_NAME)) {
-            newResult = MakeGSS.authenticate(newLogon, connProps);
-        } else {
-            newResult = newLogon.logon(connProps);
-        }
+        LogonResult newResult = newLogon.logon(connProps);
 
         AuthenticationType type = (AuthenticationType) newResult.getProperty(ILogon.AUTH_TYPE);
 
         if (type != null) {
             //server has issued an additional challenge
-            if (type == AuthenticationType.GSS) {
-                newResult = MakeGSS.authenticate(newLogon, connProps);
-            } else {
-                throw new LogonException(JDBCPlugin.Event.KBL20034, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20034, type));
-            }
+            throw new LogonException(JDBCPlugin.Event.KBL20034, JDBCPlugin.Util.gs(JDBCPlugin.Event.KBL20034, type));
         }
 
         logoff();

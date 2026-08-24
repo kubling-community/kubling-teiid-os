@@ -70,10 +70,6 @@ public class KublingURL {
 
         String PASSTHROUGH_AUTHENTICATION = "PassthroughAuthentication";
 
-        String JAAS_NAME = "jaasName";
-
-        String KERBEROS_SERVICE_PRINCIPLE_NAME = "kerberosServicePrincipleName";
-
         String ENCRYPT_REQUESTS = "encryptRequests";
         String LOGIN_TIMEOUT = "loginTimeout";
 

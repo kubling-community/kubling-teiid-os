@@ -19,5 +19,10 @@
 package com.kubling.net.socket;
 
 public enum AuthenticationType {
-    USERPASSWORD,GSS,SSL
+    USERPASSWORD,
+    /**
+     * Retained only to preserve the serialized handshake ordinal. The client rejects this authentication type.
+     */
+    GSS,
+    SSL
 }

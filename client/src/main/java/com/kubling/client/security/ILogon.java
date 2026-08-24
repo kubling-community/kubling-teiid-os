@@ -31,17 +31,11 @@ import java.util.Properties;
  * Generic logon interface.
  */
 public interface ILogon {
-    String KRB5TOKEN = "KRB5TOKEN";
-    String KRB5_ESTABLISHED = "KRB5_CONTEXT_ESTABLISHED";
     String AUTH_TYPE = "authType";
 
     @Secure
     LogonResult logon(Properties connectionProperties)
             throws LogonException, KublingComponentException, CommunicationException;
-
-    @Secure
-    LogonResult neogitiateGssLogin(Properties connectionProperties, byte[] serviceToken, boolean createSession)
-            throws LogonException;
 
     /**
      * Ping the server to see if the client-server connection is alive.

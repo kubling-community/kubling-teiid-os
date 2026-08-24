@@ -80,8 +80,6 @@ public class JDBCURL {
                 LocalProfile.WAIT_FOR_LOAD,
                 KublingURL.CONNECTION.AUTO_FAILOVER,
                 KublingURL.CONNECTION.PASSTHROUGH_AUTHENTICATION,
-                KublingURL.CONNECTION.JAAS_NAME,
-                KublingURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME,
                 KublingURL.CONNECTION.ENCRYPT_REQUESTS,
                 KublingURL.CONNECTION.LOGIN_TIMEOUT,
                 DatabaseMetaDataImpl.REPORT_AS_VIEWS,

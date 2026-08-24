@@ -93,11 +93,6 @@ public class TestSocketServerConnection {
             return ping();
         }
 
-        @Override
-        public LogonResult neogitiateGssLogin(Properties connectionProperties,
-                                              byte[] serviceToken, boolean createSession) {
-            return null;
-        }
     }
 
     /**

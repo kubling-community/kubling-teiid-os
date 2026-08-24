@@ -40,7 +40,6 @@ public class JDBCPlugin { // extends Plugin {
         KBL20001,
         KBL20002,
         KBL20003,
-        KBL20005,
         KBL20007,
         KBL20008,
         KBL20009,

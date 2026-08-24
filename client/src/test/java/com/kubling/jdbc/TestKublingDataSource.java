@@ -907,16 +907,4 @@ public class TestKublingDataSource {
         assertEquals("user", p.getProperty(BaseDataSource.USER_NAME));
     }
 
-    @Test
-    public void testKerberos() throws SQLException {
-        KublingDataSource tds = new KublingDataSource();
-        tds.setDatabaseName("y");
-        tds.setUser("%25user");
-        tds.setJaasName("x");
-        tds.setKerberosServicePrincipleName("z");
-        tds.setServerName("t");
-        compareUrls("jdbc:kubling:y@mm://t:0;fetchSize=2048;ApplicationName=JDBC;user=%2525user;jaasName=x;VirtualDatabaseName=y;kerberosServicePrincipleName=z", tds.buildURL().getJDBCURL());
-
-    }
-
 }

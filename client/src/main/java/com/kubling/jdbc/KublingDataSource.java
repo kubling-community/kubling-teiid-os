@@ -98,15 +98,6 @@ public class KublingDataSource extends BaseDataSource {
     private boolean passthroughAuthentication = false;
 
     /**
-     * Name of the jass configuration to use from the -Djava.security.auth.login.config=login.conf property
-     */
-    private String jaasName;
-
-    /**
-     * Name of Kerberos KDC service principle name
-     */
-    private String kerberosServicePrincipleName;
-    /**
      * If not using ssl determines whether requests with the associated command payload should be encrypted
      */
     private boolean encryptRequests;
@@ -138,13 +129,6 @@ public class KublingDataSource extends BaseDataSource {
 
         if (getLoginTimeout() > 0) {
             props.setProperty(KublingURL.CONNECTION.LOGIN_TIMEOUT, String.valueOf(getLoginTimeout()));
-        }
-
-        if (getJaasName() != null) {
-            props.setProperty(KublingURL.CONNECTION.JAAS_NAME, getJaasName());
-        }
-        if (getKerberosServicePrincipleName() != null) {
-            props.setProperty(KublingURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME, getKerberosServicePrincipleName());
         }
 
         return props;
@@ -507,42 +491,6 @@ public class KublingDataSource extends BaseDataSource {
         this.passthroughAuthentication = passthroughAuthentication;
     }
 
-    /**
-     * Application name from JAAS Login Config file
-     *
-     * @since 7.6
-     */
-    public String getJaasName() {
-        return jaasName;
-    }
-
-    /**
-     * Application name from JAAS Login Config file
-     *
-     * @since 7.6
-     */
-    public void setJaasName(String jaasApplicationName) {
-        this.jaasName = jaasApplicationName;
-    }
-
-    /**
-     * Kerberos KDC service principle name
-     *
-     * @since 7.6
-     */
-    public String getKerberosServicePrincipleName() {
-        return kerberosServicePrincipleName;
-    }
-
-    /**
-     * Kerberos KDC service principle name
-     *
-     * @since 7.6
-     */
-    public void setKerberosServicePrincipleName(String kerberosServerName) {
-        this.kerberosServicePrincipleName = kerberosServerName;
-    }
-
     public Logger getParentLogger() {
         return KublingDriver.logger;
     }
@@ -588,4 +536,3 @@ public class KublingDataSource extends BaseDataSource {
     }
 
 }
-
