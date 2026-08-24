@@ -1,5 +1,6 @@
 package org.testcontainers.jdbc.junit.kubling;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.KublingContainer;
 import org.testcontainers.db.AbstractKublingDatabaseTest;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("runtime-e2e")
 public class SimpleKublingTest extends AbstractKublingDatabaseTest {
 
     @Test

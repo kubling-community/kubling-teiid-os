@@ -38,7 +38,8 @@ Distribution assemblies are enabled explicitly:
 Maven Central releases are published by the `Publish to Maven Central` GitHub Actions workflow:
 
 - Stable versions are published automatically from a final GitHub Release.
-- Release candidates are published manually from a non-default branch and use the `26.2-RC1` version format.
+- Release candidates use the `26.2-RC1` version format. They can be published manually from a non-default branch
+  once the workflow exists on the default branch, or by pushing the matching `v26.2-RC1` tag.
 
 The requested version or Git tag must match the Maven project version. Update the project POMs and commit that
 version before starting a publication. Snapshots and manual publications of stable versions are rejected.
@@ -46,8 +47,10 @@ version before starting a publication. Snapshots and manual publications of stab
 The release profile publishes the assembled JDBC driver to Maven Central as the `jdbc` classifier of
 `com.kubling:kubling`. After Central confirms publication, the workflow retrieves that exact artifact and verifies
 the JDBC service entry and driver class. Stable releases receive the JAR, its GPG signature, and a SHA-256 checksum
-as GitHub Release assets. Manually published release candidates preserve the same files as a workflow artifact for
-30 days.
+as GitHub Release assets. Release candidates preserve the same files as a workflow artifact for 30 days.
+
+Core publications exclude tests tagged `runtime-e2e`, because those tests require a Kubling runtime built against
+the same protocol packages. The consuming engine validates that compatibility before adopting the new core version.
 
 Configure these GitHub Actions secrets before the first publication:
 

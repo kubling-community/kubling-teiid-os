@@ -2,6 +2,7 @@ package com.kubling.hibernate.dialect;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("runtime-e2e")
 public class KublingDialectTest extends BaseDialectTest {
 
     @Test

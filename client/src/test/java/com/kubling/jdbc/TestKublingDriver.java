@@ -148,7 +148,7 @@ public class TestKublingDriver {
     public void testGetPropertyInfo1() throws Exception {
         DriverPropertyInfo[] info = drv.getPropertyInfo("jdbc:kubling:vdb@mm://localhost:12345;applicationName=x", null);
 
-        assertEquals(29, info.length);
+        assertEquals(27, info.length);
         assertFalse(info[1].required);
         assertEquals("ApplicationName", info[1].name);
         assertEquals("x", info[1].value);

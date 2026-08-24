@@ -3,6 +3,9 @@ name: Publish to Maven Central
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*-RC*'
   workflow_dispatch:
     inputs:
       version:
@@ -14,12 +17,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: maven-central-${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
+  group: maven-central-${{ github.event_name == 'release' && github.event.release.tag_name || github.event_name == 'push' && github.ref_name || inputs.version }}
   cancel-in-progress: false
 
 jobs:
   publish:
-    name: Publish ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
+    name: Publish ${{ github.event_name == 'release' && github.event.release.tag_name || github.event_name == 'push' && github.ref_name || inputs.version }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     outputs:
@@ -50,7 +53,7 @@ jobs:
           REF_TYPE: ${{ github.ref_type }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           IS_PRERELEASE: ${{ github.event.release.prerelease || false }}
-          RELEASE_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
+          RELEASE_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || github.event_name == 'push' && github.ref_name || inputs.version }}
         run: |
           project_version="$(./mvnw --quiet help:evaluate -Dexpression=project.version -DforceStdout)"
           release_version="${RELEASE_VERSION#v}"
@@ -68,6 +71,16 @@ jobs:
 
             if [[ ! "$project_version" =~ ^[0-9]+(\.[0-9]+){1,2}-RC[1-9][0-9]*$ ]]; then
               echo "Manual publications require an RC version such as 26.2-RC1: $project_version" >&2
+              exit 1
+            fi
+          elif [[ "$EVENT_NAME" == "push" ]]; then
+            if [[ "$REF_TYPE" != "tag" ]]; then
+              echo "RC tag publications require a tag ref: $REF_TYPE" >&2
+              exit 1
+            fi
+
+            if [[ ! "$project_version" =~ ^[0-9]+(\.[0-9]+){1,2}-RC[1-9][0-9]*$ ]]; then
+              echo "RC tags require a Maven version such as 26.2-RC1: $project_version" >&2
               exit 1
             fi
           elif [[ "$EVENT_NAME" == "release" ]]; then
@@ -96,6 +109,7 @@ jobs:
         run: >-
           ./mvnw --batch-mode --no-transfer-progress
           -Prelease
+          -DexcludedGroups=runtime-e2e
           -Dgpg.signer=bc
           clean deploy
 
