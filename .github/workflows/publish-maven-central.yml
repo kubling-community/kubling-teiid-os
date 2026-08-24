@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Maven version to publish, for example 26.2
+        description: Maven release candidate version to publish, for example 26.2-RC1
         required: true
         type: string
 
@@ -22,6 +22,8 @@ jobs:
     name: Publish ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    outputs:
+      version: ${{ steps.verify-version.outputs.version }}
 
     steps:
       - name: Check out release
@@ -41,21 +43,49 @@ jobs:
           server-password: MAVEN_CENTRAL_PASSWORD
 
       - name: Verify release version
+        id: verify-version
         env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          IS_PRERELEASE: ${{ github.event.release.prerelease || false }}
           RELEASE_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
         run: |
           project_version="$(./mvnw --quiet help:evaluate -Dexpression=project.version -DforceStdout)"
           release_version="${RELEASE_VERSION#v}"
 
-          if [[ "$project_version" == *-SNAPSHOT ]]; then
-            echo "Snapshot versions cannot be published as Maven Central releases: $project_version" >&2
+          if [[ "$project_version" != "$release_version" ]]; then
+            echo "Requested version $release_version does not match Maven project version $project_version" >&2
             exit 1
           fi
 
-          if [[ "$project_version" != "$release_version" ]]; then
-            echo "Release version $release_version does not match Maven project version $project_version" >&2
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            if [[ "$REF_TYPE" != "branch" || "$REF_NAME" == "$DEFAULT_BRANCH" ]]; then
+              echo "Release candidates must be published manually from a non-default branch" >&2
+              exit 1
+            fi
+
+            if [[ ! "$project_version" =~ ^[0-9]+(\.[0-9]+){1,2}-RC[1-9][0-9]*$ ]]; then
+              echo "Manual publications require an RC version such as 26.2-RC1: $project_version" >&2
+              exit 1
+            fi
+          elif [[ "$EVENT_NAME" == "release" ]]; then
+            if [[ "$IS_PRERELEASE" == "true" ]]; then
+              echo "GitHub prereleases cannot publish stable Maven artifacts" >&2
+              exit 1
+            fi
+
+            if [[ ! "$project_version" =~ ^[0-9]+(\.[0-9]+){1,2}$ ]]; then
+              echo "GitHub Releases require a stable Maven version such as 26.2: $project_version" >&2
+              exit 1
+            fi
+          else
+            echo "Unsupported publication event: $EVENT_NAME" >&2
             exit 1
           fi
+
+          echo "version=$project_version" >> "$GITHUB_OUTPUT"
 
       - name: Build, sign, and publish
         env:
@@ -68,3 +98,121 @@ jobs:
           -Prelease
           -Dgpg.signer=bc
           clean deploy
+
+  prepare-jdbc-driver:
+    name: Prepare JDBC driver ${{ needs.publish.outputs.version }}
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Download the published JDBC driver
+        env:
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          asset_dir="$RUNNER_TEMP/kubling-driver"
+          driver_name="kubling-${VERSION}-jdbc.jar"
+          central_url="https://repo1.maven.org/maven2/com/kubling/kubling/${VERSION}"
+
+          mkdir -p "$asset_dir"
+
+          for asset_name in "$driver_name" "$driver_name.asc"; do
+            curl --fail --silent --show-error --location \
+              --connect-timeout 20 \
+              --retry 60 --retry-all-errors --retry-delay 10 --retry-max-time 600 \
+              --output "$asset_dir/$asset_name" \
+              "$central_url/$asset_name"
+          done
+
+      - name: Verify the JDBC driver
+        env:
+          VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          asset_dir="$RUNNER_TEMP/kubling-driver"
+          driver_name="kubling-${VERSION}-jdbc.jar"
+          driver_path="$asset_dir/$driver_name"
+          expected_driver="com.kubling.jdbc.KublingDriver"
+          expected_class="com/kubling/jdbc/KublingDriver.class"
+
+          test -s "$driver_path"
+          test -s "$driver_path.asc"
+
+          driver_service="$(
+            unzip -p "$driver_path" META-INF/services/java.sql.Driver \
+              | tr -d '\r' \
+              | sed '/^[[:space:]]*#/d; /^[[:space:]]*$/d'
+          )"
+          driver_class="$(unzip -Z1 "$driver_path" "$expected_class" 2>/dev/null || true)"
+
+          if [[ "$driver_service" != "$expected_driver" ]]; then
+            echo "Unexpected JDBC service provider: $driver_service" >&2
+            exit 1
+          fi
+
+          if [[ "$driver_class" != "$expected_class" ]]; then
+            echo "JDBC driver class is missing from $driver_name" >&2
+            exit 1
+          fi
+
+          (
+            cd "$asset_dir"
+            sha256sum "$driver_name" > "$driver_name.sha256"
+          )
+
+      - name: Preserve JDBC driver from this publication
+        uses: actions/upload-artifact@v7
+        with:
+          name: kubling-${{ needs.publish.outputs.version }}-jdbc
+          path: |
+            ${{ runner.temp }}/kubling-driver/kubling-${{ needs.publish.outputs.version }}-jdbc.jar
+            ${{ runner.temp }}/kubling-driver/kubling-${{ needs.publish.outputs.version }}-jdbc.jar.asc
+            ${{ runner.temp }}/kubling-driver/kubling-${{ needs.publish.outputs.version }}-jdbc.jar.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+  attach-jdbc-driver:
+    name: Attach JDBC driver to ${{ github.event.release.tag_name }}
+    if: ${{ github.event_name == 'release' }}
+    needs:
+      - publish
+      - prepare-jdbc-driver
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download the prepared JDBC driver
+        uses: actions/download-artifact@v8
+        with:
+          name: kubling-${{ needs.publish.outputs.version }}-jdbc
+          path: ${{ runner.temp }}/kubling-driver
+
+      - name: Attach JDBC driver to the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          asset_dir="$RUNNER_TEMP/kubling-driver"
+
+          for asset_path in "$asset_dir"/*; do
+            asset_name="$(basename "$asset_path")"
+            local_digest="sha256:$(sha256sum "$asset_path" | cut -d ' ' -f 1)"
+            remote_digest="$(
+              gh release view "$RELEASE_TAG" \
+                --repo "$GITHUB_REPOSITORY" \
+                --json assets \
+                --jq ".assets[] | select(.name == \"$asset_name\") | .digest"
+            )"
+
+            if [[ -z "$remote_digest" ]]; then
+              gh release upload "$RELEASE_TAG" "$asset_path" --repo "$GITHUB_REPOSITORY"
+            elif [[ "$remote_digest" == "$local_digest" ]]; then
+              echo "$asset_name is already attached with the expected digest"
+            else
+              echo "Refusing to replace $asset_name: the existing asset has a different digest" >&2
+              exit 1
+            fi
+          done

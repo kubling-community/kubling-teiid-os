@@ -35,9 +35,19 @@ Distribution assemblies are enabled explicitly:
 
 ## Publishing
 
-Maven Central releases are published by the `Publish to Maven Central` GitHub Actions workflow. Publishing starts
-automatically when a GitHub Release is published, or manually with a required version input. In both cases, the
-release version must match the Maven project version and snapshots are rejected.
+Maven Central releases are published by the `Publish to Maven Central` GitHub Actions workflow:
+
+- Stable versions are published automatically from a final GitHub Release.
+- Release candidates are published manually from a non-default branch and use the `26.2-RC1` version format.
+
+The requested version or Git tag must match the Maven project version. Update the project POMs and commit that
+version before starting a publication. Snapshots and manual publications of stable versions are rejected.
+
+The release profile publishes the assembled JDBC driver to Maven Central as the `jdbc` classifier of
+`com.kubling:kubling`. After Central confirms publication, the workflow retrieves that exact artifact and verifies
+the JDBC service entry and driver class. Stable releases receive the JAR, its GPG signature, and a SHA-256 checksum
+as GitHub Release assets. Manually published release candidates preserve the same files as a workflow artifact for
+30 days.
 
 Configure these GitHub Actions secrets before the first publication:
 
