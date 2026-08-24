@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public class EnhancedTimer {
 
-    private static final Logger LOGGER = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger LOGGER = Logger.getLogger("com.kubling.jdbc");
     private static final AtomicLong id = new AtomicLong();
 
     public class Task extends FutureTask<Void> implements Comparable<Task> {

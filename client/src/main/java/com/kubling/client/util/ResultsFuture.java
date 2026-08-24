@@ -41,7 +41,7 @@ public class ResultsFuture<T> implements Future<T> {
         NULL_FUTURE.getResultsReceiver().receiveResults(null);
     }
 
-    private static final Logger logger = Logger.getLogger("org.teiid");
+    private static final Logger logger = Logger.getLogger("com.kubling");
 
     public interface CompletionListener<T> {
         void onCompletion(ResultsFuture<T> future);

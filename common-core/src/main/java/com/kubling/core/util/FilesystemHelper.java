@@ -36,7 +36,7 @@ public class FilesystemHelper {
 
         var localManager = new StandardFileSystemManager();
         localManager.setConfiguration(Thread.currentThread()
-                .getContextClassLoader().getResource(("com/kubling/teiid/core/providers.xml")));
+                .getContextClassLoader().getResource("com/kubling/core/providers.xml"));
         localManager.init();
 
         manager = localManager;

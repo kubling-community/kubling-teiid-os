@@ -44,18 +44,18 @@ import java.util.logging.Logger;
 public class SocketUtil {
 
     private static final Logger logger = Logger.getLogger(SocketUtil.class.getName());
-    static final String TRUSTSTORE_PASSWORD = "org.teiid.ssl.trustStorePassword";
-    public static final String TRUSTSTORE_FILENAME = "org.teiid.ssl.trustStore";
-    static final String KEYSTORE_ALGORITHM = "org.teiid.ssl.algorithm";
-    static final String PROTOCOL = "org.teiid.ssl.protocol";
-    static final String KEYSTORE_TYPE = "org.teiid.ssl.keyStoreType";
-    static final String KEYSTORE_PASSWORD = "org.teiid.ssl.keyStorePassword";
-    static final String KEYSTORE_FILENAME = "org.teiid.ssl.keyStore";
-    public static final String ALLOW_ANON = "org.teiid.ssl.allowAnon";
-    static final String KEYSTORE_ALIAS = "org.teiid.ssl.keyAlias";
-    static final String KEY_PASSWORD = "org.teiid.ssl.keyPassword";
-    static final String TRUST_ALL = "org.teiid.ssl.trustAll";
-    static final String CHECK_EXPIRED = "org.teiid.ssl.checkExpired";
+    static final String TRUSTSTORE_PASSWORD = "com.kubling.ssl.trustStorePassword";
+    public static final String TRUSTSTORE_FILENAME = "com.kubling.ssl.trustStore";
+    static final String KEYSTORE_ALGORITHM = "com.kubling.ssl.algorithm";
+    static final String PROTOCOL = "com.kubling.ssl.protocol";
+    static final String KEYSTORE_TYPE = "com.kubling.ssl.keyStoreType";
+    static final String KEYSTORE_PASSWORD = "com.kubling.ssl.keyStorePassword";
+    static final String KEYSTORE_FILENAME = "com.kubling.ssl.keyStore";
+    public static final String ALLOW_ANON = "com.kubling.ssl.allowAnon";
+    static final String KEYSTORE_ALIAS = "com.kubling.ssl.keyAlias";
+    static final String KEY_PASSWORD = "com.kubling.ssl.keyPassword";
+    static final String TRUST_ALL = "com.kubling.ssl.trustAll";
+    static final String CHECK_EXPIRED = "com.kubling.ssl.checkExpired";
 
     public static final String DEFAULT_KEYSTORE_TYPE = "JKS";
 

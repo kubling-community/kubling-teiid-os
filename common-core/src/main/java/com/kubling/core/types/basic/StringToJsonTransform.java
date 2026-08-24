@@ -42,7 +42,7 @@ public class StringToJsonTransform extends Transform {
         String json = (String) value;
         if (METHOD == null) {
             try {
-                Class<?> clazz = Class.forName("org.teiid.query.function.JSONFunctionMethods");
+                Class<?> clazz = Class.forName("com.kubling.query.function.JSONFunctionMethods");
                 METHOD = clazz.getMethod("jsonParse", ClobType.class, boolean.class);
             } catch (Exception e) {
                 throw new TransformationException(e, CorePlugin.Util.gs(CorePlugin.Event.KBL10084));

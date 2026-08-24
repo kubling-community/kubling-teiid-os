@@ -52,16 +52,16 @@ public class DataTypeManager {
 
     public static final String ARRAY_SUFFIX = "[]";
     public static final boolean USE_VALUE_CACHE =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.useValueCache", false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.useValueCache", false, Boolean.class);
     private static final boolean COMPARABLE_LOBS =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.comparableLobs", false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.comparableLobs", false, Boolean.class);
     private static final boolean COMPARABLE_OBJECT =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.comparableObject", false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.comparableObject", false, Boolean.class);
     public static final boolean PAD_SPACE =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.padSpace", false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.padSpace", false, Boolean.class);
     public static final String DEFAULT_COLLATION = "UCS-2";
     public static final String COLLATION_LOCALE =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.collationLocale", null);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.collationLocale", null);
 
     private static boolean valueCacheEnabled = USE_VALUE_CACHE;
 

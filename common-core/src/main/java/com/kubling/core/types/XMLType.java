@@ -48,7 +48,7 @@ public final class XMLType extends Streamable<SQLXML> implements SQLXML {
     @Serial
     private static final long serialVersionUID = -7922647237095135723L;
     static final boolean SUPPORT_DTD =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.supportDTD", false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.supportDTD", false, Boolean.class);
 
     private static final ThreadLocal<XMLInputFactory> threadLocalFactory = ThreadLocal.withInitial(XMLType::createXMLInputFactory);
 

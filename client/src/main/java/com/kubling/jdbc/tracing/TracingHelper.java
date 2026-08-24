@@ -41,7 +41,7 @@ public class TracingHelper {
         String getSpanContext();
     }
 
-    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 
     private static Injector INJECTOR;
 

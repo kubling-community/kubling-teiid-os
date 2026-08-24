@@ -57,7 +57,7 @@ import java.util.logging.Logger;
  */
 public class SocketServerInstanceImpl implements SocketServerInstance {
 
-    private static final Logger log = Logger.getLogger("org.teiid.client.sockets");
+    private static final Logger log = Logger.getLogger("com.kubling.client.sockets");
 
     private static final AtomicInteger MESSAGE_ID = new AtomicInteger();
     private final Map<Serializable, ResultsReceiver<Object>> asynchronousListeners = new ConcurrentHashMap<>();

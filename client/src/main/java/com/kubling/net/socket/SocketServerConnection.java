@@ -53,7 +53,7 @@ public class SocketServerConnection implements ServerConnection {
     private static final int FAILOVER_PING_INTERVAL = 1000;
     private final SocketServerInstanceFactory connectionFactory;
     private final UrlServerDiscovery serverDiscovery;
-    private static final Logger log = Logger.getLogger("org.teiid.client.sockets");
+    private static final Logger log = Logger.getLogger("com.kubling.client.sockets");
 
     private final boolean secure;
     private final Properties connProps;

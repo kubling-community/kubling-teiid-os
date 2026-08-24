@@ -147,7 +147,7 @@ public final class OioObjectChannelFactory implements ObjectChannelFactory {
 
     public OioObjectChannelFactory(Properties props) {
         this.props = props;
-        PropertiesUtils.setBeanProperties(this, props, "org.teiid.sockets", true);
+        PropertiesUtils.setBeanProperties(this, props, "com.kubling.sockets", true);
     }
 
     @Override

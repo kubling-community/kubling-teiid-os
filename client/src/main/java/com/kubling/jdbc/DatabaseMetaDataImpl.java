@@ -45,7 +45,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
     private static final String DATA_TYPES = "DataTypes";
 
-    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 
     /**
      * CONSTANTS

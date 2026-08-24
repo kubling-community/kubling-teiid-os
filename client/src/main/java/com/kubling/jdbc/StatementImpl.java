@@ -54,7 +54,7 @@ public class StatementImpl extends WrapperImpl implements KublingStatement {
 
     public static final String NEWINSTANCE = "NEWINSTANCE";
 
-    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 
     static EnhancedTimer cancellationTimer = new EnhancedTimer("Teiid Statement Timeout");
 

@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 
 public class KublingDriver implements Driver {
 
-    static Logger logger = Logger.getLogger("org.teiid.jdbc");
+    static Logger logger = Logger.getLogger("com.kubling.jdbc");
     static final String DRIVER_NAME = "Kubling DBVirt JDBC Driver";
 
     private static final KublingDriver INSTANCE = new KublingDriver();
@@ -94,7 +94,7 @@ public class KublingDriver implements Driver {
             if (localProfile == null) {
                 try {
                     localProfile = (ConnectionProfile) ReflectionHelper.create(
-                            "org.teiid.jdbc.jboss.ModuleLocalProfile", null,
+                            "com.kubling.jdbc.jboss.ModuleLocalProfile", null,
                             getClass().getClassLoader());
                 } catch (KublingException e) {
                     throw KublingSQLException.create(e, JDBCPlugin.Util.gs("module_load_failed"));

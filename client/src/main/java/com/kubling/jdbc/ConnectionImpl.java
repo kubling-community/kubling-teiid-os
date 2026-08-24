@@ -48,7 +48,7 @@ import java.util.logging.Logger;
  */
 public class ConnectionImpl extends WrapperImpl implements KublingConnection {
     private static final int MAX_OPEN_STATEMENTS =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.maxOpenStatements", 1000, Integer.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.maxOpenStatements", 1000, Integer.class);
 
     private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 

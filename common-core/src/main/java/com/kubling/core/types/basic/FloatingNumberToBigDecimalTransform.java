@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 public class FloatingNumberToBigDecimalTransform extends Transform {
 
     public static final boolean PRESERVE_APPROXIMATE_SCALE =
-            PropertiesUtils.getHierarchicalProperty("org.teiid.preserveApproximateScale", false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling.preserveApproximateScale", false, Boolean.class);
 
     private final Class<?> sourceType;
 

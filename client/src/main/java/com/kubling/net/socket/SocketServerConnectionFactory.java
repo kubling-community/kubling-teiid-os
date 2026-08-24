@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  */
 public class SocketServerConnectionFactory implements ServerConnectionFactory, SocketServerInstanceFactory {
 
-    private static final Logger log = Logger.getLogger("org.teiid.net.sockets");
+    private static final Logger log = Logger.getLogger("com.kubling.net.sockets");
 
     static final String PROPERTIES_FILENAME = "connectionPropsFilePath";
 
@@ -89,7 +89,7 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
     }
 
     public void initialize(Properties info) {
-        PropertiesUtils.setBeanProperties(this, info, "org.teiid.sockets", true);
+        PropertiesUtils.setBeanProperties(this, info, "com.kubling.sockets", true);
         this.channelFactory = new OioObjectChannelFactory(info);
     }
 
@@ -137,7 +137,7 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
 
     private static InputStream getConnectionClientSettings(String location) {
 
-        location = StringUtils.defaultIfEmpty(location, "/teiid-client-settings.properties");
+        location = StringUtils.defaultIfEmpty(location, "/kubling-client-settings.properties");
 
         InputStream is = SocketServerConnectionFactory.class.getResourceAsStream(location);
         if (is != null) {

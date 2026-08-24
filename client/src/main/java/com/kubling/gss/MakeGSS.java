@@ -50,7 +50,7 @@ import java.util.logging.Logger;
 
 public class MakeGSS {
 
-    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 
     public static LogonResult authenticate(ILogon logon, Properties props)
             throws LogonException, KublingComponentException, CommunicationException {
@@ -167,7 +167,7 @@ public class MakeGSS {
 
 class GssAction implements PrivilegedAction {
 
-    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
     private final ILogon logon;
     private final String kerberosPrincipalName;
     private final Properties props;

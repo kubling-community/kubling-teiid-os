@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ResultSetImpl extends WrapperImpl implements KublingResultSet, BatchResults.BatchFetcher {
-    private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
+    private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 
     private static final int BEFORE_FIRST_ROW = 0;
 
@@ -87,7 +87,7 @@ public class ResultSetImpl extends WrapperImpl implements KublingResultSet, Batc
     private int skipTo;
 
     private static final boolean DISABLE_FETCH_SIZE_DEFAULT =
-            PropertiesUtils.getHierarchicalProperty("org.teiid." + DISABLE_FETCH_SIZE, false, Boolean.class);
+            PropertiesUtils.getHierarchicalProperty("com.kubling." + DISABLE_FETCH_SIZE, false, Boolean.class);
 
     private Boolean disableFetchSize;
 

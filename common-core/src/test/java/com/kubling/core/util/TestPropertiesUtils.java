@@ -445,24 +445,24 @@ public class TestPropertiesUtils {
     @Test
     public void testCaseSensitive() {
         Properties p = new Properties();
-        p.setProperty("org.teiid.val", "100");
+        p.setProperty("com.kubling.val", "100");
         MyBean test = new MyBean();
-        PropertiesUtils.setBeanProperties(test, p, "org.teiid");
+        PropertiesUtils.setBeanProperties(test, p, "com.kubling");
         assertEquals(100, test.getVal());
     }
 
     @Test
     public void testSystemProperty() {
-        String old = System.setProperty("org.teiid.val", "200");
+        String old = System.setProperty("com.kubling.val", "200");
         try {
             MyBean test = new MyBean();
-            PropertiesUtils.setBeanProperties(test, System.getProperties(), "org.teiid");
+            PropertiesUtils.setBeanProperties(test, System.getProperties(), "com.kubling");
             assertEquals(200, test.getVal());
         } finally {
             if (old != null) {
-                System.setProperty("org.teiid.val", old);
+                System.setProperty("com.kubling.val", old);
             } else {
-                System.clearProperty("org.teiid.val");
+                System.clearProperty("com.kubling.val");
             }
         }
     }
@@ -471,7 +471,7 @@ public class TestPropertiesUtils {
     public void testGetEnvValue() {
         Map<String, String> env = new HashMap<>();
         env.put("ORG_TEIID_SOME_LONG_VAL", "val");
-        assertEquals("val", PropertiesUtils.getValue("org.teiid.someLongVal", Collections.EMPTY_MAP, env));
+        assertEquals("val", PropertiesUtils.getValue("com.kubling.someLongVal", Collections.EMPTY_MAP, env));
     }
 
 }
