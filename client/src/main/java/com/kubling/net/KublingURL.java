@@ -26,7 +26,7 @@ import java.util.*;
 
 
 /**
- * Class defines the URL in the Teiid.
+ * Class defines the URL in the Kubling.
  *
  * @since 4.2
  */

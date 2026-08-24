@@ -55,8 +55,8 @@ public class TestMMXid {
     @Test
     public void testToString() {
         assertEquals(XID1Copy.toString(), XID1.toString());
-        assertEquals("Teiid-Xid global:1 branch:null format:0", XID1.toString());
-        assertEquals("Teiid-Xid global:2 branch:3 format:0", XID2.toString());
+        assertEquals("Kubling-Xid global:1 branch:null format:0", XID1.toString());
+        assertEquals("Kubling-Xid global:2 branch:3 format:0", XID2.toString());
     }
 
 }

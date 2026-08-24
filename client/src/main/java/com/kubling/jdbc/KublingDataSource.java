@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 
 
 /**
- * The Teiid-based Kubling DBVirt JDBC DataSource implementation class of {@link javax.sql.DataSource} and
+ * The Kubling-based Kubling DBVirt JDBC DataSource implementation class of {@link javax.sql.DataSource} and
  * {@link javax.sql.XADataSource}.
  * <p>
  * The {@link javax.sql.DataSource} interface follows the JavaBean design pattern,
@@ -45,11 +45,11 @@ import java.util.logging.Logger;
  * The following are the properties for this DataSource:
  * <table summary="properties">
  *   <tr><td><b>Property Name</b></td><td><b>Type</b></td><td><b>Description</b></td></tr>
- *   <tr><td>portNumber       </td><td><code>int   </code></td><td>The port number where a Teiid Server is listening
+ *   <tr><td>portNumber       </td><td><code>int   </code></td><td>The port number where a Kubling Server is listening
  *                                                                 for requests.</td></tr>
- *   <tr><td>serverName       </td><td><code>String</code></td><td>The hostname or IP address of the Teiid Server.</td></tr>
+ *   <tr><td>serverName       </td><td><code>String</code></td><td>The hostname or IP address of the Kubling Server.</td></tr>
  * </table>
- * If "serverName" property is not set then data source will try to create an embedded connection to the Teiid server.
+ * If "serverName" property is not set then data source will try to create an embedded connection to the Kubling server.
  */
 public class KublingDataSource extends BaseDataSource {
 

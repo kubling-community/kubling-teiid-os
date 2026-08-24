@@ -114,7 +114,7 @@ public class ObjectDecoderInputStream extends ObjectInputStream {
                 }
             }
             if (stream == null) {
-                final File f = File.createTempFile("teiid", null);
+                final File f = File.createTempFile("kubling", null);
                 StreamFactoryReference sfr = streams.get(streamIndex);
                 sfr.setStreamFactory(new InputStreamFactory() {
 

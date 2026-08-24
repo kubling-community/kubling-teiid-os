@@ -470,7 +470,7 @@ public class TestPropertiesUtils {
     @Test
     public void testGetEnvValue() {
         Map<String, String> env = new HashMap<>();
-        env.put("ORG_TEIID_SOME_LONG_VAL", "val");
+        env.put("COM_KUBLING_SOME_LONG_VAL", "val");
         assertEquals("val", PropertiesUtils.getValue("com.kubling.someLongVal", Collections.EMPTY_MAP, env));
     }
 

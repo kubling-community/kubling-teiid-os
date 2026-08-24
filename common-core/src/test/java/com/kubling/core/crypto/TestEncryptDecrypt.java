@@ -47,7 +47,7 @@ public class TestEncryptDecrypt {
 
     @BeforeAll
     public static void oneTimeSetup() throws CryptoException, IOException {
-        cryptor = SymmetricCryptor.getSymmectricCryptor(TestEncryptDecrypt.class.getResource("/teiid.keystore"));
+        cryptor = SymmetricCryptor.getSymmectricCryptor(TestEncryptDecrypt.class.getResource("/kubling.keystore"));
     }
 
     // =========================================================================
@@ -167,4 +167,3 @@ public class TestEncryptDecrypt {
     }
 
 }
-

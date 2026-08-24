@@ -56,7 +56,7 @@ public class StatementImpl extends WrapperImpl implements KublingStatement {
 
     private static final Logger logger = Logger.getLogger("com.kubling.jdbc");
 
-    static EnhancedTimer cancellationTimer = new EnhancedTimer("Teiid Statement Timeout");
+    static EnhancedTimer cancellationTimer = new EnhancedTimer("Kubling Statement Timeout");
 
     private static final class QueryTimeoutCancelTask implements Runnable {
         private final WeakReference<StatementImpl> ref;

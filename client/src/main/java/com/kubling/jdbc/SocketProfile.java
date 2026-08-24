@@ -28,7 +28,7 @@ import java.util.Properties;
 
 
 /**
- * <p> The java.sql.DriverManager class uses this class to connect to Teiid Server.
+ * <p> The java.sql.DriverManager class uses this class to connect to Kubling Server.
  * The KublingDriver class has a static initializer, which
  * is used to instantiate and register itself with java.sql.DriverManager. The
  * DriverManager's <code>getConnection</code> method calls <code>connect</code>

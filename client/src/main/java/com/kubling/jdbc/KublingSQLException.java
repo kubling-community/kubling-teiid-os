@@ -38,7 +38,7 @@ import java.sql.SQLException;
 
 
 /**
- * Teiid specific SQLException
+ * Kubling specific SQLException
  */
 
 public class KublingSQLException extends SQLException {

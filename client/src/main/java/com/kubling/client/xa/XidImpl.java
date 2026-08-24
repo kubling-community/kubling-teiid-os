@@ -24,7 +24,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * Teiid implementation of Xid.
+ * Kubling implementation of Xid.
  */
 public class XidImpl implements Xid, Externalizable {
 
@@ -89,7 +89,7 @@ public class XidImpl implements Xid, Externalizable {
      */
     public String toString() {
         if (toString == null) {
-            toString = "Teiid-Xid global:" +
+            toString = "Kubling-Xid global:" +
                     getByteArrayString(globalTransactionId) +
                     " branch:" +
                     getByteArrayString(branchQualifier) +

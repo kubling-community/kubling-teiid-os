@@ -44,7 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Teiid's Connection implementation.
+ * Kubling's Connection implementation.
  */
 public class ConnectionImpl extends WrapperImpl implements KublingConnection {
     private static final int MAX_OPEN_STATEMENTS =
@@ -672,7 +672,7 @@ public class ConnectionImpl extends WrapperImpl implements KublingConnection {
     }
 
     /**
-     * <p>Teiid does not allow setting a catalog through a connection. This
+     * <p>Kubling does not allow setting a catalog through a connection. This
      * method silently ignores the request as per the specification.
      */
     public void setCatalog(String catalog) {

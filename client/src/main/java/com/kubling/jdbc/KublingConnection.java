@@ -22,7 +22,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Optional methods supported by Teiid Connections.
+ * Optional methods supported by Kubling Connections.
  */
 public interface KublingConnection extends Connection {
 

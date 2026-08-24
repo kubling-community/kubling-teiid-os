@@ -28,7 +28,7 @@ public interface CoreConstants {
     String INFORMATION_SCHEMA = "information_schema";
 
     /**
-     * Constant for the anonymous Teiid system username
+     * Constant for the anonymous Kubling system username
      */
     String DEFAULT_ANON_USERNAME = "anonymous";
 }

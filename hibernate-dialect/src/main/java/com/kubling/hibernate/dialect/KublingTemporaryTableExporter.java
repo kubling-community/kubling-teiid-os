@@ -128,7 +128,7 @@ public class KublingTemporaryTableExporter implements TemporaryTableExporter {
             // it is unfortunate that entityDescriptor is not exposed in TemporaryTable, therefore we can't
             // determine whether the catalog was added to the name, so here we can only assume.
             // If name contains dots '.' we assume that the string between the start and the first dot is actually
-            // the catalog name and therefore we remove, since Teiid does not support schema based temp tables
+            // the catalog name and therefore we remove, since Kubling does not support schema based temp tables
             // TODO document this somewhere
             tableName = tableName.substring(tableName.indexOf('.')+1);
         }

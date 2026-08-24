@@ -31,7 +31,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * The Teiid-based Kubling DBVirt JDBC DataSource implementation class of {@link javax.sql.DataSource} and
+ * The Kubling-based Kubling DBVirt JDBC DataSource implementation class of {@link javax.sql.DataSource} and
  * {@link XADataSource}.
  * <p>
  * The {@link javax.sql.DataSource} interface follows the JavaBean design pattern,
@@ -64,7 +64,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     protected static final int DEFAULT_LOG_LEVEL = 0;
 
     /**
-     * The name of the virtual database on a particular Teiid Server.
+     * The name of the virtual database on a particular Kubling Server.
      * This property name is one of the standard property names defined by the JDBC 2.0 specification,
      * and is <i>required</i>.
      */
@@ -104,13 +104,13 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     /**
      * The version number of the virtual database to which a connection is to be established.
      * This property is <i>optional</i>; if not specified, the assumption is that the latest version
-     * on the Teiid Server is to be used.
+     * on the Kubling Server is to be used.
      */
     private String databaseVersion;
 
     /**
      * The name of the application.  Supplying this property may allow an administrator of a
-     * Teiid Server to better identify individual connections and usage patterns.
+     * Kubling Server to better identify individual connections and usage patterns.
      * This property is <i>optional</i>.
      */
     private String applicationName;
@@ -386,7 +386,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Returns the name of the application.  Supplying this property may allow an administrator of a
-     * Teiid Server to better identify individual connections and usage patterns.
+     * Kubling Server to better identify individual connections and usage patterns.
      * This property is <i>optional</i>.
      *
      * @return String the application name; may be null or zero-length
@@ -396,7 +396,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     }
 
     /**
-     * Returns the name of the virtual database on a particular Teiid Server.
+     * Returns the name of the virtual database on a particular Kubling Server.
      *
      * @return String
      */
@@ -453,7 +453,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
 
     /**
      * Sets the name of the application.  Supplying this property may allow an administrator of a
-     * Teiid Server to better identify individual connections and usage patterns.
+     * Kubling Server to better identify individual connections and usage patterns.
      * This property is <i>optional</i>.
      *
      * @param applicationName The applicationName to set
@@ -463,7 +463,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     }
 
     /**
-     * Sets the name of the virtual database on a particular Teiid Server.
+     * Sets the name of the virtual database on a particular Kubling Server.
      *
      * @param databaseName The name of the virtual database
      */
@@ -562,7 +562,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Returns the current setting for how connections are created by this DataSource manage transactions
      * for client requests when client applications do not use transactions.
      * Because a virtual database will likely deal with multiple underlying information sources,
-     * Teiid will execute all client requests within the contexts of transactions.
+     * Kubling will execute all client requests within the contexts of transactions.
      * This method determines the semantics of creating such transactions when the client does not
      * explicitly do so.
      *
@@ -577,7 +577,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
      * Sets the setting for how connections are created by this DataSource manage transactions
      * for client requests with autoCommit = true.
      * Because a virtual database will likely deal with multiple underlying information sources,
-     * Teiid will execute all client requests within the contexts of transactions.
+     * Kubling will execute all client requests within the contexts of transactions.
      * This method determines the semantics of creating such transactions when the client does not
      * explicitly do so.
      * <p>

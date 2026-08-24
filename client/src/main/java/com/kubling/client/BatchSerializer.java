@@ -314,7 +314,7 @@ public class BatchSerializer {
 
     }
 
-    private static final int MAX_UTF = 0xFFFF / 3; //this is greater than the expected max length of Teiid Strings
+    private static final int MAX_UTF = 0xFFFF / 3; //this is greater than the expected max length of Kubling Strings
 
     private static class StringColumnSerializer1 extends ColumnSerializer {
         @Override

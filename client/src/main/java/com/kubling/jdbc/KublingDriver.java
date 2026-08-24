@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 
 
 /**
- * JDBC Driver class for Teiid Embedded and Teiid Server. This class automatically registers with the
+ * JDBC Driver class for Kubling Embedded and Kubling Server. This class automatically registers with the
  * {@link DriverManager}
  * <p>
  * The accepted URL format for the connection

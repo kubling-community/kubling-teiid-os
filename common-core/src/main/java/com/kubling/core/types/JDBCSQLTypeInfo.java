@@ -279,7 +279,7 @@ public final class JDBCSQLTypeInfo {
      * This method is used to obtain a short indicating JDBC SQL type for any object.
      * The short values that give the type info are from java.sql.Types.
      *
-     * @param typeName of the teiid type.
+     * @param typeName of the Kubling type.
      * @return A short value representing SQL Type for the given java type.
      */
     public static int getSQLType(String typeName) {

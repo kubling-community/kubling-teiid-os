@@ -23,7 +23,7 @@ import java.sql.SQLWarning;
 
 
 /**
- * Teiid specific SQLWarning<br>
+ * Kubling specific SQLWarning<br>
  * If the cause was a source SQLWarning, then you may need to consult
  * the warning chain to get all warnings, see the example below.
  *

@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestKublingURL {
 
     @Test
-    public final void testTeiidURL() throws Exception {
+    public final void testKublingURL() throws Exception {
         String SERVER_URL = "mm://localhost:31000";
         assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -40,7 +40,7 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidURLIPv6() throws Exception {
+    public final void testKublingURLIPv6() throws Exception {
         String SERVER_URL = "mm://[3ffe:ffff:0100:f101::1]:31000";
         assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -65,7 +65,7 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidURLSecure() throws Exception {
+    public final void testKublingURLSecure() throws Exception {
         String SERVER_URL = "mms://localhost:31000";
         assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -76,25 +76,25 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidURLBadProtocolMM() {
+    public final void testKublingURLBadProtocolMM() {
         String SERVER_URL = "mmm://localhost:31000";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
-    public final void testTeiidURLWrongSlash() {
+    public final void testKublingURLWrongSlash() {
         String SERVER_URL = "mm:\\\\localhost:31000";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
-    public final void testTeiidURLOneSlash() {
+    public final void testKublingURLOneSlash() {
         String SERVER_URL = "mm:/localhost:31000";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
-    public final void testTeiidURLNoHost() {
+    public final void testKublingURLNoHost() {
         String SERVER_URL = "mm://:31000";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -102,7 +102,7 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidURLNoHostAndPort() {
+    public final void testKublingURLNoHostAndPort() {
         String SERVER_URL = "mm://:";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -110,19 +110,19 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidURLNoHostAndPort2() {
+    public final void testKublingURLNoHostAndPort2() {
         String SERVER_URL = "mm://";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
-    public final void testTeiidURLBadPort() {
+    public final void testKublingURLBadPort() {
         String SERVER_URL = "mm://localhost:port";
         assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
-    public final void testTeiidURL2Hosts() throws Exception {
+    public final void testKublingURL2Hosts() throws Exception {
         String SERVER_URL = "mm://localhost:31000,localhost:31001";
         assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -133,7 +133,7 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidIPv6URL2Hosts() throws Exception {
+    public final void testKublingIPv6URL2Hosts() throws Exception {
         String SERVER_URL = "mm://[3ffe:ffff:0100:f101::1]:31000,[::1]:31001, 127.0.0.1:31003";
         assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
@@ -148,7 +148,7 @@ public class TestKublingURL {
     }
 
     @Test
-    public final void testTeiidURL3Hosts() throws Exception {
+    public final void testKublingURL3Hosts() throws Exception {
         String SERVER_URL = "mm://localhost:31000,localhost:31001,localhost:31002";
         assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 

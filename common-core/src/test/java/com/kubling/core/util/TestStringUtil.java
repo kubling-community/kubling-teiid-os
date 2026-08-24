@@ -235,6 +235,6 @@ public class TestStringUtil {
         assertEquals(m.get("x"), "");
         assertEquals(EnumTest.HELLO, StringUtil.valueOf("HELLO", EnumTest.class));
 
-        assertEquals(new URL("http://teiid.org"), StringUtil.valueOf("http://teiid.org", URL.class));
+        assertEquals(new URL("https://kubling.com"), StringUtil.valueOf("https://kubling.com", URL.class));
     }
 }

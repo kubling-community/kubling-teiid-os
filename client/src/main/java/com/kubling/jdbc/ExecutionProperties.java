@@ -121,7 +121,6 @@ public interface ExecutionProperties {
     String QUERYTIMEOUT = "QUERYTIMEOUT";
 
     /**
-     * TEIID-1651
      * A change was made in JDBC4 so that when an 'Alias' is used it will
      * now be returned as the label.   Prior to this, it was returned as
      * the name.   Setting this property to <code>false</code> will enable
