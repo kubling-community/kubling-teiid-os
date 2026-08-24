@@ -7,10 +7,10 @@
     <groupId>com.kubling</groupId>
     <artifactId>kubling-teiid</artifactId>
     <version>26.1</version>
-    <name>Parent</name>
+    <name>Kubling Core and Client</name>
     <packaging>pom</packaging>
 
-    <description>The only free Virtual DB Engine for Operations.</description>
+    <description>Shared runtime types, protocol contracts, and JVM clients for Kubling</description>
 
     <parent>
         <groupId>org.basepom</groupId>
@@ -41,7 +41,7 @@
     </licenses>
 
     <properties>
-        <!-- Needs to be targeted to JDK11 for compatibility -->
+        <!-- Public artifacts target Java 21. -->
         <project.build.targetJdk>21</project.build.targetJdk>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>

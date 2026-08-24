@@ -1,11 +1,43 @@
-# Kubling Engine Core and Client
+# Kubling Core and Client
+
 [![Kubling license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE)
 
-This repository contains Kubling common core datatypes, and other modules for connecting to the Engine.
+This repository contains the shared JVM foundation used by the Kubling engine and its Java integrations. It publishes
+the runtime data types, serialization contracts, JDBC client, Hibernate dialect, and Testcontainers integration needed
+to communicate with Kubling.
+
+Several artifacts in this repository cross process boundaries. Changes to public types, serialized classes, JDBC URLs,
+or socket messages must therefore be coordinated with the Kubling server release that adopts them.
+
+## Modules
+
+| Module | Artifact | Purpose |
+| --- | --- | --- |
+| `common-core` | `com.kubling:kubling-common-core` | Shared runtime types, conversions, LOB support, serialization, and core utilities. |
+| `client` | `com.kubling:kubling-client` | JDBC, XA, authentication, socket transport, requests, results, and metadata. |
+| `hibernate-dialect` | `com.kubling:kubling-hibernate-dialect` | Hibernate ORM dialect and automatic dialect resolution. |
+| `test-container` | `com.kubling:kubling-test-container` | Testcontainers integration for Java applications. |
+| `build` | `com.kubling:kubling` | JDBC and source distribution assemblies. |
+
+## Build
+
+The project targets Java 21 and includes a Maven Wrapper:
+
+```bash
+./mvnw verify
+```
+
+Distribution assemblies are enabled explicitly:
+
+```bash
+./mvnw -Pdriver-release package
+```
 
 ## Versioning
-Please note that, although the Engine utilizes the `common-core` and `client` libraries, this is an independent 
-project from the `Kubling` server, with its own release cycles.
 
-The versions of the libraries in this repository may not align with the version of the `Kubling` server.  
-To address this, each server release will explicitly specify the versions of `common-core` and `client` used during its build process.
+This repository has its own release cycle. Artifact versions do not need to match the Kubling server version; each
+server release declares the exact versions it consumes.
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE). See [COPYRIGHT.txt](COPYRIGHT.txt) for upstream attribution.

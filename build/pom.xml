@@ -8,14 +8,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kubling</artifactId>
-    <name>Build</name>
-    <description>Kubling Build</description>
+    <name>Kubling Distribution</name>
+    <description>Assembles the Kubling JDBC driver and source distribution</description>
 
     <packaging>pom</packaging>
-
-    <properties>
-        <dir.teiid>kubling-${project.version}</dir.teiid>
-    </properties>
 
     <build>
         <outputDirectory>target/kits</outputDirectory>

@@ -1,4 +1,4 @@
-<!--This script builds a JAR for a Teiid Embedded Server Installation -->
+<!-- Builds the Kubling source distribution. -->
 <assembly>
 
     <id>src</id>
@@ -13,11 +13,19 @@
         <fileSet>
             <directory>${project.basedir}/..</directory>
             <useDefaultExcludes>true</useDefaultExcludes>
-            <outputDirectory>teiid</outputDirectory>
+            <outputDirectory>kubling</outputDirectory>
             <excludes>
+                <exclude>**/.agents/**</exclude>
+                <exclude>**/.codex/**</exclude>
+                <exclude>**/.git/**</exclude>
+                <exclude>**/.github/modernize/**</exclude>
+                <exclude>**/.idea/**</exclude>
+                <exclude>**/.mvn/wrapper/maven-wrapper.jar</exclude>
                 <exclude>**/target/**</exclude>
                 <exclude>**/.settings/**</exclude>
+                <exclude>**/*.iml</exclude>
                 <exclude>**/*.log</exclude>
+                <exclude>**/dependency-check-report.html</exclude>
             </excludes>
         </fileSet>
     </fileSets>
