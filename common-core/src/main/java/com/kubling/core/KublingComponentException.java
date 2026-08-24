@@ -26,12 +26,12 @@ import java.io.Serial;
  * business-related.  For instance, if a service or bean is not available
  * or communication fails.
  */
-public class TeiidComponentException extends TeiidException {
+public class KublingComponentException extends KublingException {
 
     @Serial
     private static final long serialVersionUID = 5853804556425201591L;
 
-    public TeiidComponentException() {
+    public KublingComponentException() {
         super();
     }
 
@@ -40,7 +40,7 @@ public class TeiidComponentException extends TeiidException {
      *
      * @param message A message describing the exception
      */
-    public TeiidComponentException(String message) {
+    public KublingComponentException(String message) {
         super(message);
     }
 
@@ -49,23 +49,23 @@ public class TeiidComponentException extends TeiidException {
      *
      * @param e An exception to chain to this exception
      */
-    public TeiidComponentException(Throwable e) {
+    public KublingComponentException(Throwable e) {
         super(e);
     }
 
-    public TeiidComponentException(BundleUtil.Event code, final String message) {
+    public KublingComponentException(BundleUtil.Event code, final String message) {
         super(code, message);
     }
 
-    public TeiidComponentException(BundleUtil.Event code, Throwable e, final String message) {
+    public KublingComponentException(BundleUtil.Event code, Throwable e, final String message) {
         super(code, e, message);
     }
 
-    public TeiidComponentException(BundleUtil.Event code, Throwable e) {
+    public KublingComponentException(BundleUtil.Event code, Throwable e) {
         super(code, e);
     }
 
-    public TeiidComponentException(Throwable e, String message) {
+    public KublingComponentException(Throwable e, String message) {
         super(e, message);
     }
 

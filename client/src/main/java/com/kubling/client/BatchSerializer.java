@@ -18,7 +18,7 @@
 
 package com.kubling.client;
 
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.types.*;
 import com.kubling.jdbc.JDBCPlugin;
 
@@ -994,7 +994,7 @@ public class BatchSerializer {
                                 break;
                             }
                         }
-                        throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20001, e,
+                        throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20001, e,
                                 JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20001, types[i],
                                         i, objectClass));
                     }

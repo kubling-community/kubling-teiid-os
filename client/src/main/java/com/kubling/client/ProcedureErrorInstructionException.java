@@ -19,7 +19,7 @@
 package com.kubling.client;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 
 import java.io.Serial;
 
@@ -29,7 +29,7 @@ import java.io.Serial;
  *
  * @since 4.3
  */
-public class ProcedureErrorInstructionException extends TeiidProcessingException {
+public class ProcedureErrorInstructionException extends KublingProcessingException {
 
     @Serial
     private static final long serialVersionUID = 895480748445855790L;

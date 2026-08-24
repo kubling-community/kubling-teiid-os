@@ -19,7 +19,7 @@
 package com.kubling.core.util;
 
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 import java.io.*;
 import java.io.InputStreamReader;
@@ -33,19 +33,19 @@ public class ObjectConverterUtil {
 
     private static final int DEFAULT_READING_SIZE = 8192;
 
-    protected static byte[] convertBlobToByteArray(final java.sql.Blob data) throws TeiidException {
+    protected static byte[] convertBlobToByteArray(final java.sql.Blob data) throws KublingException {
         try {
             // Open a stream to read the BLOB data
             InputStream l_blobStream = data.getBinaryStream();
             return convertToByteArray(l_blobStream);
         } catch (IOException | SQLException ioe) {
             final Object[] params = new Object[]{data.getClass().getName()};
-            throw new TeiidException(CorePlugin.Event.TEIID10030,
+            throw new KublingException(CorePlugin.Event.TEIID10030,
                     ioe, CorePlugin.Util.gs(CorePlugin.Event.TEIID10030, params));
         }
     }
 
-    public static byte[] convertToByteArray(final Object data) throws TeiidException, IOException {
+    public static byte[] convertToByteArray(final Object data) throws KublingException, IOException {
         if (data instanceof InputStream) {
             return convertToByteArray((InputStream) data);
         } else if (data instanceof byte[]) {
@@ -56,7 +56,7 @@ public class ObjectConverterUtil {
             return convertFileToByteArray((File) data);
         }
         final Object[] params = new Object[]{data.getClass().getName()};
-        throw new TeiidException(CorePlugin.Event.TEIID10032, CorePlugin.Util.gs(CorePlugin.Event.TEIID10032, params));
+        throw new KublingException(CorePlugin.Event.TEIID10032, CorePlugin.Util.gs(CorePlugin.Event.TEIID10032, params));
     }
 
     public static byte[] convertToByteArray(final InputStream is) throws IOException {

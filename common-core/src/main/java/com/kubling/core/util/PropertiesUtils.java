@@ -20,7 +20,7 @@ package com.kubling.core.util;
 
 import com.kubling.core.BundleUtil;
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import java.util.TreeMap;
  */
 public final class PropertiesUtils {
 
-    public static class InvalidPropertyException extends TeiidRuntimeException {
+    public static class InvalidPropertyException extends KublingRuntimeException {
 
         @Serial
         private static final long serialVersionUID = 1586068295007497776L;

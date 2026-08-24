@@ -56,7 +56,7 @@ public final class ObjectInputStreamWithClassloader extends
         safeClasses.add("com.kubling.client.RequestMessage");
         safeClasses.add("com.kubling.client.ResultsMessage");
         safeClasses.add("com.kubling.client.security.LogonException");
-        safeClasses.add("com.kubling.client.security.TeiidSecurityException");
+        safeClasses.add("com.kubling.client.security.KublingSecurityException");
         safeClasses.add("com.kubling.client.security.InvalidSessionException");
         safeClasses.add(StackTraceElement.class.getName());
 
@@ -92,10 +92,10 @@ public final class ObjectInputStreamWithClassloader extends
         safeClasses.add(com.kubling.core.types.AbstractGeospatialType.class.getName());
 
         safeClasses.add("com.kubling.client.util.ExceptionHolder");
-        safeClasses.add(TeiidRuntimeException.class.getName());
-        safeClasses.add(TeiidComponentException.class.getName());
-        safeClasses.add(TeiidException.class.getName());
-        safeClasses.add(TeiidProcessingException.class.getName());
+        safeClasses.add(KublingRuntimeException.class.getName());
+        safeClasses.add(KublingComponentException.class.getName());
+        safeClasses.add(KublingException.class.getName());
+        safeClasses.add(KublingProcessingException.class.getName());
         safeClasses.add(ComponentNotFoundException.class.getName());
 
         safeClasses.add(ComponentNotFoundException.class.getName());

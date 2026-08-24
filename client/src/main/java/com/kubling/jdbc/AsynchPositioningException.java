@@ -20,7 +20,7 @@ package com.kubling.jdbc;
 
 import java.io.Serial;
 
-public class AsynchPositioningException extends TeiidSQLException {
+public class AsynchPositioningException extends KublingSQLException {
 
     @Serial
     private static final long serialVersionUID = 4965087364648306848L;

@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -87,7 +87,7 @@ public final class JsonType extends BaseClobType implements Comparable<BaseClobT
             jsonNode = MAPPER.readTree(r);
             return jsonNode;
         } catch (IOException | SQLException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10085, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10085, e);
         }
     }
 
@@ -95,7 +95,7 @@ public final class JsonType extends BaseClobType implements Comparable<BaseClobT
         try {
             return MAPPER.writeValueAsString(MAPPER.treeToValue(getParsedNode(), Object.class));
         } catch (IOException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10085, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10085, e);
         }
     }
 }

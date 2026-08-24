@@ -19,7 +19,7 @@
 package com.kubling.net;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 import java.io.Serial;
 
@@ -28,7 +28,7 @@ import java.io.Serial;
  * error may or may not be recoverable.  Generally the communication
  * transport should be able to tell the difference and recover if possible.
  */
-public class CommunicationException extends TeiidException {
+public class CommunicationException extends KublingException {
     @Serial
     private static final long serialVersionUID = -8352601998078723446L;
 

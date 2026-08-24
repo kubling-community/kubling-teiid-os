@@ -19,9 +19,9 @@
 package com.kubling.client.util;
 
 import com.kubling.client.SourceWarning;
-import com.kubling.core.TeiidException;
-import com.kubling.core.TeiidProcessingException;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingException;
+import com.kubling.core.KublingProcessingException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.util.ReflectionHelper;
 import com.kubling.core.util.UnitTestUtil;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ public class TestExceptionHolder {
     }
 
     @SuppressWarnings("all")
-    public static class BadException extends TeiidProcessingException {
+    public static class BadException extends KublingProcessingException {
         private Object obj;
 
         public BadException(String msg) {
@@ -88,7 +88,7 @@ public class TestExceptionHolder {
 
 
     @SuppressWarnings("all")
-    public static class BadException2 extends TeiidProcessingException {
+    public static class BadException2 extends KublingProcessingException {
         public BadException2(String msg) {
             super(msg);
         }
@@ -117,7 +117,7 @@ public class TestExceptionHolder {
                 e.getMessage());
 
         e = e.getCause();
-        assertInstanceOf(TeiidRuntimeException.class, e);
+        assertInstanceOf(KublingRuntimeException.class, e);
 
         e = e.getCause();
         assertInstanceOf(SQLException.class, e);
@@ -151,7 +151,7 @@ public class TestExceptionHolder {
         assertInstanceOf(SQLException.class, e);
         assertEquals("Remote java.sql.SQLException: something bad happened", e.getMessage());
 
-        assertInstanceOf(TeiidRuntimeException.class, e.getCause());
+        assertInstanceOf(KublingRuntimeException.class, e.getCause());
 
         e = ((SQLException) e).getNextException();
         assertInstanceOf(SQLException.class, e);
@@ -180,13 +180,13 @@ public class TestExceptionHolder {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         ExceptionHolder holder = (ExceptionHolder) ois.readObject();
         Throwable e = holder.getException();
-        assertInstanceOf(TeiidRuntimeException.class, e);
+        assertInstanceOf(KublingRuntimeException.class, e);
         assertEquals("Remote test.UnknownException: Unknown Exception", e.getMessage());
     }
 
     @Test
     public void testDeserializationNotSerializable() throws Exception {
-        Exception ex = new TeiidException() {
+        Exception ex = new KublingException() {
         };
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -197,7 +197,7 @@ public class TestExceptionHolder {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         ExceptionHolder holder = (ExceptionHolder) ois.readObject();
         Throwable e = holder.getException();
-        assertInstanceOf(TeiidException.class, e);
+        assertInstanceOf(KublingException.class, e);
     }
 
     // TODO replace the SER file
@@ -222,7 +222,7 @@ public class TestExceptionHolder {
         try {
             ois = new ObjectInputStream(new FileInputStream(UnitTestUtil.getTestDataFile("old-exceptionholder.ser")));
             holder = (ExceptionHolder) ois.readObject();
-            assertInstanceOf(TeiidException.class, holder.getException());
+            assertInstanceOf(KublingException.class, holder.getException());
         } finally {
             ois.close();
         }

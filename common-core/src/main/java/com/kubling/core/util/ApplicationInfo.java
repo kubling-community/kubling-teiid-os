@@ -19,7 +19,7 @@
 package com.kubling.core.util;
 
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +43,7 @@ public final class ApplicationInfo implements Serializable {
                 props.load(is);
             }
         } catch (IOException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10045, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10045, e);
         }
     }
 

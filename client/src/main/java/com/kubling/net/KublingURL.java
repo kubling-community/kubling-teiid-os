@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @since 4.2
  */
-public class TeiidURL {
+public class KublingURL {
 
     public interface JDBC {
         // constant indicating Virtual database name
@@ -106,7 +106,7 @@ public class TeiidURL {
      * @param serverURL Expected format: mm[s]://server1:port1[,server2:port2]
      * @since 4.2
      */
-    public TeiidURL(String serverURL) throws MalformedURLException {
+    public KublingURL(String serverURL) throws MalformedURLException {
         if (serverURL == null) {
             throw new MalformedURLException(INVALID_FORMAT_SERVER);
         }
@@ -121,7 +121,7 @@ public class TeiidURL {
                 DEFAULT_PROTOCOL.length()), INVALID_FORMAT_SERVER);
     }
 
-    public TeiidURL(String host, int port, boolean secure) {
+    public KublingURL(String host, int port, boolean secure) {
         usingSSL = secure;
         if (host.startsWith("[")) {
             host = host.substring(1, host.indexOf(']'));
@@ -138,7 +138,7 @@ public class TeiidURL {
     public static boolean isValidServerURL(String serverURL) {
         boolean valid = true;
         try {
-            new TeiidURL(serverURL);
+            new KublingURL(serverURL);
         } catch (Exception e) {
             valid = false;
         }
@@ -209,14 +209,14 @@ public class TeiidURL {
                 int hostEnd = nextToken.indexOf("]:");
                 if (hostEnd == -1) {
                     throw new MalformedURLException
-                            (JDBCPlugin.Util.getString("TeiidURL.invalid_ipv6_hostport", nextToken, exceptionMessage));
+                            (JDBCPlugin.Util.getString("KublingURL.invalid_ipv6_hostport", nextToken, exceptionMessage));
                 }
                 host = nextToken.substring(1, hostEnd);
                 port = nextToken.substring(hostEnd + 2);
             } else {
                 int hostEnd = nextToken.indexOf(":");
                 if (hostEnd == -1) {
-                    throw new MalformedURLException(JDBCPlugin.Util.getString("TeiidURL.invalid_hostport", nextToken, exceptionMessage));
+                    throw new MalformedURLException(JDBCPlugin.Util.getString("KublingURL.invalid_hostport", nextToken, exceptionMessage));
                 }
                 host = nextToken.substring(0, hostEnd);
                 port = nextToken.substring(hostEnd + 1);
@@ -224,7 +224,7 @@ public class TeiidURL {
             host = host.trim();
             port = port.trim();
             if (host.isEmpty() || port.isEmpty()) {
-                throw new MalformedURLException(JDBCPlugin.Util.getString("TeiidURL.invalid_hostport", nextToken, exceptionMessage));
+                throw new MalformedURLException(JDBCPlugin.Util.getString("KublingURL.invalid_hostport", nextToken, exceptionMessage));
             }
             int portNumber = validatePort(port);
             HostInfo hostInfo = new HostInfo(host, portNumber);
@@ -237,7 +237,7 @@ public class TeiidURL {
         try {
             portNumber = Integer.parseInt(port);
         } catch (NumberFormatException nfe) {
-            throw new MalformedURLException(JDBCPlugin.Util.getString("TeiidURL.non_numeric_port", port));
+            throw new MalformedURLException(JDBCPlugin.Util.getString("KublingURL.non_numeric_port", port));
         }
         String msg = validatePort(portNumber);
         if (msg != null) {
@@ -248,7 +248,7 @@ public class TeiidURL {
 
     public static String validatePort(int portNumber) {
         if (portNumber < 0 || portNumber > 0xFFFF) {
-            return JDBCPlugin.Util.getString("TeiidURL.port_out_of_range", portNumber);
+            return JDBCPlugin.Util.getString("KublingURL.port_out_of_range", portNumber);
         }
         return null;
     }
@@ -306,7 +306,7 @@ public class TeiidURL {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof TeiidURL url)) {
+        if (!(obj instanceof KublingURL url)) {
             return false;
         }
         return (appServerURL.equals(url.getAppServerURL()));

@@ -107,9 +107,9 @@ public class SocketServerConnectionFactory implements ServerConnectionFactory, S
     public SocketServerConnection getConnection(Properties connectionProperties)
             throws CommunicationException, ConnectionException {
 
-        TeiidURL url;
+        KublingURL url;
         try {
-            url = new TeiidURL(connectionProperties.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+            url = new KublingURL(connectionProperties.getProperty(KublingURL.CONNECTION.SERVER_URL));
         } catch (MalformedURLException e1) {
             throw new ConnectionException(JDBCPlugin.Event.TEIID20014, e1, e1.getMessage());
         }

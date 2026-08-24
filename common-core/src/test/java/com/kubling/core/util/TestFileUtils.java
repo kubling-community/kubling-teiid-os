@@ -19,7 +19,7 @@
 package com.kubling.core.util;
 
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,7 +90,7 @@ public final class TestFileUtils {
         try {
             TestFileUtils.testDirectoryPermissions("fakeDir");
             fail("Expected a MetaMatrixCoreException");
-        } catch (TeiidException e) {
+        } catch (KublingException e) {
             // Ignored
         }
     }
@@ -120,7 +120,7 @@ public final class TestFileUtils {
      * @param dirPath Name of the directory to test
      * @since 4.3
      */
-    public static void testDirectoryPermissions(String dirPath) throws TeiidException {
+    public static void testDirectoryPermissions(String dirPath) throws KublingException {
 
         //try to create a file
         File tmpFile = new File(dirPath + File.separatorChar + TestFileUtils.TEMP_FILE);
@@ -131,17 +131,17 @@ public final class TestFileUtils {
             // Ignored
         }
         if (!success) {
-            throw new TeiidException("cannot create file in " + dirPath);
+            throw new KublingException("cannot create file in " + dirPath);
         }
 
         //test if file can be written to
         if (!tmpFile.canWrite()) {
-            throw new TeiidException("cannot write " + dirPath);
+            throw new KublingException("cannot write " + dirPath);
         }
 
         //test if file can be read
         if (!tmpFile.canRead()) {
-            throw new TeiidException("cannot read " + dirPath);
+            throw new KublingException("cannot read " + dirPath);
         }
 
         //test if file can be renamed
@@ -153,7 +153,7 @@ public final class TestFileUtils {
             // Ignored
         }
         if (!success) {
-            throw new TeiidException("failed to rename " + dirPath);
+            throw new KublingException("failed to rename " + dirPath);
         }
 
         //test if file can be deleted
@@ -165,7 +165,7 @@ public final class TestFileUtils {
         }
         if (!success) {
             final String msg = CorePlugin.Util.getString("FileUtils.Unable_to_delete_file_in", dirPath);
-            throw new TeiidException(msg);
+            throw new KublingException(msg);
         }
     }
 

@@ -18,19 +18,20 @@
 
 package com.kubling.jdbc;
 
-import java.sql.ResultSet;
+import java.sql.Connection;
 import java.sql.SQLException;
 
-public interface TeiidResultSet extends ResultSet {
+/**
+ * Optional methods supported by Teiid Connections.
+ */
+public interface KublingConnection extends Connection {
 
     /**
-     * Returns an estimate of the minimum number of rows that can be read (after the current)
-     * without blocking or the end of the ResultSet is reached.
+     * Re-authenticate with the given username and password.  If the re-authentication
+     * fails the connection will remain under the current user.
      *
-     * @return an estimate of the minimum number of rows that can be read (after the current)
-     * without blocking or the end of the ResultSet is reached.
-     * @throws SQLException if the statement is closed or another error condition occurs.
+     * @param userName    the username to authenticate with
+     * @param newPassword the password to authenticate with
      */
-    int available() throws SQLException;
-
+    void changeUser(String userName, String newPassword) throws SQLException;
 }

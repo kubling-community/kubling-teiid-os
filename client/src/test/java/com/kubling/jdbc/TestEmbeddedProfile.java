@@ -48,7 +48,7 @@ public class TestEmbeddedProfile {
     @Test
     public void testParseURL() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals(2, p.size());
     }
@@ -56,7 +56,7 @@ public class TestEmbeddedProfile {
     @Test
     public void testParseURL2() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT;version=3", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("3", p.getProperty(BaseDataSource.VERSION));
@@ -66,7 +66,7 @@ public class TestEmbeddedProfile {
     @Test
     public void testParseURL3() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT;version=4;autoCommitTxn=ON;partialResultsMode=YES;", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT;version=4;autoCommitTxn=ON;partialResultsMode=YES;", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("4", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("4", p.getProperty(BaseDataSource.VERSION));
@@ -78,7 +78,7 @@ public class TestEmbeddedProfile {
     @Test
     public void testParseURL4() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT;partialResultsMode=true", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT;partialResultsMode=true", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("true", p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE));
         assertEquals(3, p.size());
@@ -87,21 +87,21 @@ public class TestEmbeddedProfile {
     @Test
     public void testParseURL5() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
     }
 
     @Test
     public void testParseURL55() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT;", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT;", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
     }
 
     @Test
     public void testParseURL6() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT;partialResultsMode=true;version=1", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT;partialResultsMode=true;version=1", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("true", p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE));
         assertEquals("1", p.getProperty(BaseDataSource.VDB_VERSION));
@@ -112,7 +112,7 @@ public class TestEmbeddedProfile {
     @Test
     public void test() throws Exception {
         try {
-            Class.forName("com.kubling.jdbc.TeiidDriver");
+            Class.forName("com.kubling.jdbc.KublingDriver");
             DriverManager.getConnection("jdbc:teiid:Parts@invalidConfig.properties;version=1");
             fail();
         } catch (SQLException e) {

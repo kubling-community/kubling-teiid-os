@@ -18,7 +18,7 @@
 
 package com.kubling.client;
 
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 /**
  * <p> This class is used to store the details of an atomic query warning.
@@ -28,7 +28,7 @@ import com.kubling.core.TeiidException;
  * query is executed.
  */
 
-public class SourceWarning extends TeiidException {
+public class SourceWarning extends KublingException {
 
     public static final StackTraceElement[] EMPTY_STACK_TRACE = new StackTraceElement[0];
     private String modelName = "UNKNOWN"; // variable stores the name of the model for the atomic query 

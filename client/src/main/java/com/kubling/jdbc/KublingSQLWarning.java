@@ -28,7 +28,7 @@ import java.sql.SQLWarning;
  * the warning chain to get all warnings, see the example below.
  *
  * <pre>
- * //warning will be an instanceof TeiidSQLWarning to convey model/source information
+ * //warning will be an instanceof KublingSQLWarning to convey model/source information
  * SQLWarning warning = stmt.getWarnings();
  *
  * while (warning != null) {
@@ -45,7 +45,7 @@ import java.sql.SQLWarning;
  * }
  * </pre>
  */
-public class TeiidSQLWarning extends SQLWarning {
+public class KublingSQLWarning extends SQLWarning {
 
     @Serial
     private static final long serialVersionUID = -7080782561220818997L;
@@ -53,25 +53,25 @@ public class TeiidSQLWarning extends SQLWarning {
     private String modelName = "UNKNOWN"; // variable stores the name of the model for the atomic query 
     private String sourceName = "UNKNOWN"; // variable stores name of the connector binding 
 
-    public TeiidSQLWarning() {
+    public KublingSQLWarning() {
         super();
     }
 
-    public TeiidSQLWarning(String reason) {
+    public KublingSQLWarning(String reason) {
         super(reason);
     }
 
-    public TeiidSQLWarning(String reason, String state) {
+    public KublingSQLWarning(String reason, String state) {
         super(reason, state);
     }
 
-    public TeiidSQLWarning(String reason, String sqlState, Throwable ex, String sourceName, String modelName) {
+    public KublingSQLWarning(String reason, String sqlState, Throwable ex, String sourceName, String modelName) {
         super(reason, sqlState, ex);
         this.sourceName = sourceName;
         this.modelName = modelName;
     }
 
-    public TeiidSQLWarning(String reason, String sqlState, int errorCode, Throwable ex) {
+    public KublingSQLWarning(String reason, String sqlState, int errorCode, Throwable ex) {
         super(reason, sqlState, errorCode, ex);
     }
 

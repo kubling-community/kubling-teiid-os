@@ -20,9 +20,9 @@ package com.kubling.jdbc;
 
 import com.kubling.client.ProcedureErrorInstructionException;
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidException;
-import com.kubling.core.TeiidProcessingException;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingException;
+import com.kubling.core.KublingProcessingException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.net.CommunicationException;
 import com.kubling.net.ConnectionException;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class TestSQLException {
      */
     @Test
     public void testMMSQLException() {
-        TeiidSQLException e = new TeiidSQLException();
+        KublingSQLException e = new KublingSQLException();
         String sqlState = e.getSQLState();
         Throwable cause = e.getCause();
         int errorCode = e.getErrorCode();
@@ -88,16 +88,16 @@ public class TestSQLException {
                 new MalformedURLException(
                         "A test java.net.MalformedURLException"),
                 SQLStates.CONNECTION_EXCEPTION_SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION);
-        testCreateThrowable(new TeiidException(
+        testCreateThrowable(new KublingException(
                 "A test Generic MM Core Exception"), SQLStates.DEFAULT);
-        testCreateThrowable(new TeiidException("A test MM Exception"),
+        testCreateThrowable(new KublingException("A test MM Exception"),
                 SQLStates.DEFAULT);
-        testCreateThrowable(new TeiidProcessingException(
+        testCreateThrowable(new KublingProcessingException(
                         "A test Generic MM Query Processing Exception"),
                 SQLStates.USAGE_ERROR);
-        testCreateThrowable(new TeiidRuntimeException(
+        testCreateThrowable(new KublingRuntimeException(
                 "A test MM Runtime Exception"), SQLStates.DEFAULT);
-        testCreateThrowable(new TeiidSQLException(
+        testCreateThrowable(new KublingSQLException(
                 "A test Generic MM SQL Exception"), SQLStates.DEFAULT);
         testCreateThrowable(
                 new NoRouteToHostException(
@@ -120,8 +120,8 @@ public class TestSQLException {
      * Helper method to test SQLState and general MMSQLException validation
      */
     private void testCreateThrowable(Throwable ecause, String esqlState) {
-        TeiidSQLException e = TeiidSQLException.create(ecause);
-        if (ecause.getClass() == TeiidSQLException.class) {
+        KublingSQLException e = KublingSQLException.create(ecause);
+        if (ecause.getClass() == KublingSQLException.class) {
             ecause = null;
         }
         String sqlState = e.getSQLState();
@@ -139,13 +139,13 @@ public class TestSQLException {
 
     @Test
     public void testCreate() {
-        TeiidSQLException exception = TeiidSQLException.create(new Exception());
+        KublingSQLException exception = KublingSQLException.create(new Exception());
 
         assertEquals(exception.getMessage(), Exception.class.getName());
         assertNotNull(exception.getSQLState());
         assertEquals("38000", exception.getSQLState());
 
-        assertEquals(exception, TeiidSQLException.create(exception));
+        assertEquals(exception, KublingSQLException.create(exception));
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TestSQLException {
 
         String message = "top level message";
 
-        TeiidSQLException exception = TeiidSQLException.create(sqlexception, message);
+        KublingSQLException exception = KublingSQLException.create(sqlexception, message);
         exception.printStackTrace();
         assertEquals(sqlexception, exception.getCause());
         assertEquals(message, exception.getMessage());
@@ -172,11 +172,11 @@ public class TestSQLException {
     @Test
     public void testCodeAsVendorCode() {
 
-        TeiidException sqlexception = new TeiidException(Event.TEIID21, "foo");
+        KublingException sqlexception = new KublingException(Event.TEIID21, "foo");
 
         String message = "top level message";
 
-        TeiidSQLException exception = TeiidSQLException.create(sqlexception, message);
+        KublingSQLException exception = KublingSQLException.create(sqlexception, message);
 
         assertEquals(sqlexception.getCode(), exception.getTeiidCode());
         assertEquals(21, exception.getErrorCode());

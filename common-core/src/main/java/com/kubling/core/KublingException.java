@@ -27,26 +27,26 @@ import java.sql.SQLException;
  * business-related.  For instance, if a service or bean is not available
  * or communication fails.
  */
-public class TeiidException extends Exception {
+public class KublingException extends Exception {
 
     @Serial
     private static final long serialVersionUID = -3033427629587497938L;
     protected String code;
     private transient String originalType;
 
-    public TeiidException() {
+    public KublingException() {
     }
 
-    public TeiidException(String message) {
+    public KublingException(String message) {
         super(message);
     }
 
-    public TeiidException(BundleUtil.Event code, final String message) {
+    public KublingException(BundleUtil.Event code, final String message) {
         super(message);
         setCode(code.toString());
     }
 
-    public TeiidException(BundleUtil.Event code, Throwable t, final String message) {
+    public KublingException(BundleUtil.Event code, Throwable t, final String message) {
         super(message, t);
         if (message != null && t != null && message.equals(t.getMessage())) {
             setCode(code, t);
@@ -55,14 +55,14 @@ public class TeiidException extends Exception {
         }
     }
 
-    public TeiidException(BundleUtil.Event code, Throwable t) {
+    public KublingException(BundleUtil.Event code, Throwable t) {
         super(t);
         setCode(code, t);
     }
 
     private void setCode(BundleUtil.Event code, Throwable t) {
         String codeStr = code.toString();
-        if (t instanceof TeiidException te) {
+        if (t instanceof KublingException te) {
             if (te.getCode() != null) {
                 codeStr = te.getCode();
             }
@@ -70,11 +70,11 @@ public class TeiidException extends Exception {
         setCode(codeStr);
     }
 
-    public TeiidException(Throwable e) {
+    public KublingException(Throwable e) {
         this(e, e != null ? e.getMessage() : null);
     }
 
-    public TeiidException(Throwable e, String message) {
+    public KublingException(Throwable e, String message) {
         super(message, e);
         setCode(getCode(e));
     }
@@ -96,10 +96,10 @@ public class TeiidException extends Exception {
     }
 
     static String getCode(Throwable e) {
-        if (e instanceof TeiidException) {
-            return (((TeiidException) e).getCode());
-        } else if (e instanceof TeiidRuntimeException) {
-            return ((TeiidRuntimeException) e).getCode();
+        if (e instanceof KublingException) {
+            return (((KublingException) e).getCode());
+        } else if (e instanceof KublingRuntimeException) {
+            return ((KublingRuntimeException) e).getCode();
         } else if (e instanceof SQLException) {
             return ((SQLException) e).getSQLState();
         }

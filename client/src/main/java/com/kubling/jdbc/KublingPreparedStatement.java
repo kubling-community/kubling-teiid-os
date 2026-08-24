@@ -18,20 +18,21 @@
 
 package com.kubling.jdbc;
 
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Optional methods supported by Teiid Connections.
+ * This interface provides methods in
+ * addition to the standard JDBC methods.
  */
-public interface TeiidConnection extends Connection {
+public interface KublingPreparedStatement extends PreparedStatement {
 
     /**
-     * Re-authenticate with the given username and password.  If the re-authentication
-     * fails the connection will remain under the current user.
-     *
-     * @param userName    the username to authenticate with
-     * @param newPassword the password to authenticate with
+     * Execute the given statement using a non-blocking callback.
+     * This method is only valid for use with embedded connections.
+     * <p>
+     * Note that a single Statement may only have 1 async query executing at a time.
      */
-    void changeUser(String userName, String newPassword) throws SQLException;
+    void submitExecute(StatementCallback callback, RequestOptions options) throws SQLException;
+
 }

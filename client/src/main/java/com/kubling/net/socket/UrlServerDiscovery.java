@@ -19,7 +19,7 @@
 package com.kubling.net.socket;
 
 import com.kubling.net.HostInfo;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 
 import java.util.List;
 import java.util.Properties;
@@ -30,12 +30,12 @@ import java.util.Properties;
  */
 public class UrlServerDiscovery {
 
-    private TeiidURL url;
+    private KublingURL url;
 
     public UrlServerDiscovery() {
     }
 
-    public UrlServerDiscovery(TeiidURL url) {
+    public UrlServerDiscovery(KublingURL url) {
         this.url = url;
     }
 
@@ -43,7 +43,7 @@ public class UrlServerDiscovery {
         return url.getHostInfo();
     }
 
-    public void init(TeiidURL url, Properties p) {
+    public void init(KublingURL url, Properties p) {
         this.url = url;
     }
 

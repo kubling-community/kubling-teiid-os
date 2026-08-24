@@ -24,8 +24,8 @@ import com.kubling.client.security.Secure;
 import com.kubling.client.util.ResultsFuture;
 import com.kubling.client.xa.XATransactionException;
 import com.kubling.client.xa.XidImpl;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingProcessingException;
 
 import javax.transaction.xa.Xid;
 
@@ -34,25 +34,25 @@ public interface DQP {
 
     @Secure(optional = true)
     ResultsFuture<ResultsMessage> executeRequest(long reqID, RequestMessage message)
-            throws TeiidProcessingException, TeiidComponentException;
+            throws KublingProcessingException, KublingComponentException;
 
     ResultsFuture<ResultsMessage> processCursorRequest(long reqID, int batchFirst, int fetchSize)
-            throws TeiidProcessingException;
+            throws KublingProcessingException;
 
-    ResultsFuture<?> closeRequest(long requestID) throws TeiidProcessingException, TeiidComponentException;
+    ResultsFuture<?> closeRequest(long requestID) throws KublingProcessingException, KublingComponentException;
 
-    boolean cancelRequest(long requestID) throws TeiidProcessingException, TeiidComponentException;
+    boolean cancelRequest(long requestID) throws KublingProcessingException, KublingComponentException;
 
     ResultsFuture<?> closeLobChunkStream(int lobRequestId, long requestId, String streamId)
-            throws TeiidProcessingException, TeiidComponentException;
+            throws KublingProcessingException, KublingComponentException;
 
     ResultsFuture<LobChunk> requestNextLobChunk(int lobRequestId, long requestId, String streamId)
-            throws TeiidProcessingException, TeiidComponentException;
+            throws KublingProcessingException, KublingComponentException;
 
-    MetadataResult getMetadata(long requestID) throws TeiidComponentException, TeiidProcessingException;
+    MetadataResult getMetadata(long requestID) throws KublingComponentException, KublingProcessingException;
 
     MetadataResult getMetadata(long requestID, String preparedSql, boolean allowDoubleQuotedVariable)
-            throws TeiidComponentException, TeiidProcessingException;
+            throws KublingComponentException, KublingProcessingException;
 
     // local transaction
 

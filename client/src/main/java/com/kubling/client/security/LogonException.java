@@ -33,7 +33,7 @@ import java.io.Serial;
  * <li>The credentials that were supplied did not authenticate the user.</li>
  * </ul>
  */
-public class LogonException extends TeiidSecurityException {
+public class LogonException extends KublingSecurityException {
 
     @Serial
     private static final long serialVersionUID = -4407245748107257061L;

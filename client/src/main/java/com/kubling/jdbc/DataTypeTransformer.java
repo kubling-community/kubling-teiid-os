@@ -68,7 +68,7 @@ final class DataTypeTransformer {
                 case Blob blob -> {
                     long length = blob.length();
                     if (length > Integer.MAX_VALUE) {
-                        throw new TeiidSQLException(JDBCPlugin.Util.getString("DataTypeTransformer.blob_too_big"));
+                        throw new KublingSQLException(JDBCPlugin.Util.getString("DataTypeTransformer.blob_too_big"));
                     }
                     return targetType.cast(blob.getBytes(1, (int) length));
                 }
@@ -101,7 +101,7 @@ final class DataTypeTransformer {
                 valueStr = valueStr.substring(0, 20) + "...";
             }
             String msg = JDBCPlugin.Util.getString("DataTypeTransformer.Err_converting", valueStr, targetType.getSimpleName());
-            throw TeiidSQLException.create(e, msg);
+            throw KublingSQLException.create(e, msg);
         }
     }
 

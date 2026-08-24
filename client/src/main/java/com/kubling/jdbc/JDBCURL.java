@@ -18,7 +18,7 @@
 
 package com.kubling.jdbc;
 
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
@@ -78,12 +78,12 @@ public class JDBCURL {
                 BaseDataSource.USER_NAME,
                 BaseDataSource.PASSWORD,
                 LocalProfile.WAIT_FOR_LOAD,
-                TeiidURL.CONNECTION.AUTO_FAILOVER,
-                TeiidURL.CONNECTION.PASSTHROUGH_AUTHENTICATION,
-                TeiidURL.CONNECTION.JAAS_NAME,
-                TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME,
-                TeiidURL.CONNECTION.ENCRYPT_REQUESTS,
-                TeiidURL.CONNECTION.LOGIN_TIMEOUT,
+                KublingURL.CONNECTION.AUTO_FAILOVER,
+                KublingURL.CONNECTION.PASSTHROUGH_AUTHENTICATION,
+                KublingURL.CONNECTION.JAAS_NAME,
+                KublingURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME,
+                KublingURL.CONNECTION.ENCRYPT_REQUESTS,
+                KublingURL.CONNECTION.LOGIN_TIMEOUT,
                 DatabaseMetaDataImpl.REPORT_AS_VIEWS,
                 DatabaseMetaDataImpl.NULL_SORT,
                 ResultSetImpl.DISABLE_FETCH_SIZE));
@@ -261,7 +261,7 @@ public class JDBCURL {
     }
 
     public String getTransparentFailover() {
-        return properties.getProperty(TeiidURL.CONNECTION.AUTO_FAILOVER);
+        return properties.getProperty(KublingURL.CONNECTION.AUTO_FAILOVER);
     }
 
     public String getDisableLocalTransactions() {

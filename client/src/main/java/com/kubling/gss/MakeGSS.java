@@ -31,11 +31,11 @@ package com.kubling.gss;
 import com.kubling.client.security.ILogon;
 import com.kubling.client.security.LogonException;
 import com.kubling.client.security.LogonResult;
-import com.kubling.core.TeiidComponentException;
+import com.kubling.core.KublingComponentException;
 import com.kubling.jdbc.JDBCPlugin;
-import com.kubling.jdbc.TeiidSQLException;
+import com.kubling.jdbc.KublingSQLException;
 import com.kubling.net.CommunicationException;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 import org.ietf.jgss.*;
 
 import javax.security.auth.Subject;
@@ -53,7 +53,7 @@ public class MakeGSS {
     private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
 
     public static LogonResult authenticate(ILogon logon, Properties props)
-            throws LogonException, TeiidComponentException, CommunicationException {
+            throws LogonException, KublingComponentException, CommunicationException {
         if (logger.isLoggable(Level.FINE)) {
             logger.fine("GSS Authentication Request");
         }
@@ -61,23 +61,23 @@ public class MakeGSS {
         Object result;
 
         StringBuilder errors = new StringBuilder();
-        String jaasApplicationName = props.getProperty(TeiidURL.CONNECTION.JAAS_NAME);
+        String jaasApplicationName = props.getProperty(KublingURL.CONNECTION.JAAS_NAME);
         String nl = System.lineSeparator();
         if (jaasApplicationName == null) {
             jaasApplicationName = "Teiid";
         }
 
-        String kerberosPrincipalName = props.getProperty(TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME);
+        String kerberosPrincipalName = props.getProperty(KublingURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME);
         if (kerberosPrincipalName == null) {
             try {
-                TeiidURL url = new TeiidURL(props.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+                KublingURL url = new KublingURL(props.getProperty(KublingURL.CONNECTION.SERVER_URL));
                 kerberosPrincipalName = "TEIID/" + url.getHostInfo().getFirst().getHostName();
             } catch (Exception e) {
                 // Ignore exception
             }
             if (kerberosPrincipalName == null) {
                 errors.append(JDBCPlugin.Util.getString("client_prop_missing",
-                        TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME));
+                        KublingURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME));
                 errors.append(nl);
             }
         }
@@ -111,8 +111,8 @@ public class MakeGSS {
             errors.append(nl);
         }
         try {
-            String user = props.getProperty(TeiidURL.CONNECTION.USER_NAME);
-            String password = props.getProperty(TeiidURL.CONNECTION.PASSWORD);
+            String user = props.getProperty(KublingURL.CONNECTION.USER_NAME);
+            String password = props.getProperty(KublingURL.CONNECTION.PASSWORD);
 
             boolean performAuthentication = true;
             GSSCredential gssCredential = null;
@@ -151,8 +151,8 @@ public class MakeGSS {
 
         if (result instanceof LogonException) {
             throw (LogonException) result;
-        } else if (result instanceof TeiidComponentException) {
-            throw (TeiidComponentException) result;
+        } else if (result instanceof KublingComponentException) {
+            throw (KublingComponentException) result;
         } else if (result instanceof CommunicationException) {
             throw (CommunicationException) result;
         } else if (result instanceof Exception) {
@@ -236,7 +236,7 @@ class GssAction implements PrivilegedAction {
             }
             return result;
         } catch (GSSException gsse) {
-            return TeiidSQLException.create(gsse, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
+            return KublingSQLException.create(gsse, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20005));
         } catch (Exception e) {
             return e;
         }

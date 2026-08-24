@@ -22,9 +22,9 @@ import com.kubling.client.ProcedureErrorInstructionException;
 import com.kubling.client.security.InvalidSessionException;
 import com.kubling.client.security.LogonException;
 import com.kubling.client.util.ExceptionUtil;
-import com.kubling.core.TeiidException;
-import com.kubling.core.TeiidProcessingException;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingException;
+import com.kubling.core.KublingProcessingException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.net.CommunicationException;
 import com.kubling.net.ConnectionException;
 
@@ -41,7 +41,7 @@ import java.sql.SQLException;
  * Teiid specific SQLException
  */
 
-public class TeiidSQLException extends SQLException {
+public class KublingSQLException extends SQLException {
 
     @Serial
     private static final long serialVersionUID = 3672305321346173922L;
@@ -50,55 +50,55 @@ public class TeiidSQLException extends SQLException {
     /**
      * No-arg constructor required by Externalizable semantics.
      */
-    public TeiidSQLException() {
+    public KublingSQLException() {
         super();
     }
 
-    public TeiidSQLException(String reason) {
+    public KublingSQLException(String reason) {
         super(reason, SQLStates.DEFAULT);
     }
 
-    public TeiidSQLException(String reason, String state) {
+    public KublingSQLException(String reason, String state) {
         super(reason, state);
     }
 
-    public static TeiidSQLException create(Throwable exception) {
-        if (exception instanceof TeiidSQLException) {
-            return (TeiidSQLException) exception;
+    public static KublingSQLException create(Throwable exception) {
+        if (exception instanceof KublingSQLException) {
+            return (KublingSQLException) exception;
         }
         return create(exception, exception.getMessage());
     }
 
-    public TeiidSQLException(Throwable ex, String reason, String sqlState, int errorCode) {
+    public KublingSQLException(Throwable ex, String reason, String sqlState, int errorCode) {
         super(reason, sqlState, errorCode); // passing the message to the super class constructor.
         initCause(ex);
     }
 
-    private TeiidSQLException(SQLException ex, String message, boolean addChildren) {
+    private KublingSQLException(SQLException ex, String message, boolean addChildren) {
         super(message, ex.getSQLState() == null ? SQLStates.DEFAULT : ex.getSQLState(), ex.getErrorCode(), ex);
         if (addChildren) {
             SQLException childException = ex.getNextException(); // this a child to the SQLException constructed from reason
 
             while (childException != null) {
-                if (childException instanceof TeiidSQLException) {
+                if (childException instanceof KublingSQLException) {
                     super.setNextException(ex);
                     break;
                 }
-                super.setNextException(new TeiidSQLException(childException, getMessage(childException, null), false));
+                super.setNextException(new KublingSQLException(childException, getMessage(childException, null), false));
                 childException = childException.getNextException();
             }
         }
     }
 
-    public static TeiidSQLException create(Throwable exception, String message) {
+    public static KublingSQLException create(Throwable exception, String message) {
         message = getMessage(exception, message);
         Throwable origException = exception;
-        if (exception instanceof TeiidSQLException
+        if (exception instanceof KublingSQLException
                 && message.equals(exception.getMessage())) {
-            return (TeiidSQLException) exception;
+            return (KublingSQLException) exception;
         }
         if (exception instanceof SQLException) {
-            return new TeiidSQLException((SQLException) exception, message, true);
+            return new KublingSQLException((SQLException) exception, message, true);
         }
         String sqlState = null;
         int errorCode = 0;
@@ -107,7 +107,7 @@ public class TeiidSQLException extends SQLException {
             sqlState = se.getSQLState();
             errorCode = se.getErrorCode();
         }
-        TeiidException te = ExceptionUtil.getExceptionOfType(exception, TeiidException.class);
+        KublingException te = ExceptionUtil.getExceptionOfType(exception, KublingException.class);
         String code = null;
         if (te != null && te.getCode() != null) {
             code = te.getCode();
@@ -130,7 +130,7 @@ public class TeiidSQLException extends SQLException {
         if (sqlState == null) {
             sqlState = SQLStates.DEFAULT;
         }
-        TeiidSQLException tse = new TeiidSQLException(origException, message, sqlState, errorCode);
+        KublingSQLException tse = new KublingSQLException(origException, message, sqlState, errorCode);
         tse.teiidCode = code;
         return tse;
     }
@@ -143,9 +143,9 @@ public class TeiidSQLException extends SQLException {
             sqlState = SQLStates.INVALID_AUTHORIZATION_SPECIFICATION_NO_SUBCLASS;
         } else if (exception instanceof ProcedureErrorInstructionException) {
             sqlState = SQLStates.VIRTUAL_PROCEDURE_ERROR;
-        } else if (exception instanceof TeiidProcessingException) {
+        } else if (exception instanceof KublingProcessingException) {
             sqlState = SQLStates.USAGE_ERROR;
-            if (SQLStates.QUERY_CANCELED.equals(((TeiidException) exception).getCode())) {
+            if (SQLStates.QUERY_CANCELED.equals(((KublingException) exception).getCode())) {
                 sqlState = SQLStates.QUERY_CANCELED;
             }
         } else if (exception instanceof UnknownHostException
@@ -156,7 +156,7 @@ public class TeiidSQLException extends SQLException {
             sqlState = SQLStates.CONNECTION_EXCEPTION_SQLCLIENT_UNABLE_TO_ESTABLISH_SQLCONNECTION;
         } else if (exception instanceof IOException) {
             sqlState = SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION;
-        } else if (exception instanceof TeiidException) {
+        } else if (exception instanceof KublingException) {
             if (exception instanceof CommunicationException) {
                 sqlState = SQLStates.CONNECTION_EXCEPTION_STALE_CONNECTION;
             }
@@ -173,16 +173,16 @@ public class TeiidSQLException extends SQLException {
     }
 
     private static Throwable findRootException(Throwable exception) {
-        if (exception instanceof TeiidRuntimeException) {
+        if (exception instanceof KublingRuntimeException) {
             while (exception.getCause() != exception
                     && exception.getCause() != null) {
                 exception = exception.getCause();
             }
-            if (exception instanceof TeiidRuntimeException runtimeException) {
+            if (exception instanceof KublingRuntimeException runtimeException) {
                 while (runtimeException.getCause() != exception
                         && runtimeException.getCause() != null) {
-                    if (runtimeException.getCause() instanceof TeiidRuntimeException) {
-                        runtimeException = (TeiidRuntimeException) runtimeException
+                    if (runtimeException.getCause() instanceof KublingRuntimeException) {
+                        runtimeException = (KublingRuntimeException) runtimeException
                                 .getCause();
                     } else {
                         exception = runtimeException.getCause();

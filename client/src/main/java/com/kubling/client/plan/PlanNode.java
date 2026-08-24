@@ -18,7 +18,7 @@
 
 package com.kubling.client.plan;
 
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.types.XMLType;
 import com.kubling.core.util.ExternalizeUtil;
 import com.kubling.jdbc.JDBCPlugin;
@@ -160,9 +160,9 @@ public class PlanNode implements Externalizable {
             writer.writeEndDocument();
             return stringWriter.toString();
         } catch (FactoryConfigurationError e) {
-            throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20002, e);
+            throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20002, e);
         } catch (XMLStreamException e) {
-            throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20003, e);
+            throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20003, e);
         }
     }
 

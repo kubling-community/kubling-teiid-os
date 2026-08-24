@@ -19,7 +19,7 @@
 package com.kubling.core.types;
 
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.util.EquivalenceUtil;
 import com.kubling.core.util.ObjectConverterUtil;
 
@@ -129,7 +129,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         try {
             return new SerialBlob(bytes);
         } catch (SQLException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10047, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10047, e);
         }
     }
 
@@ -186,9 +186,9 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
             }
             return Long.signum(len1 - len2);
         } catch (SQLException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10048, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10048, e);
         } catch (IOException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10049, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10049, e);
         }
     }
 
@@ -205,7 +205,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
         }
         try {
             return this.compareTo(other) == 0;
-        } catch (TeiidRuntimeException e) {
+        } catch (KublingRuntimeException e) {
             return false;
         }
     }
@@ -214,7 +214,7 @@ public class BlobType extends Streamable<Blob> implements Blob, Comparable<BlobT
     public int hashCode() {
         try {
             return (int) reference.length();
-        } catch (TeiidRuntimeException | SQLException e) {
+        } catch (KublingRuntimeException | SQLException e) {
             return 0;
         }
     }

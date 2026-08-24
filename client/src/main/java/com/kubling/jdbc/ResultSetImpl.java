@@ -23,8 +23,8 @@ import com.kubling.client.lob.LobChunkInputStream;
 import com.kubling.client.lob.StreamingLobChunckProducer;
 import com.kubling.client.plan.PlanNode;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.types.*;
 import com.kubling.core.util.PropertiesUtils;
 import com.kubling.core.util.SqlUtil;
@@ -43,7 +43,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchResults.BatchFetcher {
+public class ResultSetImpl extends WrapperImpl implements KublingResultSet, BatchResults.BatchFetcher {
     private static final Logger logger = Logger.getLogger("org.teiid.jdbc");
 
     private static final int BEFORE_FIRST_ROW = 0;
@@ -140,8 +140,8 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
                 this.statement.checkStatement();
                 try {
                     this.statement.getDQP().closeRequest(requestID);
-                } catch (TeiidProcessingException | TeiidComponentException e) {
-                    throw TeiidSQLException.create(e);
+                } catch (KublingProcessingException | KublingComponentException e) {
+                    throw KublingSQLException.create(e);
                 }
             }
             isClosed = true;
@@ -161,7 +161,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         if (isClosed) {
             String msg = JDBCPlugin.Util
                     .getString("MMResultSet.Cant_call_closed_resultset");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
     }
 
@@ -173,7 +173,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      */
     Object getOutputParamValue(int index) throws SQLException {
         if (index <= resultColumns || index > resultColumns + parameters) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("StoredProcedureResultsImpl.Invalid_parameter_index__{0}_2", index));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("StoredProcedureResultsImpl.Invalid_parameter_index__{0}_2", index));
         }
         // Mark the row we're on
         final int originalRow = getAbsoluteRowNumber();
@@ -195,11 +195,11 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
      */
     public Object getObject(int column) throws SQLException {
         if (isAfterLast()) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("StoredProcedureResultsImpl.ResultSet_cursor_is_after_the_last_row._1"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("StoredProcedureResultsImpl.ResultSet_cursor_is_after_the_last_row._1"));
         }
         // only get the Object of the result set
         if (column > resultColumns) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("ResultsImpl.Invalid_col_index", column));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("ResultsImpl.Invalid_col_index", column));
         }
         return getObjectDirect(column);
     }
@@ -271,7 +271,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         List<?> cursorRow = batchResults.getCurrentRow();
 
         if (cursorRow == null) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("ResultsImpl.The_cursor_is_not_on_a_valid_row._1"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("ResultsImpl.The_cursor_is_not_on_a_valid_row._1"));
         }
 
         // defect 13539 - set the currentValue (defined in MMResultSet) so that wasNull() accurately returns whether this value was null
@@ -363,12 +363,12 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
             ResultsMessage currentResultMsg = getResults(results);
             return processBatch(currentResultMsg);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
     private ResultsFuture<ResultsMessage> submitRequestBatch(int beginRow)
-            throws TeiidSQLException {
+            throws KublingSQLException {
         if (beginRow > maxRows && skipTo > 0) {
             beginRow = skipTo;
         }
@@ -387,17 +387,17 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         }
         try {
             results = statement.getDQP().processCursorRequest(requestID, beginRow, fetchSize);
-        } catch (TeiidProcessingException e) {
-            throw TeiidSQLException.create(e);
+        } catch (KublingProcessingException e) {
+            throw KublingSQLException.create(e);
         }
         return results;
     }
 
     private BatchResults.Batch processBatch(
-            ResultsMessage currentResultMsg) throws TeiidSQLException {
+            ResultsMessage currentResultMsg) throws KublingSQLException {
         this.statement.setAnalysisInfo(currentResultMsg);
         if (currentResultMsg.getException() != null) {
-            throw TeiidSQLException.create(currentResultMsg.getException());
+            throw KublingSQLException.create(currentResultMsg.getException());
         }
 
         this.accumulateWarnings(currentResultMsg);
@@ -414,7 +414,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         return results.get(timeoutSeconds, TimeUnit.SECONDS);
     }
 
-    private BatchResults.Batch getCurrentBatch(ResultsMessage currentResultMsg) throws TeiidSQLException {
+    private BatchResults.Batch getCurrentBatch(ResultsMessage currentResultMsg) throws KublingSQLException {
         this.updatedPlanDescription = currentResultMsg.getPlanDescription();
         if (usePrefetch && !asynch
                 && prefetch == null && currentResultMsg.getLastRow() != currentResultMsg.getFinalRow()) {
@@ -539,7 +539,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
             case Blob blob -> blob.getBinaryStream();
             case SQLXML sqlxml -> sqlxml.getBinaryStream();
             default ->
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("MMResultSet.cannot_convert_to_binary_stream"));
+                    throw new KublingSQLException(JDBCPlugin.Util.getString("MMResultSet.cannot_convert_to_binary_stream"));
         };
 
     }
@@ -885,7 +885,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     @Override
     public boolean relative(int rows) throws SQLException {
         if (isBeforeFirst() || isAfterLast() || getFinalRowNumber() == 0) {
-            throw new TeiidSQLException(
+            throw new KublingSQLException(
                     JDBCPlugin.Util
                             .getString("ResultsImpl.The_cursor_is_not_on_a_valid_row._1"));
         }
@@ -914,7 +914,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         if (getType() == ResultSet.TYPE_FORWARD_ONLY) {
             String msg = JDBCPlugin.Util
                     .getString("ResultsImpl.Op_invalid_fwd_only");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
     }
 
@@ -980,7 +980,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
         }
         String msg = JDBCPlugin.Util.getString(
                 "MMResultsImpl.Col_doesn't_exist", columnName);
-        throw new TeiidSQLException(msg);
+        throw new KublingSQLException(msg);
     }
 
     protected Calendar getDefaultCalendar() {
@@ -1124,7 +1124,7 @@ public class ResultSetImpl extends WrapperImpl implements TeiidResultSet, BatchR
     public void setFetchSize(int rows) throws SQLException {
         checkClosed();
         if (rows < 0) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_fetch_size"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_fetch_size"));
         }
         // sets the fetch size on this statement
         if (rows == 0) {

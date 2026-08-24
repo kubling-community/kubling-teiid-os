@@ -26,14 +26,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class TestTeiidURL {
+public class TestKublingURL {
 
     @Test
     public final void testTeiidURL() throws Exception {
         String SERVER_URL = "mm://localhost:31000";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
@@ -42,11 +42,11 @@ public class TestTeiidURL {
     @Test
     public final void testTeiidURLIPv6() throws Exception {
         String SERVER_URL = "mm://[3ffe:ffff:0100:f101::1]:31000";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         List<HostInfo> hosts = url.getHostInfo();
-        assertNotNull(hosts, "TeiidURL should have 1 Host");
+        assertNotNull(hosts, "KublingURL should have 1 Host");
         assertEquals(1, hosts.size());
         assertEquals("3ffe:ffff:0100:f101::1", hosts.getFirst().getHostName());
         assertEquals(31000, hosts.getFirst().getPortNumber());
@@ -55,21 +55,21 @@ public class TestTeiidURL {
     @Test
     public final void testBogusProtocol() {
         String SERVER_URL = "foo://localhost:31000";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testBogusProtocol1() {
         String SERVER_URL = "foo://localhost:31000";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLSecure() throws Exception {
         String SERVER_URL = "mms://localhost:31000";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
@@ -78,55 +78,55 @@ public class TestTeiidURL {
     @Test
     public final void testTeiidURLBadProtocolMM() {
         String SERVER_URL = "mmm://localhost:31000";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLWrongSlash() {
         String SERVER_URL = "mm:\\\\localhost:31000";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLOneSlash() {
         String SERVER_URL = "mm:/localhost:31000";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLNoHost() {
         String SERVER_URL = "mm://:31000";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
 
-        assertThrows(MalformedURLException.class, () -> new TeiidURL(SERVER_URL));
+        assertThrows(MalformedURLException.class, () -> new KublingURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLNoHostAndPort() {
         String SERVER_URL = "mm://:";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
 
-        assertThrows(MalformedURLException.class, () -> new TeiidURL(SERVER_URL));
+        assertThrows(MalformedURLException.class, () -> new KublingURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLNoHostAndPort2() {
         String SERVER_URL = "mm://";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURLBadPort() {
         String SERVER_URL = "mm://localhost:port";
-        assertFalse(TeiidURL.isValidServerURL(SERVER_URL));
+        assertFalse(KublingURL.isValidServerURL(SERVER_URL));
     }
 
     @Test
     public final void testTeiidURL2Hosts() throws Exception {
         String SERVER_URL = "mm://localhost:31000,localhost:31001";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 2 Host");
         assertEquals(2, hosts.size());
@@ -135,11 +135,11 @@ public class TestTeiidURL {
     @Test
     public final void testTeiidIPv6URL2Hosts() throws Exception {
         String SERVER_URL = "mm://[3ffe:ffff:0100:f101::1]:31000,[::1]:31001, 127.0.0.1:31003";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         List<HostInfo> hosts = url.getHostInfo();
-        assertNotNull(hosts, "TeiidURL should have 3 Host");
+        assertNotNull(hosts, "KublingURL should have 3 Host");
         assertEquals(3, hosts.size());
 
         assertEquals("3ffe:ffff:0100:f101::1", hosts.get(0).getHostName());
@@ -150,9 +150,9 @@ public class TestTeiidURL {
     @Test
     public final void testTeiidURL3Hosts() throws Exception {
         String SERVER_URL = "mm://localhost:31000,localhost:31001,localhost:31002";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 3 Host");
         assertEquals(3, hosts.size());
@@ -161,36 +161,36 @@ public class TestTeiidURL {
     @Test
     public final void testGetHostInfo() throws Exception {
         String SERVER_URL = "mm://localhost:31000";
-        assertTrue(TeiidURL.isValidServerURL(SERVER_URL));
+        assertTrue(KublingURL.isValidServerURL(SERVER_URL));
 
-        TeiidURL url = new TeiidURL(SERVER_URL);
+        KublingURL url = new KublingURL(SERVER_URL);
         assertNotNull(url.getHostInfo());
     }
 
     @Test
     public final void testGetProtocolStandalone() throws Exception {
-        TeiidURL url = new TeiidURL("mm://localhost:31000");
+        KublingURL url = new KublingURL("mm://localhost:31000");
         assertNotNull(url);
         assertEquals("mm://localhost:31000", url.getAppServerURL());
     }
 
     @Test
     public final void testHasMoreElements() throws Exception {
-        TeiidURL url = new TeiidURL("mm://localhost:31000,localhost:31001");
+        KublingURL url = new KublingURL("mm://localhost:31000,localhost:31001");
         assertNotNull(url);
         assertFalse(url.getHostInfo().isEmpty());
     }
 
     @Test
     public final void testNextElement() throws Exception {
-        TeiidURL url = new TeiidURL("mm://localhost:31000,localhost:31001");
+        KublingURL url = new KublingURL("mm://localhost:31000,localhost:31001");
         assertEquals(2, url.getHostInfo().size());
     }
 
     @Test
     public final void testHostInfoEquals() throws Exception {
         HostInfo expectedResults = new HostInfo("localhost", 31000);
-        TeiidURL url = new TeiidURL("mm://localhost:31000");
+        KublingURL url = new KublingURL("mm://localhost:31000");
         HostInfo actualResults = url.getHostInfo().getFirst();
         assertEquals(expectedResults, actualResults);
     }
@@ -199,7 +199,7 @@ public class TestTeiidURL {
     public final void testWithEmbeddedSpaces() throws Exception {
         HostInfo expectedResults = new HostInfo("localhost", 12345);
 
-        TeiidURL url = new TeiidURL("mm://localhost : 12345");
+        KublingURL url = new KublingURL("mm://localhost : 12345");
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
@@ -211,7 +211,7 @@ public class TestTeiidURL {
     public final void testHostPortConstructor() {
         HostInfo expectedResults = new HostInfo("myhost", 12345);
 
-        TeiidURL url = new TeiidURL("myhost", 12345, false);
+        KublingURL url = new KublingURL("myhost", 12345, false);
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());
@@ -224,7 +224,7 @@ public class TestTeiidURL {
     public final void testHostPortConstructorSSL() {
         HostInfo expectedResults = new HostInfo("myhost", 12345);
 
-        TeiidURL url = new TeiidURL("myhost", 12345, true);
+        KublingURL url = new KublingURL("myhost", 12345, true);
         List<HostInfo> hosts = url.getHostInfo();
         assertNotNull(hosts, "MMURL should have 1 Host");
         assertEquals(1, hosts.size());

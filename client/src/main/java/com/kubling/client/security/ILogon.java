@@ -20,7 +20,7 @@ package com.kubling.client.security;
 
 import com.kubling.client.util.ResultsFuture;
 import com.kubling.core.ComponentNotFoundException;
-import com.kubling.core.TeiidComponentException;
+import com.kubling.core.KublingComponentException;
 import com.kubling.net.CommunicationException;
 
 import java.util.Collection;
@@ -37,7 +37,7 @@ public interface ILogon {
 
     @Secure
     LogonResult logon(Properties connectionProperties)
-            throws LogonException, TeiidComponentException, CommunicationException;
+            throws LogonException, KublingComponentException, CommunicationException;
 
     @Secure
     LogonResult neogitiateGssLogin(Properties connectionProperties, byte[] serviceToken, boolean createSession)
@@ -50,11 +50,11 @@ public interface ILogon {
      * @throws ComponentNotFoundException if it can't find the Session service.
      */
     ResultsFuture<?> ping()
-            throws InvalidSessionException, TeiidComponentException, CommunicationException;
+            throws InvalidSessionException, KublingComponentException, CommunicationException;
 
     @Deprecated
     ResultsFuture<?> ping(Collection<String> sessions)
-            throws TeiidComponentException, CommunicationException;
+            throws KublingComponentException, CommunicationException;
 
     /**
      * Log off the specified session.
@@ -62,8 +62,8 @@ public interface ILogon {
      * @throws InvalidSessionException    If session has expired or doesn't exist
      * @throws ComponentNotFoundException If it couldn't find needed service component
      */
-    ResultsFuture<?> logoff() throws InvalidSessionException, TeiidComponentException;
+    ResultsFuture<?> logoff() throws InvalidSessionException, KublingComponentException;
 
     @Secure
-    void assertIdentity(SessionToken sessionId) throws InvalidSessionException, TeiidComponentException, CommunicationException;
+    void assertIdentity(SessionToken sessionId) throws InvalidSessionException, KublingComponentException, CommunicationException;
 }

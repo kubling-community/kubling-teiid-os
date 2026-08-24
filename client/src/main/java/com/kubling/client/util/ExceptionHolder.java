@@ -20,8 +20,8 @@ package com.kubling.client.util;
 
 import com.kubling.client.SourceWarning;
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidException;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.util.ExternalizeUtil;
 import com.kubling.core.util.ObjectInputStreamWithClassloader;
 import com.kubling.core.util.ReflectionHelper;
@@ -107,8 +107,8 @@ public class ExceptionHolder implements Externalizable {
         ExternalizeUtil.writeList(out, classNames);
         out.writeObject(exception.getMessage());
         out.writeObject(exception.getStackTrace());
-        if (exception instanceof TeiidException) {
-            out.writeObject(((TeiidException) exception).getCode());
+        if (exception instanceof KublingException) {
+            out.writeObject(((KublingException) exception).getCode());
         } else {
             out.writeObject(null);
         }
@@ -172,16 +172,16 @@ public class ExceptionHolder implements Externalizable {
             try {
                 result = (Throwable) ReflectionHelper.create(className, args, ExceptionHolder.class.getClassLoader());
                 break;
-            } catch (TeiidException e1) {
+            } catch (KublingException e1) {
                 //
             }
         }
 
         if (result == null) {
-            result = new TeiidRuntimeException(args.getFirst());
-        } else if (result instanceof TeiidException) {
-            ((TeiidException) result).setCode(code);
-            ((TeiidException) result).setOriginalType(classNames.getFirst());
+            result = new KublingRuntimeException(args.getFirst());
+        } else if (result instanceof KublingException) {
+            ((KublingException) result).setCode(code);
+            ((KublingException) result).setOriginalType(classNames.getFirst());
         }
 
         result.setStackTrace(stackTrace);

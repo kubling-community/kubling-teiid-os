@@ -19,7 +19,7 @@
 package com.kubling.jdbc;
 
 import com.kubling.jdbc.JDBCURL.ConnectionType;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -80,28 +80,28 @@ public class TestSocketProfile {
      */
     @Test
     public void testAcceptsURL2() {
-        assertFalse(TeiidDriver.getInstance().acceptsURL("jdbc:matamatrix:test"));
-        assertFalse(TeiidDriver.getInstance().acceptsURL("metamatrix:test"));
-        assertFalse(TeiidDriver.getInstance().acceptsURL("jdbc&matamatrix:test"));
-        assertFalse(TeiidDriver.getInstance().acceptsURL("jdbc;metamatrix:test"));
+        assertFalse(KublingDriver.getInstance().acceptsURL("jdbc:matamatrix:test"));
+        assertFalse(KublingDriver.getInstance().acceptsURL("metamatrix:test"));
+        assertFalse(KublingDriver.getInstance().acceptsURL("jdbc&matamatrix:test"));
+        assertFalse(KublingDriver.getInstance().acceptsURL("jdbc;metamatrix:test"));
     }
 
     @Test
     public void testParseURL() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
-        assertEquals("mm://slwxp157:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("mm://slwxp157:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals(3, p.size());
     }
 
     @Test
     public void testParseURL2() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT@mms://slwxp157:1234;version=3", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT@mms://slwxp157:1234;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
-        assertEquals("mms://slwxp157:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("mms://slwxp157:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals("3", p.getProperty(BaseDataSource.VERSION));
         assertEquals(BaseDataSource.DEFAULT_APP_NAME, p.getProperty(BaseDataSource.APP_NAME));
         assertEquals(5, p.size());
@@ -110,12 +110,12 @@ public class TestSocketProfile {
     @Test
     public void testParseURL3() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT@mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302;version=4;autoCommitTxn=ON;partialResultsMode=YES;ApplicationName=Client", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("4", p.getProperty(BaseDataSource.VDB_VERSION));
         assertEquals("ON", p.getProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP));
         assertEquals("YES", p.getProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE));
-        assertEquals("mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("mm://slwxp157:1234,slntmm01:43401,sluxmm09:43302", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals("4", p.getProperty(BaseDataSource.VERSION));
         assertEquals("Client", p.getProperty(BaseDataSource.APP_NAME));
         assertEquals(7, p.size());
@@ -127,20 +127,20 @@ public class TestSocketProfile {
         assertEquals(ConnectionType.Socket, JDBCURL.acceptsUrl("jdbc:teiid:vdb@mm://[3ffe:ffff:0100:f101::1]:53535,127.0.0.1:1234"));
 
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234;version=3", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
-        assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals("3", p.getProperty(BaseDataSource.VERSION));
     }
 
     @Test
     public void testIPV6MultipleHosts() throws SQLException {
         Properties p = new Properties();
-        TeiidDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134;version=3", p);
+        KublingDriver.parseURL("jdbc:teiid:BQT@mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134;version=3", p);
         assertEquals("BQT", p.getProperty(BaseDataSource.VDB_NAME));
         assertEquals("3", p.getProperty(BaseDataSource.VDB_VERSION));
-        assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134", p.getProperty(TeiidURL.CONNECTION.SERVER_URL));
+        assertEquals("mms://[3ffe:ffff:0100:f101::1]:1234,[::1]:31000,127.0.0.1:2134", p.getProperty(KublingURL.CONNECTION.SERVER_URL));
         assertEquals("3", p.getProperty(BaseDataSource.VERSION));
     }
 }

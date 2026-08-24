@@ -22,7 +22,7 @@ import com.kubling.client.DQP;
 import com.kubling.client.RequestMessage;
 import com.kubling.client.ResultsMessage;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.types.DataTypeManager;
 import com.kubling.core.util.TimestampWithTimezone;
 import com.kubling.query.unittest.TimestampUtil;
@@ -766,17 +766,17 @@ public class TestAllResultsImpl {
         rf.getResultsReceiver().receiveResults(next);
         when(statement.getDQP().processCursorRequest(0, 2, 0)).thenReturn(rf);
         ResultSetImpl cs = new ResultSetImpl(resultsMsg, statement, null, 2);
-        assertThrows(TeiidSQLException.class, cs::next);
-        assertThrows(TeiidSQLException.class, cs::next);
+        assertThrows(KublingSQLException.class, cs::next);
+        assertThrows(KublingSQLException.class, cs::next);
     }
 
     static ResultSetImpl helpTestBatching(StatementImpl statement, final int fetchSize, final int batchLength,
-                                          final int totalLength) throws TeiidProcessingException, SQLException {
+                                          final int totalLength) throws KublingProcessingException, SQLException {
         return helpTestBatching(statement, fetchSize, batchLength, totalLength, false);
     }
 
     static ResultSetImpl helpTestBatching(StatementImpl statement, final int fetchSize, final int batchLength,
-                                          final int totalLength, final boolean partial) throws TeiidProcessingException, SQLException {
+                                          final int totalLength, final boolean partial) throws KublingProcessingException, SQLException {
         DQP dqp = statement.getDQP();
         if (dqp == null) {
             dqp = mock(DQP.class);

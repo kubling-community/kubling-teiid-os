@@ -18,7 +18,7 @@
 
 package com.kubling.jdbc;
 
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 import org.junit.jupiter.api.Test;
 
 import java.net.URLEncoder;
@@ -57,7 +57,7 @@ public class TestJDBCURL {
         expectedProperties.setProperty("logLevel", "1");
         expectedProperties.setProperty("configFile", "testdata/bqt/dqp_stmt_e2e.xmi");
         expectedProperties.setProperty(ExecutionProperties.DISABLE_LOCAL_TRANSACTIONS, "true");
-        expectedProperties.setProperty(TeiidURL.CONNECTION.AUTO_FAILOVER, "false");
+        expectedProperties.setProperty(KublingURL.CONNECTION.AUTO_FAILOVER, "false");
         JDBCURL url = new JDBCURL(URL);
         assertEquals("bqt", url.getVDBName());
         assertEquals("mm://localhost:12345", url.getConnectionURL());

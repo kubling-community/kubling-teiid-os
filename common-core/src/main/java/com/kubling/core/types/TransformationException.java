@@ -19,13 +19,13 @@
 package com.kubling.core.types;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 
 /**
  * The exception is thrown when an error occurs during data transformation,
  * typically a formatting error or an invalid input type.
  */
-public class TransformationException extends TeiidProcessingException {
+public class TransformationException extends KublingProcessingException {
 
     private static final long serialVersionUID = -4112567582638012800L;
 

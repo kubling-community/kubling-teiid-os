@@ -19,7 +19,7 @@
 package com.kubling.jdbc;
 
 import com.kubling.client.SourceWarning;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 import java.sql.SQLWarning;
 import java.util.List;
@@ -45,7 +45,7 @@ class WarningUtil {
         if (ex instanceof SourceWarning exception) {
             if (exception.isPartialResultsError()) {
                 PartialResultsWarning warning = new PartialResultsWarning(JDBCPlugin.Util.getString("WarningUtil.Failures_occurred"));
-                warning.addConnectorFailure(exception.getConnectorBindingName(), TeiidSQLException.create(exception));
+                warning.addConnectorFailure(exception.getConnectorBindingName(), KublingSQLException.create(exception));
                 return warning;
             }
             ex = exception.getCause();
@@ -53,10 +53,10 @@ class WarningUtil {
             modelName = exception.getModelName();
         }
         String code = null;
-        if (ex instanceof TeiidException) {
-            code = ((TeiidException) ex).getCode();
+        if (ex instanceof KublingException) {
+            code = ((KublingException) ex).getCode();
         }
-        return new TeiidSQLWarning(ex.getMessage(), code, ex, sourceName, modelName);
+        return new KublingSQLWarning(ex.getMessage(), code, ex, sourceName, modelName);
     }
 
     /**

@@ -19,7 +19,7 @@
 package com.kubling.jdbc;
 
 import com.kubling.client.RequestMessage;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
@@ -48,17 +48,17 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
     public static final String DEFAULT_APP_NAME = "JDBC";
 
     // constant indicating Virtual database name
-    public static final String VDB_NAME = TeiidURL.JDBC.VDB_NAME;
+    public static final String VDB_NAME = KublingURL.JDBC.VDB_NAME;
     // constant indicating Virtual database version
-    public static final String VDB_VERSION = TeiidURL.JDBC.VDB_VERSION;
+    public static final String VDB_VERSION = KublingURL.JDBC.VDB_VERSION;
     // constant for vdb version part of serverURL
-    public static final String VERSION = TeiidURL.JDBC.VERSION;
+    public static final String VERSION = KublingURL.JDBC.VERSION;
     // name of the application which is obtaining connection
-    public static final String APP_NAME = TeiidURL.CONNECTION.APP_NAME;
+    public static final String APP_NAME = KublingURL.CONNECTION.APP_NAME;
     // constant for username part of url
-    public static final String USER_NAME = TeiidURL.CONNECTION.USER_NAME;
+    public static final String USER_NAME = KublingURL.CONNECTION.USER_NAME;
     // constant for password part of url
-    public static final String PASSWORD = TeiidURL.CONNECTION.PASSWORD;
+    public static final String PASSWORD = KublingURL.CONNECTION.PASSWORD;
 
     protected static final int DEFAULT_TIMEOUT = 0;
     protected static final int DEFAULT_LOG_LEVEL = 0;
@@ -315,7 +315,7 @@ public abstract class BaseDataSource extends WrapperImpl implements javax.sql.Da
         }
 
         if (this.queryTimeout < 0) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Bad_timeout_value"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Bad_timeout_value"));
         }
 
 

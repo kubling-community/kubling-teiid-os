@@ -18,7 +18,7 @@
 
 package com.kubling.client.util;
 
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import com.kubling.jdbc.JDBCPlugin;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ public class TestExceptionUtil {
 
     @Test
     public void testSanitize() {
-        TeiidException te = new TeiidException(JDBCPlugin.Event.TEIID20000, "you don't want to see this");
+        KublingException te = new KublingException(JDBCPlugin.Event.TEIID20000, "you don't want to see this");
         te.initCause(new Exception("or this"));
 
         Throwable t = ExceptionUtil.sanitize(te, true);

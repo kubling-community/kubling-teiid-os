@@ -18,21 +18,19 @@
 
 package com.kubling.jdbc;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * This interface provides methods in
- * addition to the standard JDBC methods.
- */
-public interface TeiidPreparedStatement extends PreparedStatement {
+public interface KublingResultSet extends ResultSet {
 
     /**
-     * Execute the given statement using a non-blocking callback.
-     * This method is only valid for use with embedded connections.
-     * <p>
-     * Note that a single Statement may only have 1 async query executing at a time.
+     * Returns an estimate of the minimum number of rows that can be read (after the current)
+     * without blocking or the end of the ResultSet is reached.
+     *
+     * @return an estimate of the minimum number of rows that can be read (after the current)
+     * without blocking or the end of the ResultSet is reached.
+     * @throws SQLException if the statement is closed or another error condition occurs.
      */
-    void submitExecute(StatementCallback callback, RequestOptions options) throws SQLException;
+    int available() throws SQLException;
 
 }

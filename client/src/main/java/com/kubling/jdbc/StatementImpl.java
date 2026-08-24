@@ -26,16 +26,16 @@ import com.kubling.client.metadata.ResultsMetadataConstants;
 import com.kubling.client.plan.Annotation;
 import com.kubling.client.plan.PlanNode;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidException;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.types.DataTypeManager;
 import com.kubling.core.types.JDBCSQLTypeInfo;
 import com.kubling.core.types.SQLXMLImpl;
 import com.kubling.core.util.SqlUtil;
 import com.kubling.core.util.StringUtil;
 import com.kubling.jdbc.tracing.TracingHelper;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -50,7 +50,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class StatementImpl extends WrapperImpl implements TeiidStatement {
+public class StatementImpl extends WrapperImpl implements KublingStatement {
 
     public static final String NEWINSTANCE = "NEWINSTANCE";
 
@@ -265,8 +265,8 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         //cancel outside the lock
         try {
             this.getDQP().cancelRequest(request);
-        } catch (TeiidProcessingException | TeiidComponentException e) {
-            throw TeiidSQLException.create(e);
+        } catch (KublingProcessingException | KublingComponentException e) {
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -311,13 +311,13 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
      * <p> This utility method checks if the jdbc statement is closed and
      * throws an exception if it is closed.
      *
-     * @throws TeiidSQLException if the statement object is closed.
+     * @throws KublingSQLException if the statement object is closed.
      */
-    protected void checkStatement() throws TeiidSQLException {
+    protected void checkStatement() throws KublingSQLException {
         //Check to see the connection is closed and proceed if it is not
         driverConnection.checkConnection();
         if (isClosed) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Stmt_closed"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Stmt_closed"));
         }
     }
 
@@ -439,17 +439,17 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         if (options != null) {
             if (options.isContinuous()) {
                 if (!this.driverConnection.getServerConnection().supportsContinuous()) {
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("JDBC.continuous"));
+                    throw new KublingSQLException(JDBCPlugin.Util.getString("JDBC.continuous"));
                 }
                 if (this.getResultSetType() != ResultSet.TYPE_FORWARD_ONLY) {
                     String msg = JDBCPlugin.Util.getString("JDBC.forward_only_resultset");
-                    throw new TeiidSQLException(msg);
+                    throw new KublingSQLException(msg);
                 }
                 if (resultsMode == RequestMessage.ResultsMode.EITHER) {
                     resultsMode = RequestMessage.ResultsMode.RESULTSET;
                 } else if (resultsMode == RequestMessage.ResultsMode.UPDATECOUNT) {
                     String msg = JDBCPlugin.Util.getString("JDBC.forward_only_resultset");
-                    throw new TeiidSQLException(msg);
+                    throw new KublingSQLException(msg);
                 }
             }
         }
@@ -460,7 +460,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
             Matcher match = SET_STATEMENT.matcher(commands[0]);
             if (match.matches()) {
                 if (resultsMode == RequestMessage.ResultsMode.RESULTSET) {
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("StatementImpl.set_result_set"));
+                    throw new KublingSQLException(JDBCPlugin.Util.getString("StatementImpl.set_result_set"));
                 }
                 String val = match.group(2);
                 String key = unescapeId(val);
@@ -479,7 +479,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
                     p.setProperty(key, value);
                 } else if (val.equals(key) && "SESSION AUTHORIZATION".equalsIgnoreCase(key)) {
                     this.getMMConnection().changeUser(value, this.getMMConnection().getPassword());
-                } else if (key.equalsIgnoreCase(TeiidURL.CONNECTION.PASSWORD)) {
+                } else if (key.equalsIgnoreCase(KublingURL.CONNECTION.PASSWORD)) {
                     this.getMMConnection().setPassword(value);
                 } else if (NEWINSTANCE.equalsIgnoreCase(key)) {
                     //no op - url based load-balancing removed
@@ -500,7 +500,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
             if (match.matches()) {
                 logger.finer("Executing as transaction statement");
                 if (resultsMode == RequestMessage.ResultsMode.RESULTSET) {
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("StatementImpl.set_result_set"));
+                    throw new KublingSQLException(JDBCPlugin.Util.getString("StatementImpl.set_result_set"));
                 }
                 String command = match.group(1);
                 Boolean commit = null;
@@ -565,7 +565,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
             if (match.matches()) {
                 logger.finer("Executing as show statement");
                 if (resultsMode == RequestMessage.ResultsMode.UPDATECOUNT) {
-                    throw new TeiidSQLException(JDBCPlugin.Util.getString("StatementImpl.show_update_count"));
+                    throw new KublingSQLException(JDBCPlugin.Util.getString("StatementImpl.show_update_count"));
                 }
                 return executeShow(match);
             }
@@ -600,13 +600,13 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
                     throw (SQLException) e.getCause();
                 }
                 if (e.getCause() != null) {
-                    throw TeiidSQLException.create(e.getCause());
+                    throw KublingSQLException.create(e.getCause());
                 }
-                throw TeiidSQLException.create(e);
+                throw KublingSQLException.create(e);
             } catch (InterruptedException | TimeoutException e) {
                 timeoutOccurred();
             }
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Timeout_before_complete"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Timeout_before_complete"));
         }
         return result;
     }
@@ -743,8 +743,8 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         ResultsFuture<ResultsMessage> pendingResult;
         try {
             pendingResult = this.getDQP().executeRequest(this.currentRequestID, reqMsg);
-        } catch (TeiidException e) {
-            throw TeiidSQLException.create(e);
+        } catch (KublingException e) {
+            throw KublingSQLException.create(e);
         }
         if (compeletionListener != null) {
             pendingResult.addCompletionListener(compeletionListener);
@@ -780,7 +780,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
 
         //throw an exception unless this represents a batch update exception
         if (resultsMsg.getException() != null && (!resultsMsg.isUpdateResult() || resultsMsg.getResultsList() == null)) {
-            throw TeiidSQLException.create(resultsMsg.getException());
+            throw KublingSQLException.create(resultsMsg.getException());
         }
 
         resultsMsg.processResults();
@@ -802,13 +802,13 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
             // In update scenarios close the statement implicitly - the server should have already done this
             try {
                 getDQP().closeRequest(getCurrentRequestID());
-            } catch (TeiidProcessingException | TeiidComponentException e) {
-                throw TeiidSQLException.create(e);
+            } catch (KublingProcessingException | KublingComponentException e) {
+                throw KublingSQLException.create(e);
             }
 
             //handle a batch update exception
             if (resultsMsg.getException() != null) {
-                TeiidSQLException exe = TeiidSQLException.create(resultsMsg.getException());
+                KublingSQLException exe = KublingSQLException.create(resultsMsg.getException());
                 BatchUpdateException batchUpdateException =
                         new BatchUpdateException(exe.getMessage(), exe.getSQLState(), exe.getErrorCode(), updateCounts, exe);
                 this.updateCounts = null;
@@ -934,7 +934,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         checkStatement();
         if (rows < 0) {
             String msg = JDBCPlugin.Util.getString("MMStatement.Invalid_fetch_size");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
         // sets the fetch size on this statement
         if (rows == 0) {
@@ -959,7 +959,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         if (seconds >= 0) {
             queryTimeoutMS = seconds * 1000L;
         } else {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Bad_timeout_value"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Bad_timeout_value"));
         }
     }
 
@@ -972,7 +972,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
      *
      * @param res Request message that these properties to be copied to.
      */
-    protected void copyPropertiesToRequest(RequestMessage res) throws TeiidSQLException {
+    protected void copyPropertiesToRequest(RequestMessage res) throws KublingSQLException {
         // Get partial mode
         String partial = getExecutionProperty(ExecutionProperties.PROP_PARTIAL_RESULTS_MODE);
         res.setPartialResults(Boolean.parseBoolean(partial));
@@ -981,8 +981,8 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
         String txnAutoWrapMode = getExecutionProperty(ExecutionProperties.PROP_TXN_AUTO_WRAP);
         try {
             res.setTxnAutoWrapMode(txnAutoWrapMode);
-        } catch (TeiidProcessingException e) {
-            throw TeiidSQLException.create(e);
+        } catch (KublingProcessingException e) {
+            throw KublingSQLException.create(e);
         }
 
         // Get result set cache mode
@@ -1167,7 +1167,7 @@ public class StatementImpl extends WrapperImpl implements TeiidStatement {
     public void setMaxFieldSize(int max) throws SQLException {
         checkStatement();
         if (max < 0) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_field_size", max));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_field_size", max));
         }
         this.maxFieldSize = max;
     }

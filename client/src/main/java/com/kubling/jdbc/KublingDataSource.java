@@ -18,7 +18,7 @@
 
 package com.kubling.jdbc;
 
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 
 import javax.sql.XAConnection;
 import java.io.Serial;
@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  * </table>
  * If "serverName" property is not set then data source will try to create an embedded connection to the Teiid server.
  */
-public class TeiidDataSource extends BaseDataSource {
+public class KublingDataSource extends BaseDataSource {
 
     @Serial
     private static final long serialVersionUID = -5170316154373144878L;
@@ -111,13 +111,13 @@ public class TeiidDataSource extends BaseDataSource {
      */
     private boolean encryptRequests;
 
-    private final TeiidDriver driver;
+    private final KublingDriver driver;
 
-    public TeiidDataSource() {
-        this.driver = new TeiidDriver();
+    public KublingDataSource() {
+        this.driver = new KublingDriver();
     }
 
-    TeiidDataSource(TeiidDriver driver) {
+    KublingDataSource(KublingDriver driver) {
         this.driver = driver;
     }
 
@@ -129,39 +129,39 @@ public class TeiidDataSource extends BaseDataSource {
         Properties props = super.buildProperties(userName, password);
 
         if (this.getAutoFailover() != null) {
-            props.setProperty(TeiidURL.CONNECTION.AUTO_FAILOVER, this.getAutoFailover());
+            props.setProperty(KublingURL.CONNECTION.AUTO_FAILOVER, this.getAutoFailover());
         }
 
         if (this.encryptRequests) {
-            props.setProperty(TeiidURL.CONNECTION.ENCRYPT_REQUESTS, Boolean.TRUE.toString());
+            props.setProperty(KublingURL.CONNECTION.ENCRYPT_REQUESTS, Boolean.TRUE.toString());
         }
 
         if (getLoginTimeout() > 0) {
-            props.setProperty(TeiidURL.CONNECTION.LOGIN_TIMEOUT, String.valueOf(getLoginTimeout()));
+            props.setProperty(KublingURL.CONNECTION.LOGIN_TIMEOUT, String.valueOf(getLoginTimeout()));
         }
 
         if (getJaasName() != null) {
-            props.setProperty(TeiidURL.CONNECTION.JAAS_NAME, getJaasName());
+            props.setProperty(KublingURL.CONNECTION.JAAS_NAME, getJaasName());
         }
         if (getKerberosServicePrincipleName() != null) {
-            props.setProperty(TeiidURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME, getKerberosServicePrincipleName());
+            props.setProperty(KublingURL.CONNECTION.KERBEROS_SERVICE_PRINCIPLE_NAME, getKerberosServicePrincipleName());
         }
 
         return props;
     }
 
-    protected String buildServerURL() throws TeiidSQLException {
+    protected String buildServerURL() throws KublingSQLException {
         if (serverName == null) {
             return null;
         }
 
         if (this.alternateServers == null || this.alternateServers.isEmpty()) {
             // Format:  "mm://server:port"
-            return new TeiidURL(this.serverName, this.portNumber, this.secure).getAppServerURL();
+            return new KublingURL(this.serverName, this.portNumber, this.secure).getAppServerURL();
         }
 
         // Format: "mm://server1:port,server2:port,..."
-        StringBuilder serverURL = new StringBuilder(this.secure ? TeiidURL.SECURE_PROTOCOL : TeiidURL.DEFAULT_PROTOCOL);
+        StringBuilder serverURL = new StringBuilder(this.secure ? KublingURL.SECURE_PROTOCOL : KublingURL.DEFAULT_PROTOCOL);
 
         if (this.serverName.indexOf(':') != -1 && !this.serverName.startsWith("[")) {
             serverURL.append("[").append(this.serverName).append("]");
@@ -169,11 +169,11 @@ public class TeiidDataSource extends BaseDataSource {
             serverURL.append(this.serverName);
         }
 
-        serverURL.append(TeiidURL.COLON_DELIMITER).append(this.portNumber);
+        serverURL.append(KublingURL.COLON_DELIMITER).append(this.portNumber);
 
         //add in the port number if not specified
 
-        String[] as = this.alternateServers.split(TeiidURL.COMMA_DELIMITER);
+        String[] as = this.alternateServers.split(KublingURL.COMMA_DELIMITER);
 
         for (String a : as) {
             String server = a.trim();
@@ -183,17 +183,17 @@ public class TeiidDataSource extends BaseDataSource {
                 if (msg != null) {
                     throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", msg));
                 }
-                serverURL.append(TeiidURL.COMMA_DELIMITER).append(a).append(TeiidURL.COLON_DELIMITER).append(this.portNumber);
+                serverURL.append(KublingURL.COMMA_DELIMITER).append(a).append(KublingURL.COLON_DELIMITER).append(this.portNumber);
             } else {
-                String[] serverParts = server.split(TeiidURL.COLON_DELIMITER, 2);
+                String[] serverParts = server.split(KublingURL.COLON_DELIMITER, 2);
                 String msg = reasonWhyInvalidServerName(serverParts[0]);
                 if (msg != null) {
                     throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", msg));
                 }
-                serverURL.append(TeiidURL.COMMA_DELIMITER).append(serverParts[0]).append(TeiidURL.COLON_DELIMITER);
+                serverURL.append(KublingURL.COMMA_DELIMITER).append(serverParts[0]).append(KublingURL.COLON_DELIMITER);
                 if (serverParts.length > 1) {
                     try {
-                        TeiidURL.validatePort(serverParts[1]);
+                        KublingURL.validatePort(serverParts[1]);
                     } catch (MalformedURLException e) {
                         throw createConnectionError(JDBCPlugin.Util.getString("MMDataSource.alternateServer_is_invalid", e.getMessage()));
                     }
@@ -206,13 +206,13 @@ public class TeiidDataSource extends BaseDataSource {
         }
 
         try {
-            return new TeiidURL(serverURL.toString()).getAppServerURL();
+            return new KublingURL(serverURL.toString()).getAppServerURL();
         } catch (MalformedURLException e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
-    protected JDBCURL buildURL() throws TeiidSQLException {
+    protected JDBCURL buildURL() throws KublingSQLException {
         return new JDBCURL(this.getDatabaseName(), buildServerURL(), buildProperties(getUser(), getPassword()));
     }
 
@@ -230,9 +230,9 @@ public class TeiidDataSource extends BaseDataSource {
         }
     }
 
-    private TeiidSQLException createConnectionError(String reason) {
+    private KublingSQLException createConnectionError(String reason) {
         String msg = JDBCPlugin.Util.getString("MMDataSource.Err_connecting", reason);
-        return new TeiidSQLException(msg);
+        return new KublingSQLException(msg);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -277,7 +277,7 @@ public class TeiidDataSource extends BaseDataSource {
 
     private Properties buildEmbeddedProperties(final String userName, final String password) {
         Properties props = buildProperties(userName, password);
-        props.setProperty(TeiidURL.CONNECTION.PASSTHROUGH_AUTHENTICATION, Boolean.toString(this.passthroughAuthentication));
+        props.setProperty(KublingURL.CONNECTION.PASSTHROUGH_AUTHENTICATION, Boolean.toString(this.passthroughAuthentication));
         return props;
     }
 
@@ -287,7 +287,7 @@ public class TeiidDataSource extends BaseDataSource {
     public String toString() {
         try {
             return buildURL().getJDBCURL();
-        } catch (TeiidSQLException e) {
+        } catch (KublingSQLException e) {
             return e.getMessage();
         }
     }
@@ -414,7 +414,7 @@ public class TeiidDataSource extends BaseDataSource {
      * @see #setPortNumber(int)
      */
     public static String reasonWhyInvalidPortNumber(final int portNumber) {
-        return TeiidURL.validatePort(portNumber);
+        return KublingURL.validatePort(portNumber);
     }
 
     /**
@@ -544,7 +544,7 @@ public class TeiidDataSource extends BaseDataSource {
     }
 
     public Logger getParentLogger() {
-        return TeiidDriver.logger;
+        return KublingDriver.logger;
     }
 
     public void setEncryptRequests(boolean encryptRequests) {

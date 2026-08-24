@@ -47,7 +47,7 @@ public class TestConnection {
 
     static String serverUrl = "jdbc:teiid:QT_Ora9DS@mm://localhost:7001;version=1;user=metamatrixadmin;password=mm";
 
-    static class InnerDriver extends TeiidDriver {
+    static class InnerDriver extends KublingDriver {
         String iurl;
 
         public InnerDriver(String url) {
@@ -220,7 +220,7 @@ public class TestConnection {
         try {
             conn.createStatement();
             fail("MaxOpenStatements not limited to required number.");
-        } catch (TeiidSQLException ex) {
+        } catch (KublingSQLException ex) {
             MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString(JDBCPlugin.Event.TEIID20036.name()));
         }
     }

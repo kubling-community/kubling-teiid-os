@@ -1,6 +1,6 @@
 package com.kubling.core.types;
 
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.util.UnitTestUtil;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ public class TestJsonType {
     public void testInvalidJson() {
         JsonType jt = new JsonType(new ClobImpl("{ invalid json }"));
 
-        assertThrows(TeiidRuntimeException.class, jt::hashCode);
+        assertThrows(KublingRuntimeException.class, jt::hashCode);
     }
 
     @Test

@@ -26,7 +26,7 @@ import java.io.Serial;
  * processing as a result of user input.  This exception is the result
  * of handling a user request, not the result of an internal error.
  */
-public class TeiidProcessingException extends TeiidException {
+public class KublingProcessingException extends KublingException {
 
     @Serial
     private static final long serialVersionUID = -4013536109023540872L;
@@ -34,7 +34,7 @@ public class TeiidProcessingException extends TeiidException {
     /**
      * No-arg Constructor
      */
-    public TeiidProcessingException() {
+    public KublingProcessingException() {
         super();
     }
 
@@ -43,7 +43,7 @@ public class TeiidProcessingException extends TeiidException {
      *
      * @param message A message describing the exception
      */
-    public TeiidProcessingException(String message) {
+    public KublingProcessingException(String message) {
         super(message);
     }
 
@@ -52,7 +52,7 @@ public class TeiidProcessingException extends TeiidException {
      *
      * @param e An exception to chain to this exception
      */
-    public TeiidProcessingException(Throwable e) {
+    public KublingProcessingException(Throwable e) {
         super(e);
     }
 
@@ -62,15 +62,15 @@ public class TeiidProcessingException extends TeiidException {
      * @param message A message describing the exception
      * @param code    The error code
      */
-    public TeiidProcessingException(BundleUtil.Event code, Throwable t, String message) {
+    public KublingProcessingException(BundleUtil.Event code, Throwable t, String message) {
         super(code, t, message);
     }
 
-    public TeiidProcessingException(BundleUtil.Event code, final String message) {
+    public KublingProcessingException(BundleUtil.Event code, final String message) {
         super(code, message);
     }
 
-    public TeiidProcessingException(BundleUtil.Event code, Throwable t) {
+    public KublingProcessingException(BundleUtil.Event code, Throwable t) {
         super(code, t);
     }
 
@@ -80,7 +80,7 @@ public class TeiidProcessingException extends TeiidException {
      * @param message A message describing the exception
      * @param e       An exception to nest within this one
      */
-    public TeiidProcessingException(Throwable e, String message) {
+    public KublingProcessingException(Throwable e, String message) {
         super(e, message);
     }
 

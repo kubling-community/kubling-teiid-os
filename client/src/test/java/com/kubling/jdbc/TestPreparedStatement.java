@@ -23,7 +23,7 @@ import com.kubling.client.RequestMessage;
 import com.kubling.client.ResultsMessage;
 import com.kubling.client.security.LogonResult;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import com.kubling.net.ServerConnection;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -72,7 +72,7 @@ public class TestPreparedStatement {
                     RequestMessage requestMessage = (RequestMessage) invocation.getArguments()[1];
                     count[0] += requestMessage.getParameterValues().size();
                     if (count[0] == 100000) {
-                        rm.setException(new TeiidException());
+                        rm.setException(new KublingException());
                         rm.setResults(new List<?>[]{List.of(Statement.EXECUTE_FAILED)});
                     } else {
                         List<?>[] vals = new List<?>[requestMessage.getParameterValues().size()];

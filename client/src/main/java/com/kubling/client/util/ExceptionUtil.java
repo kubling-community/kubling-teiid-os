@@ -20,9 +20,9 @@ package com.kubling.client.util;
 
 import com.kubling.client.SourceWarning;
 import com.kubling.client.xa.XATransactionException;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidException;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingException;
+import com.kubling.core.KublingRuntimeException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -52,14 +52,14 @@ public class ExceptionUtil {
                 return exception;
             }
             if (!canThrowComponentException) {
-                canThrowComponentException = TeiidComponentException.class.isAssignableFrom(exceptionClass);
+                canThrowComponentException = KublingComponentException.class.isAssignableFrom(exceptionClass);
             }
             if (!canThrowXATransactionException) {
                 canThrowXATransactionException = XATransactionException.class.isAssignableFrom(exceptionClass);
             }
         }
         if (canThrowComponentException) {
-            return new TeiidComponentException(exception);
+            return new KublingComponentException(exception);
         }
         if (canThrowXATransactionException) {
             return new XATransactionException(exception);
@@ -67,7 +67,7 @@ public class ExceptionUtil {
         if (RuntimeException.class.isAssignableFrom(exception.getClass())) {
             return exception;
         }
-        return new TeiidRuntimeException(exception);
+        return new KublingRuntimeException(exception);
     }
 
     /**
@@ -78,10 +78,10 @@ public class ExceptionUtil {
      */
     public static Throwable sanitize(Throwable t, boolean preserveStack) {
         String code;
-        if (t instanceof TeiidException) {
-            code = ((TeiidException) t).getCode();
-        } else if (t instanceof TeiidRuntimeException) {
-            code = ((TeiidRuntimeException) t).getCode();
+        if (t instanceof KublingException) {
+            code = ((KublingException) t).getCode();
+        } else if (t instanceof KublingRuntimeException) {
+            code = ((KublingRuntimeException) t).getCode();
         } else {
             code = t.getClass().getName();
         }
@@ -106,12 +106,12 @@ public class ExceptionUtil {
             clazz = clazz.getSuperclass();
         }
         if (result == null) {
-            result = new TeiidException(code);
+            result = new KublingException(code);
         }
-        if (result instanceof TeiidException) {
-            ((TeiidException) result).setCode(code);
-        } else if (result instanceof TeiidRuntimeException) {
-            ((TeiidException) result).setCode(code);
+        if (result instanceof KublingException) {
+            ((KublingException) result).setCode(code);
+        } else if (result instanceof KublingRuntimeException) {
+            ((KublingException) result).setCode(code);
         }
         if (child != null) {
             result.initCause(child);

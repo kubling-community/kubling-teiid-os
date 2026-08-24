@@ -19,7 +19,7 @@
 package com.kubling.core.crypto;
 
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.DHParameterSpec;
@@ -56,7 +56,7 @@ public class DhKeyGenerator {
             is = DhKeyGenerator.class.getResourceAsStream(propsFile);
             props.load(is);
         } catch (IOException e) {
-            throw new TeiidRuntimeException(CorePlugin.Event.TEIID10000, e);
+            throw new KublingRuntimeException(CorePlugin.Event.TEIID10000, e);
         } finally {
             try {
                 if (is != null) {

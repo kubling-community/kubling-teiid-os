@@ -22,12 +22,12 @@ import com.kubling.client.security.ILogon;
 import com.kubling.client.security.LogonResult;
 import com.kubling.client.security.SessionToken;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidComponentException;
+import com.kubling.core.KublingComponentException;
 import com.kubling.core.crypto.NullCryptor;
 import com.kubling.net.CommunicationException;
 import com.kubling.net.ConnectionException;
 import com.kubling.net.HostInfo;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -68,19 +68,19 @@ public class TestSocketServerConnection {
         public LogonResult logon(
                 Properties connectionProperties) {
             return new LogonResult(new SessionToken(1,
-                    connectionProperties.getProperty(TeiidURL.CONNECTION.USER_NAME, "fooUser")),
+                    connectionProperties.getProperty(KublingURL.CONNECTION.USER_NAME, "fooUser")),
                     "foo", "fake");
         }
 
         @Override
         public ResultsFuture<?> ping()
-                throws TeiidComponentException, CommunicationException {
+                throws KublingComponentException, CommunicationException {
             if (t != null) {
                 if (t instanceof CommunicationException ce) {
                     t = null;
                     throw ce;
                 }
-                TeiidComponentException e = new TeiidComponentException(t);
+                KublingComponentException e = new KublingComponentException(t);
                 t = null;
                 throw e;
             }
@@ -89,7 +89,7 @@ public class TestSocketServerConnection {
 
         @Override
         public ResultsFuture<?> ping(Collection<String> sessions)
-                throws TeiidComponentException, CommunicationException {
+                throws KublingComponentException, CommunicationException {
             return ping();
         }
 
@@ -120,8 +120,8 @@ public class TestSocketServerConnection {
 
         SocketServerConnection.updateConnectionProperties(p, InetAddress.getLocalHost(), true, null);
 
-        assertTrue(p.containsKey(TeiidURL.CONNECTION.CLIENT_HOSTNAME));
-        assertTrue(p.containsKey(TeiidURL.CONNECTION.CLIENT_IP_ADDRESS));
+        assertTrue(p.containsKey(KublingURL.CONNECTION.CLIENT_HOSTNAME));
+        assertTrue(p.containsKey(KublingURL.CONNECTION.CLIENT_IP_ADDRESS));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class TestSocketServerConnection {
         SocketServerInstanceFactory instanceFactory = Mockito.mock(SocketServerInstanceFactory.class);
         Mockito.when(instanceFactory.getServerInstance(Mockito.any()))
                 .thenThrow(new SingleInstanceCommunicationException());
-        UrlServerDiscovery discovery = new UrlServerDiscovery(new TeiidURL("mm://host1:1,host2:2"));
+        UrlServerDiscovery discovery = new UrlServerDiscovery(new KublingURL("mm://host1:1,host2:2"));
         try {
             new SocketServerConnection(instanceFactory, false, discovery, p);
             fail("exception expected");
@@ -151,7 +151,7 @@ public class TestSocketServerConnection {
         Properties p = new Properties();
         SocketServerConnection connection = createConnection(null, p);
         assertEquals("fooUser", connection.getLogonResult().getUserName());
-        p.setProperty(TeiidURL.CONNECTION.USER_NAME, "newUser");
+        p.setProperty(KublingURL.CONNECTION.USER_NAME, "newUser");
         connection.authenticate();
         assertEquals("newUser", connection.getLogonResult().getUserName());
     }
@@ -197,7 +197,7 @@ public class TestSocketServerConnection {
     private SocketServerConnection createConnection(final Throwable t, final HostInfo hostInfo, Properties p)
             throws CommunicationException, ConnectionException {
         UrlServerDiscovery discovery =
-                new UrlServerDiscovery(new TeiidURL(hostInfo.getHostName(), hostInfo.getPortNumber(), false));
+                new UrlServerDiscovery(new KublingURL(hostInfo.getHostName(), hostInfo.getPortNumber(), false));
         SocketServerInstanceFactory instanceFactory = new SocketServerInstanceFactory() {
             final FakeILogon logon = new FakeILogon(t);
 

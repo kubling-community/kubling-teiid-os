@@ -20,8 +20,8 @@ package com.kubling.jdbc;
 
 import com.kubling.client.metadata.MetadataResult;
 import com.kubling.client.metadata.ResultsMetadataConstants;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.util.StringUtil;
 
 import java.sql.SQLException;
@@ -65,8 +65,8 @@ public class DeferredMetadataProvider extends MetadataProvider {
         MetadataResult results;
         try {
             results = this.statement.getDQP().getMetadata(this.requestID);
-        } catch (TeiidComponentException | TeiidProcessingException e) {
-            throw TeiidSQLException.create(e);
+        } catch (KublingComponentException | KublingProcessingException e) {
+            throw KublingSQLException.create(e);
         }
         this.metadata = results.getColumnMetadata();
     }

@@ -18,8 +18,8 @@
 
 package com.kubling.jdbc;
 
-import com.kubling.core.TeiidException;
-import com.kubling.net.TeiidURL;
+import com.kubling.core.KublingException;
+import com.kubling.net.KublingURL;
 import com.kubling.net.socket.OioObjectChannelFactory;
 import com.kubling.net.socket.SocketServerConnection;
 import com.kubling.net.socket.SocketServerConnectionFactory;
@@ -29,7 +29,7 @@ import java.util.Properties;
 
 /**
  * <p> The java.sql.DriverManager class uses this class to connect to Teiid Server.
- * The TeiidDriver class has a static initializer, which
+ * The KublingDriver class has a static initializer, which
  * is used to instantiate and register itself with java.sql.DriverManager. The
  * DriverManager's <code>getConnection</code> method calls <code>connect</code>
  * method on available registered drivers.
@@ -44,14 +44,14 @@ final class SocketProfile implements ConnectionProfile {
      *
      * @param url used to establish a connection.
      * @return Connection object created
-     * @throws TeiidSQLException if it is unable to establish a connection to the server.
+     * @throws KublingSQLException if it is unable to establish a connection to the server.
      */
-    public ConnectionImpl connect(String url, Properties info) throws TeiidSQLException {
+    public ConnectionImpl connect(String url, Properties info) throws KublingSQLException {
 
         int loginTimeoutSeconds = 0;
         SocketServerConnection serverConn;
         try {
-            String timeout = info.getProperty(TeiidURL.CONNECTION.LOGIN_TIMEOUT);
+            String timeout = info.getProperty(KublingURL.CONNECTION.LOGIN_TIMEOUT);
             if (timeout != null) {
                 loginTimeoutSeconds = Integer.parseInt(timeout);
             }
@@ -61,8 +61,8 @@ final class SocketProfile implements ConnectionProfile {
                         Integer.valueOf(loginTimeoutSeconds * 1000).longValue());
             }
             serverConn = SocketServerConnectionFactory.getInstance(info).getConnection(info);
-        } catch (TeiidException e) {
-            throw TeiidSQLException.create(e);
+        } catch (KublingException e) {
+            throw KublingSQLException.create(e);
         } finally {
             if (loginTimeoutSeconds > 0) {
                 OioObjectChannelFactory.TIMEOUTS.remove();

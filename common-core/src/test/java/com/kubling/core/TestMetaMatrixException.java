@@ -30,7 +30,7 @@ public class TestMetaMatrixException {
 
     @Test
     public void testMetaMatrixExceptionWithNullThrowable() {
-        final TeiidException err = new TeiidException((Throwable) null);
+        final KublingException err = new KublingException((Throwable) null);
         assertNull(err.getCode());
         assertNull(err.getMessage());
 
@@ -38,7 +38,7 @@ public class TestMetaMatrixException {
 
     @Test
     public void testMetaMatrixExceptionWithMessage() {
-        final TeiidException err = new TeiidException("Test");
+        final KublingException err = new KublingException("Test");
         assertNull(err.getCode());
         assertEquals("Test", err.getMessage());
 
@@ -51,7 +51,7 @@ public class TestMetaMatrixException {
 
     @Test
     public void testMetaMatrixExceptionWithCodeAndMessage() {
-        final TeiidException err = new TeiidException(Event.Code, "Test");
+        final KublingException err = new KublingException(Event.Code, "Test");
         assertEquals("Code", err.getCode());
         assertEquals("Code Test", err.getMessage());
     }
@@ -59,8 +59,8 @@ public class TestMetaMatrixException {
 
     @Test
     public void testMetaMatrixExceptionWithExceptionAndMessage() {
-        final TeiidException child = new TeiidException(Event.propertyValuePhrase, "Child");
-        final TeiidException err = new TeiidException(child, "Test");
+        final KublingException child = new KublingException(Event.propertyValuePhrase, "Child");
+        final KublingException err = new KublingException(child, "Test");
         assertEquals("propertyValuePhrase", err.getCode());
         assertEquals("propertyValuePhrase Test", err.getMessage());
 
@@ -68,8 +68,8 @@ public class TestMetaMatrixException {
 
     @Test
     public void testMetaMatrixExceptionWithExceptionAndCodeAndMessage() {
-        final TeiidException child = new TeiidException(Event.propertyValuePhrase, "Child");
-        final TeiidException err = new TeiidException(Event.Code, child, "Test");
+        final KublingException child = new KublingException(Event.propertyValuePhrase, "Child");
+        final KublingException err = new KublingException(Event.Code, child, "Test");
         assertEquals("Code", err.getCode());
         assertEquals("Code Test", err.getMessage());
 

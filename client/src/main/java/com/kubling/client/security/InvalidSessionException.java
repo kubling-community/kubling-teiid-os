@@ -22,7 +22,7 @@ import com.kubling.core.BundleUtil;
 
 import java.io.Serial;
 
-public class InvalidSessionException extends TeiidSecurityException {
+public class InvalidSessionException extends KublingSecurityException {
 
     @Serial
     private static final long serialVersionUID = 594047711693346844L;

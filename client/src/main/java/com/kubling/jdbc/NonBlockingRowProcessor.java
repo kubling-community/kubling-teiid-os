@@ -19,7 +19,7 @@
 package com.kubling.jdbc;
 
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -112,7 +112,7 @@ public class NonBlockingRowProcessor implements
             onException(e);
             return false;
         } catch (Throwable t) {
-            onException(new TeiidRuntimeException(t));
+            onException(new KublingRuntimeException(t));
             return false;
         }
     }

@@ -29,7 +29,7 @@ import java.io.Serial;
  * Subclasses of this exception typically only need to implement whatever
  * constructors they need. <p>
  */
-public class TeiidRuntimeException extends RuntimeException {
+public class KublingRuntimeException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = -4035276728007979320L;
 
@@ -51,7 +51,7 @@ public class TeiidRuntimeException extends RuntimeException {
     /**
      * Construct a default instance of this class.
      */
-    public TeiidRuntimeException() {
+    public KublingRuntimeException() {
     }
 
     /**
@@ -61,51 +61,51 @@ public class TeiidRuntimeException extends RuntimeException {
      *
      * @param message The error message or a resource bundle key
      */
-    public TeiidRuntimeException(final String message) {
+    public KublingRuntimeException(final String message) {
         super(message);
     }
 
-    TeiidRuntimeException(final String code, final String message) {
+    KublingRuntimeException(final String code, final String message) {
         super(message);
         // The following setCode call should be executed after setting the message
         setCode(code);
     }
 
-    public TeiidRuntimeException(BundleUtil.Event code, final String message) {
+    public KublingRuntimeException(BundleUtil.Event code, final String message) {
         super(message);
         // The following setCode call should be executed after setting the message
         setCode(code.toString());
     }
 
-    public TeiidRuntimeException(BundleUtil.Event code, final Throwable t) {
+    public KublingRuntimeException(BundleUtil.Event code, final Throwable t) {
         super(t);
         // The following setCode call should be executed after setting the message
         setCode(code.toString());
     }
 
     /**
-     * Construct an instance with a linked exception specified.  If the exception is a {@link TeiidException} or a
+     * Construct an instance with a linked exception specified.  If the exception is a {@link KublingException} or a
      * TeoodRuntimeException, then the code will be set to the exception's code.
      *
      * @param e An exception to chain to this exception
      */
-    public TeiidRuntimeException(final Throwable e) {
+    public KublingRuntimeException(final Throwable e) {
         super((e instanceof java.lang.reflect.InvocationTargetException)
                 ? ((java.lang.reflect.InvocationTargetException) e).getTargetException().getMessage()
                 : (e == null ? null : e.getMessage()), e);
-        setCode(TeiidException.getCode(e));
+        setCode(KublingException.getCode(e));
     }
 
     /**
      * Construct an instance with the linked exception, error code, and error message specified. If the specified
-     * exception is a {@link TeiidException} or a MetaMatrixRuntimeException, the code will
+     * exception is a {@link KublingException} or a MetaMatrixRuntimeException, the code will
      * be set to the exception's code.
      *
      * @param e       The exception to chain to this exception
      * @param event   The error code
      * @param message The error message
      */
-    public TeiidRuntimeException(BundleUtil.Event event, final Throwable e, final String message) {
+    public KublingRuntimeException(BundleUtil.Event event, final Throwable e, final String message) {
         super(message, e);
         // Overwrite code set in other ctor from exception.
         setCode(event.toString());

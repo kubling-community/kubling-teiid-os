@@ -18,7 +18,7 @@
 
 package com.kubling.jdbc;
 
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import com.kubling.net.ServerConnection;
 
 import java.util.Properties;
@@ -31,6 +31,6 @@ public interface LocalProfile extends ConnectionProfile {
     Object DQP_WORK_CONTEXT = "dqpWorkContext";
     Object SSL_SESSION = "sslSession";
 
-    ServerConnection createServerConnection(Properties info) throws TeiidException;
+    ServerConnection createServerConnection(Properties info) throws KublingException;
 
 }

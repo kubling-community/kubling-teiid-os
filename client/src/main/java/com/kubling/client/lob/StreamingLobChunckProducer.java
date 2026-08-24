@@ -19,7 +19,7 @@
 package com.kubling.client.lob;
 
 import com.kubling.client.DQP;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import com.kubling.core.types.Streamable;
 import com.kubling.jdbc.JDBCPlugin;
 
@@ -76,7 +76,7 @@ public class StreamingLobChunckProducer implements LobChunkProducer {
     public void close() throws IOException {
         try {
             dqp.closeLobChunkStream(streamRequestId, requestId, streamable.getReferenceStreamId());
-        } catch (TeiidException e) {
+        } catch (KublingException e) {
             IOException ex = new IOException(e.getMessage(), e);
             throw ex;
         }

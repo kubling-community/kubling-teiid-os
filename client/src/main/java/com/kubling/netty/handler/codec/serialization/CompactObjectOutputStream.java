@@ -68,7 +68,7 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
     public static void addKnownClass(Class<?> clazz, byte code) {
         KNOWN_CLASSES.put(clazz, (int) code);
         if (KNOWN_CODES.put((int) code, clazz) != null) {
-            throw new TeiidRuntimeException(JDBCPlugin.Event.TEIID20007, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20007));
+            throw new KublingRuntimeException(JDBCPlugin.Event.TEIID20007, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20007));
         }
     }
 
@@ -101,14 +101,14 @@ public class CompactObjectOutputStream extends ObjectOutputStream {
         addKnownClass(LogonResult.class, (byte) 31);
         addKnownClass(SessionToken.class, (byte) 32);
         addKnownClass(LogonException.class, (byte) 33);
-        addKnownClass(TeiidSecurityException.class, (byte) 34);
+        addKnownClass(KublingSecurityException.class, (byte) 34);
         addKnownClass(InvalidSessionException.class, (byte) 35);
 
         addKnownClass(ExceptionHolder.class, (byte) 40);
-        addKnownClass(TeiidRuntimeException.class, (byte) 41);
-        addKnownClass(TeiidComponentException.class, (byte) 42);
-        addKnownClass(TeiidException.class, (byte) 43);
-        addKnownClass(TeiidProcessingException.class, (byte) 44);
+        addKnownClass(KublingRuntimeException.class, (byte) 41);
+        addKnownClass(KublingComponentException.class, (byte) 42);
+        addKnownClass(KublingException.class, (byte) 43);
+        addKnownClass(KublingProcessingException.class, (byte) 44);
         addKnownClass(ComponentNotFoundException.class, (byte) 45);
     }
 

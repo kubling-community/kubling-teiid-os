@@ -19,7 +19,7 @@
 package com.kubling.net;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 import java.io.Serial;
 
@@ -28,7 +28,7 @@ import java.io.Serial;
  * are many possible reasons for this, but the most likely is a problem with
  * connection parameters.
  */
-public class ConnectionException extends TeiidException {
+public class ConnectionException extends KublingException {
     @Serial
     private static final long serialVersionUID = -5647655775983865084L;
 

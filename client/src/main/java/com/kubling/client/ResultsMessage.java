@@ -22,10 +22,10 @@ import com.kubling.client.metadata.ParameterInfo;
 import com.kubling.client.plan.Annotation;
 import com.kubling.client.plan.PlanNode;
 import com.kubling.client.util.ExceptionHolder;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import com.kubling.core.util.ExternalizeUtil;
 import com.kubling.core.util.MultiArrayOutputStream;
-import com.kubling.jdbc.TeiidSQLException;
+import com.kubling.jdbc.KublingSQLException;
 import com.kubling.netty.handler.codec.serialization.CompactObjectInputStream;
 import com.kubling.netty.handler.codec.serialization.CompactObjectOutputStream;
 
@@ -55,7 +55,7 @@ public class ResultsMessage implements Externalizable {
     /**
      * An exception that occurred.
      */
-    private TeiidException exception;
+    private KublingException exception;
 
     /**
      * Warning could be schema validation errors or partial results warnings
@@ -120,14 +120,14 @@ public class ResultsMessage implements Externalizable {
         return results;
     }
 
-    public void processResults() throws TeiidSQLException {
+    public void processResults() throws KublingSQLException {
         if (results == null && resultBytes != null) {
             try {
                 CompactObjectInputStream ois = new CompactObjectInputStream(
                         new ByteArrayInputStream(resultBytes), ResultsMessage.class.getClassLoader());
                 results = BatchSerializer.readBatch(ois, dataTypes);
             } catch (IOException | ClassNotFoundException e) {
-                throw TeiidSQLException.create(e);
+                throw KublingSQLException.create(e);
             } finally {
                 resultBytes = null;
             }
@@ -150,7 +150,7 @@ public class ResultsMessage implements Externalizable {
         return this.dataTypes;
     }
 
-    public TeiidException getException() {
+    public KublingException getException() {
         return exception;
     }
 
@@ -175,10 +175,10 @@ public class ResultsMessage implements Externalizable {
     }
 
     public void setException(Throwable e) {
-        if (e instanceof TeiidException) {
-            this.exception = (TeiidException) e;
+        if (e instanceof KublingException) {
+            this.exception = (KublingException) e;
         } else {
-            this.exception = new TeiidException(e, e.getMessage());
+            this.exception = new KublingException(e, e.getMessage());
         }
     }
 
@@ -231,7 +231,7 @@ public class ResultsMessage implements Externalizable {
 
         ExceptionHolder holder = (ExceptionHolder) in.readObject();
         if (holder != null) {
-            this.exception = (TeiidException) holder.getException();
+            this.exception = (KublingException) holder.getException();
         }
 
         //delayed deserialization

@@ -19,13 +19,13 @@
 package com.kubling.core.crypto;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 /**
  * A catch-all exception for any exceptions related to encryption and decryption
  * operations.
  */
-public class CryptoException extends TeiidException {
+public class CryptoException extends KublingException {
 
     /**
      * No-Arg Constructor

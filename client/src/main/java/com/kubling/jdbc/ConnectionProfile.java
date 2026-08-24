@@ -26,8 +26,8 @@ public interface ConnectionProfile {
      * This method tries to make a connection to the given URL.
      * @param url used to establish a connection.
      * @return Connection object created
-     * @throws TeiidSQLException if it is unable to establish a connection
+     * @throws KublingSQLException if it is unable to establish a connection
      */
-    ConnectionImpl connect(String url, Properties info) throws TeiidSQLException;
+    ConnectionImpl connect(String url, Properties info) throws KublingSQLException;
 
 }

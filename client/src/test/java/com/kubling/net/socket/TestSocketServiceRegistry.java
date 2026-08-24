@@ -22,8 +22,8 @@ import com.kubling.client.DQP;
 import com.kubling.client.security.InvalidSessionException;
 import com.kubling.client.util.ExceptionUtil;
 import com.kubling.client.xa.XATransactionException;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingRuntimeException;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
@@ -42,9 +42,9 @@ public class TestSocketServiceRegistry {
 
         Method m = Foo.class.getMethod("someMethod");
 
-        Throwable t = ExceptionUtil.convertException(m, new TeiidComponentException());
+        Throwable t = ExceptionUtil.convertException(m, new KublingComponentException());
 
-        assertInstanceOf(TeiidRuntimeException.class, t);
+        assertInstanceOf(KublingRuntimeException.class, t);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestSocketServiceRegistry {
 
         Throwable t = ExceptionUtil.convertException(m, new NullPointerException());
 
-        assertInstanceOf(TeiidComponentException.class, t);
+        assertInstanceOf(KublingComponentException.class, t);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TestSocketServiceRegistry {
 
         Method m = DQP.class.getMethod("recover", Integer.TYPE);
 
-        Throwable t = ExceptionUtil.convertException(m, new TeiidComponentException());
+        Throwable t = ExceptionUtil.convertException(m, new KublingComponentException());
 
         assertInstanceOf(XATransactionException.class, t);
     }

@@ -19,7 +19,7 @@
 package com.kubling.core.util;
 
 import com.kubling.core.CorePlugin;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -262,11 +262,11 @@ public class ReflectionHelper {
      * @param classLoader the class loader to use; may be null if the current
      *                    class loader is to be used
      * @return Object is the instance of the class
-     * @throws TeiidException if an error occurs instantiating the class
+     * @throws KublingException if an error occurs instantiating the class
      */
 
     public static Object create(String className, Collection<?> ctorObjs,
-                                final ClassLoader classLoader) throws TeiidException {
+                                final ClassLoader classLoader) throws KublingException {
         try {
             int size = (ctorObjs == null ? 0 : ctorObjs.size());
             Class[] names = new Class[size];
@@ -284,17 +284,17 @@ public class ReflectionHelper {
             }
             return create(className, objArray, names, classLoader);
         } catch (Exception e) {
-            throw new TeiidException(CorePlugin.Event.TEIID10033, e);
+            throw new KublingException(CorePlugin.Event.TEIID10033, e);
         }
     }
 
     public static Object create(String className, Object[] ctorObjs, Class<?>[] argTypes,
-                                final ClassLoader classLoader) throws TeiidException {
+                                final ClassLoader classLoader) throws KublingException {
         Class<?> cls;
         try {
             cls = loadClass(className, classLoader);
         } catch (Exception e) {
-            throw new TeiidException(CorePlugin.Event.TEIID10034, e);
+            throw new KublingException(CorePlugin.Event.TEIID10034, e);
         }
         Constructor<?> ctor = null;
         try {
@@ -314,15 +314,15 @@ public class ReflectionHelper {
         }
 
         if (ctor == null) {
-            throw new TeiidException(CorePlugin.Event.TEIID10035, className + CorePlugin.Event.TEIID10035 + Arrays.toString(argTypes));
+            throw new KublingException(CorePlugin.Event.TEIID10035, className + CorePlugin.Event.TEIID10035 + Arrays.toString(argTypes));
         }
 
         try {
             return ctor.newInstance(ctorObjs);
         } catch (InvocationTargetException e) {
-            throw new TeiidException(CorePlugin.Event.TEIID10036, e.getTargetException());
+            throw new KublingException(CorePlugin.Event.TEIID10036, e.getTargetException());
         } catch (Exception e) {
-            throw new TeiidException(CorePlugin.Event.TEIID10036, e);
+            throw new KublingException(CorePlugin.Event.TEIID10036, e);
         }
     }
 

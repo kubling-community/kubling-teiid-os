@@ -18,7 +18,7 @@
 
 package com.kubling.client;
 
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.util.ExternalizeUtil;
 import com.kubling.jdbc.JDBCPlugin;
 import com.kubling.jdbc.RequestOptions;
@@ -194,13 +194,13 @@ public class RequestMessage implements Externalizable {
      *
      * @param txnAutoWrapMode The txnAutoWrapMode to set
      */
-    public void setTxnAutoWrapMode(String txnAutoWrapMode) throws TeiidProcessingException {
+    public void setTxnAutoWrapMode(String txnAutoWrapMode) throws KublingProcessingException {
         if (txnAutoWrapMode != null) {
             txnAutoWrapMode = txnAutoWrapMode.toUpperCase();
             if (!(txnAutoWrapMode.equals(TXN_WRAP_OFF)
                     || txnAutoWrapMode.equals(TXN_WRAP_ON)
                     || txnAutoWrapMode.equals(TXN_WRAP_DETECT))) {
-                throw new TeiidProcessingException(JDBCPlugin.Event.TEIID20000,
+                throw new KublingProcessingException(JDBCPlugin.Event.TEIID20000,
                         JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20000, txnAutoWrapMode));
             }
         }

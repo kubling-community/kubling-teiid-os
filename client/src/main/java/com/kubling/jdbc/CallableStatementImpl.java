@@ -148,7 +148,7 @@ public class CallableStatementImpl extends PreparedStatementImpl implements Call
             indexInResults = this.outParamIndexMap.get(parameterIndex);
         }
         if (indexInResults == null) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMCallableStatement.Param_not_found", parameterIndex));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMCallableStatement.Param_not_found", parameterIndex));
         }
         checkStatement();
         parameterValue = resultSet.getOutputParamValue(indexInResults);

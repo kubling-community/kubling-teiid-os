@@ -24,15 +24,15 @@ import com.kubling.client.plan.PlanNode;
 import com.kubling.client.util.ResultsFuture;
 import com.kubling.client.xa.XATransactionException;
 import com.kubling.client.xa.XidImpl;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.types.ArrayImpl;
 import com.kubling.core.util.PropertiesUtils;
 import com.kubling.core.util.SqlUtil;
 import com.kubling.net.CommunicationException;
 import com.kubling.net.ConnectionException;
 import com.kubling.net.ServerConnection;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 import com.kubling.net.socket.SocketServerConnection;
 
 import javax.transaction.xa.Xid;
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 /**
  * Teiid's Connection implementation.
  */
-public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
+public class ConnectionImpl extends WrapperImpl implements KublingConnection {
     private static final int MAX_OPEN_STATEMENTS =
             PropertiesUtils.getHierarchicalProperty("org.teiid.maxOpenStatements", 1000, Integer.class);
 
@@ -221,7 +221,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
                 String key = (String) enumeration.nextElement();
                 Object anObj = info.get(key);
                 // Log each property except for password and token.
-                if (!TeiidURL.CONNECTION.PASSWORD.equalsIgnoreCase(key)) {
+                if (!KublingURL.CONNECTION.PASSWORD.equalsIgnoreCase(key)) {
                     logger.fine(key + "=" + anObj);
                 }
             }
@@ -254,7 +254,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * Cancel the request
      */
-    public void cancelRequest(String id) throws TeiidProcessingException, TeiidComponentException {
+    public void cancelRequest(String id) throws KublingProcessingException, KublingComponentException {
         this.dqp.cancelRequest(Long.parseLong(id));
     }
 
@@ -283,7 +283,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
                 }
             }
         } catch (SQLException se) {
-            throw TeiidSQLException.create(se,
+            throw KublingSQLException.create(se,
                     JDBCPlugin.Util.getString("MMConnection.Err_connection_close", se.getMessage()));
         } finally {
             logger.fine(JDBCPlugin.Util.getString("MMConnection.Connection_close_success"));
@@ -313,7 +313,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             }
         }
         if (ex != null) {
-            throw TeiidSQLException.create(ex, JDBCPlugin.Util.getString("MMConnection.Err_closing_stmts"));
+            throw KublingSQLException.create(ex, JDBCPlugin.Util.getString("MMConnection.Err_closing_stmts"));
         }
     }
 
@@ -350,7 +350,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
                 ResultsFuture<?> future = this.dqp.commit();
                 future.get();
             } catch (Exception e) {
-                throw TeiidSQLException.create(e);
+                throw KublingSQLException.create(e);
             }
             logger.fine(JDBCPlugin.Util.getString("MMConnection.Commit_success"));
         }
@@ -364,7 +364,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             try {
                 this.dqp.begin();
             } catch (XATransactionException e) {
-                throw TeiidSQLException.create(e);
+                throw KublingSQLException.create(e);
             }
             inLocalTxn = true;
         } finally {
@@ -391,21 +391,21 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * @since 4.3
      */
-    private void validateResultSetType(int resultSetType) throws TeiidSQLException {
+    private void validateResultSetType(int resultSetType) throws KublingSQLException {
         if (resultSetType == ResultSet.TYPE_SCROLL_SENSITIVE) {
             String msg = JDBCPlugin.Util.getString("MMConnection.Scrollable_type_not_supported",
                     "ResultSet.TYPE_SCROLL_SENSITIVE");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
     }
 
     /**
      * @since 4.3
      */
-    private void validateResultSetConcurrency(int resultSetConcurrency) throws TeiidSQLException {
+    private void validateResultSetConcurrency(int resultSetConcurrency) throws KublingSQLException {
         if (resultSetConcurrency == ResultSet.CONCUR_UPDATABLE) {
             String msg = JDBCPlugin.Util.getString("MMConnection.Concurrency_type_not_supported", "ResultSet.CONCUR_UPDATABLE");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
     }
 
@@ -552,10 +552,10 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     /**
      * @since 4.3
      */
-    private void validateSQL(String sql) throws TeiidSQLException {
+    private void validateSQL(String sql) throws KublingSQLException {
         if (sql == null) {
             String msg = JDBCPlugin.Util.getString("MMConnection.SQL_cannot_be_null");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
     }
 
@@ -602,7 +602,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         checkConnection();
         if (!autoCommitFlag) {
             if (this.transactionXid != null) {
-                throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.In_XA_Transaction"));
+                throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.In_XA_Transaction"));
             }
             try {
                 if (this.inLocalTxn) {
@@ -611,7 +611,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
                         ResultsFuture<?> future = this.dqp.rollback();
                         future.get();
                     } catch (Exception e) {
-                        throw TeiidSQLException.create(e);
+                        throw KublingSQLException.create(e);
                     }
                     logger.fine(JDBCPlugin.Util.getString("MMConnection.Rollback_success"));
                 }
@@ -646,7 +646,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             }
             return dqp.rollback();
         } catch (XATransactionException e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -659,7 +659,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         }
 
         if (autoCommit && this.transactionXid != null) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.In_XA_Transaction"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.In_XA_Transaction"));
         }
 
         this.autoCommitFlag = autoCommit;
@@ -684,7 +684,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         checkConnection();
         // During transaction do not allow to change this flag
         if (isInLocalTxn() || this.transactionXid != null) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_During_Transaction",
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMStatement.Invalid_During_Transaction",
                     "setReadOnly(" + readOnly + ")"));
         }
         this.readOnly = readOnly;
@@ -694,12 +694,12 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
      * <p> This utility method checks if the jdbc connection is closed and
      * throws an exception if it is closed.
      *
-     * @throws TeiidSQLException if the connection object is closed.
+     * @throws KublingSQLException if the connection object is closed.
      */
-    void checkConnection() throws TeiidSQLException {
+    void checkConnection() throws KublingSQLException {
         //Check to see the connection is closed and proceed if it is not
         if (closed) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMConnection.Cant_use_closed_connection"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMConnection.Cant_use_closed_connection"));
         }
     }
 
@@ -711,7 +711,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<?> future = this.dqp.commit(arg0, arg1);
             future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -722,7 +722,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<?> future = this.dqp.end(arg0, arg1);
             future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -732,7 +732,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<?> future = this.dqp.forget(arg0);
             future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -743,7 +743,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<Integer> future = this.dqp.prepare(arg0);
             return future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -753,7 +753,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<Xid[]> future = this.dqp.recover(arg0);
             return future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -765,7 +765,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<?> future = this.dqp.rollback(arg0);
             future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
     }
 
@@ -775,7 +775,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             ResultsFuture<?> future = this.dqp.start(arg0, arg1, timeout);
             future.get();
         } catch (Exception e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         }
         transactionXid = arg0;
         this.autoCommitFlag = false;
@@ -871,7 +871,7 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
     private void addStatement(StatementImpl newStatement) throws SQLException {
         if (statements.size() >= MAX_OPEN_STATEMENTS) {
             this.close();
-            throw new TeiidSQLException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20036, MAX_OPEN_STATEMENTS));
+            throw new KublingSQLException(JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20036, MAX_OPEN_STATEMENTS));
         }
         statements.add(newStatement);
     }
@@ -946,13 +946,13 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
 
     Object setPassword(Object newPassword) {
         if (newPassword != null) {
-            return this.connectionProps.put(TeiidURL.CONNECTION.PASSWORD, newPassword);
+            return this.connectionProps.put(KublingURL.CONNECTION.PASSWORD, newPassword);
         }
-        return this.connectionProps.remove(TeiidURL.CONNECTION.PASSWORD);
+        return this.connectionProps.remove(KublingURL.CONNECTION.PASSWORD);
     }
 
     String getPassword() {
-        Object result = this.connectionProps.get(TeiidURL.CONNECTION.PASSWORD);
+        Object result = this.connectionProps.get(KublingURL.CONNECTION.PASSWORD);
         if (result == null) {
             return null;
         }
@@ -966,9 +966,9 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
         Object oldName;
         Object oldPassword;
         if (userName != null) {
-            oldName = this.connectionProps.put(TeiidURL.CONNECTION.USER_NAME, userName);
+            oldName = this.connectionProps.put(KublingURL.CONNECTION.USER_NAME, userName);
         } else {
-            oldName = this.connectionProps.remove(TeiidURL.CONNECTION.USER_NAME);
+            oldName = this.connectionProps.remove(KublingURL.CONNECTION.USER_NAME);
         }
         oldPassword = setPassword(newPassword);
         boolean success = false;
@@ -976,13 +976,13 @@ public class ConnectionImpl extends WrapperImpl implements TeiidConnection {
             this.serverConn.authenticate();
             success = true;
         } catch (ConnectionException | CommunicationException e) {
-            throw TeiidSQLException.create(e);
+            throw KublingSQLException.create(e);
         } finally {
             if (!success) {
                 if (oldName != null) {
-                    this.connectionProps.put(TeiidURL.CONNECTION.USER_NAME, oldName);
+                    this.connectionProps.put(KublingURL.CONNECTION.USER_NAME, oldName);
                 } else {
-                    this.connectionProps.remove(TeiidURL.CONNECTION.USER_NAME);
+                    this.connectionProps.remove(KublingURL.CONNECTION.USER_NAME);
                 }
                 setPassword(oldPassword);
             }

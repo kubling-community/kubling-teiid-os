@@ -20,7 +20,7 @@ package com.kubling.jdbc;
 
 import com.kubling.client.RequestMessage;
 import com.kubling.core.util.UnitTestUtil;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -36,12 +36,12 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("nls")
-public class TestTeiidDataSource {
+public class TestKublingDataSource {
 
     protected static final boolean VALID = true;
     protected static final boolean INVALID = false;
 
-    private TeiidDataSource dataSource;
+    private KublingDataSource dataSource;
 
     protected static final String STD_SERVER_NAME = "unitTestServerName";
     protected static final String STD_DATABASE_NAME = "unitTestVdbName";
@@ -50,7 +50,7 @@ public class TestTeiidDataSource {
     protected static final int STD_PORT_NUMBER = 7001;
     protected static final String STD_LOG_FILE = UnitTestUtil.getTestScratchPath() + "/unitTestLogFile";
     protected static final int STD_LOG_LEVEL = 2;
-    protected static final String STD_TXN_WRAP = TeiidDataSource.TXN_WRAP_AUTO;
+    protected static final String STD_TXN_WRAP = KublingDataSource.TXN_WRAP_AUTO;
     protected static final String STD_PARTIAL_MODE = "false";
     protected static final String STD_CONFIG_FILE = UnitTestUtil.getTestDataPath() + "/bqt/bqt.properties";
     protected static final String STD_ALTERNATE_SERVERS = "unitTestServerName2:7001,unitTestServerName2:7002,unitTestServerName3:7001";
@@ -58,7 +58,7 @@ public class TestTeiidDataSource {
 
     @BeforeEach
     protected void setUp() {
-        dataSource = new TeiidDataSource();
+        dataSource = new KublingDataSource();
         dataSource.setServerName(STD_SERVER_NAME);
         dataSource.setDatabaseVersion(STD_DATABASE_VERSION);
         dataSource.setDatabaseName(STD_DATABASE_NAME);
@@ -78,31 +78,31 @@ public class TestTeiidDataSource {
     protected String getReasonWhyInvalid(final String propertyName, final String value) {
         switch (propertyName) {
             case "DatabaseName" -> {
-                return TeiidDataSource.reasonWhyInvalidDatabaseName(value);
+                return KublingDataSource.reasonWhyInvalidDatabaseName(value);
             }
             case "DatabaseVersion" -> {
-                return TeiidDataSource.reasonWhyInvalidDatabaseVersion(value);
+                return KublingDataSource.reasonWhyInvalidDatabaseVersion(value);
             }
             case "DataSourceName" -> {
-                return TeiidDataSource.reasonWhyInvalidDataSourceName(value);
+                return KublingDataSource.reasonWhyInvalidDataSourceName(value);
             }
             case "Description" -> {
-                return TeiidDataSource.reasonWhyInvalidDescription(value);
+                return KublingDataSource.reasonWhyInvalidDescription(value);
             }
             case "ServerName" -> {
-                return TeiidDataSource.reasonWhyInvalidServerName(value);
+                return KublingDataSource.reasonWhyInvalidServerName(value);
             }
             case "TransactionAutoWrap" -> {
-                return TeiidDataSource.reasonWhyInvalidTransactionAutoWrap(value);
+                return KublingDataSource.reasonWhyInvalidTransactionAutoWrap(value);
             }
             case "partialResultsMode" -> {
-                return TeiidDataSource.reasonWhyInvalidPartialResultsMode(value);
+                return KublingDataSource.reasonWhyInvalidPartialResultsMode(value);
             }
             case "socketsPerVM" -> {
-                return TeiidDataSource.reasonWhyInvalidSocketsPerVM(value);
+                return KublingDataSource.reasonWhyInvalidSocketsPerVM(value);
             }
             case "stickyConnections" -> {
-                return TeiidDataSource.reasonWhyInvalidStickyConnections(value);
+                return KublingDataSource.reasonWhyInvalidStickyConnections(value);
             }
         }
 
@@ -112,7 +112,7 @@ public class TestTeiidDataSource {
 
     protected String getReasonWhyInvalid(final String propertyName, final int value) {
         if (propertyName.equals("PortNumber")) {
-            return TeiidDataSource.reasonWhyInvalidPortNumber(value);
+            return KublingDataSource.reasonWhyInvalidPortNumber(value);
         }
         fail("Unknown property name \"" + propertyName + "\"");
         return null;
@@ -165,7 +165,7 @@ public class TestTeiidDataSource {
                                      final boolean secure, final boolean useJDBC4Semantics,
                                      final String expectedURL) {
 
-        final TeiidDataSource ds = new TeiidDataSource();
+        final KublingDataSource ds = new KublingDataSource();
         ds.setServerName(serverName);
         ds.setDatabaseVersion(vdbVersion);
         ds.setDatabaseName(vdbName);
@@ -183,7 +183,7 @@ public class TestTeiidDataSource {
         String url;
         try {
             url = ds.buildURL().getJDBCURL();
-        } catch (TeiidSQLException e) {
+        } catch (KublingSQLException e) {
             throw new RuntimeException(e);
         }
         compareUrls(expectedURL, url);
@@ -213,7 +213,7 @@ public class TestTeiidDataSource {
             final String partialMode)
             throws SQLException {
 
-        TeiidDataSource ds = new TeiidDataSource();
+        KublingDataSource ds = new KublingDataSource();
 
         ds.setServerName(serverName);
         ds.setDatabaseVersion(vdbVersion);
@@ -455,17 +455,17 @@ public class TestTeiidDataSource {
 
     @Test
     public void testReasonWhyInvalidTransactionAutoWrap1() {
-        helpTestReasonWhyInvalid("TransactionAutoWrap", TeiidDataSource.TXN_WRAP_OFF, VALID);
+        helpTestReasonWhyInvalid("TransactionAutoWrap", KublingDataSource.TXN_WRAP_OFF, VALID);
     }
 
     @Test
     public void testReasonWhyInvalidTransactionAutoWrap2() {
-        helpTestReasonWhyInvalid("TransactionAutoWrap", TeiidDataSource.TXN_WRAP_ON, VALID);
+        helpTestReasonWhyInvalid("TransactionAutoWrap", KublingDataSource.TXN_WRAP_ON, VALID);
     }
 
     @Test
     public void testReasonWhyInvalidTransactionAutoWrap3() {
-        helpTestReasonWhyInvalid("TransactionAutoWrap", TeiidDataSource.TXN_WRAP_AUTO, VALID);
+        helpTestReasonWhyInvalid("TransactionAutoWrap", KublingDataSource.TXN_WRAP_AUTO, VALID);
     }
 
     @Test
@@ -530,7 +530,7 @@ public class TestTeiidDataSource {
             if (!valid) {
                 fail("expected exception");
             }
-        } catch (TeiidSQLException e) {
+        } catch (KublingSQLException e) {
             if (valid) {
                 throw new RuntimeException(e);
             }
@@ -695,7 +695,7 @@ public class TestTeiidDataSource {
         final String vdbName = "vdbName";
         final String vdbVersion = "";
         final int portNumber = 7001;
-        final String transactionAutoWrap = TeiidDataSource.TXN_WRAP_AUTO;
+        final String transactionAutoWrap = KublingDataSource.TXN_WRAP_AUTO;
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, -1, false, secure,
@@ -708,7 +708,7 @@ public class TestTeiidDataSource {
         final String vdbName = "vdbName";
         final String vdbVersion = "";
         final int portNumber = 7001;
-        final String transactionAutoWrap = TeiidDataSource.TXN_WRAP_AUTO;
+        final String transactionAutoWrap = KublingDataSource.TXN_WRAP_AUTO;
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, -1, true, secure,
@@ -722,7 +722,7 @@ public class TestTeiidDataSource {
         final String vdbName = "vdbName";
         final String vdbVersion = "";
         final int portNumber = 7001;
-        final String transactionAutoWrap = TeiidDataSource.TXN_WRAP_AUTO;
+        final String transactionAutoWrap = KublingDataSource.TXN_WRAP_AUTO;
         final String partialMode = "false";
         final boolean secure = true;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, null, transactionAutoWrap, partialMode, -1, true, secure,
@@ -741,7 +741,7 @@ public class TestTeiidDataSource {
         final String vdbVersion = "";
         final int portNumber = 7001;
         final String alternateServers = "hostName:7002,hostName2:7001,hostName2:7002";
-        final String transactionAutoWrap = TeiidDataSource.TXN_WRAP_AUTO;
+        final String transactionAutoWrap = KublingDataSource.TXN_WRAP_AUTO;
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternateServers, transactionAutoWrap, partialMode, -1, true, secure,
@@ -760,7 +760,7 @@ public class TestTeiidDataSource {
         final String vdbVersion = "";
         final int portNumber = 7001;
         final String alternateServers = "hostName:7002,hostName2:7001,hostName2:7002";
-        final String transactionAutoWrap = TeiidDataSource.TXN_WRAP_AUTO;
+        final String transactionAutoWrap = KublingDataSource.TXN_WRAP_AUTO;
         final String partialMode = "false";
         final boolean secure = true;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternateServers, transactionAutoWrap, partialMode, -1, true, secure,
@@ -780,7 +780,7 @@ public class TestTeiidDataSource {
         final String vdbVersion = "";
         final int portNumber = 7001;
         final String alternateServers = "hostName:7002,hostName2,hostName2:7002";
-        final String transactionAutoWrap = TeiidDataSource.TXN_WRAP_AUTO;
+        final String transactionAutoWrap = KublingDataSource.TXN_WRAP_AUTO;
         final String partialMode = "false";
         final boolean secure = false;
         helpTestBuildingURL(vdbName, vdbVersion, serverName, portNumber, alternateServers, transactionAutoWrap, partialMode, -1, true, secure,
@@ -804,8 +804,8 @@ public class TestTeiidDataSource {
     }
 
     @Test
-    public void testBuildURL_AdditionalProperties() throws TeiidSQLException {
-        final TeiidDataSource ds = new TeiidDataSource();
+    public void testBuildURL_AdditionalProperties() throws KublingSQLException {
+        final KublingDataSource ds = new KublingDataSource();
         ds.setAdditionalProperties("foo=bar;a=b");
         ds.setServerName("hostName");
         ds.setDatabaseName("vdbName");
@@ -814,8 +814,8 @@ public class TestTeiidDataSource {
     }
 
     @Test
-    public void testBuildURLEncryptRequests() throws TeiidSQLException {
-        final TeiidDataSource ds = new TeiidDataSource();
+    public void testBuildURLEncryptRequests() throws KublingSQLException {
+        final KublingDataSource ds = new KublingDataSource();
         ds.setServerName("hostName");
         ds.setDatabaseName("vdbName");
         ds.setEncryptRequests(true);
@@ -864,8 +864,8 @@ public class TestTeiidDataSource {
 
     @Test
     public void testUrlEncodedProperties() throws SQLException {
-        TeiidDriver td = Mockito.mock(TeiidDriver.class);
-        TeiidDataSource tds = new TeiidDataSource(td);
+        KublingDriver td = Mockito.mock(KublingDriver.class);
+        KublingDataSource tds = new KublingDataSource(td);
         tds.setDatabaseName("y");
         tds.setUser("%25user");
         tds.setServerName("x");
@@ -879,8 +879,8 @@ public class TestTeiidDataSource {
 
     @Test
     public void testLoginTimeout() throws SQLException {
-        TeiidDriver td = Mockito.mock(TeiidDriver.class);
-        TeiidDataSource tds = new TeiidDataSource(td);
+        KublingDriver td = Mockito.mock(KublingDriver.class);
+        KublingDataSource tds = new KublingDataSource(td);
         tds.setDatabaseName("y");
         tds.setServerName("x");
         tds.setLoginTimeout(2);
@@ -889,13 +889,13 @@ public class TestTeiidDataSource {
         ArgumentCaptor<Properties> argument = ArgumentCaptor.forClass(Properties.class);
         Mockito.verify(td).connect(Mockito.eq("jdbc:teiid:y@mm://x:0"), argument.capture());
         Properties p = argument.getValue();
-        assertEquals("2", p.getProperty(TeiidURL.CONNECTION.LOGIN_TIMEOUT));
+        assertEquals("2", p.getProperty(KublingURL.CONNECTION.LOGIN_TIMEOUT));
     }
 
     @Test
     public void testGetConnectionWithUser() throws SQLException {
-        TeiidDriver td = Mockito.mock(TeiidDriver.class);
-        TeiidDataSource tds = new TeiidDataSource(td);
+        KublingDriver td = Mockito.mock(KublingDriver.class);
+        KublingDataSource tds = new KublingDataSource(td);
         tds.setDatabaseName("y");
         tds.setUser("%25user");
         tds.setServerName("x");
@@ -909,7 +909,7 @@ public class TestTeiidDataSource {
 
     @Test
     public void testKerberos() throws SQLException {
-        TeiidDataSource tds = new TeiidDataSource();
+        KublingDataSource tds = new KublingDataSource();
         tds.setDatabaseName("y");
         tds.setUser("%25user");
         tds.setJaasName("x");

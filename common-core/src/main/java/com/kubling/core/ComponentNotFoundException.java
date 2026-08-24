@@ -22,7 +22,7 @@ package com.kubling.core;
  * Exception which occurs if a system component could not be found by another
  * component.
  */
-public class ComponentNotFoundException extends TeiidComponentException {
+public class ComponentNotFoundException extends KublingComponentException {
 
     private static final long serialVersionUID = 8484545412724259223L;
 

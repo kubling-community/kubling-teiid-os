@@ -22,7 +22,7 @@ import com.kubling.client.DQP;
 import com.kubling.client.ResultsMessage;
 import com.kubling.client.lob.LobChunk;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.types.XMLType;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockSettings;
@@ -893,7 +893,7 @@ public class TestResultSet {
         }
     }
 
-    private ResultSetImpl helpExecuteQuery(int fetchSize, int totalResults, int cursorType) throws SQLException, TeiidProcessingException {
+    private ResultSetImpl helpExecuteQuery(int fetchSize, int totalResults, int cursorType) throws SQLException, KublingProcessingException {
         StatementImpl statement = createMockStatement(cursorType, withSettings().stubOnly());
         return TestAllResultsImpl.helpTestBatching(statement, fetchSize, Math.min(fetchSize, totalResults), totalResults);
     }

@@ -91,7 +91,7 @@ public class KublingContainer<SELF extends KublingContainer<SELF>> extends JdbcD
 
     @Override
     public String getDriverClassName() {
-        return "com.kubling.jdbc.TeiidDriver";
+        return "com.kubling.jdbc.KublingDriver";
     }
 
     @Override

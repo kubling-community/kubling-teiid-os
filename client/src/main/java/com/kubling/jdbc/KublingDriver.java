@@ -18,11 +18,11 @@
 
 package com.kubling.jdbc;
 
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingException;
 import com.kubling.core.util.ApplicationInfo;
 import com.kubling.core.util.PropertiesUtils;
 import com.kubling.core.util.ReflectionHelper;
-import com.kubling.net.TeiidURL;
+import com.kubling.net.KublingURL;
 
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -49,12 +49,12 @@ import java.util.logging.Logger;
  * Look at {@link JDBCURL} KNOWN_PROPERTIES for list of known properties allowed.
  */
 
-public class TeiidDriver implements Driver {
+public class KublingDriver implements Driver {
 
     static Logger logger = Logger.getLogger("org.teiid.jdbc");
     static final String DRIVER_NAME = "Kubling DBVirt JDBC Driver";
 
-    private static final TeiidDriver INSTANCE = new TeiidDriver();
+    private static final KublingDriver INSTANCE = new KublingDriver();
 
     static {
         try {
@@ -69,7 +69,7 @@ public class TeiidDriver implements Driver {
     private ConnectionProfile socketProfile = new SocketProfile();
     private ConnectionProfile localProfile;
 
-    public static TeiidDriver getInstance() {
+    public static KublingDriver getInstance() {
         return INSTANCE;
     }
 
@@ -96,17 +96,17 @@ public class TeiidDriver implements Driver {
                     localProfile = (ConnectionProfile) ReflectionHelper.create(
                             "org.teiid.jdbc.jboss.ModuleLocalProfile", null,
                             getClass().getClassLoader());
-                } catch (TeiidException e) {
-                    throw TeiidSQLException.create(e, JDBCPlugin.Util.gs("module_load_failed"));
+                } catch (KublingException e) {
+                    throw KublingSQLException.create(e, JDBCPlugin.Util.gs("module_load_failed"));
                 }
             }
             cp = localProfile;
         }
         try {
             myConnection = cp.connect(url, info);
-        } catch (TeiidSQLException e) {
+        } catch (KublingSQLException e) {
             logger.log(Level.FINE, "Could not create connection", e);
-            throw TeiidSQLException.create(e, e.getMessage());
+            throw KublingSQLException.create(e, e.getMessage());
         }
 
         // logging
@@ -190,13 +190,13 @@ public class TeiidDriver implements Driver {
     protected static void parseURL(String url, Properties info) throws SQLException {
         if (url == null) {
             String msg = JDBCPlugin.Util.getString("MMDriver.urlFormat");
-            throw new TeiidSQLException(msg);
+            throw new KublingSQLException(msg);
         }
         try {
             JDBCURL jdbcURL = new JDBCURL(url);
             info.setProperty(BaseDataSource.VDB_NAME, jdbcURL.getVDBName());
             if (jdbcURL.getConnectionURL() != null) {
-                info.setProperty(TeiidURL.CONNECTION.SERVER_URL, jdbcURL.getConnectionURL());
+                info.setProperty(KublingURL.CONNECTION.SERVER_URL, jdbcURL.getConnectionURL());
             }
             Properties optionalParams = jdbcURL.getProperties();
             JDBCURL.normalizeProperties(info);
@@ -218,7 +218,7 @@ public class TeiidDriver implements Driver {
             }
 
         } catch (IllegalArgumentException iae) {
-            throw new TeiidSQLException(JDBCPlugin.Util.getString("MMDriver.urlFormat"));
+            throw new KublingSQLException(JDBCPlugin.Util.getString("MMDriver.urlFormat"));
         }
     }
 

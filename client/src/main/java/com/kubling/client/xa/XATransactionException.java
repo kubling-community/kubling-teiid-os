@@ -19,7 +19,7 @@
 package com.kubling.client.xa;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 
 import javax.transaction.xa.XAException;
 import java.io.Serial;
@@ -29,7 +29,7 @@ import java.io.Serial;
  * Exception which occurs if an error occurs within the server that is
  * XA transaction-related.
  */
-public class XATransactionException extends TeiidProcessingException {
+public class XATransactionException extends KublingProcessingException {
 
     @Serial
     private static final long serialVersionUID = 5685144848609237877L;

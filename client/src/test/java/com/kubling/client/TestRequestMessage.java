@@ -18,7 +18,7 @@
 
 package com.kubling.client;
 
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 import com.kubling.core.util.UnitTestUtil;
 import com.kubling.netty.handler.codec.serialization.CompactObjectInputStream;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ public class TestRequestMessage {
         message.setExecutionPayload("myExecutionPayload");
         try {
             message.setTxnAutoWrapMode(RequestMessage.TXN_WRAP_ON);
-        } catch (TeiidProcessingException e) {
+        } catch (KublingProcessingException e) {
             throw new RuntimeException(e);
         }
 
@@ -91,7 +91,7 @@ public class TestRequestMessage {
         try {
             rm.setTxnAutoWrapMode("foo");
             fail("exception expected");
-        } catch (TeiidProcessingException e) {
+        } catch (KublingProcessingException e) {
             assertEquals("TEIID20000 'FOO' is an invalid transaction autowrap mode.", e.getMessage());
         }
     }

@@ -19,14 +19,14 @@
 package com.kubling.client.security;
 
 import com.kubling.core.BundleUtil;
-import com.kubling.core.TeiidProcessingException;
+import com.kubling.core.KublingProcessingException;
 
-public class TeiidSecurityException extends TeiidProcessingException {
+public class KublingSecurityException extends KublingProcessingException {
 
     /**
      * No-Arg Constructor
      */
-    public TeiidSecurityException() {
+    public KublingSecurityException() {
         super();
     }
 
@@ -38,7 +38,7 @@ public class TeiidSecurityException extends TeiidProcessingException {
      * @param message The error message
      * @param code    The error code
      */
-    public TeiidSecurityException(BundleUtil.Event code, Throwable t, String message) {
+    public KublingSecurityException(BundleUtil.Event code, Throwable t, String message) {
         super(code, t, message);
     }
 
@@ -48,7 +48,7 @@ public class TeiidSecurityException extends TeiidProcessingException {
      * @param message The error message
      * @param code    The error code
      */
-    public TeiidSecurityException(BundleUtil.Event code, String message) {
+    public KublingSecurityException(BundleUtil.Event code, String message) {
         super(code, message);
     }
 
@@ -60,7 +60,7 @@ public class TeiidSecurityException extends TeiidProcessingException {
      * @param message the detail message
      * @param e       the exception that is encapsulated by this exception
      */
-    public TeiidSecurityException(Throwable e, String message) {
+    public KublingSecurityException(Throwable e, String message) {
         super(e, message);
     }
 
@@ -70,7 +70,7 @@ public class TeiidSecurityException extends TeiidProcessingException {
      *
      * @param e the exception that is encapsulated by this exception
      */
-    public TeiidSecurityException(Throwable e) {
+    public KublingSecurityException(Throwable e) {
         super(e);
     }
 
@@ -80,7 +80,7 @@ public class TeiidSecurityException extends TeiidProcessingException {
      *
      * @param message the detail message
      */
-    public TeiidSecurityException(String message) {
+    public KublingSecurityException(String message) {
         super(message);
     }
 }

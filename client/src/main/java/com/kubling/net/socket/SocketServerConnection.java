@@ -24,8 +24,8 @@ import com.kubling.client.security.LogonException;
 import com.kubling.client.security.LogonResult;
 import com.kubling.client.util.ExceptionUtil;
 import com.kubling.client.util.ResultsFuture;
-import com.kubling.core.TeiidComponentException;
-import com.kubling.core.TeiidException;
+import com.kubling.core.KublingComponentException;
+import com.kubling.core.KublingException;
 import com.kubling.core.util.PropertiesUtils;
 import com.kubling.gss.MakeGSS;
 import com.kubling.jdbc.JDBCPlugin;
@@ -77,7 +77,7 @@ public class SocketServerConnection implements ServerConnection {
         this.secure = secure;
         //ILogon that is allowed to failover
         this.logon = this.getService(ILogon.class);
-        this.failOver = Boolean.parseBoolean(connProps.getProperty(TeiidURL.CONNECTION.AUTO_FAILOVER));
+        this.failOver = Boolean.parseBoolean(connProps.getProperty(KublingURL.CONNECTION.AUTO_FAILOVER));
         this.serverVersion = selectServerInstance().getServerVersion();
     }
 
@@ -133,7 +133,7 @@ public class SocketServerConnection implements ServerConnection {
                 JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20021, hostCopy.toString()));
     }
 
-    private void logon(ILogon newLogon) throws LogonException, TeiidComponentException, CommunicationException {
+    private void logon(ILogon newLogon) throws LogonException, KublingComponentException, CommunicationException {
 
         SocketServerInstance instance = this.serverInstance;
 
@@ -142,7 +142,7 @@ public class SocketServerConnection implements ServerConnection {
         LogonResult newResult;
 
         // - if gss
-        if (connProps.contains(TeiidURL.CONNECTION.JAAS_NAME)) {
+        if (connProps.contains(KublingURL.CONNECTION.JAAS_NAME)) {
             newResult = MakeGSS.authenticate(newLogon, connProps);
         } else {
             newResult = newLogon.logon(connProps);
@@ -170,7 +170,7 @@ public class SocketServerConnection implements ServerConnection {
             return;
         }
         String address = addr.getHostAddress();
-        Object old = connectionProperties.put(TeiidURL.CONNECTION.CLIENT_IP_ADDRESS, address);
+        Object old = connectionProperties.put(KublingURL.CONNECTION.CLIENT_IP_ADDRESS, address);
         if (!address.equals(old)) {
             String hostname = null;
             if (resolver != null) {
@@ -179,7 +179,7 @@ public class SocketServerConnection implements ServerConnection {
             if (hostname == null) {
                 hostname = "unknown";
             }
-            connectionProperties.put(TeiidURL.CONNECTION.CLIENT_HOSTNAME, hostname);
+            connectionProperties.put(KublingURL.CONNECTION.CLIENT_HOSTNAME, hostname);
             if (setMac) {
                 try {
                     NetworkInterface ni = NetworkInterface.getByInetAddress(addr);
@@ -189,13 +189,13 @@ public class SocketServerConnection implements ServerConnection {
                             sb.append(PropertiesUtils.toHex(b >> 4));
                             sb.append(PropertiesUtils.toHex(b));
                         }
-                        connectionProperties.put(TeiidURL.CONNECTION.CLIENT_MAC, sb.toString());
+                        connectionProperties.put(KublingURL.CONNECTION.CLIENT_MAC, sb.toString());
                     }
                 } catch (SocketException e) {
-                    connectionProperties.remove(TeiidURL.CONNECTION.CLIENT_MAC);
+                    connectionProperties.remove(KublingURL.CONNECTION.CLIENT_MAC);
                 }
             } else {
-                connectionProperties.remove(TeiidURL.CONNECTION.CLIENT_MAC);
+                connectionProperties.remove(KublingURL.CONNECTION.CLIENT_MAC);
             }
         }
     }
@@ -205,7 +205,7 @@ public class SocketServerConnection implements ServerConnection {
         if (this.logonResult != null) {
             try {
                 newLogon.assertIdentity(logonResult.getSessionToken());
-            } catch (TeiidException e) {
+            } catch (KublingException e) {
                 // session is no longer valid
                 disconnect();
             }
@@ -217,7 +217,7 @@ public class SocketServerConnection implements ServerConnection {
                 // Propagate the original message as it contains the message we want
                 // to give to the user
                 throw new ConnectionException(e);
-            } catch (TeiidComponentException e) {
+            } catch (KublingComponentException e) {
                 if (e.getCause() instanceof CommunicationException) {
                     throw (CommunicationException) e.getCause();
                 }
@@ -232,7 +232,7 @@ public class SocketServerConnection implements ServerConnection {
         return iface.cast(Proxy.newProxyInstance(this.getClass().getClassLoader(),
                 new Class[]{iface},
                 new SocketServerInstanceImpl.RemoteInvocationHandler(iface,
-                        PropertiesUtils.getBooleanProperty(connProps, TeiidURL.CONNECTION.ENCRYPT_REQUESTS, false)) {
+                        PropertiesUtils.getBooleanProperty(connProps, KublingURL.CONNECTION.ENCRYPT_REQUESTS, false)) {
                     @Override
                     protected SocketServerInstance getInstance() throws CommunicationException {
                         if (failOver && System.currentTimeMillis() - lastPing > pingFailOverInterval) {
@@ -308,7 +308,7 @@ public class SocketServerConnection implements ServerConnection {
     }
 
     private synchronized ResultsFuture<?> isOpen()
-            throws CommunicationException, InvalidSessionException, TeiidComponentException {
+            throws CommunicationException, InvalidSessionException, KublingComponentException {
         if (this.closed) {
             throw new CommunicationException(JDBCPlugin.Event.TEIID20023, JDBCPlugin.Util.gs(JDBCPlugin.Event.TEIID20023));
         }
@@ -367,7 +367,7 @@ public class SocketServerConnection implements ServerConnection {
                 this.logon(logonInstance);
             } catch (LogonException e) {
                 throw new ConnectionException(e);
-            } catch (TeiidComponentException e) {
+            } catch (KublingComponentException e) {
                 throw new CommunicationException(e);
             }
         }

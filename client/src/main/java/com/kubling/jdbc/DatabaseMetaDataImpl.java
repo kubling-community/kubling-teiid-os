@@ -623,7 +623,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         } catch (Exception e) {
             // logging
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getCols_error", columnNamePattern, tableNamePattern, e.getMessage());
-            throw TeiidSQLException.create(e, logMsg);
+            throw KublingSQLException.create(e, logMsg);
         } finally {
             if (prepareQuery != null) {
                 prepareQuery.close();
@@ -681,7 +681,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // logging
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getCrossRef_error",
                     primaryTable, foreignTable, e.getMessage());
-            throw TeiidSQLException.create(e, logMsg);
+            throw KublingSQLException.create(e, logMsg);
         }
     }
 
@@ -733,7 +733,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
     }
 
     public String getDatabaseProductVersion() {
-        return TeiidDriver.getInstance().getMajorVersion() + "." + TeiidDriver.getInstance().getMinorVersion();
+        return KublingDriver.getInstance().getMajorVersion() + "." + KublingDriver.getInstance().getMinorVersion();
     }
 
     public int getDefaultTransactionIsolation() {
@@ -746,7 +746,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
      * @return int representing the driver's major version
      */
     public int getDriverMajorVersion() {
-        return TeiidDriver.getInstance().getMajorVersion();
+        return KublingDriver.getInstance().getMajorVersion();
     }
 
     /**
@@ -755,7 +755,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
      * @return int representing the driver's minor version
      */
     public int getDriverMinorVersion() {
-        return TeiidDriver.getInstance().getMinorVersion();
+        return KublingDriver.getInstance().getMinorVersion();
     }
 
     /**
@@ -764,7 +764,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
      * @return String representing the driver's name
      */
     public String getDriverName() {
-        return TeiidDriver.getInstance().getDriverName();
+        return KublingDriver.getInstance().getDriverName();
     }
 
     /**
@@ -806,7 +806,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
         } catch (Exception e) {
             // logging
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getExpKey_error", table, e.getMessage());
-            throw TeiidSQLException.create(e, logMsg);
+            throw KublingSQLException.create(e, logMsg);
         }
     }
 
@@ -860,7 +860,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             return resultSet;
         } catch (Exception e) {
             String logMsg = JDBCPlugin.Util.getString("MMDatabaseMetadata.getImpKey_error", table, e.getMessage());
-            throw TeiidSQLException.create(e, logMsg);
+            throw KublingSQLException.create(e, logMsg);
         }
     }
 
@@ -927,7 +927,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getIndex_error", table, e.getMessage()));
+            throw KublingSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getIndex_error", table, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
                 prepareQuery.close();
@@ -1152,7 +1152,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e,
+            throw KublingSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getPrimaryKey_error", table, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -1242,7 +1242,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e,
+            throw KublingSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getProcCol_error", columnNamePattern, e.getMessage()));
         } finally {
             if (prepareQuery != null) {
@@ -1302,7 +1302,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e,
+            throw KublingSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getProc_error", procedureNamePattern, e.getMessage()));
         }
     }
@@ -1550,7 +1550,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e,
+            throw KublingSQLException.create(e,
                     JDBCPlugin.Util.getString("MMDatabaseMetadata.getTable_error", tableNamePattern, e.getMessage()));
         }
     }
@@ -1612,7 +1612,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
                 return dummyStatement().createResultSet(records, rmetadata);
             } catch (Exception e) {
-                throw TeiidSQLException.create(e,
+                throw KublingSQLException.create(e,
                         JDBCPlugin.Util.getString("MMDatabaseMetadata.getTypeInfo_error", e.getMessage()));
             }
         }
@@ -2425,7 +2425,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
 
         } catch (Exception e) {
             String msg = JDBCPlugin.Util.getString("MMDatabaseMetadata.Err_getting_primary_keys");
-            throw TeiidSQLException.create(e, msg);
+            throw KublingSQLException.create(e, msg);
         }
 
         // close the resultset and driver connection
@@ -2528,7 +2528,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getfunctioncolumns_error", e.getMessage()));
+            throw KublingSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getfunctioncolumns_error", e.getMessage()));
         }
     }
 
@@ -2572,7 +2572,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getfunctions_error", e.getMessage()));
+            throw KublingSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getfunctions_error", e.getMessage()));
         }
     }
 
@@ -2620,7 +2620,7 @@ public class DatabaseMetaDataImpl extends WrapperImpl implements DatabaseMetaDat
             // construct results object from column values and their metadata
             return dummyStatement().createResultSet(records, rmetadata);
         } catch (Exception e) {
-            throw TeiidSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getschema_error", e.getMessage()));
+            throw KublingSQLException.create(e, JDBCPlugin.Util.getString("MMDatabaseMetadata.getschema_error", e.getMessage()));
         }
     }
 

@@ -42,7 +42,7 @@ public final class TestMetaMatrixRuntimeException {
     public void testFailMetaMatrixRuntimeExceptionWithNullMessage() {
         Throwable e = null;
         try {
-            new TeiidRuntimeException((String) null);  // should throw NPE
+            new KublingRuntimeException((String) null);  // should throw NPE
             fail("Should not get here");
         } catch (Throwable ex) {
             e = ex;
@@ -52,7 +52,7 @@ public final class TestMetaMatrixRuntimeException {
 
     @Test
     public void testMetaMatrixRuntimeExceptionWithNullThrowable() {
-        final TeiidRuntimeException err = new TeiidRuntimeException((Throwable) null);
+        final KublingRuntimeException err = new KublingRuntimeException((Throwable) null);
         assertNull(err.getCause());
         assertNull(err.getCode());
         assertNull(err.getMessage());
@@ -61,7 +61,7 @@ public final class TestMetaMatrixRuntimeException {
 
     @Test
     public void testMetaMatrixRuntimeExceptionWithMessage() {
-        final TeiidRuntimeException err = new TeiidRuntimeException("Test");
+        final KublingRuntimeException err = new KublingRuntimeException("Test");
         assertNull(err.getCause());
         assertNull(err.getCode());
         assertEquals("Test", err.getMessage());
@@ -71,7 +71,7 @@ public final class TestMetaMatrixRuntimeException {
     @Test
     public void testMetaMatrixRuntimeExceptionWithCodeAndMessage() {
         final String code = "1234";
-        final TeiidRuntimeException err = new TeiidRuntimeException(code, "Test");
+        final KublingRuntimeException err = new KublingRuntimeException(code, "Test");
         assertNull(err.getCause());
         assertEquals(code, err.getCode());
         assertEquals("1234 Test", err.getMessage());
@@ -85,8 +85,8 @@ public final class TestMetaMatrixRuntimeException {
     @Test
     public void testMetaMatrixRuntimeExceptionWithExceptionAndCodeAndMessage() {
         final String code = "1234";
-        final TeiidRuntimeException child = new TeiidRuntimeException(code, "Child");
-        final TeiidRuntimeException err = new TeiidRuntimeException(Event.Code, child, "Test");
+        final KublingRuntimeException child = new KublingRuntimeException(code, "Child");
+        final KublingRuntimeException err = new KublingRuntimeException(Event.Code, child, "Test");
         assertSame(child, err.getCause());
         assertEquals("Code", err.getCode());
         assertEquals("Code Test", err.getMessage());

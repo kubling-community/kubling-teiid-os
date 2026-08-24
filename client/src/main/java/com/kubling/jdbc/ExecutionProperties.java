@@ -22,7 +22,7 @@ import com.kubling.client.RequestMessage;
 
 /**
  * These execution properties can
- * be set via the {@link TeiidStatement#setExecutionProperty(String, String)}
+ * be set via the {@link KublingStatement#setExecutionProperty(String, String)}
  * method.  They affect the subsequent execution of all commands on that Statement
  * instance.
  * <p>

@@ -85,7 +85,7 @@ public class XAConnectionImpl implements XAConnection, XAResource {
                     if (e.getCause() instanceof SQLException) {
                         se = (SQLException) e.getCause();
                     } else {
-                        se = TeiidSQLException.create(e.getCause());
+                        se = KublingSQLException.create(e.getCause());
                     }
                     notifyListener(se);
                 }
@@ -191,7 +191,7 @@ public class XAConnectionImpl implements XAConnection, XAResource {
     private XAException handleError(Exception e, String logMsg) {
         logger.log(Level.FINE, logMsg, e);
 
-        if (e instanceof TeiidSQLException) {
+        if (e instanceof KublingSQLException) {
             Throwable ex = e.getCause();
             if (ex instanceof XAException) {
                 return (XAException) ex;

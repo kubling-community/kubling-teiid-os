@@ -30,7 +30,7 @@ import java.util.Collection;
  * This interface provides methods in
  * addition to the standard JDBC methods.
  */
-public interface TeiidStatement extends java.sql.Statement {
+public interface KublingStatement extends java.sql.Statement {
 
     /**
      * Get the execution property value.

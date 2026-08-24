@@ -18,7 +18,7 @@
 
 package com.kubling.core.types;
 
-import com.kubling.core.TeiidRuntimeException;
+import com.kubling.core.KublingRuntimeException;
 import com.kubling.core.util.ExternalizeUtil;
 import com.kubling.core.util.HashCodeUtil;
 
@@ -71,13 +71,13 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
 
     public int compareTo(ArrayImpl o, boolean noNulls, Comparator<Object> comparator) {
         if (zeroBased != o.zeroBased) {
-            throw new TeiidRuntimeException("Incompatible types");
+            throw new KublingRuntimeException("Incompatible types");
         }
         try {
             checkValues();
             o.checkValues();
         } catch (SQLException e) {
-            throw new TeiidRuntimeException(e);
+            throw new KublingRuntimeException(e);
         }
         Object[] values2 = o.values;
         return compare(noNulls, comparator, values, values2);
@@ -142,7 +142,7 @@ public final class ArrayImpl implements Comparable<ArrayImpl>, Externalizable, A
 
     public Object[] getValues() {
         if (values == null) {
-            throw new TeiidRuntimeException("Already freed or invalid");
+            throw new KublingRuntimeException("Already freed or invalid");
         }
         return values;
     }
