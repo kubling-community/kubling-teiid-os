@@ -47,12 +47,6 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <client-version>26.1</client-version>
-        <common-core-version>26.1</common-core-version>
-        <hibernate-dialect-version>26.1</hibernate-dialect-version>
-        <test-container-version>26.1</test-container-version>
-        <build-version>26.1</build-version>
-
         <gpg.keyname>${env.GPG_KEY}</gpg.keyname>
 
         <version.org.hibernate.core>6.6.35.Final</version.org.hibernate.core>
@@ -180,6 +174,11 @@
             <dependency>
                 <groupId>com.kubling</groupId>
                 <artifactId>kubling-hibernate-dialect</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kubling</groupId>
+                <artifactId>kubling-test-container</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

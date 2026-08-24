@@ -14,28 +14,6 @@
     <description>Contains the packages related to communication, administrative api, session and transport level
         messaging.</description>
 
-    <scm>
-        <connection>scm:git:git://github.com/kubling-community/kubling-teiid-os.git</connection>
-        <developerConnection>scm:git:ssh://github.com:kubling-community/kubling-teiid-os.git</developerConnection>
-        <url>https://github.com/kubling-community/kubling-teiid-os/tree/master</url>
-    </scm>
-
-    <url>https://kubling.com</url>
-    <developers>
-        <developer>
-            <name>Ignacio Soubelet</name>
-            <id>nsoubelet</id>
-            <organization>Kubling</organization>
-        </developer>
-    </developers>
-
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
-
     <properties>
         <basepom.check.skip-spotbugs>true</basepom.check.skip-spotbugs>
         <basepom.check.skip-dependency>true</basepom.check.skip-dependency>

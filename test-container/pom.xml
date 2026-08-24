@@ -12,28 +12,6 @@
     <name>Kubling Test Container</name>
     <description>Kubling Test Container for testing applications in Java</description>
 
-    <scm>
-        <connection>scm:git:git://github.com/kubling-community/kubling-teiid-os.git</connection>
-        <developerConnection>scm:git:ssh://github.com:kubling-community/kubling-teiid-os.git</developerConnection>
-        <url>https://github.com/kubling-community/kubling-teiid-os/tree/master</url>
-    </scm>
-
-    <url>https://kubling.com</url>
-    <developers>
-        <developer>
-            <name>Ignacio Soubelet</name>
-            <id>nsoubelet</id>
-            <organization>Kubling</organization>
-        </developer>
-    </developers>
-
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
-
     <properties>
         <basepom.check.skip-duplicate-finder>true</basepom.check.skip-duplicate-finder>
         <basepom.check.skip-spotbugs>true</basepom.check.skip-spotbugs>

@@ -1,5 +1,6 @@
 target/
 */target/
+/dependency-check-report.*
 /.idea/
 /.mvn/wrapper/maven-wrapper.jar
 *.iml
