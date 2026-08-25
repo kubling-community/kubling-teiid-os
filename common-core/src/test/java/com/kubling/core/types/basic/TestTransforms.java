@@ -210,21 +210,10 @@ public class TestTransforms {
 
     @Test
     public void testSQLXMLToStringTransform() throws Exception {
-        StringBuilder xml = new StringBuilder();
-        int iters = DataTypeManager.MAX_STRING_LENGTH / 10;
-        for (int i = 0; i < iters; i++) {
-            if (i < iters / 2) {
-                xml.append("<opentag>1");
-            } else {
-                xml.append("</opentag>");
-            }
-        }
+        String xml = "<root>" + "x".repeat(DataTypeManager.MAX_STRING_LENGTH) + "</root>";
+        String expected = xml.substring(0, DataTypeManager.MAX_STRING_LENGTH);
 
-        String expected = "";
-        expected += xml.substring(0, DataTypeManager.MAX_STRING_LENGTH);
-
-        System.setProperty("jdk.xml.maxElementDepth", "1000");
-        helpTestTransform(new StringToSQLXMLTransform().transformDirect(xml.toString()), expected);
+        helpTestTransform(new StringToSQLXMLTransform().transformDirect(xml), expected);
     }
 
     @Test
