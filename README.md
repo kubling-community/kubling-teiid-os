@@ -21,7 +21,9 @@ or socket messages must therefore be coordinated with the Kubling server release
 
 ## Build
 
-The project targets Java 21 and includes a Maven Wrapper:
+The project includes a Maven Wrapper. Its compatibility target and build JDK are intentionally independent: the
+POM defines the Java release supported by published artifacts, while the release workflow selects the GraalVM JDK
+used to compile and test them.
 
 ```bash
 ./mvnw verify
@@ -38,8 +40,8 @@ Distribution assemblies are enabled explicitly:
 Maven Central releases are published by the `Publish to Maven Central` GitHub Actions workflow:
 
 - Stable versions are published automatically from a final GitHub Release.
-- Release candidates use the `26.2-RC1` version format. They can be published manually from a non-default branch
-  once the workflow exists on the default branch, or by pushing the matching `v26.2-RC1` tag.
+- Release candidates use Maven's `RC` qualifier. They can be published manually from a non-default branch once the
+  workflow exists on the default branch, or by pushing a matching version tag.
 
 The requested version or Git tag must match the Maven project version. Update the project POMs and commit that
 version before starting a publication. Snapshots and manual publications of stable versions are rejected.
